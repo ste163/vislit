@@ -1,0 +1,19 @@
+{
+  "name": "Vislit",
+  "version": "0.0.1",
+  "description": "Desktop app for tracking, visualizing, and analyzing progress on writing projects",
+  "main": "index.js",
+  "authors": {
+    "name": "Sam Edwards",
+    "email": "samtedwards0@gmail.com"
+  },
+  "repository": "https://github.com/ste163/vislit/Vislit",
+  "scripts": {
+    "docs:dev": "vuepress dev src",
+    "docs:build": "vuepress build src"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "vuepress": "^1.8.2"
+  }
+}
