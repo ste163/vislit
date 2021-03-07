@@ -1,6 +1,7 @@
 const { description } = require("../../package");
 
 module.exports = {
+  base: "/vislit/",
   /**
    * Ref：https://v1.vuepress.vuejs.org/config/#title
    */
