@@ -6,7 +6,7 @@ actionText: Learn more →
 actionLink: /guide/
 features:
   - title: Write
-    details: Create a writing project & set a goal. Then get to writing either in Vislit's in-app editor or through Google Docs or Word Online.
+    details: Create a writing project & set a goal. Then get to writing in Vislit's in-app editor, Google Docs, or Word Online.
   - title: Track
     details: Enter writing progress in Excel-like spreadsheets and check whether you edited, proofread, or revised.
   - title: Visualize
