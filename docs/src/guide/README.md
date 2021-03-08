@@ -4,7 +4,7 @@
 
 Vislit aims to make tracking, visualizing, and analyzing writing data easy.
 
-Vislit came from my inability to easily manipulate the years worth of writing data I had accumulated. Excel worked great for keeping track of words written but was too cumbersome when I had multiple writing projects with different goals. My hope is that it will help any writer succeed.
+Vislit came from my inability to easily manipulate the years worth of writing data I had accumulated. Excel worked great for keeping track of words written but was too cumbersome when I had multiple writing projects with different goals. My hope is Vislit will help any writer succeed.
 
 ## Created with
 
@@ -12,3 +12,8 @@ Vislit came from my inability to easily manipulate the years worth of writing da
 - [Vue.js](https://vuejs.org/) v2.6.11
 - [Vue CLI Plugin Electron Builder](https://nklayman.github.io/vue-cli-plugin-electron-builder/) v2
 - [Vuepress](https://vuepress.vuejs.org/) v1.8.2
+
+## Special Thanks
+
+- [Shannon Swenton](https://www.linkedin.com/in/shannon-swenton-aa5356176/) for logo design
+- [Inkscape](https://inkscape.org/) for logo, icon, and mockup creation

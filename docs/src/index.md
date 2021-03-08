@@ -1,7 +1,7 @@
 ---
 home: true
 heroImage: "/vislit_logo.svg"
-tagline: Desktop app for tracking, visualizing, and analyzing progress on writing projects
+tagline: Open source Linux, Mac, Windows desktop app for tracking, visualizing, and analyzing progress on writing projects
 actionText: Learn more →
 actionLink: /guide/
 features:
@@ -10,6 +10,6 @@ features:
   - title: Track
     details: Enter writing progress in Excel-like spreadsheets and check whether you edited, proofread, or revised.
   - title: Visualize
-    details: View your writing progress in multiple data visualizations, so you can easily see how you're progress towards your goals.
+    details: View your writing progress with multiple data visualizations, so you can easily see how you're progressing towards your goal.
 footer: Copyright 2021 by Sam Edwards
 ---
