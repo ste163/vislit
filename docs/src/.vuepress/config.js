@@ -31,23 +31,20 @@ module.exports = {
    * ref：https://v1.vuepress.vuejs.org/theme/default-theme-config.html
    */
   themeConfig: {
-    repo: "",
+    repo: "https://github.com/ste163/vislit",
+    logo: "/vislit_logo.svg",
     editLinks: false,
     docsDir: "",
     editLinkText: "",
-    lastUpdated: false,
+    lastUpdated: true,
     nav: [
       {
         text: "Guide",
         link: "/guide/"
       },
       {
-        text: "Config",
-        link: "/config/"
-      },
-      {
-        text: "VuePress",
-        link: "https://v1.vuepress.vuejs.org"
+        text: "GitHub",
+        link: "https://github.com/ste163/vislit"
       }
     ],
     sidebar: {
