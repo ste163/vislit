@@ -41,6 +41,14 @@ module.exports = {
       {
         text: "Guide",
         link: "/guide/"
+      },
+      {
+        text: "Download",
+        link: "/guide/download"
+      },
+      {
+        text: "Roadmap",
+        link: "/guide/roadmap"
       }
     ],
     sidebar: {
