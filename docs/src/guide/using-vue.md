@@ -1,9 +1,28 @@
-# Using Vue in Markdown
+# Roadmap
 
-## Browser API Access Restrictions
+## Mockup
 
-Because VuePress applications are server-rendered in Node.js when generating static builds, any Vue usage must conform to the [universal code requirements](https://ssr.vuejs.org/en/universal.html). In short, make sure to only access Browser / DOM APIs in `beforeMount` or `mounted` hooks.
+![Vislit Mockup](/vislit_mockup.png)
 
-If you are using or demoing components that are not SSR friendly (for example containing custom directives), you can wrap them inside the built-in `<ClientOnly>` component:
+## Completed features
 
-##
+Current prototype has its own dedicated [GitHub repository](https://github.com/ste163/prototype_vislit_vue)
+
+- ~~Ability to install Vislit on Linux, Mac, Windows~~
+- ~~Data export, import so users can backup data~~
+
+## Features under development
+
+- Five main sections
+  - Progress Tracking
+    - Create writing projects & set goals
+    - Set expected 'pages until completion' amount
+    - Sortable table view
+  - Data Visualizations
+    - For individual projects & all time
+  - Thesaurus (based on [Lexicon](https://lexicon-demo.com))
+    - With ability to store words in user-defined collections
+  - Notes
+    - General notes & per project
+  - Writing (in-app and linking Google Docs/Word Online)
+- Auto-updating through main GitHub repository
