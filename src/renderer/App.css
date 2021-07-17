@@ -1,0 +1,74 @@
+@import "./styles/overrides.css";
+
+@font-face {
+  font-family: "Noto";
+  src: url(./assets/fonts/NotoSerif-Regular.ttf);
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Noto";
+  src: url(./assets/fonts/NotoSerif-Bold.ttf);
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Heebo";
+  src: url(./assets/fonts/Heebo-ExtraLight.ttf);
+  font-weight: 200;
+}
+
+@font-face {
+  font-family: "Heebo";
+  src: url(./assets/fonts/Heebo-Light.ttf);
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "Heebo";
+  src: url(./assets/fonts/Heebo-Medium.ttf);
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Heebo";
+  src: url(./assets/fonts/Heebo-Regular.ttf);
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Heebo";
+  src: url(./assets/fonts/Heebo-SemiBold.ttf);
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "Heebo";
+  src: url(./assets/fonts/Heebo-Bold.ttf);
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "Heebo";
+  src: url(./assets/fonts/Heebo-ExtraBold.ttf);
+  font-weight: 800;
+}
+
+@font-face {
+  font-family: "Heebo";
+  src: url(./assets/fonts/Heebo-Black.ttf);
+  font-weight: 900;
+}
+
+:root {
+  /* Font */
+  --fontFamilySans: "Heebo", sans-serif;
+  --fontFamilySerif: "Noto", serif;
+  --LetterSpacingSmaller: 0.05em;
+  --LetterSpacingSmall: 0.1em;
+  --LetterSpacingMedium: 0.2em;
+
+  /* Color */
+  --darkestWhite: #f6f6f6;
+  --black: #333333;
+}

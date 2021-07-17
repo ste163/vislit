@@ -1,5 +1,5 @@
 <template>
-  <div class="home">VISLIT</div>
+  <div class="home">Dashboard content</div>
 </template>
 
 <script>
