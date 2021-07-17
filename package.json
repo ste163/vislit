@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
+    "test": "IS_TEST=true jest --coverage --runInBand",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "electron:build": "vue-cli-service electron:build",
@@ -30,6 +31,7 @@
     "eslint": "^6.7.2",
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-vue": "^7.0.0",
+    "jest": "^27.0.6",
     "prettier": "^2.2.1",
     "vue-cli-plugin-electron-builder": "~2.1.1"
   }
