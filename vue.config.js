@@ -4,11 +4,11 @@ module.exports = {
   },
   pluginOptions: {
     electronBuilder: {
-      preload: "src/main/preload.js",
+      preload: "src/main/preload.ts",
       // Use this to change the entrypoint of your app's main process
-      mainProcessFile: "src/main/background.js",
+      mainProcessFile: "src/main/background.ts",
       // Use this to change the entry point of your app's render process. default src/[main|index].[js|ts]
-      rendererProcessFile: "src/renderer/main.js",
+      rendererProcessFile: "src/renderer/main.ts",
     },
   },
 };

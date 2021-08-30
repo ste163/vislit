@@ -1,9 +1,3 @@
 <template>
-  <div class="home">Dashboard content</div>
+  <div class="home">HOME</div>
 </template>
-
-<script>
-export default {
-  name: "Home",
-};
-</script>

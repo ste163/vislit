@@ -1,5 +1,3 @@
-@import "./styles/overrides.css";
-
 @font-face {
   font-family: "Noto";
   src: url(./assets/fonts/NotoSerif-Regular.ttf);
@@ -71,4 +69,14 @@
   /* Color */
   --darkestWhite: #f6f6f6;
   --black: #333333;
+}
+
+/* overrides */
+body {
+  font-family: "Heebo";
+  font-weight: 300;
+  background-color: var(--darkestWhite);
+  color: var(--black);
+  margin: 0;
+  padding: 0;
 }
