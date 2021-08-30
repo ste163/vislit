@@ -1,10 +1,14 @@
 <template>
   <nav class="sidebar-container">
+    <!-- TODO -->
+    <!-- Button templates for nav items -->
+    <!-- Needs to include props for: icon, isTextShown, isActive -->
+
     <!-- These aren't really router links, but open/closers for columns -->
     <!-- Except for Settings, Progress, Document Writer -->
     <!-- On Document Writer, Visualizations, and Progress, will have a back arrow/up arrow to go to the summary card -->
-    <router-link to="/">Home</router-link>
-    <router-link to="/about">About</router-link>
+    <router-link to="/">Projects</router-link>
+    <router-link to="/Progress">Progress</router-link>
   </nav>
 </template>
 
