@@ -67,7 +67,10 @@
   --LetterSpacingMedium: 0.2em;
 
   /* Color */
-  --darkestWhite: #f6f6f6;
+  --dashboardBackground: #e5e5e5;
+  --columnBackground: #f6f6f6;
+  --columnHeader: #f0f0f0;
+
   --black: #333333;
 }
 
@@ -75,7 +78,7 @@
 body {
   font-family: "Heebo";
   font-weight: 300;
-  background-color: var(--darkestWhite);
+  background-color: var(--dashboardBackground);
   color: var(--black);
   margin: 0;
   padding: 0;
