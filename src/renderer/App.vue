@@ -16,8 +16,8 @@
   <div
     class="column-dropzone"
     @drop="onColumnDrop($event, 'left')"
+    @dragover="onDropzoneDragOver($event, 'left')"
     @dragenter.prevent
-    @dragover.prevent
   >
     <div
       v-for="(column, i) in getColumn('left')"
@@ -28,9 +28,10 @@
       "
       :key="column.header"
       class="column-draggable"
+      :class="activeDragColumn === column.header ? 'column-drag-active' : ''"
       draggable="true"
       @dragstart="onColumnDragStart($event, column.header)"
-      @drag="onColumnDrag($event)"
+      @drag="onColumnDrag($event, 'left')"
     >
       {{ column.header }}
     </div>
@@ -44,8 +45,8 @@
   <div
     class="column-dropzone"
     @drop="onColumnDrop($event, 'right')"
+    @dragover="onDropzoneDragOver($event, 'right')"
     @dragenter.prevent
-    @dragover.prevent
   >
     <div
       v-for="(column, i) in getColumn('right')"
@@ -56,9 +57,10 @@
       "
       :key="column.header"
       class="column-draggable"
+      :class="activeDragColumn === column.header ? 'column-drag-active' : ''"
       draggable="true"
       @dragstart="onColumnDragStart($event, column.header)"
-      @drag="onColumnDrag($event)"
+      @drag="onColumnDrag($event, 'right')"
     >
       {{ column.header }}
     </div>
@@ -88,6 +90,10 @@ export default defineComponent({
     const leftColumnDivs = ref<Array<HTMLDivElement>>([]);
     const rightColumnDivs = ref<Array<HTMLDivElement>>([]);
 
+    const activeDragColumn = ref<string>("");
+
+    const DRAG_ERROR = "Event was not a drag event.";
+
     // Returns the ref of what column --- when I have the interface built, I can add that as the return type
     function getColumn(dropzone: string) {
       // Return only the columns with the matching dropzone number
@@ -95,25 +101,59 @@ export default defineComponent({
     }
 
     function onColumnDragStart(event: DragEvent, header: string): void {
-      console.log("DRAG START!");
       if (event.dataTransfer !== null) {
         event.dataTransfer.dropEffect = "move";
         event.dataTransfer.effectAllowed = "move";
-        event.dataTransfer.setData("columnHeader", header.toString());
 
-        // Assign CSS for the dragging start
+        // Assign CSS for dragging start
+        activeDragColumn.value = header;
       } else {
-        console.error("Event was not a drag event.");
+        console.error(DRAG_ERROR);
       }
     }
 
-    function onColumnDrag(event: DragEvent) {
-      console.log("DRAGGING");
-      // Check where the column is in relation to:
-      // 1. Which dropzone
-      // 2. In each dropzone, where should it be in relation to the other columns
+    // This might not be used at all; keeping for now
+    // CSS is setup on the columnDragStart and removed onColumnDrop
+    function onColumnDrag(event: DragEvent, dropzone: string): void {
+      if (event.dataTransfer !== null) {
+        // Check where the column is in relation to:
+        // 1. Which dropzone are we hovered over?
+        // 2. In each dropzone, where should it be in relation to the other columns?
+      } else {
+        console.error(DRAG_ERROR);
+      }
 
       // Also, assign CSS for preview of where the item should land
+    }
+
+    // This function will contain the logic for
+    // Which dropzone and where in the dropzone
+    function onDropzoneDragOver(event: DragEvent, dropzone: string) {
+      event.preventDefault();
+
+      // Get currently dragged element
+      if (event.dataTransfer !== null) {
+        let allColumnsInDropzone: Array<HTMLDivElement> = [];
+
+        if (dropzone === "left") {
+          allColumnsInDropzone = leftColumnDivs.value;
+        } else {
+          allColumnsInDropzone = rightColumnDivs.value;
+        }
+
+        const currentlyDraggedColumn: Array<HTMLDivElement> =
+          allColumnsInDropzone.filter(
+            (column) => column.innerHTML === activeDragColumn.value
+          );
+
+        console.log(currentlyDraggedColumn);
+
+        columns.value.forEach((column) => {
+          if (column.header === activeDragColumn.value) {
+            column.dropzone = dropzone;
+          }
+        });
+      }
     }
 
     function onColumnDrop(event: DragEvent, dropzone: string): void {
@@ -121,26 +161,24 @@ export default defineComponent({
       if (event.dataTransfer !== null) {
         // ALL checking of where the column should land, needs to occur in onColumnDrag
 
-        const columnHeader = event.dataTransfer.getData("columnHeader");
         const column = columns.value.find(
-          (column) => column.header === columnHeader
+          (column) => column.header === activeDragColumn.value
         );
 
-        const afterElement = getDragAfterElement(
-          dropzone,
-          event.clientY,
-          columnHeader
-        );
-
-        console.log("AFTER ELEMENT", afterElement);
+        // const afterElement = getDragAfterElement(
+        //   dropzone,
+        //   event.clientY,
+        //   columnHeader
+        // );
 
         // Moves the column into the correct dropzone
         if (column !== undefined) {
           column.dropzone = dropzone;
           // Remove all dropzone CSS
+          activeDragColumn.value = "";
         }
       } else {
-        console.error("Event was not a drag event.");
+        console.error(DRAG_ERROR);
       }
     }
 
@@ -204,7 +242,9 @@ export default defineComponent({
       getColumn,
       onColumnDragStart,
       onColumnDrag,
+      onDropzoneDragOver,
       onColumnDrop,
+      activeDragColumn,
       leftColumnDivs,
       rightColumnDivs,
     };
@@ -234,5 +274,11 @@ export default defineComponent({
 .column-draggable {
   background-color: white;
   border-left: 2px black solid;
+  width: 6em;
+  cursor: move;
+}
+
+.column-drag-active {
+  opacity: 0.5;
 }
 </style>
