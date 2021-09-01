@@ -136,6 +136,10 @@ export default defineComponent({
       // Also, assign CSS for preview of where the item should land
     }
 
+    // Need onColumnDragEnd for the @dragend
+    // that removes the active style
+    // otherwise, if you drop in the dashboard, it doesn't know to remove the class, only dropzones
+
     // This function will contain the logic for
     // Which dropzone and where in the dropzone
     function onDropzoneDragOver(event: DragEvent, dropzone: string) {
@@ -151,35 +155,38 @@ export default defineComponent({
           allColumnsInDropzone = rightColumnDivs.value;
         }
 
+        // We will need this, but maybe not here, because we only need its boundingBox
         const currentlyDraggedColumn: Array<HTMLDivElement> =
           allColumnsInDropzone.filter(
             (column) => column.innerHTML === activeDragColumn.value
           );
-
-        console.log(currentlyDraggedColumn);
 
         columns.value.forEach((column) => {
           if (column.header === activeDragColumn.value) {
             column.dropzone = dropzone;
           }
         });
+
+        const newColumnPosition = getDragAfterElementPosition(
+          dropzone,
+          event.x
+        );
+
+        const activeColumn = findActiveColumn();
+
+        if (activeColumn !== undefined) {
+          activeColumn.position = newColumnPosition;
+        } else {
+          console.error("Could not find active column");
+        }
       }
     }
 
     function onColumnDrop(event: DragEvent, dropzone: string): void {
-      console.log("Dropping item into", dropzone);
       if (event.dataTransfer !== null) {
         // ALL checking of where the column should land, needs to occur in onColumnDrag
 
-        const column = columns.value.find(
-          (column) => column.header === activeDragColumn.value
-        );
-
-        // const afterElement = getDragAfterElement(
-        //   dropzone,
-        //   event.clientY,
-        //   columnHeader
-        // );
+        const column = findActiveColumn();
 
         // Moves the column into the correct dropzone
         if (column !== undefined) {
@@ -193,11 +200,7 @@ export default defineComponent({
     }
 
     // Need a sorting function for the dragging. Otherwise, it gets dumped into the right location, but not ordered in any way
-    function getDragAfterElement(
-      dropzone: string,
-      y: number,
-      columnHeader: string
-    ): void {
+    function getDragAfterElementPosition(dropzone: string, x: number): number {
       let allColumnsInDropzone: Array<HTMLDivElement> = [];
 
       if (dropzone === "left") {
@@ -206,40 +209,38 @@ export default defineComponent({
         allColumnsInDropzone = rightColumnDivs.value;
       }
 
-      // Remove the Any type
-      const allColumnsExceptSelected: Array<any> = allColumnsInDropzone.filter(
-        (column) => column.innerHTML !== columnHeader
+      const allColumnsExceptActive: Array<HTMLDivElement> =
+        allColumnsInDropzone.filter(
+          (column) => column.innerHTML !== activeDragColumn.value
+        );
+
+      // TODO:
+      // Based on whatever element I'm dragging over,
+      // I need to either return a negative int +1 or -1 based on if its
+      // farther left or right, from where my mouse position is
+
+      // Reduce will be based off of the actual references in state
+      // instead of HTMLDivElements, but we will need the Divs for the boundingBox. So we'll need to compare both
+
+      allColumnsExceptActive.reduce(
+        (closest, child) => {
+          const box: DOMRect = child.getBoundingClientRect();
+          const cursorOffset = x - box.left - box.width / 2;
+          console.log(cursorOffset);
+
+          return child;
+        },
+        { offsetLeft: Number.NEGATIVE_INFINITY }
       );
 
-      console.log(
-        "All Draggable elements except for currently dragged",
-        allColumnsExceptSelected
+      return -10;
+    }
+
+    // Add the IColumn interface as the return value
+    function findActiveColumn() {
+      return columns.value.find(
+        (column) => column.header === activeDragColumn.value
       );
-
-      // Now I need to get the bounding boxes of the all columns except selected
-      // And compare their center points to where the dragged element is.
-      // Which means I need to be tracking the dragged elements location in real-time
-
-      // This fails currently because the initial value gets set to NOT an element
-      // but a number. So reduce cannot work this way.
-      // Will need to just do a forEach loop over the draggable elements
-      // and do some comparison on the positions
-      // return allColumnsExceptSelected.reduce(
-      //   (closest: HTMLDivElement, child: HTMLDivElement) => {
-      //     const boundingBox = child.getBoundingClientRect();
-
-      //     const offset = y - boundingBox.top - boundingBox.height / 2;
-
-      //     if (offset < 0 && offset > closest.offsetLeft) {
-      //       console.log("CHILD", child);
-      //       return { offset: offset, element: child };
-      //     } else {
-      //       console.log("CLOSEST", closest);
-      //       return { offset: offset, element: closest };
-      //     }
-      //   },
-      //   { offset: Number.NEGATIVE_INFINITY }
-      // ).element;
     }
 
     function sortColumns() {
