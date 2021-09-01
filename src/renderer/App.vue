@@ -15,21 +15,22 @@
   <!-- Left drop-able area -->
   <div
     class="column-dropzone"
-    @drop="onColumnDrop($event, 1)"
+    @drop="onColumnDrop($event, 'left')"
     @dragenter.prevent
     @dragover.prevent
   >
     <div
-      v-for="(column, i) in getColumn(1)"
+      v-for="(column, i) in getColumn('left')"
       :ref="
         (el) => {
           if (el) this.leftColumnDivs[i] = el;
         }
       "
-      :key="column.id"
+      :key="column.header"
       class="column-draggable"
       draggable="true"
-      @dragstart="onColumnDragStart($event, column)"
+      @dragstart="onColumnDragStart($event, column.header)"
+      @drag="onColumnDrag($event)"
     >
       {{ column.header }}
     </div>
@@ -42,21 +43,22 @@
   <!-- Right drop-able area -->
   <div
     class="column-dropzone"
-    @drop="onColumnDrop($event, 2)"
+    @drop="onColumnDrop($event, 'right')"
     @dragenter.prevent
     @dragover.prevent
   >
     <div
-      v-for="(column, i) in getColumn(2)"
+      v-for="(column, i) in getColumn('right')"
       :ref="
         (el) => {
           if (el) this.rightColumnDivs[i] = el;
         }
       "
-      :key="column.id"
+      :key="column.header"
       class="column-draggable"
       draggable="true"
-      @dragstart="onColumnDragStart($event, column)"
+      @dragstart="onColumnDragStart($event, column.header)"
+      @drag="onColumnDrag($event)"
     >
       {{ column.header }}
     </div>
@@ -72,63 +74,70 @@ export default defineComponent({
 
   setup() {
     // TODO: IColumn interface, because we'll be storing the user's layout
+    // Will need to store another value, as a number, for its position in the array
     const columns = ref([
       {
-        id: 0,
         header: "Projects",
-        dropzone: 1,
+        dropzone: "left",
       },
-      { id: 1, header: "Notes", dropzone: 1 },
-      { id: 2, header: "Lexicons", dropzone: 2 },
+      { header: "Notes", dropzone: "left" },
+      { header: "Lexicons", dropzone: "right" },
     ]);
 
     // References to the DOM elements
     const leftColumnDivs = ref<Array<HTMLDivElement>>([]);
     const rightColumnDivs = ref<Array<HTMLDivElement>>([]);
 
-    // Going to need to access column being dragged by its Header and check
-    // against its html inner text
-    const currentlyDraggedColumnId = ref<number>();
-
     // Returns the ref of what column --- when I have the interface built, I can add that as the return type
-    function getColumn(dropzone: number) {
+    function getColumn(dropzone: string) {
       // Return only the columns with the matching dropzone number
       return columns.value.filter((column) => column.dropzone === dropzone);
     }
 
-    // Move this to a Types directory
-    type ColumnId = {
-      id: number;
-    };
-
-    function onColumnDragStart(event: DragEvent, item: ColumnId): void {
+    function onColumnDragStart(event: DragEvent, header: string): void {
+      console.log("DRAG START!");
       if (event.dataTransfer !== null) {
-        console.log("RIGHT COLUMN DIVS", rightColumnDivs.value);
-        console.log("LEFT COLUMN DIVS", leftColumnDivs.value);
         event.dataTransfer.dropEffect = "move";
         event.dataTransfer.effectAllowed = "move";
-        event.dataTransfer.setData("itemId", item.id.toString());
+        event.dataTransfer.setData("columnHeader", header.toString());
 
-        currentlyDraggedColumnId.value = item.id;
-        console.log("COLUMN ID", currentlyDraggedColumnId.value);
+        // Assign CSS for the dragging start
       } else {
         console.error("Event was not a drag event.");
       }
     }
 
-    function onColumnDrop(event: DragEvent, dropzone: number): void {
+    function onColumnDrag(event: DragEvent) {
+      console.log("DRAGGING");
+      // Check where the column is in relation to:
+      // 1. Which dropzone
+      // 2. In each dropzone, where should it be in relation to the other columns
+
+      // Also, assign CSS for preview of where the item should land
+    }
+
+    function onColumnDrop(event: DragEvent, dropzone: string): void {
       console.log("Dropping item into", dropzone);
       if (event.dataTransfer !== null) {
-        const itemId = event.dataTransfer.getData("itemId");
+        // ALL checking of where the column should land, needs to occur in onColumnDrag
+
+        const columnHeader = event.dataTransfer.getData("columnHeader");
         const column = columns.value.find(
-          (column) => column.id === parseInt(itemId)
+          (column) => column.header === columnHeader
         );
 
-        const afterElement = getDragAfterElement(dropzone, event.clientY);
+        const afterElement = getDragAfterElement(
+          dropzone,
+          event.clientY,
+          columnHeader
+        );
+
+        console.log("AFTER ELEMENT", afterElement);
 
         // Moves the column into the correct dropzone
         if (column !== undefined) {
           column.dropzone = dropzone;
+          // Remove all dropzone CSS
         }
       } else {
         console.error("Event was not a drag event.");
@@ -136,25 +145,56 @@ export default defineComponent({
     }
 
     // Need a sorting function for the dragging. Otherwise, it gets dumped into the right location, but not ordered in any way
-    function getDragAfterElement(dropzone: number, y: number) {
-      const allColumnsInDropzone = getColumn(dropzone);
-      const draggableElements = allColumnsInDropzone.filter(
-        (column) => column.id !== currentlyDraggedColumnId.value
+    function getDragAfterElement(
+      dropzone: string,
+      y: number,
+      columnHeader: string
+    ): void {
+      let allColumnsInDropzone: Array<HTMLDivElement> = [];
+
+      if (dropzone === "left") {
+        allColumnsInDropzone = leftColumnDivs.value;
+      } else {
+        allColumnsInDropzone = rightColumnDivs.value;
+      }
+
+      // Remove the Any type
+      const allColumnsExceptSelected: Array<any> = allColumnsInDropzone.filter(
+        (column) => column.innerHTML !== columnHeader
       );
+
       console.log(
         "All Draggable elements except for currently dragged",
-        draggableElements
+        allColumnsExceptSelected
       );
 
-      // draggableElements.reduce(
-      //   (closestElement, childElements) => {
-      //     // const box = childElements.getBoundingClientRect();
-      //     // console.log(box);
+      // Now I need to get the bounding boxes of the all columns except selected
+      // And compare their center points to where the dragged element is.
+      // Which means I need to be tracking the dragged elements location in real-time
+
+      // This fails currently because the initial value gets set to NOT an element
+      // but a number. So reduce cannot work this way.
+      // Will need to just do a forEach loop over the draggable elements
+      // and do some comparison on the positions
+      // return allColumnsExceptSelected.reduce(
+      //   (closest: HTMLDivElement, child: HTMLDivElement) => {
+      //     const boundingBox = child.getBoundingClientRect();
+
+      //     const offset = y - boundingBox.top - boundingBox.height / 2;
+
+      //     if (offset < 0 && offset > closest.offsetLeft) {
+      //       console.log("CHILD", child);
+      //       return { offset: offset, element: child };
+      //     } else {
+      //       console.log("CLOSEST", closest);
+      //       return { offset: offset, element: closest };
+      //     }
       //   },
       //   { offset: Number.NEGATIVE_INFINITY }
-      // );
+      // ).element;
     }
 
+    // Needed to reset references
     onBeforeUpdate(() => {
       leftColumnDivs.value = [];
       rightColumnDivs.value = [];
@@ -163,6 +203,7 @@ export default defineComponent({
     return {
       getColumn,
       onColumnDragStart,
+      onColumnDrag,
       onColumnDrop,
       leftColumnDivs,
       rightColumnDivs,
