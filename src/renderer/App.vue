@@ -147,19 +147,19 @@ export default defineComponent({
 
       // Get currently dragged element
       if (event.dataTransfer !== null) {
-        let allColumnsInDropzone: Array<HTMLDivElement> = [];
+        // let allColumnsInDropzone: Array<HTMLDivElement> = [];
 
-        if (dropzone === "left") {
-          allColumnsInDropzone = leftColumnDivs.value;
-        } else {
-          allColumnsInDropzone = rightColumnDivs.value;
-        }
+        // if (dropzone === "left") {
+        //   allColumnsInDropzone = leftColumnDivs.value;
+        // } else {
+        //   allColumnsInDropzone = rightColumnDivs.value;
+        // }
 
         // We will need this, but maybe not here, because we only need its boundingBox
-        const currentlyDraggedColumn: Array<HTMLDivElement> =
-          allColumnsInDropzone.filter(
-            (column) => column.innerHTML === activeDragColumn.value
-          );
+        // const currentlyDraggedColumn: Array<HTMLDivElement> =
+        //   allColumnsInDropzone.filter(
+        //     (column) => column.innerHTML === activeDragColumn.value
+        //   );
 
         columns.value.forEach((column) => {
           if (column.header === activeDragColumn.value) {
@@ -167,10 +167,7 @@ export default defineComponent({
           }
         });
 
-        const newColumnPosition = getDragAfterElementPosition(
-          dropzone,
-          event.x
-        );
+        const newColumnPosition = getDragAfterColumnPosition(dropzone, event.x);
 
         const activeColumn = findActiveColumn();
 
@@ -200,7 +197,7 @@ export default defineComponent({
     }
 
     // Need a sorting function for the dragging. Otherwise, it gets dumped into the right location, but not ordered in any way
-    function getDragAfterElementPosition(dropzone: string, x: number): number {
+    function getDragAfterColumnPosition(dropzone: string, x: number): number {
       let allColumnsInDropzone: Array<HTMLDivElement> = [];
 
       if (dropzone === "left") {
@@ -214,26 +211,32 @@ export default defineComponent({
           (column) => column.innerHTML !== activeDragColumn.value
         );
 
-      // TODO:
-      // Based on whatever element I'm dragging over,
-      // I need to either return a negative int +1 or -1 based on if its
-      // farther left or right, from where my mouse position is
-
-      // Reduce will be based off of the actual references in state
-      // instead of HTMLDivElements, but we will need the Divs for the boundingBox. So we'll need to compare both
-
-      allColumnsExceptActive.reduce(
+      // Reduce wants HTMLDivElements returned, but I need the number
+      // Requires lots of annoying casting & then un-casting
+      const newPosition = allColumnsExceptActive.reduce(
         (closest, child) => {
           const box: DOMRect = child.getBoundingClientRect();
           const cursorOffset = x - box.left - box.width / 2;
-          console.log(cursorOffset);
+          console.log("CURSOR OFFSET", cursorOffset);
 
-          return child;
+          // WHAT I ACTUALLY NEED TO DO
+          // Is compare the closests current position number,
+          // Then +1 or -1 based on where the cursor is
+          // otherwise, the offset can be too great
+          if (cursorOffset < 0 && cursorOffset > closest.offsetLeft) {
+            console.log("NEW POS", cursorOffset);
+            return cursorOffset as unknown as HTMLDivElement;
+          } else {
+            console.log("NEW POS", closest.offsetLeft);
+            return closest.offsetLeft as unknown as HTMLDivElement;
+          }
         },
-        { offsetLeft: Number.NEGATIVE_INFINITY }
+        { offsetLeft: Number.POSITIVE_INFINITY }
       );
 
-      return -10;
+      const castedPosition: number = newPosition as unknown as number;
+
+      return castedPosition;
     }
 
     // Add the IColumn interface as the return value
