@@ -68,7 +68,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeUpdate, ref } from "vue";
+import { computed, defineComponent, onBeforeUpdate, ref } from "vue";
 import TheSidebar from "./components/TheSidebar.vue";
 
 export default defineComponent({
@@ -77,13 +77,21 @@ export default defineComponent({
   setup() {
     // TODO: IColumn interface, because we'll be storing the user's layout
     // Will need to store another value, as a number, for its position in the array
+
+    // Issue is that these need to number value associated with them (ie, a position)
+    // So that I can store the offset for where the columns should be located.
+    // Which means that the column dropzones need to always be sorted **in a computed**
+    // that is -1, 0, 1 type sorting based on the position value
+
+    // I am not able to directly manipulate the DOM, so we have to manipulate the array
     const columns = ref([
       {
         header: "Projects",
         dropzone: "left",
+        position: -1,
       },
-      { header: "Notes", dropzone: "left" },
-      { header: "Lexicons", dropzone: "right" },
+      { header: "Notes", dropzone: "left", position: 0 },
+      { header: "Lexicons", dropzone: "right", position: -5 },
     ]);
 
     // References to the DOM elements
@@ -97,7 +105,9 @@ export default defineComponent({
     // Returns the ref of what column --- when I have the interface built, I can add that as the return type
     function getColumn(dropzone: string) {
       // Return only the columns with the matching dropzone number
-      return columns.value.filter((column) => column.dropzone === dropzone);
+      return sortedColumns.value.filter(
+        (column) => column.dropzone === dropzone
+      );
     }
 
     function onColumnDragStart(event: DragEvent, header: string): void {
@@ -232,6 +242,20 @@ export default defineComponent({
       // ).element;
     }
 
+    function sortColumns() {
+      return columns.value.sort((a, b) => {
+        if (a.position < b.position) {
+          return -1;
+        } else if (a.position > b.position) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+    }
+
+    const sortedColumns = computed(() => sortColumns());
+
     // Needed to reset references
     onBeforeUpdate(() => {
       leftColumnDivs.value = [];
@@ -240,6 +264,7 @@ export default defineComponent({
 
     return {
       getColumn,
+      sortedColumns,
       onColumnDragStart,
       onColumnDrag,
       onDropzoneDragOver,
