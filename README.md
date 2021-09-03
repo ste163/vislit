@@ -2,7 +2,7 @@
 
 > Linux, Mac, Windows app for tracking, visualizing, and analyzing writing projects
 
-Vislit is currently in development, shooting for a late 2021 release date for the earliest version.
+Vislit is currently in development, shooting for a late 2021 release date for the earliest version. For more information:
 [vislit.app](https://vislit.app/#/)
 
 ## Features
