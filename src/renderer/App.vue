@@ -97,6 +97,11 @@ export default defineComponent({
     // References to the DOM elements
     const leftColumnDivs = ref<Array<HTMLDivElement>>([]);
     const rightColumnDivs = ref<Array<HTMLDivElement>>([]);
+    // leftColumnMinPosition
+    // leftColumnMaxPosition
+    // rightCOlumnMinPosition
+    // leftColumnMaxPosition
+    // But I already have these in the columns ref...
 
     const activeDragColumn = ref<string>("");
 
@@ -147,20 +152,6 @@ export default defineComponent({
 
       // Get currently dragged element
       if (event.dataTransfer !== null) {
-        // let allColumnsInDropzone: Array<HTMLDivElement> = [];
-
-        // if (dropzone === "left") {
-        //   allColumnsInDropzone = leftColumnDivs.value;
-        // } else {
-        //   allColumnsInDropzone = rightColumnDivs.value;
-        // }
-
-        // We will need this, but maybe not here, because we only need its boundingBox
-        // const currentlyDraggedColumn: Array<HTMLDivElement> =
-        //   allColumnsInDropzone.filter(
-        //     (column) => column.innerHTML === activeDragColumn.value
-        //   );
-
         columns.value.forEach((column) => {
           if (column.header === activeDragColumn.value) {
             column.dropzone = dropzone;
@@ -181,8 +172,6 @@ export default defineComponent({
 
     function onColumnDrop(event: DragEvent, dropzone: string): void {
       if (event.dataTransfer !== null) {
-        // ALL checking of where the column should land, needs to occur in onColumnDrag
-
         const column = findActiveColumn();
 
         // Moves the column into the correct dropzone
@@ -196,7 +185,26 @@ export default defineComponent({
       }
     }
 
-    // Need a sorting function for the dragging. Otherwise, it gets dumped into the right location, but not ordered in any way
+    function getDropzoneMinMaxPositions(dropzone: string): {
+      minPos: number;
+      maxPos: number;
+    } {
+      let minPos: number;
+      let maxPos: number;
+
+      const columnsInDropzone = getColumn(dropzone);
+
+      const positions = columnsInDropzone.map((column) => column.position);
+
+      minPos = positions[0];
+      maxPos = positions[positions.length - 1];
+
+      return {
+        minPos,
+        maxPos,
+      };
+    }
+
     function getDragAfterColumnPosition(dropzone: string, x: number): number {
       let allColumnsInDropzone: Array<HTMLDivElement> = [];
 
@@ -211,25 +219,33 @@ export default defineComponent({
           (column) => column.innerHTML !== activeDragColumn.value
         );
 
+      const { minPos, maxPos } = getDropzoneMinMaxPositions(dropzone);
+
       // Reduce wants HTMLDivElements returned, but I need the number
       // Requires lots of annoying casting & then un-casting
       const newPosition = allColumnsExceptActive.reduce(
         (closest, child) => {
+          let newPosition: number;
           const box: DOMRect = child.getBoundingClientRect();
           const cursorOffset = x - box.left - box.width / 2;
-          console.log("CURSOR OFFSET", cursorOffset);
 
-          // WHAT I ACTUALLY NEED TO DO
-          // Is compare the closests current position number,
-          // Then +1 or -1 based on where the cursor is
-          // otherwise, the offset can be too great
-          if (cursorOffset < 0 && cursorOffset > closest.offsetLeft) {
-            console.log("NEW POS", cursorOffset);
-            return cursorOffset as unknown as HTMLDivElement;
+          // THE CURRENT BUG
+          // We can only set the position AFTER it's dropped. Otherwise
+          // it keeps adding to the position while we hovering
+          if (cursorOffset < minPos) {
+            newPosition = minPos - 1;
+          } else if (cursorOffset > maxPos) {
+            newPosition = maxPos + 1;
           } else {
-            console.log("NEW POS", closest.offsetLeft);
-            return closest.offsetLeft as unknown as HTMLDivElement;
+            newPosition = 0;
           }
+
+          console.log(newPosition);
+
+          // Set the - and + cursor offset min and max based on -1 and +1 of what is in the column
+          // That might fix all the issues
+
+          return newPosition as unknown as HTMLDivElement;
         },
         { offsetLeft: Number.POSITIVE_INFINITY }
       );
