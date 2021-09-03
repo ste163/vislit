@@ -29,9 +29,9 @@
       :key="column.header"
       class="column-draggable"
       :class="activeDragColumn === column.header ? 'column-drag-active' : ''"
+      :data-position="column.position"
       draggable="true"
       @dragstart="onColumnDragStart($event, column.header)"
-      @drag="onColumnDrag($event, 'left')"
     >
       {{ column.header }}
     </div>
@@ -58,9 +58,9 @@
       :key="column.header"
       class="column-draggable"
       :class="activeDragColumn === column.header ? 'column-drag-active' : ''"
+      :data-position="column.position"
       draggable="true"
       @dragstart="onColumnDragStart($event, column.header)"
-      @drag="onColumnDrag($event, 'right')"
     >
       {{ column.header }}
     </div>
@@ -68,7 +68,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onBeforeUpdate, ref } from "vue";
+import { computed, defineComponent, onBeforeUpdate, ref, watch } from "vue";
 import TheSidebar from "./components/TheSidebar.vue";
 
 export default defineComponent({
@@ -85,25 +85,32 @@ export default defineComponent({
 
     // I am not able to directly manipulate the DOM, so we have to manipulate the array
     const columns = ref([
+      // BUG -
+      // If Lexicons is at 0 and Notes is at 0 but in different dropzones
+      // you can't properly move them because the positions aren't actually unique
+      // 0 sorted by 0 will not produce the -1 or +1
+      {
+        header: "Settings",
+        dropzone: "left",
+        position: -2,
+      },
       {
         header: "Projects",
         dropzone: "left",
         position: -1,
       },
-      { header: "Notes", dropzone: "left", position: 0 },
-      { header: "Lexicons", dropzone: "right", position: -5 },
+      { header: "Notes", dropzone: "left", position: 1 },
+      { header: "Lexicons", dropzone: "right", position: 0 },
     ]);
 
     // References to the DOM elements
     const leftColumnDivs = ref<Array<HTMLDivElement>>([]);
     const rightColumnDivs = ref<Array<HTMLDivElement>>([]);
-    // leftColumnMinPosition
-    // leftColumnMaxPosition
-    // rightCOlumnMinPosition
-    // leftColumnMaxPosition
-    // But I already have these in the columns ref...
 
     const activeDragColumn = ref<string>("");
+    const minPosition = ref<number>(0);
+    const maxPosition = ref<number>(0);
+    const currentHoveredDropzone = ref<string>("");
 
     const DRAG_ERROR = "Event was not a drag event.";
 
@@ -127,20 +134,6 @@ export default defineComponent({
       }
     }
 
-    // This might not be used at all; keeping for now
-    // CSS is setup on the columnDragStart and removed onColumnDrop
-    function onColumnDrag(event: DragEvent, dropzone: string): void {
-      if (event.dataTransfer !== null) {
-        // Check where the column is in relation to:
-        // 1. Which dropzone are we hovered over?
-        // 2. In each dropzone, where should it be in relation to the other columns?
-      } else {
-        console.error(DRAG_ERROR);
-      }
-
-      // Also, assign CSS for preview of where the item should land
-    }
-
     // Need onColumnDragEnd for the @dragend
     // that removes the active style
     // otherwise, if you drop in the dashboard, it doesn't know to remove the class, only dropzones
@@ -149,9 +142,10 @@ export default defineComponent({
     // Which dropzone and where in the dropzone
     function onDropzoneDragOver(event: DragEvent, dropzone: string) {
       event.preventDefault();
-
       // Get currently dragged element
       if (event.dataTransfer !== null) {
+        currentHoveredDropzone.value = dropzone;
+
         columns.value.forEach((column) => {
           if (column.header === activeDragColumn.value) {
             column.dropzone = dropzone;
@@ -173,7 +167,7 @@ export default defineComponent({
     function onColumnDrop(event: DragEvent, dropzone: string): void {
       if (event.dataTransfer !== null) {
         const column = findActiveColumn();
-
+        currentHoveredDropzone.value = ""; // resets value for watcher
         // Moves the column into the correct dropzone
         if (column !== undefined) {
           column.dropzone = dropzone;
@@ -183,26 +177,6 @@ export default defineComponent({
       } else {
         console.error(DRAG_ERROR);
       }
-    }
-
-    function getDropzoneMinMaxPositions(dropzone: string): {
-      minPos: number;
-      maxPos: number;
-    } {
-      let minPos: number;
-      let maxPos: number;
-
-      const columnsInDropzone = getColumn(dropzone);
-
-      const positions = columnsInDropzone.map((column) => column.position);
-
-      minPos = positions[0];
-      maxPos = positions[positions.length - 1];
-
-      return {
-        minPos,
-        maxPos,
-      };
     }
 
     function getDragAfterColumnPosition(dropzone: string, x: number): number {
@@ -219,36 +193,25 @@ export default defineComponent({
           (column) => column.innerHTML !== activeDragColumn.value
         );
 
-      const { minPos, maxPos } = getDropzoneMinMaxPositions(dropzone);
-
       // Reduce wants HTMLDivElements returned, but I need the number
       // Requires lots of annoying casting & then un-casting
-      const newPosition = allColumnsExceptActive.reduce(
-        (closest, child) => {
-          let newPosition: number;
-          const box: DOMRect = child.getBoundingClientRect();
-          const cursorOffset = x - box.left - box.width / 2;
+      const newPosition = allColumnsExceptActive.reduce((closest, child) => {
+        console.log("CLOSEST CHILD OFFSET", closest);
+        let newPosition: number;
+        const box: DOMRect = child.getBoundingClientRect();
+        const cursorOffset = x - box.left - box.width / 2;
 
-          // THE CURRENT BUG
-          // We can only set the position AFTER it's dropped. Otherwise
-          // it keeps adding to the position while we hovering
-          if (cursorOffset < minPos) {
-            newPosition = minPos - 1;
-          } else if (cursorOffset > maxPos) {
-            newPosition = maxPos + 1;
-          } else {
-            newPosition = 0;
-          }
+        const dataPositionAttribute = child.attributes[1];
+        const closestPosition = parseInt(dataPositionAttribute.value);
 
-          console.log(newPosition);
+        if (cursorOffset < 0 && closestPosition > cursorOffset) {
+          newPosition = closestPosition + -1;
+        } else {
+          newPosition = closestPosition + 1;
+        }
 
-          // Set the - and + cursor offset min and max based on -1 and +1 of what is in the column
-          // That might fix all the issues
-
-          return newPosition as unknown as HTMLDivElement;
-        },
-        { offsetLeft: Number.POSITIVE_INFINITY }
-      );
+        return newPosition as unknown as HTMLDivElement;
+      });
 
       const castedPosition: number = newPosition as unknown as number;
 
@@ -276,6 +239,19 @@ export default defineComponent({
 
     const sortedColumns = computed(() => sortColumns());
 
+    function getDropzoneMinMaxPositions(): void {
+      if (currentHoveredDropzone.value !== "") {
+        // Add types for the IColumn once it's made
+        const columnsInDropzone = getColumn(currentHoveredDropzone.value);
+        const positions = columnsInDropzone.map((column) => column.position);
+
+        minPosition.value = positions[0];
+        maxPosition.value = positions[positions.length - 1];
+      }
+    }
+    // Allows locking in the min-max for what positions can be assigned
+    watch(() => currentHoveredDropzone.value, getDropzoneMinMaxPositions);
+
     // Needed to reset references
     onBeforeUpdate(() => {
       leftColumnDivs.value = [];
@@ -286,7 +262,6 @@ export default defineComponent({
       getColumn,
       sortedColumns,
       onColumnDragStart,
-      onColumnDrag,
       onDropzoneDragOver,
       onColumnDrop,
       activeDragColumn,
