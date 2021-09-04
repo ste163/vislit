@@ -190,25 +190,33 @@ export default defineComponent({
       // Still getting same issue where the childEls are all the elements INSTEAD of just the one i'm hovering over
       // Which looks like it's trying to get box items at the same time instead of just the one I want first
       for (let i = 0; i < columns.length; i++) {
-        const childEl: HTMLDivElement = columns[i];
+        // NEED:
+        // The neg inifity to compare against when we start
+        // finding the closest element based on a comparison of our cursor offset and the position.
+        // We need to find a SINGLE element, not looping through all.
+        const childElement: HTMLDivElement = columns[i];
+        let closestElementOffset: number = Number.NEGATIVE_INFINITY;
 
-        const box: DOMRect = childEl.getBoundingClientRect();
+        const box: DOMRect = childElement.getBoundingClientRect();
         const cursorOffset: number = x - box.left - box.width / 2;
 
-        const dataPositionAttribute = childEl.attributes[1];
+        const dataPositionAttribute = childElement.attributes[1]; // position in array that current element is in
         const closestPosition = parseInt(dataPositionAttribute.value);
 
-        if (cursorOffset < 0 && closestPosition > cursorOffset) {
+        if (cursorOffset < 0 && cursorOffset > closestElementOffset) {
           newPosition = closestPosition + -1;
+          console.log("PLACE BEFORE EL", childElement.innerHTML);
         } else {
           newPosition = closestPosition + 1;
+          console.log("PLACE AFTER EL", childElement.innerHTML);
         }
 
-        console.log({
-          closestPosition,
-          text: childEl.innerHTML,
-          active: activeDragColumn.value,
-        });
+        // console.log({
+        //   cursorOffset,
+        //   closestPosition,
+        //   text: childElement.innerHTML,
+        //   active: activeDragColumn.value,
+        // });
       }
 
       return newPosition;
@@ -228,32 +236,7 @@ export default defineComponent({
           (column) => column.innerHTML !== activeDragColumn.value
         );
 
-      // Reduce wants HTMLDivElements returned, but I need the number
-      // Requires lots of annoying casting & then un-casting
-      // REFACTOR INTO A FOR LOOP; MORE PERFORMANT AND POSSIBLY LESS BUGS
-      // const newPosition = allColumnsExceptActive.reduce((closest, child) => {
-      //   // console.log("CLOSEST CHILD OFFSET", closest);
-      //   let newPosition: number;
-      //   const box: DOMRect = child.getBoundingClientRect();
-      //   const cursorOffset = x - box.left - box.width / 2;
-
-      //   const dataPositionAttribute = child.attributes[1];
-      //   const closestPosition = parseInt(dataPositionAttribute.value);
-
-      //   if (cursorOffset < 0 && closestPosition > cursorOffset) {
-      //     newPosition = closestPosition + -1;
-      //   } else {
-      //     newPosition = closestPosition + 1;
-      //   }
-
-      //   return newPosition as unknown as HTMLDivElement;
-      // });
-
-      const newPosition = findClosestColumnPosition(allColumnsExceptActive, x);
-
-      const castedPosition: number = newPosition as unknown as number;
-
-      return castedPosition;
+      return findClosestColumnPosition(allColumnsExceptActive, x);
     }
 
     // Add the IColumn interface as the return value
