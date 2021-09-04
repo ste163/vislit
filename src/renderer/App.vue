@@ -20,7 +20,7 @@
     @dragenter.prevent
   >
     <div
-      v-for="(column, i) in getColumn('left')"
+      v-for="(column, i) in getColumnsInDropzone('left')"
       :ref="
         (el) => {
           if (el) this.leftColumnDivs[i] = el;
@@ -32,6 +32,7 @@
       :data-position="column.position"
       draggable="true"
       @dragstart="onColumnDragStart($event, column.header)"
+      @dragend="onColumnDragEnd()"
     >
       {{ column.header }}
     </div>
@@ -49,7 +50,7 @@
     @dragenter.prevent
   >
     <div
-      v-for="(column, i) in getColumn('right')"
+      v-for="(column, i) in getColumnsInDropzone('right')"
       :ref="
         (el) => {
           if (el) this.rightColumnDivs[i] = el;
@@ -61,6 +62,7 @@
       :data-position="column.position"
       draggable="true"
       @dragstart="onColumnDragStart($event, column.header)"
+      @dragend="onColumnDragEnd()"
     >
       {{ column.header }}
     </div>
@@ -108,14 +110,13 @@ export default defineComponent({
     const rightColumnDivs = ref<Array<HTMLDivElement>>([]);
 
     const activeDragColumn = ref<string>("");
-    const minPosition = ref<number>(0);
-    const maxPosition = ref<number>(0);
+
     const currentHoveredDropzone = ref<string>("");
 
     const DRAG_ERROR = "Event was not a drag event.";
 
     // Returns the ref of what column --- when I have the interface built, I can add that as the return type
-    function getColumn(dropzone: string) {
+    function getColumnsInDropzone(dropzone: string) {
       // Return only the columns with the matching dropzone number
       return sortedColumns.value.filter(
         (column) => column.dropzone === dropzone
@@ -137,6 +138,10 @@ export default defineComponent({
     // Need onColumnDragEnd for the @dragend
     // that removes the active style
     // otherwise, if you drop in the dashboard, it doesn't know to remove the class, only dropzones
+    function onColumnDragEnd(): void {
+      // Remove preview styles
+      activeDragColumn.value = "";
+    }
 
     // This function will contain the logic for
     // Which dropzone and where in the dropzone
@@ -171,12 +176,42 @@ export default defineComponent({
         // Moves the column into the correct dropzone
         if (column !== undefined) {
           column.dropzone = dropzone;
-          // Remove all dropzone CSS
-          activeDragColumn.value = "";
         }
       } else {
         console.error(DRAG_ERROR);
       }
+    }
+
+    function findClosestColumnPosition(
+      columns: Array<HTMLDivElement>,
+      x: number
+    ): number {
+      let newPosition = 0;
+      // Still getting same issue where the childEls are all the elements INSTEAD of just the one i'm hovering over
+      // Which looks like it's trying to get box items at the same time instead of just the one I want first
+      for (let i = 0; i < columns.length; i++) {
+        const childEl: HTMLDivElement = columns[i];
+
+        const box: DOMRect = childEl.getBoundingClientRect();
+        const cursorOffset: number = x - box.left - box.width / 2;
+
+        const dataPositionAttribute = childEl.attributes[1];
+        const closestPosition = parseInt(dataPositionAttribute.value);
+
+        if (cursorOffset < 0 && closestPosition > cursorOffset) {
+          newPosition = closestPosition + -1;
+        } else {
+          newPosition = closestPosition + 1;
+        }
+
+        console.log({
+          closestPosition,
+          text: childEl.innerHTML,
+          active: activeDragColumn.value,
+        });
+      }
+
+      return newPosition;
     }
 
     function getDragAfterColumnPosition(dropzone: string, x: number): number {
@@ -195,23 +230,26 @@ export default defineComponent({
 
       // Reduce wants HTMLDivElements returned, but I need the number
       // Requires lots of annoying casting & then un-casting
-      const newPosition = allColumnsExceptActive.reduce((closest, child) => {
-        console.log("CLOSEST CHILD OFFSET", closest);
-        let newPosition: number;
-        const box: DOMRect = child.getBoundingClientRect();
-        const cursorOffset = x - box.left - box.width / 2;
+      // REFACTOR INTO A FOR LOOP; MORE PERFORMANT AND POSSIBLY LESS BUGS
+      // const newPosition = allColumnsExceptActive.reduce((closest, child) => {
+      //   // console.log("CLOSEST CHILD OFFSET", closest);
+      //   let newPosition: number;
+      //   const box: DOMRect = child.getBoundingClientRect();
+      //   const cursorOffset = x - box.left - box.width / 2;
 
-        const dataPositionAttribute = child.attributes[1];
-        const closestPosition = parseInt(dataPositionAttribute.value);
+      //   const dataPositionAttribute = child.attributes[1];
+      //   const closestPosition = parseInt(dataPositionAttribute.value);
 
-        if (cursorOffset < 0 && closestPosition > cursorOffset) {
-          newPosition = closestPosition + -1;
-        } else {
-          newPosition = closestPosition + 1;
-        }
+      //   if (cursorOffset < 0 && closestPosition > cursorOffset) {
+      //     newPosition = closestPosition + -1;
+      //   } else {
+      //     newPosition = closestPosition + 1;
+      //   }
 
-        return newPosition as unknown as HTMLDivElement;
-      });
+      //   return newPosition as unknown as HTMLDivElement;
+      // });
+
+      const newPosition = findClosestColumnPosition(allColumnsExceptActive, x);
 
       const castedPosition: number = newPosition as unknown as number;
 
@@ -239,30 +277,18 @@ export default defineComponent({
 
     const sortedColumns = computed(() => sortColumns());
 
-    function getDropzoneMinMaxPositions(): void {
-      if (currentHoveredDropzone.value !== "") {
-        // Add types for the IColumn once it's made
-        const columnsInDropzone = getColumn(currentHoveredDropzone.value);
-        const positions = columnsInDropzone.map((column) => column.position);
-
-        minPosition.value = positions[0];
-        maxPosition.value = positions[positions.length - 1];
-      }
-    }
-    // Allows locking in the min-max for what positions can be assigned
-    watch(() => currentHoveredDropzone.value, getDropzoneMinMaxPositions);
-
-    // Needed to reset references
+    // Needed to reset references based on docs
     onBeforeUpdate(() => {
       leftColumnDivs.value = [];
       rightColumnDivs.value = [];
     });
 
     return {
-      getColumn,
       sortedColumns,
+      getColumnsInDropzone,
       onColumnDragStart,
       onDropzoneDragOver,
+      onColumnDragEnd,
       onColumnDrop,
       activeDragColumn,
       leftColumnDivs,
