@@ -187,6 +187,8 @@ export default defineComponent({
       x: number
     ): number {
       let newPosition = 0;
+      let closestOffset = Number.NEGATIVE_INFINITY;
+      let closestElement: HTMLDivElement; // which is going to be the element that is CLOSEST to our left
 
       for (let i = 0; i < columns.length; i++) {
         const childElement: HTMLDivElement = columns[i];
@@ -196,6 +198,11 @@ export default defineComponent({
 
         const dataPositionAttribute = childElement.attributes[1]; // position in array that current element is in
         const closestPosition = parseInt(dataPositionAttribute.value);
+
+        // I only want to capture what the 'place before' elements are, because those are to the left
+
+        // Need to use the initial neg infinity to compare what the closest element is
+        // and then store the closest element
 
         // PROBLEM
         // the position numbers are the issue
@@ -207,18 +214,23 @@ export default defineComponent({
         // he's returning the element it should be behind (so the negative)
         // he's also comparing the offset to the position to get the SINGLE item
         // that's why we need the && check in the if statement
-        if (cursorOffset < 0) {
+
+        // if our cursor is negative (so we're to the left of this item AND the childElement's offset is less than the cursor)
+        if (cursorOffset < 0 && cursorOffset > closestOffset) {
+          let closestElement = childElement;
+          closestOffset = cursorOffset;
           newPosition = closestPosition + -1;
           console.log({
             "PLACE BEFORE EL": childElement.innerHTML,
             position: closestPosition,
+            closestElement,
           });
         } else {
           newPosition = closestPosition + 1;
-          console.log({
-            "PLACE AFTER EL": childElement.innerHTML,
-            position: closestPosition,
-          });
+          // console.log({
+          //   "PLACE AFTER EL": childElement.innerHTML,
+          //   position: closestPosition,
+          // });
         }
       }
 
