@@ -29,7 +29,6 @@
       :key="column.header"
       class="column-draggable"
       :class="activeDragColumn === column.header ? 'column-drag-active' : ''"
-      :data-position="column.position"
       draggable="true"
       @dragstart="onColumnDragStart($event, column.header)"
       @dragend="onColumnDragEnd()"
@@ -59,7 +58,6 @@
       :key="column.header"
       class="column-draggable"
       :class="activeDragColumn === column.header ? 'column-drag-active' : ''"
-      :data-position="column.position"
       draggable="true"
       @dragstart="onColumnDragStart($event, column.header)"
       @dragend="onColumnDragEnd()"
@@ -70,56 +68,40 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onBeforeUpdate, ref, watch } from "vue";
+import { computed, defineComponent, onBeforeUpdate, ref } from "vue";
 import TheSidebar from "./components/TheSidebar.vue";
+import Column from "@/interfaces/Column";
 
 export default defineComponent({
   components: { TheSidebar },
 
   setup() {
-    // TODO: IColumn interface, because we'll be storing the user's layout
-    // Will need to store another value, as a number, for its position in the array
-
-    // Issue is that these need to number value associated with them (ie, a position)
-    // So that I can store the offset for where the columns should be located.
-    // Which means that the column dropzones need to always be sorted **in a computed**
-    // that is -1, 0, 1 type sorting based on the position value
-
-    // I am not able to directly manipulate the DOM, so we have to manipulate the array
-    const columns = ref([
-      // BUG -
-      // If Lexicons is at 0 and Notes is at 0 but in different dropzones
-      // you can't properly move them because the positions aren't actually unique
-      // 0 sorted by 0 will not produce the -1 or +1
+    const columns = ref<Array<Column>>([
       {
         header: "Settings",
-        dropzone: "left",
+        dropZone: "left",
         position: -2,
       },
       {
         header: "Projects",
-        dropzone: "left",
+        dropZone: "left",
         position: -1,
       },
-      { header: "Notes", dropzone: "left", position: 1 },
-      { header: "Lexicons", dropzone: "right", position: 0 },
+      { header: "Notes", dropZone: "left", position: 1 },
+      { header: "Lexicons", dropZone: "right", position: 0 },
     ]);
 
-    // References to the DOM elements
     const leftColumnDivs = ref<Array<HTMLDivElement>>([]);
     const rightColumnDivs = ref<Array<HTMLDivElement>>([]);
 
     const activeDragColumn = ref<string>("");
-
     const currentHoveredDropzone = ref<string>("");
 
     const DRAG_ERROR = "Event was not a drag event.";
 
-    // Returns the ref of what column --- when I have the interface built, I can add that as the return type
-    function getColumnsInDropzone(dropzone: string) {
-      // Return only the columns with the matching dropzone number
+    function getColumnsInDropzone(dropZone: string) {
       return sortedColumns.value.filter(
-        (column) => column.dropzone === dropzone
+        (column) => column.dropZone === dropZone
       );
     }
 
@@ -127,44 +109,42 @@ export default defineComponent({
       if (event.dataTransfer !== null) {
         event.dataTransfer.dropEffect = "move";
         event.dataTransfer.effectAllowed = "move";
-
-        // Assign CSS for dragging start
-        activeDragColumn.value = header;
+        activeDragColumn.value = header; // Assigns CSS for dragging start
       } else {
         console.error(DRAG_ERROR);
       }
     }
 
-    // Need onColumnDragEnd for the @dragend
-    // that removes the active style
-    // otherwise, if you drop in the dashboard, it doesn't know to remove the class, only dropzones
     function onColumnDragEnd(): void {
       // Remove preview styles
       activeDragColumn.value = "";
     }
 
-    // This function will contain the logic for
-    // Which dropzone and where in the dropzone
-    function onDropzoneDragOver(event: DragEvent, dropzone: string) {
+    // Main function containing the drag & sort logic
+    function onDropzoneDragOver(event: DragEvent, dropzone: string): void {
       event.preventDefault();
-      // Get currently dragged element
+
       if (event.dataTransfer !== null) {
         currentHoveredDropzone.value = dropzone;
 
         columns.value.forEach((column) => {
           if (column.header === activeDragColumn.value) {
-            column.dropzone = dropzone;
+            column.dropZone = dropzone;
           }
         });
 
-        const newColumnPosition = getDragAfterColumnPosition(dropzone, event.x);
+        const afterColumnIndex = getDragAfterColumnIndex(dropzone, event.x);
 
+        // Send the afterColumnIndex into the dragUpdateColumnPositions() function
+        // that will adjust all the position numbers correctly, somehow
+        dragUpdateColumnPositions(afterColumnIndex);
+
+        // Below code will probably no longer be needed as all of the column positions are going to be modified and setup in
+        // dragUpdateColumnPositions
         const activeColumn = findActiveColumn();
 
-        if (activeColumn !== undefined) {
-          activeColumn.position = newColumnPosition;
-        } else {
-          console.error("Could not find active column");
+        if (activeColumn !== undefined && afterColumnIndex !== undefined) {
+          activeColumn.position = afterColumnIndex;
         }
       }
     }
@@ -175,71 +155,20 @@ export default defineComponent({
         currentHoveredDropzone.value = ""; // resets value for watcher
         // Moves the column into the correct dropzone
         if (column !== undefined) {
-          column.dropzone = dropzone;
+          column.dropZone = dropzone;
         }
       } else {
         console.error(DRAG_ERROR);
       }
     }
 
-    function findClosestColumnPosition(
-      columns: Array<HTMLDivElement>,
-      x: number
-    ): number {
-      let newPosition = 0;
-      let closestOffset = Number.NEGATIVE_INFINITY;
-      let closestElement: HTMLDivElement; // which is going to be the element that is CLOSEST to our left
-
-      for (let i = 0; i < columns.length; i++) {
-        const childElement: HTMLDivElement = columns[i];
-
-        const box: DOMRect = childElement.getBoundingClientRect();
-        const cursorOffset: number = x - box.left - box.width / 2;
-
-        const dataPositionAttribute = childElement.attributes[1]; // position in array that current element is in
-        const closestPosition = parseInt(dataPositionAttribute.value);
-
-        // I only want to capture what the 'place before' elements are, because those are to the left
-
-        // Need to use the initial neg infinity to compare what the closest element is
-        // and then store the closest element
-
-        // PROBLEM
-        // the position numbers are the issue
-        // i'm tracking the column position correctly when hovering
-        // but am not correctly assigning the position numbers
-        // based on the offset
-
-        // his works because he's not assigning position based on the offset
-        // he's returning the element it should be behind (so the negative)
-        // he's also comparing the offset to the position to get the SINGLE item
-        // that's why we need the && check in the if statement
-
-        // if our cursor is negative (so we're to the left of this item AND the childElement's offset is less than the cursor)
-        if (cursorOffset < 0 && cursorOffset > closestOffset) {
-          let closestElement = childElement;
-          closestOffset = cursorOffset;
-          newPosition = closestPosition + -1;
-          console.log({
-            "PLACE BEFORE EL": childElement.innerHTML,
-            position: closestPosition,
-            closestElement,
-          });
-        } else {
-          newPosition = closestPosition + 1;
-          // console.log({
-          //   "PLACE AFTER EL": childElement.innerHTML,
-          //   position: closestPosition,
-          // });
-        }
-      }
-
-      return newPosition;
-    }
-
-    function getDragAfterColumnPosition(dropzone: string, x: number): number {
+    function getDragAfterColumnIndex(
+      dropzone: string,
+      mouseX: number
+    ): number | undefined {
       let allColumnsInDropzone: Array<HTMLDivElement> = [];
 
+      // Set currently dragged divs in state
       if (dropzone === "left") {
         allColumnsInDropzone = leftColumnDivs.value;
       } else {
@@ -251,17 +180,64 @@ export default defineComponent({
           (column) => column.innerHTML !== activeDragColumn.value
         );
 
-      return findClosestColumnPosition(allColumnsExceptActive, x);
+      // I'm looking for the index based on the one WITH the active column
+      // So this might not be totally accurate... :/ Gonna need to think about this
+      // But this might not be an issue
+      return findClosestColumnIndex(allColumnsExceptActive, mouseX);
     }
 
-    // Add the IColumn interface as the return value
-    function findActiveColumn() {
+    function findClosestColumnIndex(
+      columns: Array<HTMLDivElement>,
+      mouseX: number
+    ): number | undefined {
+      let columnIndex: number | undefined;
+      let closestOffset = Number.NEGATIVE_INFINITY;
+      let closestElement: HTMLDivElement; // which is going to be the element that is CLOSEST to our left
+
+      for (let i = 0; i < columns.length; i++) {
+        const childElement: HTMLDivElement = columns[i];
+        closestElement = childElement;
+
+        const box: DOMRect = childElement.getBoundingClientRect();
+        const cursorOffset: number = mouseX - box.left - box.width / 2;
+
+        if (cursorOffset < 0 && cursorOffset > closestOffset) {
+          closestElement = childElement;
+          closestOffset = cursorOffset;
+          return (columnIndex = findColumnIndexByInnerHTML(
+            closestElement.innerHTML
+          ));
+        } else {
+          columnIndex = undefined;
+        }
+      }
+
+      return columnIndex;
+    }
+
+    function dragUpdateColumnPositions(closestIndex: number | undefined): void {
+      // Based on what the closestIndex is, need to increment all column positions in the dropzone
+      // or decrement in relation to where the column needs to be placed
+      if (closestIndex !== undefined) {
+        console.log("INDEX OF COLUMN TO PLACE LEFT OF:", closestIndex);
+      } else {
+        // else we're not hovering over anything, so place it to the FAR right
+        console.log("PLACE COLUMN TO FAR RIGHT");
+      }
+    }
+
+    function findActiveColumn(): Column | undefined {
       return columns.value.find(
         (column) => column.header === activeDragColumn.value
       );
     }
 
-    function sortColumns() {
+    function findColumnIndexByInnerHTML(innerHTML: string): number {
+      return columns.value.map((column) => column.header).indexOf(innerHTML);
+    }
+
+    // ALL CODE BELOW NEEDS TO STAY IN THIS FUNCTION
+    function sortColumns(): Array<Column> {
       return columns.value.sort((a, b) => {
         if (a.position < b.position) {
           return -1;
