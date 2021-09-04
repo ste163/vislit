@@ -187,15 +187,9 @@ export default defineComponent({
       x: number
     ): number {
       let newPosition = 0;
-      // Still getting same issue where the childEls are all the elements INSTEAD of just the one i'm hovering over
-      // Which looks like it's trying to get box items at the same time instead of just the one I want first
+
       for (let i = 0; i < columns.length; i++) {
-        // NEED:
-        // The neg inifity to compare against when we start
-        // finding the closest element based on a comparison of our cursor offset and the position.
-        // We need to find a SINGLE element, not looping through all.
         const childElement: HTMLDivElement = columns[i];
-        let closestElementOffset: number = Number.NEGATIVE_INFINITY;
 
         const box: DOMRect = childElement.getBoundingClientRect();
         const cursorOffset: number = x - box.left - box.width / 2;
@@ -203,20 +197,29 @@ export default defineComponent({
         const dataPositionAttribute = childElement.attributes[1]; // position in array that current element is in
         const closestPosition = parseInt(dataPositionAttribute.value);
 
-        if (cursorOffset < 0 && cursorOffset > closestElementOffset) {
+        // PROBLEM
+        // the position numbers are the issue
+        // i'm tracking the column position correctly when hovering
+        // but am not correctly assigning the position numbers
+        // based on the offset
+
+        // his works because he's not assigning position based on the offset
+        // he's returning the element it should be behind (so the negative)
+        // he's also comparing the offset to the position to get the SINGLE item
+        // that's why we need the && check in the if statement
+        if (cursorOffset < 0) {
           newPosition = closestPosition + -1;
-          console.log("PLACE BEFORE EL", childElement.innerHTML);
+          console.log({
+            "PLACE BEFORE EL": childElement.innerHTML,
+            position: closestPosition,
+          });
         } else {
           newPosition = closestPosition + 1;
-          console.log("PLACE AFTER EL", childElement.innerHTML);
+          console.log({
+            "PLACE AFTER EL": childElement.innerHTML,
+            position: closestPosition,
+          });
         }
-
-        // console.log({
-        //   cursorOffset,
-        //   closestPosition,
-        //   text: childElement.innerHTML,
-        //   active: activeDragColumn.value,
-        // });
       }
 
       return newPosition;
