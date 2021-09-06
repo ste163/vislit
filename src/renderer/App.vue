@@ -135,17 +135,7 @@ export default defineComponent({
 
         const afterColumnIndex = getDragAfterColumnIndex(dropzone, event.x);
 
-        // Send the afterColumnIndex into the dragUpdateColumnPositions() function
-        // that will adjust all the position numbers correctly, somehow
         dragUpdateColumnPositions(afterColumnIndex);
-
-        // Below code will probably no longer be needed as all of the column positions are going to be modified and setup in
-        // dragUpdateColumnPositions
-        // const activeColumn = findActiveColumn();
-
-        // if (activeColumn !== undefined && afterColumnIndex !== undefined) {
-        //   activeColumn.position = afterColumnIndex;
-        // }
       }
     }
 
@@ -221,39 +211,26 @@ export default defineComponent({
         // then set the active position to +1 higher than  the left of's position
         // TODO:
         // 1. find all the columns.value that match the current dropzone (using the func i already have)
-
         // 2. sort those by position
         // 3. modifiy the positions numbers for all the items relative +1 or -1 based on
         // what the columnToRight's position number is.
         // Dynamically speaking, where-ever I'm inserting the column, I need to either say, everything less gets decremented, everything to right
         // gets incremented
       } else {
-        // POTENTIAL BUG:
-        // We're not checking if the current item is already in the far right position
-        // I may have to do that
-        // ****
-        // else we're not hovering over anything, so place it to the FAR right
-        // ***
-        // WHAT NEEDS TO HAPPEN:
-        // put this to +1 higher than whatever the highest position is inside the hovered dropzone
-        // TODO:
-        // 1. find all the columns.value that match the current dropzone (using the func i already have)
+        // else we're not hovering over anything, so place it to the far right position
         const dropZoneColumns = getColumnsInDropzone(
           currentHoveredDropzone.value
         );
-        const fartherRightColumn = dropZoneColumns[dropZoneColumns.length - 1];
-        console.log(fartherRightColumn);
-        // 4. then set the currently dragged columns position value +1 of that
-        console.log("ACTIVE COL", activeDragColumn.value);
+        const farthestRightColumn = dropZoneColumns[dropZoneColumns.length - 1];
 
-        const columnToReposition = columns.value.find(
-          (column) => column.header === activeDragColumn.value
-        );
+        const columnToReposition = findActiveColumn();
 
-        // This works, however, it goes too high
-        // this needs to be limited to ONLY update the position if the columnToReposition is probably to the length of the divs in the dropzone
-        if (columnToReposition !== undefined) {
-          columnToReposition.position = fartherRightColumn.position + 1;
+        if (
+          columnToReposition !== undefined &&
+          columnToReposition.position <
+            dropZoneColumns[dropZoneColumns.length - 1].position
+        ) {
+          columnToReposition.position = farthestRightColumn.position + 1;
         }
       }
     }
@@ -268,6 +245,9 @@ export default defineComponent({
       return columns.value.map((column) => column.header).indexOf(innerHTML);
     }
 
+    // *****
+    // ALL CODE ABOVE SHOULD ATTEMPTED TO BE MOVED INTO A composable? hook? --- lookup wording
+    // ******
     // ALL CODE BELOW NEEDS TO STAY IN THIS FUNCTION
     function sortColumns(): Array<Column> {
       return columns.value.sort((a, b) => {
