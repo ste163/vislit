@@ -84,7 +84,7 @@ export default defineComponent({
       },
       {
         header: "Projects",
-        dropZone: "left",
+        dropZone: "right",
         position: -1,
       },
       { header: "Notes", dropZone: "left", position: 1 },
@@ -141,11 +141,11 @@ export default defineComponent({
 
         // Below code will probably no longer be needed as all of the column positions are going to be modified and setup in
         // dragUpdateColumnPositions
-        const activeColumn = findActiveColumn();
+        // const activeColumn = findActiveColumn();
 
-        if (activeColumn !== undefined && afterColumnIndex !== undefined) {
-          activeColumn.position = afterColumnIndex;
-        }
+        // if (activeColumn !== undefined && afterColumnIndex !== undefined) {
+        //   activeColumn.position = afterColumnIndex;
+        // }
       }
     }
 
@@ -180,9 +180,6 @@ export default defineComponent({
           (column) => column.innerHTML !== activeDragColumn.value
         );
 
-      // I'm looking for the index based on the one WITH the active column
-      // So this might not be totally accurate... :/ Gonna need to think about this
-      // But this might not be an issue
       return findClosestColumnIndex(allColumnsExceptActive, mouseX);
     }
 
@@ -216,22 +213,48 @@ export default defineComponent({
     }
 
     function dragUpdateColumnPositions(closestIndex: number | undefined): void {
-      // PROBABLY NEED TO PASS IN
-      // the array that DOES NOT have the active column; and find the index values of those items
-      // just to ensure we're setting position correctly
-      // it would also already have the correct dropzone columns
-      // OTHERWISE, we run the risk of not setting things properly because everything is in a single columns object
-
-      // Based on what the closestIndex is, need to increment all column positions in the dropzone
-      // or decrement in relation to where the column needs to be placed
       if (closestIndex !== undefined) {
-        console.log("INDEX OF COLUMN TO PLACE LEFT OF:", closestIndex);
+        const columnToRight: Column = columns.value[closestIndex];
+        console.log("INDEX OF COLUMN TO PLACE LEFT OF:", columnToRight);
+        // WHAT NEEDS TO HAPPEN:
         // Get that items Position number
         // then set the active position to +1 higher than  the left of's position
+        // TODO:
+        // 1. find all the columns.value that match the current dropzone (using the func i already have)
+
+        // 2. sort those by position
+        // 3. modifiy the positions numbers for all the items relative +1 or -1 based on
+        // what the columnToRight's position number is.
+        // Dynamically speaking, where-ever I'm inserting the column, I need to either say, everything less gets decremented, everything to right
+        // gets incremented
       } else {
+        // POTENTIAL BUG:
+        // We're not checking if the current item is already in the far right position
+        // I may have to do that
+        // ****
         // else we're not hovering over anything, so place it to the FAR right
-        console.log("PLACE COLUMN TO FAR RIGHT");
-        // put this to +1 higher than whatever the highest position in this div is
+        // ***
+        // WHAT NEEDS TO HAPPEN:
+        // put this to +1 higher than whatever the highest position is inside the hovered dropzone
+        // TODO:
+        // 1. find all the columns.value that match the current dropzone (using the func i already have)
+        const dropZoneColumns = getColumnsInDropzone(
+          currentHoveredDropzone.value
+        );
+        const fartherRightColumn = dropZoneColumns[dropZoneColumns.length - 1];
+        console.log(fartherRightColumn);
+        // 4. then set the currently dragged columns position value +1 of that
+        console.log("ACTIVE COL", activeDragColumn.value);
+
+        const columnToReposition = columns.value.find(
+          (column) => column.header === activeDragColumn.value
+        );
+
+        // This works, however, it goes too high
+        // this needs to be limited to ONLY update the position if the columnToReposition is probably to the length of the divs in the dropzone
+        if (columnToReposition !== undefined) {
+          columnToReposition.position = fartherRightColumn.position + 1;
+        }
       }
     }
 
