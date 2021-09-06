@@ -216,13 +216,22 @@ export default defineComponent({
     }
 
     function dragUpdateColumnPositions(closestIndex: number | undefined): void {
+      // PROBABLY NEED TO PASS IN
+      // the array that DOES NOT have the active column; and find the index values of those items
+      // just to ensure we're setting position correctly
+      // it would also already have the correct dropzone columns
+      // OTHERWISE, we run the risk of not setting things properly because everything is in a single columns object
+
       // Based on what the closestIndex is, need to increment all column positions in the dropzone
       // or decrement in relation to where the column needs to be placed
       if (closestIndex !== undefined) {
         console.log("INDEX OF COLUMN TO PLACE LEFT OF:", closestIndex);
+        // Get that items Position number
+        // then set the active position to +1 higher than  the left of's position
       } else {
         // else we're not hovering over anything, so place it to the FAR right
         console.log("PLACE COLUMN TO FAR RIGHT");
+        // put this to +1 higher than whatever the highest position in this div is
       }
     }
 
