@@ -236,13 +236,34 @@ export default defineComponent({
           const columnsInDropZone = getColumnsInDropzone(
             currentHoveredDropzone.value
           );
-          console.log("INCOMING INDEX", closestIndex);
+          // console.log("INCOMING INDEX", closestIndex);
           const columnToRight: Column = columns.value[closestIndex];
-          console.log("column to right, to modify based off of", columnToRight);
           if (columnToRight !== undefined) {
+            // We know where the columnToRight is, and we can always get there
+            // So what if we just lower everything to the left of that by 1
             columnToReposition.position = columnToRight.position - 1;
-            // find the index position of the item we just assigned
-            // then for every item from columnsInDZ[0] to columnsInDZ[columnToRepositionIndex]. column.postion = column.position - 1
+            columnToRight.position = columnToRight.position + 1;
+
+            console.log(
+              "column to right, to modify based off of",
+              columnToRight
+            );
+            const indexOfRepositionedColumn = columnsInDropZone
+              .map((column) => column.header)
+              .indexOf(columnToRight.header);
+
+            const repositionColumns = columnsInDropZone.slice(
+              0,
+              indexOfRepositionedColumn - 1
+            );
+
+            if (repositionColumns.length > 0) {
+              repositionColumns.forEach(
+                (column) => (column.position = column.position - 1)
+              );
+            }
+
+            console.log(repositionColumns);
 
             // If we do it the above way, it removes the chance of duplication!!!
 
