@@ -28,9 +28,11 @@
       "
       :key="column.header"
       class="column-draggable"
-      :class="activeDragColumn === column.header ? 'column-drag-active' : ''"
+      :class="
+        activeDragColumnHeader === column.header ? 'column-drag-active' : ''
+      "
       draggable="true"
-      @dragstart="onColumnDragStart($event, column.header)"
+      @dragstart="onColumnDragStart($event, column.header, 'left')"
       @dragend="onColumnDragEnd()"
     >
       {{ column.header }}
@@ -57,9 +59,11 @@
       "
       :key="column.header"
       class="column-draggable"
-      :class="activeDragColumn === column.header ? 'column-drag-active' : ''"
+      :class="
+        activeDragColumnHeader === column.header ? 'column-drag-active' : ''
+      "
       draggable="true"
-      @dragstart="onColumnDragStart($event, column.header)"
+      @dragstart="onColumnDragStart($event, column.header, 'right')"
       @dragend="onColumnDragEnd()"
     >
       {{ column.header }}
@@ -68,7 +72,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onBeforeUpdate, ref } from "vue";
+import { computed, defineComponent, onBeforeUpdate, ref, watch } from "vue";
 import TheSidebar from "./components/TheSidebar.vue";
 import Column from "@/interfaces/Column";
 
@@ -84,18 +88,25 @@ export default defineComponent({
       },
       {
         header: "Projects",
-        dropZone: "right",
+        dropZone: "left",
         position: -1,
       },
-      { header: "Notes", dropZone: "left", position: 1 },
+      { header: "Notes", dropZone: "left", position: 0 },
       { header: "Lexicons", dropZone: "right", position: 0 },
     ]);
 
     const leftColumnDivs = ref<Array<HTMLDivElement>>([]);
     const rightColumnDivs = ref<Array<HTMLDivElement>>([]);
 
-    const activeDragColumn = ref<string>("");
+    const activeDragColumn = ref<Column>({
+      header: "blank",
+      dropZone: "blank",
+      position: Number.NEGATIVE_INFINITY,
+    });
+    const activeDragColumnHeader = ref<string>("");
     const currentHoveredDropzone = ref<string>("");
+    const initialHoveredDropZone = ref<string>("");
+    const columnPositions = ref<Array<number>>([]);
 
     const DRAG_ERROR = "Event was not a drag event.";
 
@@ -105,11 +116,16 @@ export default defineComponent({
       );
     }
 
-    function onColumnDragStart(event: DragEvent, header: string): void {
+    function onColumnDragStart(
+      event: DragEvent,
+      header: string,
+      initialDropZone: string
+    ): void {
       if (event.dataTransfer !== null) {
         event.dataTransfer.dropEffect = "move";
         event.dataTransfer.effectAllowed = "move";
-        activeDragColumn.value = header; // Assigns CSS for dragging start
+        activeDragColumnHeader.value = header; // Assigns CSS for dragging start
+        initialHoveredDropZone.value = initialDropZone;
       } else {
         console.error(DRAG_ERROR);
       }
@@ -117,7 +133,7 @@ export default defineComponent({
 
     function onColumnDragEnd(): void {
       // Remove preview styles
-      activeDragColumn.value = "";
+      activeDragColumnHeader.value = "";
     }
 
     // Main function containing the drag & sort logic
@@ -128,7 +144,7 @@ export default defineComponent({
         currentHoveredDropzone.value = dropzone;
 
         columns.value.forEach((column) => {
-          if (column.header === activeDragColumn.value) {
+          if (column.header === activeDragColumnHeader.value) {
             column.dropZone = dropzone;
           }
         });
@@ -167,7 +183,7 @@ export default defineComponent({
 
       const allColumnsExceptActive: Array<HTMLDivElement> =
         allColumnsInDropzone.filter(
-          (column) => column.innerHTML !== activeDragColumn.value
+          (column) => column.innerHTML !== activeDragColumnHeader.value
         );
 
       return findClosestColumnIndex(allColumnsExceptActive, mouseX);
@@ -216,13 +232,36 @@ export default defineComponent({
 
       if (columnToReposition !== undefined && dropZoneColumns.length > 0) {
         if (closestIndex !== undefined) {
-          // then we are hovering to the left of a column
-          // so begin repositioning
+          // then we are hovering to the left of a column, so begin repositioning
+          const columnsInDropZone = getColumnsInDropzone(
+            currentHoveredDropzone.value
+          );
+          console.log("INCOMING INDEX", closestIndex);
           const columnToRight: Column = columns.value[closestIndex];
-          console.log("INDEX OF COLUMN TO PLACE LEFT OF:", columnToRight);
-          console.log(dropZoneColumns);
+          console.log("column to right, to modify based off of", columnToRight);
+          if (columnToRight !== undefined) {
+            columnToReposition.position = columnToRight.position - 1;
+            // find the index position of the item we just assigned
+            // then for every item from columnsInDZ[0] to columnsInDZ[columnToRepositionIndex]. column.postion = column.position - 1
 
-          columnToReposition.position = columnToRight.position - 1;
+            // If we do it the above way, it removes the chance of duplication!!!
+
+            const duplicatePosition =
+              findDuplicateColumnPosition(columnsInDropZone);
+
+            // use this duplicatePosition to find the first instance of a column that matches that position
+            // based on the order, it will be the one that needs to be modified
+            if (duplicatePosition !== undefined) {
+              const duplicateToShiftLeft = columnsInDropZone.find(
+                (column) => column.position === duplicatePosition
+              );
+
+              if (duplicateToShiftLeft !== undefined) {
+                duplicateToShiftLeft.position =
+                  duplicateToShiftLeft.position - 1;
+              }
+            }
+          }
         } else {
           // else we're hovering to the farthest right of a dropzone
           const farthestRightColumn =
@@ -239,21 +278,117 @@ export default defineComponent({
       }
     }
 
+    function findDuplicateColumnPosition(
+      dropZoneColumns: Array<Column>
+    ): number {
+      const positions = dropZoneColumns.map((column) => column.position);
+
+      const set = new Set(positions);
+
+      const duplicate = positions.filter((position) => {
+        if (set.has(position)) {
+          set.delete(position);
+        } else {
+          return position;
+        }
+      });
+
+      return duplicate[0];
+    }
+
     function findActiveColumn(): Column | undefined {
-      return columns.value.find(
-        (column) => column.header === activeDragColumn.value
+      const activeColumn = columns.value.find(
+        (column) => column.header === activeDragColumnHeader.value
       );
+
+      if (activeColumn !== undefined) {
+        activeDragColumn.value = activeColumn;
+        return activeColumn;
+      } else {
+        return undefined;
+      }
     }
 
     function findColumnIndexByInnerHTML(innerHTML: string): number {
       return columns.value.map((column) => column.header).indexOf(innerHTML);
     }
 
-    // watcher for when the activeHover dropzone changes
-    // AND we have an activeColumn we're dragging
-    // then set the activeColumn.position to -1 lower than whatever the LOWEST (so first position)
-    // in the dropzone is
-    // NEED TO MAKE THIS FUNCTION
+    // ATTEMPT TO DELETE THIS
+    // If the array test works
+    function setColumnPositionsForDropZone(): void {
+      const columnsInDropZone = getColumnsInDropzone(
+        currentHoveredDropzone.value
+      );
+
+      columnPositions.value = columnsInDropZone.map(
+        (column) => column.position
+      );
+    }
+
+    // ATTEMPT TO DELETE THIS
+    // If the array test works
+    function removeDuplicatePositionsOnDrag(): void {
+      const columnsInDropZone = getColumnsInDropzone(
+        currentHoveredDropzone.value
+      );
+
+      const duplicatePosition = findDuplicateColumnPosition(columnsInDropZone);
+      // console.log("DUPLICATE POSITION", duplicatePosition);
+      if (duplicatePosition !== undefined) {
+        // console.log("remove duplicatePosition", duplicatePosition);
+
+        const duplicateToShiftLeft = columnsInDropZone.find(
+          (column) => column.position === duplicatePosition
+        );
+
+        if (duplicateToShiftLeft !== undefined) {
+          duplicateToShiftLeft.position = duplicateToShiftLeft.position - 1;
+        }
+
+        setColumnPositionsForDropZone();
+      }
+    }
+
+    // ATTEMPT TO DELETE THIS
+    // If the array test works
+    function resetPositionOnDropZoneChange() {
+      // need to store the initialHoveredDropZone
+      if (currentHoveredDropzone.value !== "") {
+        if (currentHoveredDropzone.value !== initialHoveredDropZone.value) {
+          initialHoveredDropZone.value = currentHoveredDropzone.value;
+          if (currentHoveredDropzone.value === "right") {
+            const columnsInDropZone = getColumnsInDropzone("right");
+            if (columnsInDropZone.length === 1) {
+              activeDragColumn.value.position = 0;
+            } else {
+              activeDragColumn.value.position =
+                columnsInDropZone[0].position - 1;
+            }
+          } else {
+            const columnsInDropZone = getColumnsInDropzone("left");
+            if (columnsInDropZone.length === 1) {
+              activeDragColumn.value.position = 0;
+            } else {
+              console.log(columnsInDropZone[columnsInDropZone.length - 1]);
+              activeDragColumn.value.position =
+                columnsInDropZone[columnsInDropZone.length - 1].position + 1;
+            }
+          }
+        }
+      }
+    }
+
+    // THESE 3 WATCHES MIGHT NOT BE NEEDED!!!
+    // Add the dropzone change fix
+    // and then see if that fixes it
+    // Need to watch the position and dropZone change for the activeDragColumn so it's in real-time
+    watch(() => activeDragColumn.value.position, setColumnPositionsForDropZone);
+    watch(() => activeDragColumn.value.dropZone, setColumnPositionsForDropZone);
+    watch(() => columnPositions.value, removeDuplicatePositionsOnDrag);
+    // Watch for when the dropzone changes
+    // if it's left, set to max position +1
+    // if it's right, min position -1. This way we can fix duplicates on dropZone change, which might be why we have dupes
+    watch(() => currentHoveredDropzone.value, resetPositionOnDropZoneChange);
 
     // *****
     // ALL CODE ABOVE SHOULD ATTEMPTED TO BE MOVED INTO A composable? hook? --- lookup wording
@@ -287,7 +422,7 @@ export default defineComponent({
       onDropzoneDragOver,
       onColumnDragEnd,
       onColumnDrop,
-      activeDragColumn,
+      activeDragColumnHeader,
       leftColumnDivs,
       rightColumnDivs,
     };
