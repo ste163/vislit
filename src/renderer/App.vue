@@ -85,12 +85,12 @@ export default defineComponent({
 
     const {
       sortedColumns,
+      activeDragColumnHeader,
       getColumnsInDropZone,
       onColumnDragStart,
       onColumnDragEnd,
       onDropZoneDragOver,
       onColumnDrop,
-      activeDragColumnHeader,
     } = useColumns(leftColumnDivs, rightColumnDivs);
 
     // Needed to reset references based on docs
@@ -100,15 +100,15 @@ export default defineComponent({
     });
 
     return {
+      leftColumnDivs,
+      rightColumnDivs,
       sortedColumns,
+      activeDragColumnHeader,
       getColumnsInDropZone,
       onColumnDragStart,
       onDropZoneDragOver,
       onColumnDragEnd,
       onColumnDrop,
-      activeDragColumnHeader,
-      leftColumnDivs,
-      rightColumnDivs,
     };
   },
 });

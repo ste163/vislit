@@ -4,6 +4,8 @@ import Column from "@/interfaces/Column";
 
 type columnLayout = {
   sortedColumns: ComputedRef<Column[]>;
+  activeDragColumnHeader: Ref<string>;
+  getColumnsInDropZone: (dropZone: string) => Column[];
   onColumnDragStart: (
     event: DragEvent,
     header: string,
@@ -12,8 +14,6 @@ type columnLayout = {
   onColumnDragEnd: () => void;
   onDropZoneDragOver: (event: DragEvent, dropZone: string) => void;
   onColumnDrop: (event: DragEvent, dropzone: string) => void;
-  activeDragColumnHeader: Ref<string>;
-  getColumnsInDropZone: (dropZone: string) => Column[];
 };
 
 // Need to pass in HTMLDivElements because I need the real references from the template
@@ -70,7 +70,7 @@ export default function useColumns(
     activeDragColumnHeader.value = "";
   }
 
-  // Main function containing the drag & sort logic
+  // Main function containing the drag & sort logic -> runs every time mouse moves
   function onDropZoneDragOver(event: DragEvent, dropZone: string): void {
     event.preventDefault();
 
@@ -89,13 +89,24 @@ export default function useColumns(
     }
   }
 
-  function onColumnDrop(event: DragEvent, dropzone: string): void {
+  function onColumnDrop(event: DragEvent, dropZone: string): void {
     if (event.dataTransfer !== null) {
       const column = findActiveColumn();
       currentHoveredDropzone.value = ""; // resets value for watcher
+
+      // TODO:
+      // invoke function that resets all the positions
+      // simplifyColumnPositions()
+      // which will need to loop over the positions
+      // and get the min and max of how many items are in both drop zones
+      // then based on that, set the positions based on that min and max
+      // otherwise positions become huge
+      // ****
+      console.log("SIMPLIFY COLUMN POSITIONS IN BOTH DROPZONES INDEPENDENTALY");
+
       // Moves the column into the correct dropzone
       if (column !== undefined) {
-        column.dropZone = dropzone;
+        column.dropZone = dropZone;
       }
     } else {
       console.error(DRAG_ERROR);
@@ -286,7 +297,6 @@ export default function useColumns(
           if (columnsInDropZone.length === 1) {
             activeDragColumn.value.position = 0;
           } else {
-            console.log(columnsInDropZone[columnsInDropZone.length - 1]);
             activeDragColumn.value.position =
               columnsInDropZone[columnsInDropZone.length - 1].position + 1;
           }
@@ -314,11 +324,11 @@ export default function useColumns(
 
   return {
     sortedColumns,
+    activeDragColumnHeader,
     getColumnsInDropZone,
     onColumnDragStart,
     onColumnDragEnd,
     onDropZoneDragOver,
     onColumnDrop,
-    activeDragColumnHeader,
   };
 }
