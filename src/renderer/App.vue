@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 <template>
   <!-- TODO -->
-  <!-- Move all column logic & saving into a custom hook(s) -->
-  <!-- Style Template Columns that use Slots -->
-  <!-- Allow columns to be created when clicking a nav item -->
+  <!-- Move all column logic & saving into a composable -->
+  <!-- Create Style Template Columns that use Slots -->
   <!-- Allow columns to be resizable -->
+  <!-- Allow columns to be created when clicking a nav item -->
   <!-- DONE - Allow columns to be dragged and dropped -->
-  <!-- Allow columns to be ordered in their dropzone -->
+  <!-- DONE - Allow columns to be ordered in their dropzone -->
   <!-- Only show drop-zones when the user is dragging a column -->
   <!-- Allow columns to be replaced when a new one is clicked (ie, its content changing) -->
   <!-- Allow columns to be pinned/locked -->
@@ -106,16 +106,12 @@ export default defineComponent({
     const activeDragColumnHeader = ref<string>("");
     const currentHoveredDropzone = ref<string>("");
     const initialHoveredDropZone = ref<string>("");
-    const columnPositions = ref<Array<number>>([]);
 
     const DRAG_ERROR = "Event was not a drag event.";
 
-    function getColumnsInDropzone(dropZone: string) {
-      return sortedColumns.value.filter(
-        (column) => column.dropZone === dropZone
-      );
-    }
-
+    // ***
+    // Events
+    // ***
     function onColumnDragStart(
       event: DragEvent,
       header: string,
@@ -166,6 +162,15 @@ export default defineComponent({
       } else {
         console.error(DRAG_ERROR);
       }
+    }
+
+    // ***
+    // Helpers
+    // ***
+    function getColumnsInDropzone(dropZone: string) {
+      return sortedColumns.value.filter(
+        (column) => column.dropZone === dropZone
+      );
     }
 
     function getDragAfterColumnIndex(
@@ -219,11 +224,6 @@ export default defineComponent({
     }
 
     function dragUpdateColumnPositions(closestIndex: number | undefined): void {
-      // Bug right now is that there is the possibility for a position number in one dropzone
-      // to equal that of another
-      // so what I need to do, is set the position, when the user swaps dropzones
-      // to 1 less than the lowest position in that dropzone
-
       const dropZoneColumns = getColumnsInDropzone(
         currentHoveredDropzone.value
       );
@@ -236,37 +236,35 @@ export default defineComponent({
           const columnsInDropZone = getColumnsInDropzone(
             currentHoveredDropzone.value
           );
-          // console.log("INCOMING INDEX", closestIndex);
-          const columnToRight: Column = columns.value[closestIndex];
+          const columnToRight: Column = columns.value[closestIndex]; // needs to be based on the full columns array to get correct column
           if (columnToRight !== undefined) {
-            // We know where the columnToRight is, and we can always get there
-            // So what if we just lower everything to the left of that by 1
+            // BUG/PERFORMANCE ISSUE
+            // The positions increase or decrease continuously while dragging
+            // They should instead be capped otherwise they go on infinitely
+            // however, when I've tried to cap them, there's not enough "buffer" room
+            // to allow for all the numbers to reposition themselves
             columnToReposition.position = columnToRight.position - 1;
-            columnToRight.position = columnToRight.position + 1;
+            columnToRight.position = columnToRight.position + 1; //  must update the columnToRight position or sorting can have too many duplicates
 
-            console.log(
-              "column to right, to modify based off of",
-              columnToRight
-            );
             const indexOfRepositionedColumn = columnsInDropZone
               .map((column) => column.header)
               .indexOf(columnToRight.header);
 
-            const repositionColumns = columnsInDropZone.slice(
+            const columnsToReposition = columnsInDropZone.slice(
               0,
               indexOfRepositionedColumn - 1
             );
 
-            if (repositionColumns.length > 0) {
-              repositionColumns.forEach(
-                (column) => (column.position = column.position - 1)
-              );
+            if (columnsToReposition.length > 0) {
+              columnsToReposition.forEach((column) => {
+                if (column.position > columnsToReposition[0].position) {
+                  column.position = column.position - 1;
+                }
+              });
             }
 
-            console.log(repositionColumns);
-
-            // If we do it the above way, it removes the chance of duplication!!!
-
+            // THIS DUPE CHECK IS NEEDED,
+            // Move into its own function and call it here
             const duplicatePosition =
               findDuplicateColumnPosition(columnsInDropZone);
 
@@ -334,44 +332,7 @@ export default defineComponent({
       return columns.value.map((column) => column.header).indexOf(innerHTML);
     }
 
-    // ATTEMPT TO DELETE THIS
-    // If the array test works
-    function setColumnPositionsForDropZone(): void {
-      const columnsInDropZone = getColumnsInDropzone(
-        currentHoveredDropzone.value
-      );
-
-      columnPositions.value = columnsInDropZone.map(
-        (column) => column.position
-      );
-    }
-
-    // ATTEMPT TO DELETE THIS
-    // If the array test works
-    function removeDuplicatePositionsOnDrag(): void {
-      const columnsInDropZone = getColumnsInDropzone(
-        currentHoveredDropzone.value
-      );
-
-      const duplicatePosition = findDuplicateColumnPosition(columnsInDropZone);
-      // console.log("DUPLICATE POSITION", duplicatePosition);
-      if (duplicatePosition !== undefined) {
-        // console.log("remove duplicatePosition", duplicatePosition);
-
-        const duplicateToShiftLeft = columnsInDropZone.find(
-          (column) => column.position === duplicatePosition
-        );
-
-        if (duplicateToShiftLeft !== undefined) {
-          duplicateToShiftLeft.position = duplicateToShiftLeft.position - 1;
-        }
-
-        setColumnPositionsForDropZone();
-      }
-    }
-
-    // ATTEMPT TO DELETE THIS
-    // If the array test works
+    // This might not actually be needed
     function resetPositionOnDropZoneChange() {
       // need to store the initialHoveredDropZone
       if (currentHoveredDropzone.value !== "") {
@@ -399,16 +360,7 @@ export default defineComponent({
       }
     }
 
-    // THESE 3 WATCHES MIGHT NOT BE NEEDED!!!
-    // Add the dropzone change fix
-    // and then see if that fixes it
-    // Need to watch the position and dropZone change for the activeDragColumn so it's in real-time
-    watch(() => activeDragColumn.value.position, setColumnPositionsForDropZone);
-    watch(() => activeDragColumn.value.dropZone, setColumnPositionsForDropZone);
-    watch(() => columnPositions.value, removeDuplicatePositionsOnDrag);
-    // Watch for when the dropzone changes
-    // if it's left, set to max position +1
-    // if it's right, min position -1. This way we can fix duplicates on dropZone change, which might be why we have dupes
+    // May be able to delete this
     watch(() => currentHoveredDropzone.value, resetPositionOnDropZoneChange);
 
     // *****
