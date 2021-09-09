@@ -1,5 +1,5 @@
 // Handles all column events and logic
-import { computed, ComputedRef, Ref, ref, watch } from "vue";
+import { computed, ComputedRef, Ref, ref } from "vue";
 import Column from "@/interfaces/Column";
 
 type columnLayout = {
@@ -71,7 +71,7 @@ export default function useColumns(
     activeDragColumnHeader.value = "";
   }
 
-  // Main function containing the drag & sort logic -> runs every time mouse moves
+  // Main drag-drop & sort logic runs here, whenever mouse moves
   function onDropZoneDragOver(event: DragEvent, dropZone: string): void {
     event.preventDefault();
 
@@ -191,24 +191,7 @@ export default function useColumns(
       activeDragColumn.position = columnToRight.position - 1;
       columnToRight.position = columnToRight.position + 1; //  must update the columnToRight position or sorting can have too many duplicates
 
-      const indexOfRepositionedColumn = columnsInDropZone
-        .map((column) => column.header)
-        .indexOf(columnToRight.header);
-
-      // MOVE THIS FUNCTION OUT
-      const columnsToReposition = columnsInDropZone.slice(
-        0,
-        indexOfRepositionedColumn - 1
-      );
-
-      if (columnsToReposition.length > 0) {
-        columnsToReposition.forEach((column) => {
-          if (column.position >= columnsToReposition[0].position) {
-            column.position = column.position - 1;
-          }
-        });
-      }
-      // END OF FUNCTION TO MOVE OUT
+      handleColumnSort(columnsInDropZone, columnToRight);
       handleDuplicatePositions(columnsInDropZone);
     }
   }
@@ -242,6 +225,28 @@ export default function useColumns(
     });
 
     return duplicate[0];
+  }
+
+  function handleColumnSort(
+    columnsInDropZone: Column[],
+    columnToRight: Column
+  ): void {
+    const indexOfRepositionedColumn = columnsInDropZone
+      .map((column) => column.header)
+      .indexOf(columnToRight.header);
+
+    const columnsToReposition = columnsInDropZone.slice(
+      0,
+      indexOfRepositionedColumn - 1
+    );
+
+    if (columnsToReposition.length > 0) {
+      columnsToReposition.forEach((column) => {
+        if (column.position >= columnsToReposition[0].position) {
+          column.position = column.position - 1;
+        }
+      });
+    }
   }
 
   function handleDuplicatePositions(columnsInDropZone: Column[]): void {

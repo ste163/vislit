@@ -1,15 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 <template>
   <!-- TODO -->
-  <!-- DONE - Move all column logic & saving into a composable -->
-  <!-- Create Style Template Columns that use Slots -->
-  <!-- Allow columns to be resizable -->
-  <!-- Allow columns to be created when clicking a nav item -->
-  <!-- DONE - Allow columns to be dragged and dropped -->
-  <!-- DONE - Allow columns to be ordered in their dropzone -->
   <!-- Only show drop-zones when the user is dragging a column -->
+  <!-- Will probably need a Drop-Zone component that holds the styling -->
+  <!-- Create Style Template Columns that use Slots -->
+  <!-- Allow columns to be created when clicking a nav item -->
   <!-- Allow columns to be replaced when a new one is clicked (ie, its content changing) -->
   <!-- Allow columns to be pinned/locked -->
+  <!-- Allow columns to be resizable -->
+  <!-- Allow columns to only be dragged on the header -->
+  <!-- DONE - Move all column logic & saving into a composable -->
+  <!-- DONE - Allow columns to be dragged and dropped -->
+  <!-- DONE - Allow columns to be ordered in their dropzone -->
   <the-sidebar />
 
   <!-- Left drop-able area -->
