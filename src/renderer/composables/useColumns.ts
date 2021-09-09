@@ -16,11 +16,6 @@ type columnLayout = {
   onColumnDrop: (event: DragEvent, dropzone: string) => void;
 };
 
-// ONLY KNOWN BUG:
-// If you have 4 columns
-// and you try to drag the far left over the one directly to its right
-// it won't allow you to, until you go over the 3rd column
-
 // Need to pass in HTMLDivElements because I need the real references from the template
 export default function useColumns(
   leftDropZoneColumns: Ref<HTMLDivElement[]>,
@@ -30,15 +25,16 @@ export default function useColumns(
     {
       header: "Settings",
       dropZone: "left",
-      position: -2,
+      position: 0,
     },
     {
       header: "Projects",
       dropZone: "left",
-      position: -1,
+      position: 1,
     },
-    { header: "Notes", dropZone: "left", position: 0 },
+    { header: "Notes", dropZone: "left", position: 2 },
     { header: "Lexicons", dropZone: "right", position: 0 },
+    { header: "Test", dropZone: "right", position: 1 },
   ]);
 
   const activeDragColumn = ref<Column>({
@@ -90,7 +86,7 @@ export default function useColumns(
 
       const afterColumnIndex = getDragAfterColumnIndex(dropZone, event.x);
 
-      dragUpdateColumnPositions(afterColumnIndex);
+      updateColumnPositionsOnDrag(afterColumnIndex);
     }
   }
 
@@ -101,9 +97,8 @@ export default function useColumns(
 
       simplifyColumnPositionsOnDrop();
 
-      // Moves the column into the correct dropzone
       if (column !== undefined) {
-        column.dropZone = dropZone;
+        column.dropZone = dropZone; // moves column into the correct drop zone
       }
     } else {
       console.error(DRAG_ERROR);
@@ -118,20 +113,20 @@ export default function useColumns(
   }
 
   function getDragAfterColumnIndex(
-    dropzone: string,
+    dropZone: string,
     mouseX: number
   ): number | undefined {
-    let allColumnsInDropzone: Array<HTMLDivElement> = [];
+    let allColumnsInDropZone: Array<HTMLDivElement> = [];
 
     // Set currently dragged divs in state
-    if (dropzone === "left") {
-      allColumnsInDropzone = leftDropZoneColumns.value;
+    if (dropZone === "left") {
+      allColumnsInDropZone = leftDropZoneColumns.value;
     } else {
-      allColumnsInDropzone = rightDropZoneColumns.value;
+      allColumnsInDropZone = rightDropZoneColumns.value;
     }
 
     const allColumnsExceptActive: Array<HTMLDivElement> =
-      allColumnsInDropzone.filter(
+      allColumnsInDropZone.filter(
         (column) => column.innerHTML !== activeDragColumnHeader.value
       );
 
@@ -167,38 +162,40 @@ export default function useColumns(
     return columnIndex;
   }
 
-  function dragUpdateColumnPositions(closestIndex: number | undefined): void {
+  function updateColumnPositionsOnDrag(closestIndex: number | undefined): void {
     const dropZoneColumns = getColumnsInDropZone(currentHoveredDropZone.value);
 
-    const columnToReposition = findActiveColumn();
+    const activeDragColumn = findActiveColumn();
 
-    if (columnToReposition !== undefined && dropZoneColumns.length > 0) {
+    if (activeDragColumn !== undefined && dropZoneColumns.length > 0) {
       if (closestIndex !== undefined) {
         // then we are hovering to the left of a column, so begin repositioning
-        sortColumnsOnDrag(columnToReposition, closestIndex);
+        sortColumnsOnDrag(activeDragColumn, closestIndex);
       } else {
         // else we're hovering to the farthest right of a dropzone
-        positionColumnToFarRight(dropZoneColumns, columnToReposition);
+        positionColumnToFarRight(dropZoneColumns, activeDragColumn);
       }
     }
   }
 
   function sortColumnsOnDrag(
-    columnToReposition: Column,
+    activeDragColumn: Column,
     closestIndex: number
   ): void {
     const columnsInDropZone = getColumnsInDropZone(
       currentHoveredDropZone.value
     );
     const columnToRight: Column = columns.value[closestIndex]; // needs to be based on the full columns array to get correct column
+
     if (columnToRight !== undefined) {
-      columnToReposition.position = columnToRight.position - 1;
+      activeDragColumn.position = columnToRight.position - 1;
       columnToRight.position = columnToRight.position + 1; //  must update the columnToRight position or sorting can have too many duplicates
 
       const indexOfRepositionedColumn = columnsInDropZone
         .map((column) => column.header)
         .indexOf(columnToRight.header);
 
+      // MOVE THIS FUNCTION OUT
       const columnsToReposition = columnsInDropZone.slice(
         0,
         indexOfRepositionedColumn - 1
@@ -211,23 +208,23 @@ export default function useColumns(
           }
         });
       }
-
+      // END OF FUNCTION TO MOVE OUT
       handleDuplicatePositions(columnsInDropZone);
     }
   }
 
   function positionColumnToFarRight(
     dropZoneColumns: Column[],
-    columnToReposition: Column
+    activeDragColumn: Column
   ): void {
     const farthestRightColumn = dropZoneColumns[dropZoneColumns.length - 1];
 
     if (
-      columnToReposition !== undefined &&
-      columnToReposition.position <
+      activeDragColumn !== undefined &&
+      activeDragColumn.position <
         dropZoneColumns[dropZoneColumns.length - 1].position
     ) {
-      columnToReposition.position = farthestRightColumn.position + 1;
+      activeDragColumn.position = farthestRightColumn.position + 1;
     }
   }
 
@@ -250,15 +247,17 @@ export default function useColumns(
   function handleDuplicatePositions(columnsInDropZone: Column[]): void {
     const duplicatePosition = findDuplicateColumnPosition(columnsInDropZone);
 
-    // use duplicatePosition to find first instance of column that matches that position
-    // based on the computed sort order, it will be the one that needs to be modified
     if (duplicatePosition !== undefined) {
-      const duplicateToShiftLeft = columnsInDropZone.find(
-        (column) => column.position === duplicatePosition
-      );
+      const indexOfFirstDuplicate = columnsInDropZone
+        .map((column) => column.position)
+        .indexOf(duplicatePosition);
 
-      if (duplicateToShiftLeft !== undefined) {
-        duplicateToShiftLeft.position = duplicateToShiftLeft.position - 1;
+      if (indexOfFirstDuplicate !== undefined) {
+        for (let i = indexOfFirstDuplicate; i < columnsInDropZone.length; i++) {
+          if (i !== indexOfFirstDuplicate) {
+            columnsInDropZone[i].position = columnsInDropZone[i].position + i;
+          }
+        }
       }
     }
   }
@@ -301,7 +300,7 @@ export default function useColumns(
 
   function assignPositionByIndex(columnsToReposition: Column[]): void {
     for (let i = 0; i < columnsToReposition.length; i++) {
-      columnsToReposition[i].position = i;
+      columnsToReposition[i].position = i * 2;
     }
   }
 
