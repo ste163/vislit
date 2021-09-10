@@ -1,6 +1,6 @@
 <template>
   <button ref="button" class="button" @click="createRipple">
-    <base-button-ripple v-if="isRippling" />
+    <base-button-ripple :isRippling="isRippling" />
     <slot></slot>
   </button>
 </template>
@@ -12,14 +12,10 @@ import BaseButtonRipple from "./BaseButtonRipple.vue";
 const button = ref<HTMLButtonElement>(null);
 const rippleDiameter = ref<number>(0);
 const rippleRadius = ref<number>(0);
-const isRippling = ref<boolean>(false);
+const isRippling = ref<boolean>(true);
 
 function createRipple(e: MouseEvent): void {
   isRippling.value = !isRippling.value;
-
-  if (isRippling.value === false) {
-    isRippling.value === true;
-  }
 }
 
 onMounted(() => {
