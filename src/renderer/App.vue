@@ -17,6 +17,7 @@
   <!-- Left drop-able area -->
   <column-drop-zone
     :dropZone="'left'"
+    :isDropZoneEmpty="isLeftColumnDivEmpty"
     @drop="onColumnDrop($event, 'left')"
     @dragover="onDropZoneDragOver($event, 'left')"
   >
@@ -47,6 +48,7 @@
   <!-- Right drop-able area -->
   <column-drop-zone
     :dropZone="'right'"
+    :isDropZoneEmpty="isRightColumnDivEmpty"
     @drop="onColumnDrop($event, 'right')"
     @dragover="onDropZoneDragOver($event, 'right')"
   >
@@ -72,7 +74,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeUpdate, ref } from "vue";
+import { computed, defineComponent, onBeforeUpdate, ref } from "vue";
 import TheSidebar from "./components/TheSidebar.vue";
 import ColumnDropZone from "./components/ColumnDropZone.vue";
 import useColumns from "./composables/useColumns";
@@ -94,6 +96,20 @@ export default defineComponent({
       onColumnDrop,
     } = useColumns(leftColumnDivs, rightColumnDivs);
 
+    // Need 2 computed
+    // for if the leftCOlumnDivs and rightColumnDivs are true/false
+    // have anythig inside of them
+    function checkIsDropZoneEmpty(dropZone: string): boolean {
+      const dropZoneColumns = sortedColumns.value.filter(
+        (column) => column.dropZone === dropZone
+      );
+
+      return dropZoneColumns.length === 0 ? true : false;
+    }
+
+    const isLeftColumnDivEmpty = computed(() => checkIsDropZoneEmpty("left"));
+    const isRightColumnDivEmpty = computed(() => checkIsDropZoneEmpty("right"));
+
     // Needed to reset references based on docs
     onBeforeUpdate(() => {
       leftColumnDivs.value = [];
@@ -102,7 +118,9 @@ export default defineComponent({
 
     return {
       leftColumnDivs,
+      isLeftColumnDivEmpty,
       rightColumnDivs,
+      isRightColumnDivEmpty,
       sortedColumns,
       activeDragColumnHeader,
       getColumnsInDropZone,
