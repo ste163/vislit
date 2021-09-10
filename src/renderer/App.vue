@@ -15,11 +15,10 @@
   <the-sidebar />
 
   <!-- Left drop-able area -->
-  <div
-    class="column-dropzone"
+  <column-drop-zone
+    :dropZone="'left'"
     @drop="onColumnDrop($event, 'left')"
     @dragover="onDropZoneDragOver($event, 'left')"
-    @dragenter.prevent
   >
     <div
       v-for="(column, i) in getColumnsInDropZone('left')"
@@ -39,18 +38,17 @@
     >
       {{ column.header }}
     </div>
-  </div>
+  </column-drop-zone>
 
   <main class="dashboard">
     <router-view />
   </main>
 
   <!-- Right drop-able area -->
-  <div
-    class="column-dropzone"
+  <column-drop-zone
+    :dropZone="'right'"
     @drop="onColumnDrop($event, 'right')"
     @dragover="onDropZoneDragOver($event, 'right')"
-    @dragenter.prevent
   >
     <div
       v-for="(column, i) in getColumnsInDropZone('right')"
@@ -70,16 +68,17 @@
     >
       {{ column.header }}
     </div>
-  </div>
+  </column-drop-zone>
 </template>
 
 <script lang="ts">
 import { defineComponent, onBeforeUpdate, ref } from "vue";
 import TheSidebar from "./components/TheSidebar.vue";
+import ColumnDropZone from "./components/ColumnDropZone.vue";
 import useColumns from "./composables/useColumns";
 
 export default defineComponent({
-  components: { TheSidebar },
+  components: { TheSidebar, ColumnDropZone },
 
   setup() {
     const leftColumnDivs = ref<Array<HTMLDivElement>>([]);
@@ -125,14 +124,6 @@ export default defineComponent({
 
 .dashboard {
   flex-grow: 1;
-}
-
-.column-dropzone {
-  display: flex;
-  flex-flow: row nowrap;
-  padding: 1em;
-  background-color: rgb(138, 138, 138);
-  min-width: 0.5em;
 }
 
 .column-draggable {

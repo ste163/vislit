@@ -73,35 +73,39 @@ export default function useColumns(
 
   // Main drag-drop & sort logic runs here, whenever mouse moves
   function onDropZoneDragOver(event: DragEvent, dropZone: string): void {
-    event.preventDefault();
+    if (event !== undefined) {
+      event.preventDefault();
 
-    if (event.dataTransfer !== null) {
-      currentHoveredDropZone.value = dropZone;
+      if (event.dataTransfer !== null) {
+        currentHoveredDropZone.value = dropZone;
 
-      columns.value.forEach((column) => {
-        if (column.header === activeDragColumnHeader.value) {
-          column.dropZone = dropZone;
-        }
-      });
+        columns.value.forEach((column) => {
+          if (column.header === activeDragColumnHeader.value) {
+            column.dropZone = dropZone;
+          }
+        });
 
-      const afterColumnIndex = getDragAfterColumnIndex(dropZone, event.x);
+        const afterColumnIndex = getDragAfterColumnIndex(dropZone, event.x);
 
-      updateColumnPositionsOnDrag(afterColumnIndex);
+        updateColumnPositionsOnDrag(afterColumnIndex);
+      }
     }
   }
 
   function onColumnDrop(event: DragEvent, dropZone: string): void {
-    if (event.dataTransfer !== null) {
-      const column = findActiveColumn();
-      currentHoveredDropZone.value = ""; // resets value for watcher
+    if (event !== undefined) {
+      if (event.dataTransfer !== null) {
+        const column = findActiveColumn();
+        currentHoveredDropZone.value = ""; // resets value for watcher
 
-      simplifyColumnPositionsOnDrop();
+        simplifyColumnPositionsOnDrop();
 
-      if (column !== undefined) {
-        column.dropZone = dropZone; // moves column into the correct drop zone
+        if (column !== undefined) {
+          column.dropZone = dropZone; // moves column into the correct drop zone
+        }
+      } else {
+        console.error(DRAG_ERROR);
       }
-    } else {
-      console.error(DRAG_ERROR);
     }
   }
 
