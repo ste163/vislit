@@ -35,7 +35,6 @@ export default function useColumns(
     },
     { header: "Notes", dropZone: "left", position: 2 },
     { header: "Lexicons", dropZone: "right", position: 0 },
-    { header: "Test", dropZone: "right", position: 1 },
   ]);
 
   const activeDragColumn = ref<Column>({

@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 <template>
   <!-- TODO -->
-  <!-- DONE - Only show drop-zones when the user is dragging a column -->
-  <!-- Will probably need a Drop-Zone component that holds the styling -->
   <!-- Create Style Template Columns that use Slots -->
   <!-- Allow columns to be created when clicking a nav item -->
   <!-- Allow columns to be replaced when a new one is clicked (ie, its content changing) -->
   <!-- Allow columns to be pinned/locked -->
   <!-- Allow columns to be resizable -->
   <!-- Allow columns to only be dragged on the header -->
+  <!-- DONE - Only show drop-zones when the user is dragging a column -->
+  <!-- DONE - DropZone Component-->
   <!-- DONE - Move all column logic & saving into a composable -->
   <!-- DONE - Allow columns to be dragged and dropped -->
   <!-- DONE - Allow columns to be ordered in their dropzone -->
@@ -76,6 +76,7 @@
 </template>
 
 <script lang="ts">
+// CONVERT TO USE THE setup attribute in script tag!
 import { computed, defineComponent, onBeforeUpdate, ref } from "vue";
 import TheSidebar from "./components/TheSidebar.vue";
 import ColumnDropZone from "./components/ColumnDropZone.vue";
@@ -146,7 +147,7 @@ export default defineComponent({
 
 .column-draggable {
   background-color: white;
-  border-left: 2px black solid;
+  border-right: 2px black solid;
   width: 6em;
   cursor: move;
 }

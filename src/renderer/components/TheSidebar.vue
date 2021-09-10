@@ -1,25 +1,41 @@
 <template>
   <nav class="sidebar-container">
+    <base-button>button</base-button>
     <!-- TODO -->
-    <!-- Button templates for nav items -->
-    <!-- Needs to include props for: icon, isTextShown, isActive -->
+    <!-- Button templates for nav buttons -->
+    <!-- Needs to include props for: icon, isTextShown, isActive, button's active color -->
 
-    <!-- These aren't really router links, but open/closers for columns -->
-    <!-- Except for Settings, Progress, Document Writer -->
-    <!-- On Document Writer, Visualizations, and Progress, will have a back arrow/up arrow to go to the summary card -->
-    <router-link to="/">Projects</router-link>
+    <!-- Views -->
+    <!-- Views for 
+    Summary
+    Document Writer
+    Progress
+    Visualizations
+    Thesaurus -->
+    <router-link to="/">Summary</router-link>
     <router-link to="/Progress">Progress</router-link>
+
+    <!-- Columns -->
+    <!-- Buttons for:
+    - Projects
+    - Notes
+    - Lexicons
+    - Settings -->
   </nav>
 </template>
 
-<script lang="ts"></script>
+<script setup lang="ts">
+import BaseButton from "./BaseButton.vue";
+</script>
 
 <style scoped>
 .sidebar-container {
   display: flex;
   flex-flow: column nowrap;
   background-color: white;
-  width: 3em;
+  width: 6em;
   padding: 1em;
+  box-shadow: black -20px 0px 30px;
+  z-index: 1;
 }
 </style>
