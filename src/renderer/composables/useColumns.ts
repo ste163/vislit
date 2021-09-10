@@ -4,6 +4,7 @@ import Column from "@/interfaces/Column";
 
 type columnLayout = {
   sortedColumns: ComputedRef<Column[]>;
+  isDraggingActive: ComputedRef<boolean>;
   activeDragColumnHeader: Ref<string>;
   getColumnsInDropZone: (dropZone: string) => Column[];
   onColumnDragStart: (
@@ -326,9 +327,13 @@ export default function useColumns(
   }
 
   const sortedColumns = computed(() => sortColumns());
+  const isDraggingActive = computed(() =>
+    activeDragColumnHeader.value === "" ? false : true
+  );
 
   return {
     sortedColumns,
+    isDraggingActive,
     activeDragColumnHeader,
     getColumnsInDropZone,
     onColumnDragStart,

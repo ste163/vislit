@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 <template>
   <!-- TODO -->
-  <!-- Only show drop-zones when the user is dragging a column -->
+  <!-- DONE - Only show drop-zones when the user is dragging a column -->
   <!-- Will probably need a Drop-Zone component that holds the styling -->
   <!-- Create Style Template Columns that use Slots -->
   <!-- Allow columns to be created when clicking a nav item -->
@@ -17,6 +17,7 @@
   <!-- Left drop-able area -->
   <column-drop-zone
     :dropZone="'left'"
+    :isDraggingActive="isDraggingActive"
     :isDropZoneEmpty="isLeftColumnDivEmpty"
     @drop="onColumnDrop($event, 'left')"
     @dragover="onDropZoneDragOver($event, 'left')"
@@ -48,6 +49,7 @@
   <!-- Right drop-able area -->
   <column-drop-zone
     :dropZone="'right'"
+    :isDraggingActive="isDraggingActive"
     :isDropZoneEmpty="isRightColumnDivEmpty"
     @drop="onColumnDrop($event, 'right')"
     @dragover="onDropZoneDragOver($event, 'right')"
@@ -88,6 +90,7 @@ export default defineComponent({
 
     const {
       sortedColumns,
+      isDraggingActive,
       activeDragColumnHeader,
       getColumnsInDropZone,
       onColumnDragStart,
@@ -96,14 +99,10 @@ export default defineComponent({
       onColumnDrop,
     } = useColumns(leftColumnDivs, rightColumnDivs);
 
-    // Need 2 computed
-    // for if the leftCOlumnDivs and rightColumnDivs are true/false
-    // have anythig inside of them
     function checkIsDropZoneEmpty(dropZone: string): boolean {
       const dropZoneColumns = sortedColumns.value.filter(
         (column) => column.dropZone === dropZone
       );
-
       return dropZoneColumns.length === 0 ? true : false;
     }
 
@@ -122,6 +121,7 @@ export default defineComponent({
       rightColumnDivs,
       isRightColumnDivEmpty,
       sortedColumns,
+      isDraggingActive,
       activeDragColumnHeader,
       getColumnsInDropZone,
       onColumnDragStart,

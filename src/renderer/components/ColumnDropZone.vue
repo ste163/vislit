@@ -1,22 +1,7 @@
 <template>
-  <!-- TODO -->
-  <!-- Implement the v-if -->
-  <!-- for isDraggingActive -->
-  <!-- First return that value from useColumns -->
-  <!-- JK, just change the class from display  -->
-  <!-- The class will be based on whether or not there is any length -->
-  <!-- Almost like 2 things need to be passedin: -->
-  <!-- 1. isDraggingActive -->
-  <!-- 2. isDropZoneEmpty -->
-  <!-- 
-    So now,
-    when the isDropZoneEmpty === true && isDraggingActive === false
-    display: none on the dropZone
-    if isDraggingActive === true, always show the drop-zone
-    and add a slight pulse effect to the hover
-   -->
   <div
     class="drop-zone"
+    :class="dropZoneStyle"
     v-on:drop="$emit('drop', $event)"
     v-on:dragover="$emit('dragover', $event)"
     @dragenter.prevent
@@ -28,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { computed, defineComponent, PropType } from "vue";
 
 type DropZone = "left" | "right";
 
@@ -48,6 +33,19 @@ export default defineComponent({
     },
   },
   emits: ["drop", "dragover"],
+
+  setup(props) {
+    const dropZoneStyle = computed(() => {
+      return {
+        "disable-drop-zone":
+          props.isDraggingActive === false && props.isDropZoneEmpty === true,
+      };
+    });
+
+    return {
+      dropZoneStyle,
+    };
+  },
 });
 </script>
 
@@ -57,5 +55,9 @@ export default defineComponent({
   flex-flow: row nowrap;
   background-color: #3773ff50;
   min-width: 3em;
+}
+
+.disable-drop-zone {
+  display: none;
 }
 </style>
