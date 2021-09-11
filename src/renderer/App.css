@@ -74,6 +74,8 @@
   --black: #333333;
 
   --blue: #3772ff;
+
+  --white: white;
 }
 
 /* overrides */
@@ -84,4 +86,19 @@ body {
   color: var(--black);
   margin: 0;
   padding: 0;
+}
+
+button {
+  outline: 0;
+  border: 0;
+  border-radius: 0.4rem;
+  padding: 1rem 1rem;
+  font-size: 0.85rem; /* Equates to ~13.5pxs -> don't go smaller than that */
+  cursor: pointer;
+}
+
+.router-link {
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 800;
 }

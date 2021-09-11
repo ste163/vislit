@@ -1,17 +1,19 @@
 <template>
-  <span :class="isActive ? 'ripple' : 'ripple-back'"></span>
+  <span :class="isActive ? 'effect-off' : 'effect-on'"></span>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-
-// defineProps doesn't need to be imported---vetur doesn't recognize this yet
 // eslint-disable-next-line no-undef
 const props = defineProps({
   isActive: {
     type: Boolean,
-    requied: true,
+    required: true,
     default: true,
+  },
+  activeColor: {
+    type: String,
+    required: true,
+    default: "var(--blue)",
   },
   spanHeight: {
     type: String,
@@ -34,20 +36,15 @@ const props = defineProps({
     default: "0px",
   },
 });
-
-const span = ref<HTMLSpanElement>(null);
 </script>
 
 <style scoped>
-/* Goal is to have the ripple color be passed in */
-/* so that when the ripple is complete, that will be the new */
-/* active background color */
-.ripple {
+.effect-off {
   position: absolute;
   border-radius: 50%;
   transform: scale(0);
-  background-color: rgba(255, 255, 255, 0.7);
-  transition: 0.15s ease-in;
+  background-color: v-bind(activeColor);
+  transition: 0.175s ease-in;
 
   height: v-bind(spanHeight);
   width: v-bind(spanWidth);
@@ -55,19 +52,19 @@ const span = ref<HTMLSpanElement>(null);
   top: v-bind(spanTop);
 }
 
-@keyframes ripple {
+@keyframes effect-off {
   to {
     transform: scale(4);
     opacity: 0;
   }
 }
 
-.ripple-back {
+.effect-on {
   position: absolute;
   border-radius: 50%;
   transform: scale(4);
-  background-color: rgba(255, 255, 255, 0.7);
-  transition: 0.15s ease-out;
+  background-color: v-bind(activeColor);
+  transition: 0.2s ease-out;
 
   height: v-bind(spanHeight);
   width: v-bind(spanWidth);
@@ -75,7 +72,7 @@ const span = ref<HTMLSpanElement>(null);
   top: v-bind(spanTop);
 }
 
-@keyframes ripple-back {
+@keyframes effect-on {
   to {
     transform: scale(0);
     opacity: 1;
