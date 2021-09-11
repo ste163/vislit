@@ -1,26 +1,41 @@
 <template>
-  <span :class="isRippling ? 'ripple' : 'ripple-back'">.</span>
+  <span :class="isActive ? 'ripple' : 'ripple-back'"></span>
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
+
+// defineProps doesn't need to be imported---vetur doesn't recognize this yet
 // eslint-disable-next-line no-undef
 const props = defineProps({
-  isRippling: {
+  isActive: {
     type: Boolean,
     requied: true,
     default: true,
   },
-  rippleDiameter: {
-    type: Number,
+  spanHeight: {
+    type: String,
     required: true,
-    default: 0,
+    default: "0px",
   },
-  rippleRadius: {
-    type: Number,
+  spanWidth: {
+    type: String,
     required: true,
-    default: 0,
+    default: "0px",
+  },
+  spanLeft: {
+    type: String,
+    required: true,
+    default: "0px",
+  },
+  spanTop: {
+    type: String,
+    required: true,
+    default: "0px",
   },
 });
+
+const span = ref<HTMLSpanElement>(null);
 </script>
 
 <style scoped>
@@ -32,7 +47,12 @@ const props = defineProps({
   border-radius: 50%;
   transform: scale(0);
   background-color: rgba(255, 255, 255, 0.7);
-  transition: 0.15s ease;
+  transition: 0.15s ease-in;
+
+  height: v-bind(spanHeight);
+  width: v-bind(spanWidth);
+  left: v-bind(spanLeft);
+  top: v-bind(spanTop);
 }
 
 @keyframes ripple {
@@ -47,7 +67,12 @@ const props = defineProps({
   border-radius: 50%;
   transform: scale(4);
   background-color: rgba(255, 255, 255, 0.7);
-  transition: 0.15s ease;
+  transition: 0.15s ease-out;
+
+  height: v-bind(spanHeight);
+  width: v-bind(spanWidth);
+  left: v-bind(spanLeft);
+  top: v-bind(spanTop);
 }
 
 @keyframes ripple-back {
