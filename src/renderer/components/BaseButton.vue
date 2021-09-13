@@ -44,7 +44,7 @@ const props = defineProps({
 const button = ref<HTMLButtonElement>(null);
 const buttonDiameter = ref<number>(0);
 const buttonRadius = ref<number>(0);
-const isActive = ref<boolean>(true);
+const isActive = ref<boolean>(true); // needs to be based in
 
 const spanHeight = ref<string>("0px");
 const spanWidth = ref<string>("0px");
@@ -79,6 +79,7 @@ onMounted(() => {
   overflow: hidden;
   font-weight: 900;
   width: -webkit-fill-available;
+  text-align: left;
 
   color: v-bind(baseTextColor);
   background-color: v-bind(baseBackgroundColor);
@@ -88,8 +89,17 @@ onMounted(() => {
   position: absolute;
   top: 0;
   left: 0;
+  width: 9em;
+
+  margin-top: 0.6em;
+  margin-left: 1.25em;
   z-index: 1;
   transition: color 0.25s ease-in;
+
+  /*
+   margin handles positioning ->
+   this could be calculated onMounted so the text and icon will always be properly centered
+  */
 
   color: v-bind(baseTextColor) !important;
 }
