@@ -1,3 +1,3 @@
 <template>
-  <h1>Progress</h1>
+  <h1>Thesaurus</h1>
 </template>

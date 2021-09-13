@@ -8,10 +8,30 @@ const routes: Array<RouteRecordRaw> = [
     component: Summary,
   },
   {
+    path: "/writer",
+    name: "Writer",
+    component: () =>
+      import(/* webpackChunkName: "writer" */ "../views/Writer.vue"),
+  },
+  {
     path: "/progress",
     name: "Progress",
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Progress.vue"),
+      import(/* webpackChunkName: "progress" */ "../views/Progress.vue"),
+  },
+  {
+    path: "/visualization",
+    name: "Visualization",
+    component: () =>
+      import(
+        /* webpackChunkName: "visualization" */ "../views/Visualization.vue"
+      ),
+  },
+  {
+    path: "/thesaurus",
+    name: "Thesaurus",
+    component: () =>
+      import(/* webpackChunkName: "thesaurus" */ "../views/Thesaurus.vue"),
   },
 ];
 

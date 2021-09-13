@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 <template>
   <!-- TODO -->
   <!-- Create Style Template Columns that use Slots -->
@@ -14,7 +13,6 @@
   <!-- DONE - Allow columns to be ordered in their dropzone -->
   <the-sidebar />
 
-  <!-- Left drop-able area -->
   <column-drop-zone
     :dropZone="'left'"
     :isDraggingActive="isDraggingActive"
@@ -26,6 +24,7 @@
       v-for="(column, i) in getColumnsInDropZone('left')"
       :ref="
         (el) => {
+          // Ignore this. undefined error, adding undefined check doesn't remove it
           if (el) this.leftColumnDivs[i] = el;
         }
       "
@@ -46,7 +45,6 @@
     <router-view />
   </main>
 
-  <!-- Right drop-able area -->
   <column-drop-zone
     :dropZone="'right'"
     :isDraggingActive="isDraggingActive"
@@ -58,6 +56,7 @@
       v-for="(column, i) in getColumnsInDropZone('right')"
       :ref="
         (el) => {
+          // Ignore this. undefined error, adding undefined check doesn't remove it
           if (el) this.rightColumnDivs[i] = el;
         }
       "
@@ -75,62 +74,41 @@
   </column-drop-zone>
 </template>
 
-<script lang="ts">
-// CONVERT TO USE THE setup attribute in script tag!
-import { computed, defineComponent, onBeforeUpdate, ref } from "vue";
+<script setup lang="ts">
+import { ref, computed, onBeforeUpdate } from "vue";
 import TheSidebar from "./components/TheSidebar.vue";
 import ColumnDropZone from "./components/ColumnDropZone.vue";
 import useColumns from "./composables/useColumns";
 
-export default defineComponent({
-  components: { TheSidebar, ColumnDropZone },
+const leftColumnDivs = ref<Array<HTMLDivElement>>([]);
+const rightColumnDivs = ref<Array<HTMLDivElement>>([]);
 
-  setup() {
-    const leftColumnDivs = ref<Array<HTMLDivElement>>([]);
-    const rightColumnDivs = ref<Array<HTMLDivElement>>([]);
+const {
+  sortedColumns,
+  isDraggingActive,
+  activeDragColumnHeader,
+  getColumnsInDropZone,
+  onColumnDragStart,
+  onColumnDragEnd,
+  onDropZoneDragOver,
+  onColumnDrop,
+} = useColumns(leftColumnDivs, rightColumnDivs);
 
-    const {
-      sortedColumns,
-      isDraggingActive,
-      activeDragColumnHeader,
-      getColumnsInDropZone,
-      onColumnDragStart,
-      onColumnDragEnd,
-      onDropZoneDragOver,
-      onColumnDrop,
-    } = useColumns(leftColumnDivs, rightColumnDivs);
+function checkIsDropZoneEmpty(dropZone: string): boolean {
+  const dropZoneColumns = sortedColumns.value.filter(
+    (column) => column.dropZone === dropZone
+  );
+  return dropZoneColumns.length === 0 ? true : false;
+}
 
-    function checkIsDropZoneEmpty(dropZone: string): boolean {
-      const dropZoneColumns = sortedColumns.value.filter(
-        (column) => column.dropZone === dropZone
-      );
-      return dropZoneColumns.length === 0 ? true : false;
-    }
+const isLeftColumnDivEmpty = computed(() => checkIsDropZoneEmpty("left"));
+const isRightColumnDivEmpty = computed(() => checkIsDropZoneEmpty("right"));
 
-    const isLeftColumnDivEmpty = computed(() => checkIsDropZoneEmpty("left"));
-    const isRightColumnDivEmpty = computed(() => checkIsDropZoneEmpty("right"));
-
-    // Needed to reset references based on docs
-    onBeforeUpdate(() => {
-      leftColumnDivs.value = [];
-      rightColumnDivs.value = [];
-    });
-
-    return {
-      leftColumnDivs,
-      isLeftColumnDivEmpty,
-      rightColumnDivs,
-      isRightColumnDivEmpty,
-      sortedColumns,
-      isDraggingActive,
-      activeDragColumnHeader,
-      getColumnsInDropZone,
-      onColumnDragStart,
-      onDropZoneDragOver,
-      onColumnDragEnd,
-      onColumnDrop,
-    };
-  },
+// Needed to reset references based on vue docs
+// TODO: Check to see if that's really needed
+onBeforeUpdate(() => {
+  leftColumnDivs.value = [];
+  rightColumnDivs.value = [];
 });
 </script>
 
@@ -143,6 +121,7 @@ export default defineComponent({
 
 .dashboard {
   flex-grow: 1;
+  margin-left: 1em;
 }
 
 .column-draggable {

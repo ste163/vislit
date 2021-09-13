@@ -1,3 +1,3 @@
 <template>
-  <h1>SUMMARY</h1>
+  <h1>Summary</h1>
 </template>
