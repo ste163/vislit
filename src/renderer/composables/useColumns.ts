@@ -23,18 +23,18 @@ export default function useColumns(
   rightDropZoneColumns: Ref<HTMLDivElement[]>
 ): columnLayout {
   const columns = ref<Array<Column>>([
-    {
-      header: "Settings",
-      dropZone: "left",
-      position: 0,
-    },
-    {
-      header: "Projects",
-      dropZone: "left",
-      position: 1,
-    },
-    { header: "Notes", dropZone: "left", position: 2 },
-    { header: "Lexicons", dropZone: "right", position: 0 },
+    // {
+    //   header: "Settings",
+    //   dropZone: "left",
+    //   position: 0,
+    // },
+    // {
+    //   header: "Projects",
+    //   dropZone: "left",
+    //   position: 1,
+    // },
+    // { header: "Notes", dropZone: "left", position: 2 },
+    // { header: "Lexicons", dropZone: "right", position: 0 },
   ]);
 
   const activeDragColumn = ref<Column>({

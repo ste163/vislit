@@ -26,17 +26,14 @@ import BaseButtonEffect from "./BaseButtonEffect.vue";
 const props = defineProps({
   baseBackgroundColor: {
     type: String,
-    required: true,
     default: "var(--white)",
   },
   baseTextColor: {
     type: String,
-    required: true,
     default: "var(--black)",
   },
   activeTextColor: {
     type: String,
-    required: true,
     default: "var(--white)",
   },
 });
