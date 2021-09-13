@@ -1,9 +1,4 @@
 <template>
-  <!--
-Will most likely need 2 different button effects to  decide on:
-1. The Active/Toggle effect for sidebars/other toggle-ables
-2. The one-off click for everything else
--->
   <button ref="button" class="button" @click="setActive">
     <div class="text-wrapper" :class="!isActive ? 'text-wrapper-active' : ''">
       <slot></slot>
@@ -24,6 +19,12 @@ import BaseButtonEffect from "./BaseButtonEffect.vue";
 
 // eslint-disable-next-line no-undef
 const props = defineProps({
+  // Passing in active state will require a special 'toggle button' base button
+  // so there will be 2 base buttons: Toggle & Not Toggle
+  // isActive: {
+  //   type: Boolean,
+  //   required: true,
+  // },
   baseBackgroundColor: {
     type: String,
     default: "var(--white)",

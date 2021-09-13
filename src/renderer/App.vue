@@ -75,10 +75,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onBeforeUpdate } from "vue";
+import { provide, ref, computed, watch, onBeforeUpdate } from "vue";
+import { useRoute } from "vue-router";
+import store from "./store/index";
 import TheSidebar from "./components/TheSidebar.vue";
 import ColumnDropZone from "./components/ColumnDropZone.vue";
 import useColumns from "./composables/useColumns";
+
+// Makes store available to every child component of App
+provide("store", store);
+
+const route = useRoute();
 
 const leftColumnDivs = ref<Array<HTMLDivElement>>([]);
 const rightColumnDivs = ref<Array<HTMLDivElement>>([]);
@@ -103,6 +110,8 @@ function checkIsDropZoneEmpty(dropZone: string): boolean {
 
 const isLeftColumnDivEmpty = computed(() => checkIsDropZoneEmpty("left"));
 const isRightColumnDivEmpty = computed(() => checkIsDropZoneEmpty("right"));
+
+watch(() => route.path, store.setters.setActiveView);
 
 // Needed to reset references based on vue docs
 // TODO: Check to see if that's really needed

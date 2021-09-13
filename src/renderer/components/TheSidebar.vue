@@ -31,9 +31,6 @@
 
 <script setup lang="ts">
 import ButtonRouterLink from "./ButtonRouterLink.vue";
-
-// State for the active view
-// Which will come from my custom global store
 </script>
 
 <style scoped>

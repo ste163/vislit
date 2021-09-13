@@ -12,6 +12,10 @@
 // Then BaseButtonToggle
 // BaseButtonFlash/Ripple
 import BaseButton from "./BaseButton.vue";
+import Store from "@/interfaces/Store";
+import { inject } from "vue";
+
+const store = inject("store") as Store;
 
 // eslint-disable-next-line no-undef
 const props = defineProps({
@@ -21,6 +25,10 @@ const props = defineProps({
     default: "/",
   },
 });
+
+// Base-button needs to take in the active state
+// and router links are active based on the store's state
+console.log(store.state.activeView);
 </script>
 
 <style></style>
