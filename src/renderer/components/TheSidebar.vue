@@ -5,7 +5,7 @@
     <!-- nav buttons and column buttons will be different -->
     <!-- the active button state really does need to be passed in, so i can control it globally -->
 
-    <!-- Views -->
+    <div class="sidebar-header">Views</div>
     <button-router-link :route="'/'"> Summary </button-router-link>
 
     <button-router-link :route="'/writer'">
@@ -45,5 +45,12 @@ import ButtonRouterLink from "./ButtonRouterLink.vue";
   padding: 1.5em 0.2em;
   box-shadow: black -20px 0px 30px;
   z-index: 1;
+}
+
+.sidebar-header {
+  font-weight: 300;
+  font-size: 0.8em;
+  margin-left: 1.25em;
+  cursor: default;
 }
 </style>
