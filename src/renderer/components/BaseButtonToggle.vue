@@ -1,6 +1,9 @@
 <template>
   <button ref="button" class="button" @click="setActive">
     <div class="text-wrapper" :class="!isActive ? 'text-wrapper-active' : ''">
+      <div class="icon-container">
+        <!-- <component :is="icon-prop"></component> -->
+      </div>
       <slot></slot>
     </div>
     <base-button-effect
@@ -25,6 +28,7 @@ const props = defineProps({
   //   type: Boolean,
   //   required: true,
   // },
+  // Icon component prop
   baseBackgroundColor: {
     type: String,
     default: "var(--white)",
@@ -84,12 +88,13 @@ onMounted(() => {
 }
 
 .text-wrapper {
+  display: flex;
   position: absolute;
   top: 0;
   left: 0;
   width: 9em;
   font-size: 0.8rem;
-  margin-top: 0.6em;
+  margin-top: 0.7em;
   margin-left: 1.25em;
   z-index: 1;
   transition: color 0.25s ease-in;
@@ -106,5 +111,9 @@ onMounted(() => {
   transition: color 0.25s ease-out;
 
   color: v-bind(activeTextColor) !important;
+}
+
+.icon-container {
+  /* Who knows what might go here yet */
 }
 </style>

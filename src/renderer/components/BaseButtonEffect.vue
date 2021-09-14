@@ -43,7 +43,7 @@ const props = defineProps({
   border-radius: 50%;
   transform: scale(0);
   background-color: v-bind(activeColor);
-  transition: 0.175s ease-in;
+  transition: 0.2s ease-in;
 
   height: v-bind(spanHeight);
   width: v-bind(spanWidth);

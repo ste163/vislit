@@ -5,8 +5,11 @@
     <!-- nav buttons and column buttons will be different -->
     <!-- the active button state really does need to be passed in, so i can control it globally -->
 
-    <div class="sidebar-header">Views</div>
-    <button-router-link :route="'/'"> Summary </button-router-link>
+    <div class="sidebar-header" draggable="false">Views</div>
+    <button-router-link :route="'/'">
+      <!-- Bring in button components then setup props -->
+      Summary
+    </button-router-link>
 
     <button-router-link :route="'/writer'">
       Document Writer
@@ -21,11 +24,13 @@
     <button-router-link :route="'/thesaurus'"> Thesaurus </button-router-link>
 
     <!-- Columns -->
-    <!-- Toggle Buttons for:
+    <!--
+    Toggle Buttons for:
     - Projects
     - Notes
     - Lexicons
-    - Settings -->
+    - Settings
+    -->
   </nav>
 </template>
 
@@ -39,8 +44,9 @@ import ButtonRouterLink from "./ButtonRouterLink.vue";
   flex-flow: column nowrap;
   background-color: var(--white);
   width: 9em;
-  padding: 1.5em 0.2em;
+  padding: 0.5em 0em;
   box-shadow: black -20px 0px 30px;
+  user-select: none;
   z-index: 1;
 }
 

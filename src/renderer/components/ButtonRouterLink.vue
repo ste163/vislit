@@ -1,17 +1,14 @@
 <template>
-  <router-link class="router-link" :to="route">
-    <base-button>
-      <!-- Will eventually need an icon slot -->
+  <router-link class="router-link" :to="route" draggable="false">
+    <!-- base-button-toggle needs to pass in the icon prop -->
+    <base-button-toggle>
       <slot></slot>
-    </base-button>
+    </base-button-toggle>
   </router-link>
 </template>
 
 <script setup lang="ts">
-// Will need to have a BaseButton
-// Then BaseButtonToggle
-// BaseButtonFlash/Ripple
-import BaseButton from "./BaseButton.vue";
+import BaseButtonToggle from "./BaseButtonToggle.vue";
 import Store from "@/interfaces/Store";
 import { inject } from "vue";
 
@@ -26,9 +23,16 @@ const props = defineProps({
   },
 });
 
-// Base-button needs to take in the active state
-// and router links are active based on the store's state
-console.log(store.state.activeView);
+// Pass the store.state.activeView matches
+// the props.route, set isActive === true into base-button
+console.log("VIEW NAME AS PROP", props.route);
+console.log("ACTIVE VIEW IN STATE", store.state.activeView);
 </script>
 
-<style></style>
+<style scoped>
+.router-link {
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 800;
+}
+</style>
