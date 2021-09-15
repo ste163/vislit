@@ -1,16 +1,18 @@
 <template>
   <router-link class="router-link" :to="route" draggable="false">
-    <!-- base-button-toggle needs to pass in the icon prop -->
-    <base-button-toggle>
+    <base-button-toggle :isActive="isActiveRoute">
+      <template v-slot:btn-icon>
+        <slot name="icon"> </slot>
+      </template>
       <slot></slot>
     </base-button-toggle>
   </router-link>
 </template>
 
 <script setup lang="ts">
+import { computed, inject } from "vue";
 import BaseButtonToggle from "./BaseButtonToggle.vue";
 import Store from "@/interfaces/Store";
-import { inject } from "vue";
 
 const store = inject("store") as Store;
 
@@ -23,10 +25,9 @@ const props = defineProps({
   },
 });
 
-// Pass the store.state.activeView matches
-// the props.route, set isActive === true into base-button
-console.log("VIEW NAME AS PROP", props.route);
-console.log("ACTIVE VIEW IN STATE", store.state.activeView);
+const isActiveRoute = computed(() =>
+  store.state.activeView === props.route ? true : false
+);
 </script>
 
 <style scoped>

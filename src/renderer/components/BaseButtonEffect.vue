@@ -1,5 +1,5 @@
 <template>
-  <span :class="isActive ? 'effect-off' : 'effect-on'"></span>
+  <span :class="isActive ? 'effect-end' : 'effect-start'"></span>
 </template>
 
 <script setup lang="ts">
@@ -38,32 +38,32 @@ const props = defineProps({
 </script>
 
 <style scoped>
-.effect-off {
+.effect-end {
   position: absolute;
   border-radius: 50%;
   transform: scale(0);
   background-color: v-bind(activeColor);
-  transition: 0.2s ease-in;
+  transition: 0.24s ease-in;
 
-  height: v-bind(spanHeight);
-  width: v-bind(spanWidth);
-  left: v-bind(spanLeft);
-  top: v-bind(spanTop);
+  height: 0;
+  width: 0;
+  left: 0;
+  top: 0;
 }
 
-@keyframes effect-off {
+@keyframes effect-end {
   to {
     transform: scale(4);
     opacity: 0;
   }
 }
 
-.effect-on {
+.effect-start {
   position: absolute;
   border-radius: 50%;
   transform: scale(4);
   background-color: v-bind(activeColor);
-  transition: 0.2s ease-out;
+  transition: 0.24s ease-out;
 
   height: v-bind(spanHeight);
   width: v-bind(spanWidth);
@@ -71,7 +71,7 @@ const props = defineProps({
   top: v-bind(spanTop);
 }
 
-@keyframes effect-on {
+@keyframes effect-start {
   to {
     transform: scale(0);
     opacity: 1;

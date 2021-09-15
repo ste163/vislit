@@ -1,13 +1,22 @@
 <template>
+  <!--
+SHOULD PROBABLY
+have another BaseButton that holds the container, text, and icon
+Will need to figure out how to pass slots from parent->child->grandchild
+https://forum.vuejs.org/t/nested-slots/18264
+ACTUALLY
+Nesting slots seems like overkill.
+Having two buttons that use the ".button" might be good enough; it's not horribly un-DRY
+-->
   <button ref="button" class="button" @click="setActive">
-    <div class="text-wrapper" :class="!isActive ? 'text-wrapper-active' : ''">
+    <div class="text-wrapper" :class="isActive ? 'text-wrapper-active' : ''">
       <div class="icon-container">
-        <!-- <component :is="icon-prop"></component> -->
+        <slot name="btn-icon"></slot>
       </div>
       <slot></slot>
     </div>
     <base-button-effect
-      :isActive="isActive"
+      :isActive="!isActive"
       :spanHeight="spanHeight"
       :spanWidth="spanWidth"
       :spanLeft="spanLeft"
@@ -22,13 +31,10 @@ import BaseButtonEffect from "./BaseButtonEffect.vue";
 
 // eslint-disable-next-line no-undef
 const props = defineProps({
-  // Passing in active state will require a special 'toggle button' base button
-  // so there will be 2 base buttons: Toggle & Not Toggle
-  // isActive: {
-  //   type: Boolean,
-  //   required: true,
-  // },
-  // Icon component prop
+  isActive: {
+    type: Boolean,
+    required: true,
+  },
   baseBackgroundColor: {
     type: String,
     default: "var(--white)",
@@ -46,7 +52,6 @@ const props = defineProps({
 const button = ref<HTMLButtonElement>(null);
 const buttonDiameter = ref<number>(0);
 const buttonRadius = ref<number>(0);
-const isActive = ref<boolean>(true); // needs to be based in
 
 const spanHeight = ref<string>("0px");
 const spanWidth = ref<string>("0px");
@@ -54,7 +59,6 @@ const spanLeft = ref<string>("0px");
 const spanTop = ref<string>("0px");
 
 function setActive(e: MouseEvent): void {
-  isActive.value = !isActive.value;
   // Position span based on mouse and button size
   spanWidth.value = spanHeight.value = `${buttonDiameter.value}px`;
   spanLeft.value = `${
@@ -72,6 +76,13 @@ onMounted(() => {
     button.value.clientHeight
   );
   buttonRadius.value = buttonDiameter.value / 2;
+
+  if (props.isActive === true) {
+    // Active route onMount needs size for fill effect
+    spanWidth.value = spanHeight.value = `${buttonDiameter.value}px`;
+    spanLeft.value = `${0 - (button.value.offsetLeft + buttonRadius.value)}px`;
+    spanTop.value = `${0 - (button.value.offsetTop + buttonRadius.value)}px`;
+  }
 });
 </script>
 
@@ -87,17 +98,19 @@ onMounted(() => {
   background-color: v-bind(baseBackgroundColor);
 }
 
+/* Svg icon only inherits from .text-wrapper, not sure why; so fill is placed on .text-wrapper */
 .text-wrapper {
   display: flex;
+  align-items: center;
   position: absolute;
   top: 0;
   left: 0;
-  width: 9em;
+  width: 11em;
   font-size: 0.8rem;
-  margin-top: 0.7em;
+  margin-top: 0.55em;
   margin-left: 1.25em;
   z-index: 1;
-  transition: color 0.25s ease-in;
+  fill: var(--black);
 
   /*
    margin handles positioning ->
@@ -105,15 +118,17 @@ onMounted(() => {
   */
 
   color: v-bind(baseTextColor) !important;
+  transition: all 0.275s ease-in;
 }
 
 .text-wrapper-active {
-  transition: color 0.25s ease-out;
+  fill: var(--white);
 
   color: v-bind(activeTextColor) !important;
+  transition: all 0.275s ease-out;
 }
 
 .icon-container {
-  /* Who knows what might go here yet */
+  margin-right: 0.5em;
 }
 </style>

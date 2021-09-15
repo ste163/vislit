@@ -96,3 +96,8 @@ button {
   font-size: 0.85rem; /* Equates to ~13.5pxs -> don't go smaller than that */
   cursor: pointer;
 }
+
+/* global */
+.button-icon {
+  height: 1rem;
+}
