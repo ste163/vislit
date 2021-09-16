@@ -43,6 +43,7 @@
 
   <main class="dashboard">
     <router-view />
+    <!-- DELETE LATER -->
     <form @submit.prevent="submitForm">
       <h3>Create Project</h3>
       <input v-model.trim="inputTitle" type="text" placeholder="Title" />
@@ -59,6 +60,7 @@
       <div>{{ project.description }}</div>
       <button @click="deleteProject(project._id)">Delete</button>
     </div>
+    <!-- END OF DELETE -->
   </main>
 
   <column-drop-zone
