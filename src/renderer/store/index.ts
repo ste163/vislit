@@ -1,20 +1,7 @@
-import { reactive } from "vue";
-import Store from "@/interfaces/Store";
+import Store from "./Store";
+import ProjectStore from "./ProjectStore";
 
-// Global state, setters, & getters
-const state = reactive({
-  activeView: "/",
-});
+const projectStore = new ProjectStore();
+const globalStore = new Store(projectStore);
 
-const setters = {
-  setActiveView: (view: string): void => {
-    state.activeView = view;
-  },
-};
-
-const store: Store = {
-  state,
-  setters,
-};
-
-export default store;
+export default globalStore;

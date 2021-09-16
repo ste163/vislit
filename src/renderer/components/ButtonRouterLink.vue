@@ -12,9 +12,9 @@
 <script setup lang="ts">
 import { computed, inject } from "vue";
 import BaseButtonToggle from "./BaseButtonToggle.vue";
-import Store from "@/interfaces/Store";
+import IStore from "@/interfaces/IStore";
 
-const store = inject("store") as Store;
+const store = inject("store") as IStore;
 
 // eslint-disable-next-line no-undef
 const props = defineProps({
