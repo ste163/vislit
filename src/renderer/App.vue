@@ -82,7 +82,7 @@ import TheSidebar from "./components/TheSidebar.vue";
 import ColumnDropZone from "./components/ColumnDropZone.vue";
 import useColumns from "./composables/useColumns";
 
-// Makes store available to every child component of App
+// makes store available to every child component of App
 provide("store", store);
 
 const route = useRoute();
@@ -121,8 +121,10 @@ onBeforeUpdate(() => {
 });
 
 onMounted(async () => {
-  await store.actions.getProjects();
-  console.log(store.state.projects);
+  if (store.projects !== null) {
+    await store.projects.getProjects();
+    console.log(store.projects.state.all);
+  }
 });
 </script>
 
