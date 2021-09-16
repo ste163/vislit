@@ -1,4 +1,5 @@
 export default interface IProject {
+  _id: string;
   title: string;
   description: string;
   typeId: number;

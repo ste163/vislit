@@ -43,6 +43,22 @@
 
   <main class="dashboard">
     <router-view />
+    <form @submit.prevent="submitForm">
+      <h3>Create Project</h3>
+      <input v-model.trim="inputTitle" type="text" placeholder="Title" />
+      <input
+        v-model.trim="inputDescription"
+        type="text"
+        placeholder="Description"
+      />
+
+      <button type="submit">Save</button>
+    </form>
+    <div v-for="project in store.projects.state.all" :key="project.title">
+      <h4>{{ project.title }}</h4>
+      <div>{{ project.description }}</div>
+      <button @click="deleteProject(project._id)">Delete</button>
+    </div>
   </main>
 
   <column-drop-zone
@@ -81,9 +97,33 @@ import store from "./store/index";
 import TheSidebar from "./components/TheSidebar.vue";
 import ColumnDropZone from "./components/ColumnDropZone.vue";
 import useColumns from "./composables/useColumns";
+import IProject from "@/interfaces/IProject";
 
 // makes store available to every child component of App
 provide("store", store);
+
+// FORM CODE **** DELETE LATER
+const inputTitle = ref<string>("");
+const inputDescription = ref<string>("");
+
+async function submitForm(): Promise<void> {
+  if (inputTitle.value !== "" && inputDescription.value !== "") {
+    const project = {
+      title: inputTitle.value,
+      description: inputDescription.value,
+    };
+
+    await store.projects.addProject(project as IProject);
+
+    inputTitle.value = "";
+    inputDescription.value = "";
+  }
+}
+
+function deleteProject(id: string): void {
+  store.projects.deleteProject(id);
+}
+// ***** END OF FORM CODE
 
 const route = useRoute();
 
@@ -129,6 +169,14 @@ onMounted(async () => {
 </script>
 
 <style>
+/* DELETE */
+form {
+  display: flex;
+  flex-flow: column nowrap;
+  width: 50%;
+}
+/* END OF DELETE */
+
 #app {
   display: flex;
   flex-flow: row nowrap;
