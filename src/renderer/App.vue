@@ -75,7 +75,7 @@
 </template>
 
 <script setup lang="ts">
-import { provide, ref, computed, watch, onBeforeUpdate } from "vue";
+import { provide, ref, computed, watch, onBeforeUpdate, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import store from "./store/index";
 import TheSidebar from "./components/TheSidebar.vue";
@@ -118,6 +118,11 @@ watch(() => route.path, store.setters.setActiveView);
 onBeforeUpdate(() => {
   leftColumnDivs.value = [];
   rightColumnDivs.value = [];
+});
+
+onMounted(async () => {
+  await store.actions.getProjects();
+  console.log(store.state.projects);
 });
 </script>
 
