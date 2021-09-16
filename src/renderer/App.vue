@@ -163,7 +163,6 @@ onBeforeUpdate(() => {
 onMounted(async () => {
   if (store.projects !== null) {
     await store.projects.getProjects();
-    console.log(store.projects.state.all);
   }
 });
 </script>
