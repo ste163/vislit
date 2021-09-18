@@ -1,12 +1,12 @@
 // Handles all column events and logic
 import { computed, ComputedRef, Ref, ref } from "vue";
-import Column from "@/interfaces/Column";
+import IColumn from "@/interfaces/IColumn";
 
 type columnLayout = {
-  sortedColumns: ComputedRef<Column[]>;
+  sortedColumns: ComputedRef<IColumn[]>;
   isDraggingActive: ComputedRef<boolean>;
   activeDragColumnHeader: Ref<string>;
-  getColumnsInDropZone: (dropZone: string) => Column[];
+  getColumnsInDropZone: (dropZone: string) => IColumn[];
   onColumnDragStart: (
     event: DragEvent,
     header: string,
@@ -22,7 +22,7 @@ export default function useColumns(
   leftDropZoneColumns: Ref<HTMLDivElement[]>,
   rightDropZoneColumns: Ref<HTMLDivElement[]>
 ): columnLayout {
-  const columns = ref<Array<Column>>([
+  const columns = ref<Array<IColumn>>([
     // {
     //   header: "Settings",
     //   dropZone: "left",
@@ -37,7 +37,7 @@ export default function useColumns(
     // { header: "Lexicons", dropZone: "right", position: 0 },
   ]);
 
-  const activeDragColumn = ref<Column>({
+  const activeDragColumn = ref<IColumn>({
     header: "blank",
     dropZone: "blank",
     position: Number.NEGATIVE_INFINITY,
@@ -112,7 +112,7 @@ export default function useColumns(
   // ******
   // Helpers
   // ******
-  function getColumnsInDropZone(dropZone: string): Column[] {
+  function getColumnsInDropZone(dropZone: string): IColumn[] {
     return sortedColumns.value.filter((column) => column.dropZone === dropZone);
   }
 
@@ -183,13 +183,13 @@ export default function useColumns(
   }
 
   function sortColumnsOnDrag(
-    activeDragColumn: Column,
+    activeDragColumn: IColumn,
     closestIndex: number
   ): void {
     const columnsInDropZone = getColumnsInDropZone(
       currentHoveredDropZone.value
     );
-    const columnToRight: Column = columns.value[closestIndex]; // needs to be based on the full columns array to get correct column
+    const columnToRight: IColumn = columns.value[closestIndex]; // needs to be based on the full columns array to get correct column
 
     if (columnToRight !== undefined) {
       activeDragColumn.position = columnToRight.position - 1;
@@ -201,8 +201,8 @@ export default function useColumns(
   }
 
   function positionColumnToFarRight(
-    dropZoneColumns: Column[],
-    activeDragColumn: Column
+    dropZoneColumns: IColumn[],
+    activeDragColumn: IColumn
   ): void {
     const farthestRightColumn = dropZoneColumns[dropZoneColumns.length - 1];
 
@@ -215,7 +215,9 @@ export default function useColumns(
     }
   }
 
-  function findDuplicateColumnPosition(dropZoneColumns: Array<Column>): number {
+  function findDuplicateColumnPosition(
+    dropZoneColumns: Array<IColumn>
+  ): number {
     const positions = dropZoneColumns.map((column) => column.position);
 
     const set = new Set(positions);
@@ -232,8 +234,8 @@ export default function useColumns(
   }
 
   function handleColumnSort(
-    columnsInDropZone: Column[],
-    columnToRight: Column
+    columnsInDropZone: IColumn[],
+    columnToRight: IColumn
   ): void {
     const indexOfRepositionedColumn = columnsInDropZone
       .map((column) => column.header)
@@ -253,7 +255,7 @@ export default function useColumns(
     }
   }
 
-  function handleDuplicatePositions(columnsInDropZone: Column[]): void {
+  function handleDuplicatePositions(columnsInDropZone: IColumn[]): void {
     const duplicatePosition = findDuplicateColumnPosition(columnsInDropZone);
 
     if (duplicatePosition !== undefined) {
@@ -271,7 +273,7 @@ export default function useColumns(
     }
   }
 
-  function findActiveColumn(): Column | undefined {
+  function findActiveColumn(): IColumn | undefined {
     const activeColumn = columns.value.find(
       (column) => column.header === activeDragColumnHeader.value
     );
@@ -307,13 +309,13 @@ export default function useColumns(
     assignPositionByIndex(rightColumns);
   }
 
-  function assignPositionByIndex(columnsToReposition: Column[]): void {
+  function assignPositionByIndex(columnsToReposition: IColumn[]): void {
     for (let i = 0; i < columnsToReposition.length; i++) {
       columnsToReposition[i].position = i * 2;
     }
   }
 
-  function sortColumns(): Array<Column> {
+  function sortColumns(): Array<IColumn> {
     return columns.value.sort((a, b) => {
       if (a.position < b.position) {
         return -1;
