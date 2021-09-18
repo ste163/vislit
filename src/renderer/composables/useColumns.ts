@@ -1,6 +1,7 @@
 // Handles all column events and logic
 import { computed, ComputedRef, Ref, ref } from "vue";
 import IColumn from "@/interfaces/IColumn";
+import IStore from "../store/interfaces/IStore";
 
 type columnLayout = {
   sortedColumns: ComputedRef<IColumn[]>;
@@ -19,26 +20,15 @@ type columnLayout = {
 
 // Need to pass in HTMLDivElements because I need real references from template to get sizes
 export default function useColumns(
+  store: IStore,
   leftDropZoneColumns: Ref<HTMLDivElement[]>,
   rightDropZoneColumns: Ref<HTMLDivElement[]>
 ): columnLayout {
-  const columns = ref<Array<IColumn>>([
-    // {
-    //   header: "Settings",
-    //   dropZone: "left",
-    //   position: 0,
-    // },
-    // {
-    //   header: "Projects",
-    //   dropZone: "left",
-    //   position: 1,
-    // },
-    // { header: "Notes", dropZone: "left", position: 2 },
-    // { header: "Lexicons", dropZone: "right", position: 0 },
-  ]);
+  const columns = ref<Array<IColumn>>(store.application.state.columns);
 
   const activeDragColumn = ref<IColumn>({
     header: "blank",
+    isActive: true,
     dropZone: "blank",
     position: Number.NEGATIVE_INFINITY,
   });
@@ -316,7 +306,7 @@ export default function useColumns(
   }
 
   function sortColumns(): Array<IColumn> {
-    return columns.value.sort((a, b) => {
+    const sorted = columns.value.sort((a, b) => {
       if (a.position < b.position) {
         return -1;
       } else if (a.position > b.position) {
@@ -325,6 +315,12 @@ export default function useColumns(
         return 0;
       }
     });
+
+    return getOnlyActiveColumns(sorted);
+  }
+
+  function getOnlyActiveColumns(columns: Array<IColumn>): Array<IColumn> {
+    return columns.filter((column) => column.isActive === true);
   }
 
   const sortedColumns = computed(() => sortColumns());

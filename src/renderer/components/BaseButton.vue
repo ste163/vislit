@@ -8,7 +8,6 @@
       :spanHeight="spanHeight"
       :spanWidth="spanWidth"
       :spanLeft="spanLeft"
-      :spanTop="spanTop"
     />
   </button>
 </template>
@@ -47,7 +46,6 @@ const isActive = ref<boolean>(true); // needs to be based in
 const spanHeight = ref<string>("0px");
 const spanWidth = ref<string>("0px");
 const spanLeft = ref<string>("0px");
-const spanTop = ref<string>("0px");
 
 function setActive(e: MouseEvent): void {
   isActive.value = !isActive.value;
@@ -55,9 +53,6 @@ function setActive(e: MouseEvent): void {
   spanWidth.value = spanHeight.value = `${buttonDiameter.value}px`;
   spanLeft.value = `${
     e.clientX - (button.value.offsetLeft + buttonRadius.value)
-  }px`;
-  spanTop.value = `${
-    e.clientY - (button.value.offsetTop + buttonRadius.value)
   }px`;
 }
 

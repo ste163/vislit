@@ -73,9 +73,11 @@
 
   --black: #333333;
 
-  --blue: #3772ff;
-
+  --lightGray: #f0f0f0;
   --white: white;
+
+  /* Should probably call this primary */
+  --blue: #3772ff;
 }
 
 /* overrides */

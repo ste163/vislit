@@ -9,9 +9,25 @@ export default class ApplicationStore implements IApplicationStore {
   constructor() {
     // TODO:
     // Read last activeView state from localStorage; If none, set to "/"
+    // Columns needs to be pulled/saved in localStorage
     this.state = reactive({
       activeView: "/",
-      columns: [],
+      columns: [
+        {
+          header: "Settings",
+          isActive: false,
+          dropZone: "left",
+          position: 0,
+        },
+        {
+          header: "Projects",
+          isActive: false,
+          dropZone: "left",
+          position: 1,
+        },
+        { header: "Notes", isActive: false, dropZone: "left", position: 2 },
+        { header: "Lexicons", isActive: false, dropZone: "right", position: 0 },
+      ],
     });
   }
 

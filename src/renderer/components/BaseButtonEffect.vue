@@ -29,11 +29,6 @@ const props = defineProps({
     required: true,
     default: "0px",
   },
-  spanTop: {
-    type: String,
-    required: true,
-    default: "0px",
-  },
 });
 </script>
 
@@ -68,7 +63,6 @@ const props = defineProps({
   height: v-bind(spanHeight);
   width: v-bind(spanWidth);
   left: v-bind(spanLeft);
-  top: v-bind(spanTop);
 }
 
 @keyframes effect-start {

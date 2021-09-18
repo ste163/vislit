@@ -98,7 +98,7 @@ const {
   onColumnDragEnd,
   onDropZoneDragOver,
   onColumnDrop,
-} = useColumns(leftColumnDivs, rightColumnDivs);
+} = useColumns(store, leftColumnDivs, rightColumnDivs);
 
 function checkIsDropZoneEmpty(dropZone: string): boolean {
   const dropZoneColumns = sortedColumns.value.filter(

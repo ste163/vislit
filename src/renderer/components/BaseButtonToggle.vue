@@ -1,13 +1,4 @@
 <template>
-  <!--
-SHOULD PROBABLY
-have another BaseButton that holds the container, text, and icon
-Will need to figure out how to pass slots from parent->child->grandchild
-https://forum.vuejs.org/t/nested-slots/18264
-ACTUALLY
-Nesting slots seems like overkill.
-Having two buttons that use the ".button" might be good enough; it's not horribly un-DRY
--->
   <button ref="button" class="button" @click="setActive">
     <div class="text-wrapper" :class="isActive ? 'text-wrapper-active' : ''">
       <div class="icon-container">
@@ -21,7 +12,6 @@ Having two buttons that use the ".button" might be good enough; it's not horribl
       :spanHeight="spanHeight"
       :spanWidth="spanWidth"
       :spanLeft="spanLeft"
-      :spanTop="spanTop"
     />
   </button>
 </template>
@@ -50,8 +40,8 @@ const props = defineProps({
   },
   activeEffectColor: {
     type: String,
-    default: "var(--blue)"
-  }
+    default: "var(--blue)",
+  },
 });
 
 const button = ref<HTMLButtonElement>(null);
@@ -61,16 +51,12 @@ const buttonRadius = ref<number>(0);
 const spanHeight = ref<string>("0px");
 const spanWidth = ref<string>("0px");
 const spanLeft = ref<string>("0px");
-const spanTop = ref<string>("0px");
 
 function setActive(e: MouseEvent): void {
   // Position span based on mouse and button size
   spanWidth.value = spanHeight.value = `${buttonDiameter.value}px`;
   spanLeft.value = `${
     e.clientX - (button.value.offsetLeft + buttonRadius.value)
-  }px`;
-  spanTop.value = `${
-    e.clientY - (button.value.offsetTop + buttonRadius.value)
   }px`;
 }
 
@@ -86,7 +72,6 @@ onMounted(() => {
     // Active route onMount needs size for fill effect
     spanWidth.value = spanHeight.value = `${buttonDiameter.value}px`;
     spanLeft.value = `${0 - (button.value.offsetLeft + buttonRadius.value)}px`;
-    spanTop.value = `${0 - (button.value.offsetTop + buttonRadius.value)}px`;
   }
 });
 </script>
@@ -119,7 +104,8 @@ onMounted(() => {
 
   /*
    margin handles positioning ->
-   this could be calculated onMounted so the text and icon will always be properly centered
+   this could be calculated onMounted so the
+   text and icon will always be properly centered
   */
 
   color: v-bind(baseTextColor) !important;
@@ -127,8 +113,7 @@ onMounted(() => {
 }
 
 .text-wrapper-active {
-  fill: var(--white);
-
+  fill: v-bind(activeTextColor) !important;
   color: v-bind(activeTextColor) !important;
   transition: all 0.275s ease-out;
 }

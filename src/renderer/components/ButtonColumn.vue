@@ -1,30 +1,46 @@
 <template>
-  <base-button-toggle :isActive="true">
+  <base-button-toggle
+    class="button-column"
+    @click="toggleColumnActive"
+    :isActive="isColumnActive"
+    :activeEffectColor="'var(--lightGray)'"
+    activeTextColor="'var(--black)'"
+  >
     <template v-slot:btn-icon>
       <slot name="icon"> </slot>
     </template>
-    <slot></slot>
+    <div ref="columnTitle">
+      <slot></slot>
+    </div>
   </base-button-toggle>
 </template>
 
 <script setup lang="ts">
-import { computed, inject } from "vue";
+import { inject, ref, computed } from "vue";
 import BaseButtonToggle from "./BaseButtonToggle.vue";
 import IStore from "../store/interfaces/IStore";
+import IColumn from "@/interfaces/IColumn";
 
 const store = inject("store") as IStore;
 
-// So I'll have a true/false for if the column is active
-// If it's active, obviosuly mount it to the DOM
+const columnTitle = ref<HTMLElement>();
+const column = ref<IColumn | undefined>();
 
-// eslint-disable-next-line no-undef
-const props = defineProps({
-  route: {
-    type: String,
-    required: true,
-    default: "/",
-  },
-});
+const isColumnActive = computed(() =>
+  column.value !== undefined ? column.value.isActive : false
+);
+
+function toggleColumnActive(): void {
+  const header = columnTitle.value?.textContent?.trim();
+
+  if (header !== undefined) {
+    column.value = store.application.state.columns.find(
+      (column) => column.header === header
+    );
+
+    if (column.value !== undefined) {
+      column.value.isActive = !column.value.isActive;
+    }
+  }
+}
 </script>
-
-<style scoped></style>
