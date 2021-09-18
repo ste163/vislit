@@ -96,7 +96,7 @@ import AppIconSetting from "./AppIconSetting.vue";
   background-color: var(--white);
   width: 10em;
   padding: 0.5em 0em;
-  box-shadow: black -20px 0px 30px;
+  box-shadow: #00000027 -10px 0px 30px;
   user-select: none;
   z-index: 1;
 }

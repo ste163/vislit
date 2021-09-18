@@ -7,7 +7,7 @@
     @dragenter.prevent
   >
     <slot>
-      <!-- Column DropZones only take ColumnContainers -->
+      <!-- Column Containers -->
     </slot>
   </div>
 </template>
@@ -54,7 +54,7 @@ export default defineComponent({
   display: flex;
   flex-flow: row nowrap;
   background-color: #3773ff50;
-  min-width: 3em;
+  min-width: 10em;
 }
 
 .disable-drop-zone {

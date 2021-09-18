@@ -29,7 +29,6 @@
         }
       "
       :key="column.header"
-      class="column-draggable"
       :class="
         activeDragColumnHeader === column.header ? 'column-drag-active' : ''
       "
@@ -37,14 +36,13 @@
       @dragstart="onColumnDragStart($event, column.header, 'left')"
       @dragend="onColumnDragEnd()"
     >
-      {{ column.header }}
+      <column-container :column="column" />
     </div>
   </column-drop-zone>
 
   <main class="dashboard">
     <router-view />
   </main>
-
   <column-drop-zone
     :dropZone="'right'"
     :isDraggingActive="isDraggingActive"
@@ -52,6 +50,8 @@
     @drop="onColumnDrop($event, 'right')"
     @dragover="onDropZoneDragOver($event, 'right')"
   >
+    <!-- MUST Move the drag, etc. pieces from the <div> onto the actual column container
+    Otherwise the drag lives not on the header but the entire object-->
     <div
       v-for="(column, i) in getColumnsInDropZone('right')"
       :ref="
@@ -61,7 +61,6 @@
         }
       "
       :key="column.header"
-      class="column-draggable"
       :class="
         activeDragColumnHeader === column.header ? 'column-drag-active' : ''
       "
@@ -69,7 +68,7 @@
       @dragstart="onColumnDragStart($event, column.header, 'right')"
       @dragend="onColumnDragEnd()"
     >
-      {{ column.header }}
+      <column-container :column="column" />
     </div>
   </column-drop-zone>
 </template>
@@ -80,6 +79,7 @@ import { useRoute } from "vue-router";
 import store from "./store/index";
 import TheSidebar from "./components/TheSidebar.vue";
 import ColumnDropZone from "./components/ColumnDropZone.vue";
+import ColumnContainer from "./components/ColumnContainer.vue";
 import useColumns from "./composables/useColumns";
 
 provide("store", store); // Makes store available to every child component
@@ -136,13 +136,6 @@ onMounted(async () => {
 .dashboard {
   flex-grow: 1;
   margin-left: 1em;
-}
-
-.column-draggable {
-  background-color: white;
-  border-right: 2px black solid;
-  width: 6em;
-  cursor: move;
 }
 
 .column-drag-active {

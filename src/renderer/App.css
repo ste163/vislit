@@ -62,9 +62,9 @@
   /* Font */
   --fontFamilySans: "Heebo", sans-serif;
   --fontFamilySerif: "Noto", serif;
-  --LetterSpacingSmaller: 0.05em;
-  --LetterSpacingSmall: 0.1em;
-  --LetterSpacingMedium: 0.2em;
+  --letterSpacingSmaller: 0.05em;
+  --letterSpacingSmall: 0.1em;
+  --letterSpacingMedium: 0.2em;
 
   /* Color */
   --dashboardBackground: #e5e5e5;
@@ -73,11 +73,14 @@
 
   --black: #333333;
 
+  --lightestGray: #f6f6f6;
   --lightGray: #f0f0f0;
   --white: white;
 
   /* Should probably call this primary */
   --blue: #3772ff;
+
+  /* Letter Spacing */
 }
 
 /* overrides */
@@ -88,6 +91,7 @@ body {
   color: var(--black);
   margin: 0;
   padding: 0;
+  overflow: hidden;
 }
 
 button {

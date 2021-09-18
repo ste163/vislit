@@ -14,19 +14,19 @@ export default class ApplicationStore implements IApplicationStore {
       activeView: "/",
       columns: [
         {
-          header: "Settings",
+          header: "Projects",
           isActive: false,
           dropZone: "left",
           position: 0,
         },
+        { header: "Notes", isActive: false, dropZone: "left", position: 1 },
+        { header: "Lexicons", isActive: false, dropZone: "left", position: 2 },
         {
-          header: "Projects",
+          header: "Settings",
           isActive: false,
           dropZone: "left",
-          position: 1,
+          position: 3,
         },
-        { header: "Notes", isActive: false, dropZone: "left", position: 2 },
-        { header: "Lexicons", isActive: false, dropZone: "right", position: 0 },
       ],
     });
   }
