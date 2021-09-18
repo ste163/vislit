@@ -1,16 +1,4 @@
 <template>
-  <!-- TODO -->
-  <!-- Create Style Template Columns that use Slots -->
-  <!-- Allow columns to be created when clicking a nav item -->
-  <!-- Allow columns to be replaced when a new one is clicked (ie, its content changing) -->
-  <!-- Allow columns to be pinned/locked -->
-  <!-- Allow columns to be resizable -->
-  <!-- Allow columns to only be dragged on the header -->
-  <!-- DONE - Only show drop-zones when the user is dragging a column -->
-  <!-- DONE - DropZone Component-->
-  <!-- DONE - Move all column logic & saving into a composable -->
-  <!-- DONE - Allow columns to be dragged and dropped -->
-  <!-- DONE - Allow columns to be ordered in their dropzone -->
   <the-sidebar />
 
   <column-drop-zone

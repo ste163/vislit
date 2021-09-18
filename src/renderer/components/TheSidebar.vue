@@ -1,8 +1,8 @@
 <template>
   <nav class="sidebar-container">
     <!-- TODO -->
-    <!-- Needs to include props for: isTextShown, isActive, button's active color -->
-    <!-- Create the toggle buttons for columns, that create columns -> which needs a new button that uses the BaseButtonToggle -->
+    <!-- Make sidebar minimize-able -->
+    <!-- Needs to include props for: isTextShown which has isMinimized passed in -->
     <div>
       <div class="sidebar-header" draggable="false">Views</div>
       <button-router-link :route="'/'" class="sidebar-button">
