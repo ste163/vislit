@@ -17,7 +17,7 @@ type columnLayout = {
   onColumnDrop: (event: DragEvent, dropzone: string) => void;
 };
 
-// Need to pass in HTMLDivElements because I need the real references from the template
+// Need to pass in HTMLDivElements because I need real references from template to get sizes
 export default function useColumns(
   leftDropZoneColumns: Ref<HTMLDivElement[]>,
   rightDropZoneColumns: Ref<HTMLDivElement[]>
@@ -176,7 +176,7 @@ export default function useColumns(
         // then we are hovering to the left of a column, so begin repositioning
         sortColumnsOnDrag(activeDragColumn, closestIndex);
       } else {
-        // else we're hovering to the farthest right of a dropzone
+        // else we're hovering to the farthest right of a drop zone
         positionColumnToFarRight(dropZoneColumns, activeDragColumn);
       }
     }
@@ -193,7 +193,7 @@ export default function useColumns(
 
     if (columnToRight !== undefined) {
       activeDragColumn.position = columnToRight.position - 1;
-      columnToRight.position = columnToRight.position + 1; //  must update the columnToRight position or sorting can have too many duplicates
+      columnToRight.position = columnToRight.position + 1; // must update the columnToRight position or sorting can have too many duplicates
 
       handleColumnSort(columnsInDropZone, columnToRight);
       handleDuplicatePositions(columnsInDropZone);
