@@ -40,8 +40,7 @@
       Thesaurus
     </button-router-link>
 
-    <!-- Columns -->
-    <!-- <div class="sidebar-header top-margin" draggable="false">Columns</div> -->
+    <div class="sidebar-header top-margin" draggable="false">Columns</div>
     <!--
     Toggle Buttons for:
     - Projects

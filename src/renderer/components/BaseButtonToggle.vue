@@ -16,6 +16,7 @@ Having two buttons that use the ".button" might be good enough; it's not horribl
       <slot></slot>
     </div>
     <base-button-effect
+      :activeColor="activeEffectColor"
       :isActive="!isActive"
       :spanHeight="spanHeight"
       :spanWidth="spanWidth"
@@ -47,6 +48,10 @@ const props = defineProps({
     type: String,
     default: "var(--white)",
   },
+  activeEffectColor: {
+    type: String,
+    default: "var(--blue)"
+  }
 });
 
 const button = ref<HTMLButtonElement>(null);

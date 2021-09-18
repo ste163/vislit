@@ -110,7 +110,7 @@ function checkIsDropZoneEmpty(dropZone: string): boolean {
 const isLeftColumnDivEmpty = computed(() => checkIsDropZoneEmpty("left"));
 const isRightColumnDivEmpty = computed(() => checkIsDropZoneEmpty("right"));
 
-watch(() => route.path, store.setters.setActiveView);
+watch(() => route.path, store.application.setActiveView);
 
 // Needed to reset references based on vue docs
 // TODO: Check to see if that's really needed

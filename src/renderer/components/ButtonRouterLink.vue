@@ -12,7 +12,7 @@
 <script setup lang="ts">
 import { computed, inject } from "vue";
 import BaseButtonToggle from "./BaseButtonToggle.vue";
-import IStore from "@/interfaces/IStore";
+import IStore from "../store/interfaces/IStore";
 
 const store = inject("store") as IStore;
 
@@ -26,7 +26,7 @@ const props = defineProps({
 });
 
 const isActiveRoute = computed(() =>
-  store.state.activeView === props.route ? true : false
+  store.application.state.activeView === props.route ? true : false
 );
 </script>
 
