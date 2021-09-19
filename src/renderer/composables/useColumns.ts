@@ -31,7 +31,7 @@ export default function useColumns(
   leftDropZoneColumns: Ref<HTMLDivElement[]>,
   rightDropZoneColumns: Ref<HTMLDivElement[]>
 ): columnLayout {
-  const columns = ref<Array<IColumn>>(store.application.state.columns);
+  const columns = store.application.state.columns;
 
   const activeDragColumn = ref<IColumn>({
     header: "blank",
@@ -76,7 +76,7 @@ export default function useColumns(
       if (event.dataTransfer !== null) {
         currentHoveredDropZone.value = dropZone;
 
-        columns.value.forEach((column) => {
+        columns.forEach((column) => {
           if (column.header === activeDragColumnHeader.value) {
             column.dropZone = dropZone;
           }
@@ -192,7 +192,7 @@ export default function useColumns(
     const columnsInDropZone = getColumnsInDropZone(
       currentHoveredDropZone.value
     );
-    const columnToRight: IColumn = columns.value[closestIndex]; // needs to be based on the full columns array to get correct column
+    const columnToRight: IColumn = columns[closestIndex]; // needs to be based on the full columns array to get correct column
 
     if (columnToRight !== undefined) {
       const farRightColumn = columnsInDropZone[columnsInDropZone.length - 1];
@@ -245,7 +245,6 @@ export default function useColumns(
 
   function handleDuplicatePositions(columnsInDropZone: IColumn[]): void {
     const duplicatePosition = findDuplicateColumnPosition(columnsInDropZone);
-    console.log("dupe position", duplicatePosition);
 
     if (duplicatePosition !== undefined) {
       const indexOfFirstDuplicate = columnsInDropZone
@@ -254,8 +253,8 @@ export default function useColumns(
 
       if (indexOfFirstDuplicate !== undefined) {
         for (let i = indexOfFirstDuplicate; i < columnsInDropZone.length; i++) {
-          if (i !== indexOfFirstDuplicate) {
-            columnsInDropZone[i].position = columnsInDropZone[i].position + i;
+          if (i === indexOfFirstDuplicate) {
+            columnsInDropZone[i].position = i - 1;
           }
         }
       }
@@ -281,7 +280,7 @@ export default function useColumns(
   }
 
   function findActiveColumn(): IColumn | undefined {
-    const activeColumn = columns.value.find(
+    const activeColumn = columns.find(
       (column) => column.header === activeDragColumnHeader.value
     );
 
@@ -294,7 +293,7 @@ export default function useColumns(
   }
 
   function findColumnIndexByInnerHTML(innerHTML: string): number {
-    return columns.value.map((column) => column.header).indexOf(innerHTML);
+    return columns.map((column) => column.header).indexOf(innerHTML);
   }
 
   function simplifyColumnPositionsOnDrop(): void {
@@ -303,10 +302,8 @@ export default function useColumns(
     // based on the length of each drop zone array
 
     // Need the state and not the div references
-    const leftColumns = columns.value.filter(
-      (column) => column.dropZone === "left"
-    );
-    const rightColumns = columns.value.filter(
+    const leftColumns = columns.filter((column) => column.dropZone === "left");
+    const rightColumns = columns.filter(
       (column) => column.dropZone === "right"
     );
 
@@ -323,7 +320,7 @@ export default function useColumns(
   }
 
   function sortColumns(): Array<IColumn> {
-    const sorted = columns.value.sort((a, b) => {
+    const sorted = columns.sort((a, b) => {
       if (a.position < b.position) {
         return -1;
       } else if (a.position > b.position) {

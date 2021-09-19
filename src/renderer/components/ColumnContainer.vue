@@ -9,7 +9,7 @@
       <div class="column-header-text">
         {{ column.header }}
       </div>
-      <button-close />
+      <button-close @click="handleColumnClose" />
     </header>
 
     <div>
@@ -23,9 +23,12 @@
 </template>
 
 <script setup lang="ts">
-import { PropType } from "vue";
+import { inject, PropType } from "vue";
 import IColumn from "@/interfaces/IColumn";
 import ButtonClose from "./ButtonClose.vue";
+import IStore from "../store/interfaces/IStore";
+
+const store = inject("store") as IStore;
 
 // eslint-disable-next-line no-undef
 const props = defineProps({
@@ -34,6 +37,15 @@ const props = defineProps({
     required: true,
   },
 });
+
+function handleColumnClose(): void {
+  const activeCol = store.application.state.columns.find(
+    (col) => col.header === props.column.header
+  );
+  if (activeCol !== undefined) {
+    activeCol.isActive = false;
+  }
+}
 </script>
 
 <style scoped>

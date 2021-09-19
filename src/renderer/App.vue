@@ -1,6 +1,7 @@
 <template>
   <the-sidebar />
 
+  <!-- Drop-zones need to be wrapped in transition/transition-group -->
   <column-drop-zone
     :dropZone="'left'"
     :isDraggingActive="isDraggingActive"
@@ -8,21 +9,24 @@
     @drop="onColumnDrop($event, 'left')"
     @dragover="onDropZoneDragOver($event, 'left')"
   >
-    <!-- Need div wrapper; refs can't be on component instances, only actuall dom nodes-->
-    <div
-      v-for="column in getColumnsInDropZone('left')"
-      :ref="(el) => setDropZoneRefs(el, 'left')"
-      :key="column.header"
-    >
-      <column-container
-        :column="column"
-        :class="
-          activeDragColumnHeader === column.header ? 'column-drag-active' : ''
-        "
-        @dragstart="onColumnDragStart($event, column.header, 'left')"
-        @dragend="onColumnDragEnd()"
-      />
-    </div>
+    <transition-group name="drop-zone-column-list">
+      <!-- Need div wrapper; refs can't be on component instances, only actuall dom nodes-->
+      <div
+        v-for="column in getColumnsInDropZone('left')"
+        :ref="(el) => setDropZoneRefs(el, 'left')"
+        :key="column.header"
+        class="drop-zone-column-item"
+      >
+        <column-container
+          :column="column"
+          :class="
+            activeDragColumnHeader === column.header ? 'column-drag-active' : ''
+          "
+          @dragstart="onColumnDragStart($event, column.header, 'left')"
+          @dragend="onColumnDragEnd()"
+        />
+      </div>
+    </transition-group>
   </column-drop-zone>
 
   <main class="dashboard">
@@ -36,20 +40,23 @@
     @drop="onColumnDrop($event, 'right')"
     @dragover="onDropZoneDragOver($event, 'right')"
   >
-    <div
-      v-for="column in getColumnsInDropZone('right')"
-      :ref="(el) => setDropZoneRefs(el, 'right')"
-      :key="column.header"
-    >
-      <column-container
-        :column="column"
-        :class="
-          activeDragColumnHeader === column.header ? 'column-drag-active' : ''
-        "
-        @dragstart="onColumnDragStart($event, column.header, 'right')"
-        @dragend="onColumnDragEnd()"
-      />
-    </div>
+    <transition-group name="drop-zone-column-list">
+      <div
+        v-for="column in getColumnsInDropZone('right')"
+        :ref="(el) => setDropZoneRefs(el, 'right')"
+        :key="column.header"
+        class="drop-zone-column-item"
+      >
+        <column-container
+          :column="column"
+          :class="
+            activeDragColumnHeader === column.header ? 'column-drag-active' : ''
+          "
+          @dragstart="onColumnDragStart($event, column.header, 'right')"
+          @dragend="onColumnDragEnd()"
+        />
+      </div>
+    </transition-group>
   </column-drop-zone>
 </template>
 
@@ -128,5 +135,21 @@ onMounted(async () => {
 
 .column-drag-active {
   opacity: 0.5;
+}
+
+/* Column animations */
+.drop-zone-column-item {
+  transition: all 0.5s ease;
+  display: inline-block;
+}
+
+.drop-zone-column-list-enter-from,
+.drop-zone-column-list-leave-to {
+  opacity: 0;
+  transform: translateX(15px);
+}
+
+.drop-zone-column-list-leave-active {
+  position: absolute;
 }
 </style>
