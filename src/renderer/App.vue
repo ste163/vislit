@@ -8,29 +8,27 @@
     @drop="onColumnDrop($event, 'left')"
     @dragover="onDropZoneDragOver($event, 'left')"
   >
+    <!-- Need div wrapper; refs can't be on component instances, only actuall dom nodes-->
     <div
-      v-for="(column, i) in getColumnsInDropZone('left')"
-      :ref="
-        (el) => {
-          // Ignore this. undefined error, adding undefined check doesn't remove it
-          if (el) this.leftColumnDivs[i] = el;
-        }
-      "
+      v-for="column in getColumnsInDropZone('left')"
+      :ref="(el) => setDropZoneRefs(el, 'left')"
       :key="column.header"
-      :class="
-        activeDragColumnHeader === column.header ? 'column-drag-active' : ''
-      "
-      draggable="true"
-      @dragstart="onColumnDragStart($event, column.header, 'left')"
-      @dragend="onColumnDragEnd()"
     >
-      <column-container :column="column" />
+      <column-container
+        :column="column"
+        :class="
+          activeDragColumnHeader === column.header ? 'column-drag-active' : ''
+        "
+        @dragstart="onColumnDragStart($event, column.header, 'left')"
+        @dragend="onColumnDragEnd()"
+      />
     </div>
   </column-drop-zone>
 
   <main class="dashboard">
     <router-view />
   </main>
+
   <column-drop-zone
     :dropZone="'right'"
     :isDraggingActive="isDraggingActive"
@@ -38,25 +36,19 @@
     @drop="onColumnDrop($event, 'right')"
     @dragover="onDropZoneDragOver($event, 'right')"
   >
-    <!-- MUST Move the drag, etc. pieces from the <div> onto the actual column container
-    Otherwise the drag lives not on the header but the entire object-->
     <div
-      v-for="(column, i) in getColumnsInDropZone('right')"
-      :ref="
-        (el) => {
-          // Ignore this. undefined error, adding undefined check doesn't remove it
-          if (el) this.rightColumnDivs[i] = el;
-        }
-      "
+      v-for="column in getColumnsInDropZone('right')"
+      :ref="(el) => setDropZoneRefs(el, 'right')"
       :key="column.header"
-      :class="
-        activeDragColumnHeader === column.header ? 'column-drag-active' : ''
-      "
-      draggable="true"
-      @dragstart="onColumnDragStart($event, column.header, 'right')"
-      @dragend="onColumnDragEnd()"
     >
-      <column-container :column="column" />
+      <column-container
+        :column="column"
+        :class="
+          activeDragColumnHeader === column.header ? 'column-drag-active' : ''
+        "
+        @dragstart="onColumnDragStart($event, column.header, 'right')"
+        @dragend="onColumnDragEnd()"
+      />
     </div>
   </column-drop-zone>
 </template>
@@ -93,6 +85,14 @@ function checkIsDropZoneEmpty(dropZone: string): boolean {
     (column) => column.dropZone === dropZone
   );
   return dropZoneColumns.length === 0 ? true : false;
+}
+
+function setDropZoneRefs(element: unknown | null, dropZone: string): void {
+  if (element !== null) {
+    dropZone === "left"
+      ? leftColumnDivs.value.push(element as HTMLDivElement)
+      : rightColumnDivs.value.push(element as HTMLDivElement);
+  }
 }
 
 const isLeftColumnDivEmpty = computed(() => checkIsDropZoneEmpty("left"));

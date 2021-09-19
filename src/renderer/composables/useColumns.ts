@@ -3,6 +3,13 @@ import { computed, ComputedRef, Ref, ref } from "vue";
 import IColumn from "@/interfaces/IColumn";
 import IStore from "../store/interfaces/IStore";
 
+// SORTING IS BROKEN AFTER IMPLEMENTING COLUMN COMPONENTS
+// Attempt to refactor it where it's based on column.position = index of where it is in the array
+// What will happen is all sorting logic will be,
+// get the item that is to the right of where I currently am
+// then set that item's position to my dragging item's position
+// and because it's all index-based, it should always sort correctly
+
 type columnLayout = {
   sortedColumns: ComputedRef<IColumn[]>;
   isDraggingActive: ComputedRef<boolean>;
@@ -120,9 +127,13 @@ export default function useColumns(
     }
 
     const allColumnsExceptActive: Array<HTMLDivElement> =
-      allColumnsInDropZone.filter(
-        (column) => column.innerHTML !== activeDragColumnHeader.value
-      );
+      allColumnsInDropZone.filter((column) => {
+        return (
+          // If Div structure changes in ColumnContainer.vue, this needs to change
+          column.children[0].children[0].children[0].innerHTML !==
+          activeDragColumnHeader.value
+        );
+      });
 
     return findClosestColumnIndex(allColumnsExceptActive, mouseX);
   }
@@ -145,8 +156,10 @@ export default function useColumns(
       if (cursorOffset < 0 && cursorOffset > closestOffset) {
         closestElement = childElement;
         closestOffset = cursorOffset;
+
+        // If Div structure changes in ColumnContainer.vue, this needs to change
         return (columnIndex = findColumnIndexByInnerHTML(
-          closestElement.innerHTML
+          closestElement.children[0].children[0].children[0].innerHTML
         ));
       } else {
         columnIndex = undefined;
@@ -182,8 +195,11 @@ export default function useColumns(
     const columnToRight: IColumn = columns.value[closestIndex]; // needs to be based on the full columns array to get correct column
 
     if (columnToRight !== undefined) {
+      const farRightColumn = columnsInDropZone[columnsInDropZone.length - 1];
       activeDragColumn.position = columnToRight.position - 1;
-      columnToRight.position = columnToRight.position + 1; // must update the columnToRight position or sorting can have too many duplicates
+      if (columnToRight.position < farRightColumn.position) {
+        columnToRight.position = columnToRight.position + 1; // must update the columnToRight position or sorting can have too many duplicates
+      }
 
       handleColumnSort(columnsInDropZone, columnToRight);
       handleDuplicatePositions(columnsInDropZone);
@@ -203,24 +219,6 @@ export default function useColumns(
     ) {
       activeDragColumn.position = farthestRightColumn.position + 1;
     }
-  }
-
-  function findDuplicateColumnPosition(
-    dropZoneColumns: Array<IColumn>
-  ): number {
-    const positions = dropZoneColumns.map((column) => column.position);
-
-    const set = new Set(positions);
-
-    const duplicate = positions.filter((position) => {
-      if (set.has(position)) {
-        set.delete(position);
-      } else {
-        return position;
-      }
-    });
-
-    return duplicate[0];
   }
 
   function handleColumnSort(
@@ -247,6 +245,7 @@ export default function useColumns(
 
   function handleDuplicatePositions(columnsInDropZone: IColumn[]): void {
     const duplicatePosition = findDuplicateColumnPosition(columnsInDropZone);
+    console.log("dupe position", duplicatePosition);
 
     if (duplicatePosition !== undefined) {
       const indexOfFirstDuplicate = columnsInDropZone
@@ -261,6 +260,24 @@ export default function useColumns(
         }
       }
     }
+  }
+
+  function findDuplicateColumnPosition(
+    dropZoneColumns: Array<IColumn>
+  ): number {
+    const positions = dropZoneColumns.map((column) => column.position);
+
+    const set = new Set(positions);
+
+    const duplicate = positions.filter((position) => {
+      if (set.has(position)) {
+        set.delete(position);
+      } else {
+        return position;
+      }
+    });
+
+    return duplicate[0];
   }
 
   function findActiveColumn(): IColumn | undefined {
@@ -301,7 +318,7 @@ export default function useColumns(
 
   function assignPositionByIndex(columnsToReposition: IColumn[]): void {
     for (let i = 0; i < columnsToReposition.length; i++) {
-      columnsToReposition[i].position = i * 2;
+      columnsToReposition[i].position = i;
     }
   }
 

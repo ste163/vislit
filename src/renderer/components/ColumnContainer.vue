@@ -1,24 +1,21 @@
 <template>
-  <!-- Main container that implements:
-    - ColumnContainerHeader
-    - ColumnContainerBody
-    
-    Handles the resize events and holds the resize handle
-    
-    Actually, those could all be handled with slots inside here...
-    that'd probably make more sense.-->
   <div class="column-container">
-    <!-- Setup layout in CSS grid to limit the need for divs -->
-    <header class="column-header">
+    <header
+      class="column-header"
+      draggable="true"
+      v-on:dragstart="$emit('dragstart', $event)"
+      v-on:dragend="$emit('dragend', $event)"
+    >
       <div class="column-header-text">
         {{ column.header }}
       </div>
       <button-close />
-      <!-- CLOSE BUTTON COMPONENT-->
     </header>
+
     <div>
       <!-- COLUMN BODY -->
     </div>
+
     <div>
       <!-- COLUMN RESIZE HANDLE -->
     </div>
