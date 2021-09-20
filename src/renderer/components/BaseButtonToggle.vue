@@ -44,7 +44,7 @@ const props = defineProps({
   },
 });
 
-const button = ref<HTMLButtonElement>(null);
+const button = ref<HTMLButtonElement | null>(null);
 const buttonDiameter = ref<number>(0);
 const buttonRadius = ref<number>(0);
 
@@ -53,25 +53,31 @@ const spanWidth = ref<string>("0px");
 const spanLeft = ref<string>("0px");
 
 function setActive(e: MouseEvent): void {
-  // Position span based on mouse and button size
-  spanWidth.value = spanHeight.value = `${buttonDiameter.value}px`;
-  spanLeft.value = `${
-    e.clientX - (button.value.offsetLeft + buttonRadius.value)
-  }px`;
+  if (button.value !== null) {
+    // Position span based on mouse and button size
+    spanWidth.value = spanHeight.value = `${buttonDiameter.value}px`;
+    spanLeft.value = `${
+      e.clientX - (button.value.offsetLeft + buttonRadius.value)
+    }px`;
+  }
 }
 
 onMounted(() => {
   // Button must be on DOM before getting its size
-  buttonDiameter.value = Math.max(
-    button.value.clientWidth,
-    button.value.clientHeight
-  );
-  buttonRadius.value = buttonDiameter.value / 2;
+  if (button.value !== null) {
+    buttonDiameter.value = Math.max(
+      button.value.clientWidth,
+      button.value.clientHeight
+    );
+    buttonRadius.value = buttonDiameter.value / 2;
 
-  if (props.isActive === true) {
-    // Active route onMount needs size for fill effect
-    spanWidth.value = spanHeight.value = `${buttonDiameter.value}px`;
-    spanLeft.value = `${0 - (button.value.offsetLeft + buttonRadius.value)}px`;
+    if (props.isActive === true) {
+      // Active route onMount needs size for fill effect
+      spanWidth.value = spanHeight.value = `${buttonDiameter.value}px`;
+      spanLeft.value = `${
+        0 - (button.value.offsetLeft + buttonRadius.value)
+      }px`;
+    }
   }
 });
 </script>

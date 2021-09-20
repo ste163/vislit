@@ -18,6 +18,7 @@
         class="drop-zone-column-item"
       >
         <column-container
+          :dropZone="'left'"
           :column="column"
           :class="
             activeDragColumnHeader === column.header ? 'column-drag-active' : ''
@@ -49,6 +50,7 @@
         class="drop-zone-column-item"
       >
         <column-container
+          :dropZone="'right'"
           :column="column"
           :class="
             activeDragColumnHeader === column.header ? 'column-drag-active' : ''
@@ -138,32 +140,13 @@ onMounted(async () => {
   opacity: 0.5;
 }
 
-/* Open columns - lines & drop-shadow */
-/*
-Right drop-zone is different due to CSS bug
-where a blue 1px line always showed, except when border applied
-to the .column-container. Left drop-zone was unaffected. - 09/20/2021
-*/
+/* Open column drop-shadow */
 .drop-zone-left .drop-zone-column-item:last-child {
   box-shadow: #00000005 15px 0px 15px;
-  border: none;
-}
-
-.drop-zone-left > .drop-zone-column-item {
-  border-right: solid 3px var(--white);
 }
 
 .drop-zone-right .drop-zone-column-item:first-child {
   box-shadow: #00000005 -10px 0px 15px;
-  border: none;
-}
-
-.drop-zone-right .drop-zone-column-item:first-child > .column-container {
-  border: none;
-}
-
-.drop-zone-right > .drop-zone-column-item > .column-container {
-  border-left: solid 3px var(--white);
 }
 
 /* Column animations */
