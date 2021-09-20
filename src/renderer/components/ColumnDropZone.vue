@@ -54,8 +54,10 @@ export default defineComponent({
   display: flex;
   flex-flow: row nowrap;
   background-color: #3773ff50;
+  position: relative;
   min-width: 2em;
   animation: drop-zone 3s infinite;
+  transition: all 0.15s;
 }
 
 @keyframes drop-zone {
@@ -70,7 +72,9 @@ export default defineComponent({
   }
 }
 
+/* NOT DISPLAY NONE, WIDTH 0! */
 .disable-drop-zone {
-  display: none;
+  min-width: 0px !important;
+  transition: all 0.15s;
 }
 </style>

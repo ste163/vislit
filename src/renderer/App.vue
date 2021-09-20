@@ -2,13 +2,14 @@
   <the-sidebar />
 
   <column-drop-zone
+    class="drop-zone-left"
     :dropZone="'left'"
     :isDraggingActive="isDraggingActive"
     :isDropZoneEmpty="isLeftColumnDivEmpty"
     @drop="onColumnDrop($event, 'left')"
     @dragover="onDropZoneDragOver($event, 'left')"
   >
-    <transition-group name="drop-zone-column-list">
+    <transition-group name="drop-zone-column-list" mode="in-out">
       <!-- Need div wrapper; refs can't be on component instances, only actuall dom nodes-->
       <div
         v-for="column in getColumnsInDropZone('left')"
@@ -33,13 +34,14 @@
   </main>
 
   <column-drop-zone
+    class="drop-zone-right"
     :dropZone="'right'"
     :isDraggingActive="isDraggingActive"
     :isDropZoneEmpty="isRightColumnDivEmpty"
     @drop="onColumnDrop($event, 'right')"
     @dragover="onDropZoneDragOver($event, 'right')"
   >
-    <transition-group name="drop-zone-column-list">
+    <transition-group name="drop-zone-column-list" mode="in-out">
       <div
         v-for="column in getColumnsInDropZone('right')"
         :ref="(el) => setDropZoneRefs(el, 'right')"
@@ -136,20 +138,44 @@ onMounted(async () => {
   opacity: 0.5;
 }
 
-/* Column animations */
+/* Open columns - lines & drop-shadow */
 /*
-SPLIT INTO LEFT DROPZONE & RIGHT
-SO THEY COME IN FROM THE CORRECT ANGLE
+Right drop-zone is different due to CSS bug
+where a blue 1px line always showed, except when border applied
+to the .column-container. Left drop-zone was unaffected. - 09/20/2021
 */
+.drop-zone-left .drop-zone-column-item:last-child {
+  box-shadow: #00000005 15px 0px 15px;
+  border: none;
+}
+
+.drop-zone-left > .drop-zone-column-item {
+  border-right: solid 3px var(--white);
+}
+
+.drop-zone-right .drop-zone-column-item:first-child {
+  box-shadow: #00000005 -10px 0px 15px;
+  border: none;
+}
+
+.drop-zone-right .drop-zone-column-item:first-child > .column-container {
+  border: none;
+}
+
+.drop-zone-right > .drop-zone-column-item > .column-container {
+  border-left: solid 3px var(--white);
+}
+
+/* Column animations */
 .drop-zone-column-item {
-  transition: all 0.3s;
+  transition: all 0.25s;
   display: inline-block;
 }
 
 .drop-zone-column-list-enter-from,
 .drop-zone-column-list-leave-to {
   opacity: 0;
-  transform: translateX(15px);
+  transform: translateY(10px);
 }
 
 .drop-zone-column-list-leave-active {

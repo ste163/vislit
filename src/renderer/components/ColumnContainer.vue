@@ -53,7 +53,6 @@ function handleColumnClose(): void {
   min-width: 10em;
   background-color: var(--lightestGray);
   height: 100%;
-  box-shadow: #00000045 5px 0px 10px;
 }
 .column-header {
   background-color: var(--lightGray);
