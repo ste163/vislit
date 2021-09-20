@@ -78,21 +78,28 @@ function handleColumnClose(): void {
 // Then, once all that is good, move into a composable
 // so that I can useResize anywhere! OR move it into a
 // useColumnResize composable
-
-// The actual width will need to be set in App.vue on the ColumnContainer's parent wrapper.
-// Which is fine, because we're setting the width based on global state, so I can v-bind that
-// width in pixels to whatever I want
 function handleResizeMouseDown(e: MouseEvent): void {
   isResizing.value = true;
   const startingX = e.clientX;
 
   window.addEventListener("mousemove", onMouseMove);
   window.addEventListener("mouseup", onMouseUp);
+  const columnToResize =
+    columnElement.value !== null
+      ? columnElement.value.getBoundingClientRect()
+      : null;
 
   function onMouseMove(e: MouseEvent): void {
-    if (columnElement.value !== null) {
-      const columnToResize = columnElement.value.getBoundingClientRect();
-      columnWidth.value = `${columnToResize.width - (startingX - e.clientX)}px`;
+    if (columnElement.value !== null && columnToResize !== null) {
+      if (props.dropZone === "left") {
+        columnWidth.value = `${
+          columnToResize.width - (startingX - e.clientX)
+        }px`;
+      } else {
+        columnWidth.value = `${
+          columnToResize.width + (startingX - e.clientX)
+        }px`;
+      }
     }
   }
 
@@ -108,14 +115,14 @@ const resizeHandleLocation = computed(() =>
 );
 </script>
 
-<style scoped>
+<style>
 .column-container {
   display: flex;
   flex-flow: row nowrap;
   flex-direction: v-bind(resizeHandleLocation);
-  min-width: 10em;
+  min-width: 200px;
   width: v-bind(columnWidth);
-  max-width: 100%;
+  max-width: 700px;
   background-color: var(--lightestGray);
   height: 100%;
 }

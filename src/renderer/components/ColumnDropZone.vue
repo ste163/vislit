@@ -55,8 +55,9 @@ export default defineComponent({
   flex-flow: row nowrap;
   background-color: #3773ff50;
   position: relative;
-  min-width: 2em;
-  max-width: 50vw;
+  min-width: 30px;
+  width: fit-content;
+  max-width: 2000px;
   animation: drop-zone 3s infinite;
   transition: all 0.15s;
 }

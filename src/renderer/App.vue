@@ -134,6 +134,13 @@ onMounted(async () => {
 .dashboard {
   flex-grow: 1;
   margin-left: 1em;
+  /*
+  TODO:
+  SET user-select to none when either
+  dragging columns OR resizing.
+  Need global ApplicationStore state for these
+  */
+  user-select: none;
 }
 
 .column-drag-active {
