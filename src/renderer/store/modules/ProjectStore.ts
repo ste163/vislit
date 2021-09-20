@@ -1,6 +1,6 @@
 import { reactive } from "vue";
 import IProject from "@/interfaces/IProject";
-import IProjectStore from "./interfaces/IProjectStore";
+import IProjectStore from "../interfaces/IProjectStore";
 import ProjectState from "@/renderer/store/types/ProjectState";
 // Instead of hitting API, need to hit backend --- yet to be implemented
 

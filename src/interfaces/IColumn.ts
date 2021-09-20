@@ -3,4 +3,5 @@ export default interface IColumn {
   isActive: boolean;
   dropZone: string;
   position: number;
+  width: string; // in px; ie '150px'
 }

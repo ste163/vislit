@@ -71,9 +71,17 @@ function handleColumnClose(): void {
 // dropZoneRightMaxWidth
 // and ensure that when we're resizing, we're always less than that or ===
 
+// ALSO: Need to check column default widths against the dropZone max width:
+// If the widthOfColumnsInDropZone would be greater than the dropZoneMaxWidth, then
+// show an error message -> UNLESS it can open that item on the other dropZone.
+
 // Then, once all that is good, move into a composable
 // so that I can useResize anywhere! OR move it into a
 // useColumnResize composable
+
+// The actual width will need to be set in App.vue on the ColumnContainer's parent wrapper.
+// Which is fine, because we're setting the width based on global state, so I can v-bind that
+// width in pixels to whatever I want
 function handleResizeMouseDown(e: MouseEvent): void {
   isResizing.value = true;
   const startingX = e.clientX;

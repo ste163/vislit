@@ -1,7 +1,7 @@
 import { reactive } from "vue";
 // import IColumn from "@/interfaces/IColumn"
-import IApplicationStore from "./interfaces/IApplicationStore";
-import ApplicationState from "./types/ApplicationState";
+import IApplicationStore from "../interfaces/IApplicationStore";
+import ApplicationState from "../types/ApplicationState";
 
 export default class ApplicationStore implements IApplicationStore {
   public state: ApplicationState;
@@ -12,20 +12,46 @@ export default class ApplicationStore implements IApplicationStore {
     // Columns needs to be pulled/saved in localStorage
     this.state = reactive({
       activeView: "/",
+      dropZones: [
+        {
+          name: "left",
+          maxWidth: "100px",
+          currentWidth: "0px",
+        },
+        {
+          name: "right",
+          maxWidth: "100px",
+          currentWidth: "0px",
+        },
+      ],
       columns: [
         {
           header: "Projects",
           isActive: false,
           dropZone: "left",
           position: 0,
+          width: "200px",
         },
-        { header: "Notes", isActive: false, dropZone: "left", position: 1 },
-        { header: "Lexicons", isActive: false, dropZone: "left", position: 2 },
+        {
+          header: "Notes",
+          isActive: false,
+          dropZone: "left",
+          position: 1,
+          width: "200px",
+        },
+        {
+          header: "Lexicons",
+          isActive: false,
+          dropZone: "left",
+          position: 2,
+          width: "200px",
+        },
         {
           header: "Settings",
           isActive: false,
           dropZone: "left",
           position: 3,
+          width: "200px",
         },
       ],
     });

@@ -1,6 +1,6 @@
 import Store from "./Store";
-import ProjectStore from "./ProjectStore";
-import ApplicationStore from "./ApplicationStore";
+import ProjectStore from "./modules/ProjectStore";
+import ApplicationStore from "./modules/ApplicationStore";
 
 const applicationStore = new ApplicationStore();
 const projectStore = new ProjectStore();
