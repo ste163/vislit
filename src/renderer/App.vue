@@ -1,7 +1,6 @@
 <template>
   <the-sidebar />
 
-  <!-- Drop-zones need to be wrapped in transition/transition-group -->
   <column-drop-zone
     :dropZone="'left'"
     :isDraggingActive="isDraggingActive"
@@ -138,8 +137,12 @@ onMounted(async () => {
 }
 
 /* Column animations */
+/*
+SPLIT INTO LEFT DROPZONE & RIGHT
+SO THEY COME IN FROM THE CORRECT ANGLE
+*/
 .drop-zone-column-item {
-  transition: all 0.5s ease;
+  transition: all 0.3s;
   display: inline-block;
 }
 
