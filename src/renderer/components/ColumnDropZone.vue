@@ -56,6 +56,7 @@ export default defineComponent({
   background-color: #3773ff50;
   position: relative;
   min-width: 2em;
+  max-width: 10vw;
   animation: drop-zone 3s infinite;
   transition: all 0.15s;
 }

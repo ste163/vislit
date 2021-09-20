@@ -1,5 +1,5 @@
 <template>
-  <div ref="column" class="column-container">
+  <div ref="columnElement" class="column-container">
     <div class="column-content-container">
       <header
         class="column-header"
@@ -18,12 +18,11 @@
       </div>
     </div>
 
-    <!--
-  BASED ON PROP
-  Flip the row reverse on flexbox on the column-content-container
-  and set that column-content to the bound computed prop that reads that
--->
-    <div class="resize-handle"></div>
+    <div
+      class="resize-handle"
+      :class="isResizing ? 'resize-handle-active' : ''"
+      @mousedown="handleResizeMouseDown"
+    ></div>
   </div>
 </template>
 
@@ -34,10 +33,6 @@ import ButtonClose from "./ButtonClose.vue";
 import IStore from "../store/interfaces/IStore";
 
 const store = inject("store") as IStore;
-
-// TODO Need prop
-// for which column we're in so we know whether to
-// put the re-size handle on the left or right side
 
 // eslint-disable-next-line no-undef
 const props = defineProps({
@@ -51,7 +46,9 @@ const props = defineProps({
   },
 });
 
-// const column = ref<HTMLDivElement>(null);
+const isResizing = ref<boolean>(false);
+const columnWidth = ref<string>("10em");
+const columnElement = ref<HTMLDivElement | null>(null);
 
 function handleColumnClose(): void {
   const activeCol = store.application.state.columns.find(
@@ -62,15 +59,45 @@ function handleColumnClose(): void {
   }
 }
 
+// TODO:
+// Need global state for:
+// dropZoneLeftWidth
+// dropZoneRightWidth
+// then all the columns.width
+// This will be stored as '322px' values
+// I'll need to:
+// Add up the current columns in each dropZone and set a
+// dropZoneLeftMaxWidth
+// dropZoneRightMaxWidth
+// and ensure that when we're resizing, we're always less than that or ===
+
+// Then, once all that is good, move into a composable
+// so that I can useResize anywhere! OR move it into a
+// useColumnResize composable
+function handleResizeMouseDown(e: MouseEvent): void {
+  isResizing.value = true;
+  const startingX = e.clientX;
+
+  window.addEventListener("mousemove", onMouseMove);
+  window.addEventListener("mouseup", onMouseUp);
+
+  function onMouseMove(e: MouseEvent): void {
+    if (columnElement.value !== null) {
+      const columnToResize = columnElement.value.getBoundingClientRect();
+      columnWidth.value = `${columnToResize.width - (startingX - e.clientX)}px`;
+    }
+  }
+
+  function onMouseUp(): void {
+    isResizing.value = false;
+    window.removeEventListener("mousemove", onMouseMove);
+    window.removeEventListener("mouseup", onMouseUp);
+  }
+}
+
 const resizeHandleLocation = computed(() =>
   props.dropZone === "left" ? "row" : "row-reverse"
 );
-
-// Create all the logic for column resize here
-// and then move it into a custom hook
-// which means I'll have:
-// useColumnDrag
-// useColumnResize
 </script>
 
 <style scoped>
@@ -79,6 +106,8 @@ const resizeHandleLocation = computed(() =>
   flex-flow: row nowrap;
   flex-direction: v-bind(resizeHandleLocation);
   min-width: 10em;
+  width: v-bind(columnWidth);
+  max-width: 100%;
   background-color: var(--lightestGray);
   height: 100%;
 }
@@ -107,7 +136,8 @@ const resizeHandleLocation = computed(() =>
   transition: 0.2s all;
 }
 
-.resize-handle:hover {
+.resize-handle:hover,
+.resize-handle-active {
   width: 6px;
   background-color: var(--blue);
 }
