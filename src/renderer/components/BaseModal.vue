@@ -13,7 +13,10 @@
               class="modal-card-header-close"
             />
           </div>
-          <slot></slot>
+
+          <div class="modal-card-content">
+            <slot></slot>
+          </div>
         </div>
       </div>
     </transition>
@@ -51,10 +54,11 @@ function emitCloseModal(): void {
 .modal-card {
   position: absolute;
   top: 35%;
-  left: 50%;
+  left: 44%;
   background-color: var(--white);
   padding: 0.25em;
-  height: 100px;
+  min-height: 10em;
+  max-height: fit-content;
   min-width: 10em;
   max-width: fit-content;
   border-radius: 5px;
@@ -69,6 +73,11 @@ function emitCloseModal(): void {
 
 .modal-card-header-close {
   padding-top: 0.26em;
+}
+
+.modal-card-content {
+  display: flex;
+  flex-flow: column nowrap;
 }
 
 /* animations */
