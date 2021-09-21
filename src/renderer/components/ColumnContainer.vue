@@ -10,11 +10,14 @@
         <div class="column-header-text">
           {{ column.header }}
         </div>
-        <button-close @click="handleColumnClose" />
+        <button-close class="column-header-close" @click="handleColumnClose" />
       </header>
 
-      <div>
-        <!-- COLUMN BODY -->
+      <div class="column-content">
+        <the-column-project v-if="column.header === 'Projects'" />
+        <the-column-note v-if="column.header === 'Notes'" />
+        <the-column-lexicon v-if="column.header === 'Lexicons'" />
+        <the-column-setting v-if="column.header === 'Settings'" />
       </div>
     </div>
 
@@ -29,8 +32,12 @@
 <script setup lang="ts">
 import { inject, PropType, ref, computed } from "vue";
 import IColumn from "@/interfaces/IColumn";
-import ButtonClose from "./ButtonClose.vue";
 import IStore from "../store/interfaces/IStore";
+import ButtonClose from "./ButtonClose.vue";
+import TheColumnProject from "./TheColumnProject.vue";
+import TheColumnNote from "./TheColumnNote.vue";
+import TheColumnLexicon from "./TheColumnLexicon.vue";
+import TheColumnSetting from "./TheColumnSetting.vue";
 
 const store = inject("store") as IStore;
 
@@ -130,17 +137,29 @@ const resizeHandleLocation = computed(() =>
 .column-content-container {
   flex-grow: 1;
 }
+
 .column-header {
-  background-color: var(--lightGray);
   display: flex;
   flex-flow: row nowrap;
   padding: 0.5em 0.75em 0.5em 0.75em;
   justify-content: space-between;
+  align-items: center;
+  background-color: var(--lightGray);
   cursor: move;
 }
+
 .column-header-text {
   font-size: 0.8rem;
   letter-spacing: var(--letterSpacingSmall);
+}
+
+.column-header-close {
+  margin-top: 0.1em !important;
+}
+
+.column-content {
+  font-size: 0.85em;
+  padding: 0.5em 0.75em 0.5em 0.75em;
 }
 
 .resize-handle {

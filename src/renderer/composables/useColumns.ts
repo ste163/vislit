@@ -38,6 +38,7 @@ export default function useColumns(
     isActive: true,
     dropZone: "blank",
     position: Number.NEGATIVE_INFINITY,
+    width: "200px",
   });
   const activeDragColumnHeader = ref<string>("");
   const currentHoveredDropZone = ref<string>("");

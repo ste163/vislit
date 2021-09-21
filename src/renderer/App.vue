@@ -140,7 +140,7 @@ onMounted(async () => {
   dragging columns OR resizing.
   Need global ApplicationStore state for these
   */
-  user-select: none;
+  /* user-select: none; */
 }
 
 .column-drag-active {
