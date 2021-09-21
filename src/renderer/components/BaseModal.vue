@@ -1,20 +1,22 @@
 <template>
   <teleport to="#modal-container">
-    <div v-if="isModalActive" class="modal-background">
-      <div class="modal-card">
-        <div class="modal-card-header">
-          <h2>
-            <slot name="header">Header</slot>
-          </h2>
+    <transition name="blur">
+      <div v-if="isModalActive" class="modal-background">
+        <div class="modal-card">
+          <div class="modal-card-header">
+            <h2>
+              <slot name="header">Header</slot>
+            </h2>
 
-          <button-close
-            @click="emitCloseModal"
-            class="modal-card-header-close"
-          />
+            <button-close
+              @click="emitCloseModal"
+              class="modal-card-header-close"
+            />
+          </div>
+          <slot></slot>
         </div>
-        <slot></slot>
       </div>
-    </div>
+    </transition>
   </teleport>
 </template>
 
@@ -67,5 +69,16 @@ function emitCloseModal(): void {
 
 .modal-card-header-close {
   padding-top: 0.26em;
+}
+
+/* animations */
+.blur-enter-active,
+.blur-leave-active {
+  transition: opacity 0.15s ease;
+}
+
+.blur-enter-from,
+.blur-leave-to {
+  opacity: 0;
 }
 </style>
