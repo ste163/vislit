@@ -105,6 +105,12 @@ button {
   cursor: pointer;
 }
 
+h2 {
+  margin: 0;
+  padding: 0;
+  font-size: 0.9em;
+}
+
 /* global */
 .button-icon {
   height: 1rem;
