@@ -1,4 +1,6 @@
 <template>
+  <!-- Move this baseModal into an delete confirmation modal component
+  the project form is going to live in the component -->
   <base-modal
     :is-modal-active="isFormModalActive"
     @close-modal="emitCloseFormModal"

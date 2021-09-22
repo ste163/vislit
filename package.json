@@ -14,9 +14,12 @@
   },
   "main": "background.js",
   "dependencies": {
+    "@vee-validate/zod": "^4.4.7",
     "core-js": "^3.6.5",
+    "vee-validate": "^4.4.11",
     "vue": "^3.2.6",
-    "vue-router": "^4.0.11"
+    "vue-router": "^4.0.11",
+    "zod": "^3.2.0-beta"
   },
   "devDependencies": {
     "@types/electron-devtools-installer": "^2.2.0",
