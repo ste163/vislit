@@ -100,7 +100,7 @@ button {
   outline: 0;
   border: 0;
   border-radius: 0.4rem;
-  padding: 1rem 1rem;
+  padding: 0.5rem 1rem;
   font-size: 0.85rem; /* Equates to ~13.5pxs -> don't go smaller than that */
   cursor: pointer;
 }

@@ -83,7 +83,7 @@ function emitCloseModal(): void {
 /* animations */
 .blur-enter-active,
 .blur-leave-active {
-  transition: opacity 0.15s ease;
+  transition: opacity 0.25s ease;
 }
 
 .blur-enter-from,

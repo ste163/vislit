@@ -1,6 +1,5 @@
 <template>
   <base-button-toggle
-    class="button-column"
     @click="toggleColumnActive"
     :isActive="isColumnActive"
     :activeEffectColor="'var(--lightGray)'"

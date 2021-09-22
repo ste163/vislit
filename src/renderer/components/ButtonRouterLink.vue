@@ -33,7 +33,7 @@ const isActiveRoute = computed(() =>
 <style scoped>
 .router-link {
   text-decoration: none;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 800;
 }
 </style>

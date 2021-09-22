@@ -1,6 +1,10 @@
 <template>
   <div>Project Column Content</div>
-  <button @click="isModalActive = !isModalActive">Create</button>
+  <base-button-click
+    @click="isModalActive = !isModalActive"
+    :background-color="'var(--white)'"
+    >Create</base-button-click
+  >
 
   <form-project-create
     :is-form-modal-active="isModalActive"
@@ -13,6 +17,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import FormProjectCreate from "./FormProjectCreate.vue";
+import BaseButtonClick from "./BaseButtonClick.vue";
 
 const isModalActive = ref<boolean>(false);
 </script>

@@ -6,9 +6,9 @@
       </div>
       <slot></slot>
     </div>
-    <base-button-effect
-      :activeColor="activeEffectColor"
+    <base-button-toggle-effect
       :isActive="!isActive"
+      :activeColor="activeEffectColor"
       :spanHeight="spanHeight"
       :spanWidth="spanWidth"
       :spanLeft="spanLeft"
@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import BaseButtonEffect from "./BaseButtonEffect.vue";
+import BaseButtonToggleEffect from "./BaseButtonToggleEffect.vue";
 
 // eslint-disable-next-line no-undef
 const props = defineProps({
@@ -89,6 +89,7 @@ onMounted(() => {
   font-weight: 900;
   width: -webkit-fill-available;
   text-align: left;
+  height: 31px;
 
   color: v-bind(baseTextColor);
   background-color: v-bind(baseBackgroundColor);
