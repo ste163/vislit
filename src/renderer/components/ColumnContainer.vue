@@ -136,6 +136,7 @@ const resizeHandleLocation = computed(() =>
 
 .column-content-container {
   flex-grow: 1;
+  width: inherit;
 }
 
 .column-header {

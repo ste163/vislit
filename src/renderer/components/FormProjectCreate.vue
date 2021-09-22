@@ -1,39 +1,34 @@
 <template>
-  <!-- Move this baseModal into an delete confirmation modal component
-  the project form is going to live in the component -->
-  <base-modal
-    :is-modal-active="isFormModalActive"
-    @close-modal="emitCloseFormModal"
-  >
-    <template v-slot:header>Create Project</template>
+  <div>
+    <!-- Must have a single root node to animate with <transition-group /> -->
+    <button @click="emitGoBack">Back</button>
+    <form>
+      <input type="text" placeholder="title" />
 
-    <input type="text" placeholder="title" />
+      <input type="text" placeholder="type" />
 
-    <input type="text" placeholder="type" />
+      <input type="text" placeholder="description" />
 
-    <input type="text" placeholder="description" />
-
-    <!-- Make a create button component that has isDisabled and isActive props -->
-    <button>Create</button>
-  </base-modal>
+      <!-- Make a create button component that has isDisabled and isActive props -->
+      <button>Create</button>
+    </form>
+  </div>
 </template>
 
 <script setup lang="ts">
-import BaseModal from "./BaseModal.vue";
+// eslint-disable-next-line no-undef
+// const props = defineProps({
+// isFormModalActive: {
+//   type: Boolean,
+//   required: true,
+//   default: false,
+// },
+// });
 
 // eslint-disable-next-line no-undef
-const props = defineProps({
-  isFormModalActive: {
-    type: Boolean,
-    required: true,
-    default: false,
-  },
-});
+const emit = defineEmits(["goBack"]);
 
-// eslint-disable-next-line no-undef
-const emit = defineEmits(["closeFormModal"]);
-
-function emitCloseFormModal(): void {
-  emit("closeFormModal");
+function emitGoBack(): void {
+  emit("goBack");
 }
 </script>

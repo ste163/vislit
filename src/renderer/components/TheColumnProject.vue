@@ -1,23 +1,43 @@
 <template>
-  <div>Project Column Content</div>
-  <base-button-click
-    @click="isModalActive = !isModalActive"
-    :background-color="'var(--white)'"
-    >Create</base-button-click
-  >
-
-  <form-project-create
-    :is-form-modal-active="isModalActive"
-    @close-form-modal="isModalActive = !isModalActive"
-  />
+  <transition-group name="slide-fade">
+    <the-column-project-list
+      v-if="!isFormActive"
+      :key="1"
+      @create-click="setActiveColumnView"
+    />
+    <form-project-create
+      v-if="isFormActive"
+      :key="2"
+      @go-back="setActiveColumnView"
+    />
+  </transition-group>
 </template>
-
-<!-- Need to inject the store so we can track global project state -->
 
 <script setup lang="ts">
 import { ref } from "vue";
-import FormProjectCreate from "./FormProjectCreate.vue";
-import BaseButtonClick from "./BaseButtonClick.vue";
+import TheColumnProjectList from "./TheColumnProjectList.vue";
+import FormProjectCreate from "./FormProjectCreate.vue"; // maybe rename to TheColumnProjectForm
 
-const isModalActive = ref<boolean>(false);
+// Need to inject the store so we can track global project state
+
+const isFormActive = ref<boolean>(false);
+
+function setActiveColumnView(): void {
+  isFormActive.value = !isFormActive.value;
+}
 </script>
+
+<style scoped>
+/* Need to move into a global area so all columns can use this */
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  position: absolute;
+  transition: all 0.2s ease;
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(-20px);
+  opacity: 0;
+}
+</style>
