@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="container">
     <!-- Must have a single root node to animate with <transition-group /> -->
-    <button @click="emitGoBack">Back</button>
+    <button-back class="back-button" @click="emitGoBack" />
     <form class="form" @submit.prevent="onSubmit">
       <input-text name="title" type="text" label="Title" />
 
@@ -21,6 +21,7 @@ import { toFormValidator } from "@vee-validate/zod";
 import { z } from "zod";
 import InputText from "./InputText.vue";
 import ButtonSubmit from "./ButtonSubmit.vue";
+import ButtonBack from "./ButtonBack.vue";
 
 const validationSchema = toFormValidator(
   z.object({
@@ -54,7 +55,15 @@ const onSubmit = handleSubmit((values, { resetForm }) => {
 });
 </script>
 
-<style>
+<style scoped>
+.container {
+  width: clamp(180px, 90%, 300px);
+}
+
+.back-button {
+  margin: 0.5em 0em 0.5em 0.5em;
+}
+
 .form {
   display: flex;
   flex-flow: column nowrap;

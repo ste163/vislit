@@ -1,11 +1,11 @@
 <template>
-  <button class="button-close" @click="emitClick">
-    <app-icon-close />
+  <button class="button-back" @click="emitClick">
+    <app-icon-back />
   </button>
 </template>
 
 <script setup lang="ts">
-import AppIconClose from "./AppIconClose.vue";
+import AppIconBack from "./AppIconBack.vue";
 
 // TODO:
 // When needed:
@@ -20,15 +20,15 @@ function emitClick(): void {
 </script>
 
 <style scoped>
-.button-close {
+.button-back {
   background-color: transparent;
   padding: 0;
-  margin: 0;
 
   stroke: var(--gray) !important;
+  fill: var(--gray) !important;
 }
 
-.button-close > svg {
-  width: 0.7em;
+.button-back > svg {
+  width: 1em;
 }
 </style>
