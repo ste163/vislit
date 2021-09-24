@@ -81,7 +81,10 @@
 
   --primary: #3772ff;
   --warning: #b24c63;
+  --warning-transparent: #b24c6314;
   --success: #68b684;
+  --success-transparent: #68b68429;
+  --success-dark: #497a5a;
 }
 
 /* overrides */
@@ -98,8 +101,8 @@ body {
 input {
   background-color: var(--white);
   border: 2px solid transparent;
-  border-radius: 0.4em;
-  padding: 0.25em;
+  border-radius: 0.3em;
+  padding: 0.4em;
   outline: 0;
   transition: all 0.3s ease-in-out;
 }

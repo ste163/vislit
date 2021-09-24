@@ -1,5 +1,8 @@
 <template>
-  <div class="input-container">
+  <div
+    class="input-container"
+    :class="{ error: !!errorMessage, success: meta.valid && meta.dirty }"
+  >
     <label
       :for="name"
       class="label"
@@ -8,7 +11,6 @@
     >
     <p class="input-error" v-show="errorMessage">{{ errorMessage }}</p>
     <input
-      class="input"
       :name="name"
       :id="name"
       :type="type"
@@ -62,12 +64,30 @@ const {
   margin: 1em 0;
 }
 
+.input-container.error input {
+  background-color: var(--warning-transparent);
+  border-color: var(--warning);
+}
+
+.input-container.error .label {
+  color: var(--warning);
+}
+
+.input-container.success input {
+  background-color: var(--success-transparent);
+  border-color: var(--success);
+}
+
+.input-container.success .label {
+  color: var(--success-dark);
+}
+
 .label {
   position: absolute;
   font-size: 0.9em;
-  font-weight: 500;
-  top: 0.2em;
-  left: 0.4em;
+  font-weight: 600;
+  top: 0.4em;
+  left: 0.5em;
   transition: all 0.1s ease-in-out;
 }
 
@@ -76,15 +96,12 @@ const {
   color: var(--primary);
 }
 
-.input {
-}
-
 .input-error {
   position: absolute;
   top: -1.5em;
-  left: 0.3em;
+  left: 0.5em;
   font-size: 0.9em;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--warning);
 }
 </style>
