@@ -24,6 +24,8 @@
 </template>
 
 <script setup lang="ts">
+import { inject } from "vue";
+import IStore from "../store/interfaces/IStore";
 import { useForm } from "vee-validate";
 import { toFormValidator } from "@vee-validate/zod";
 import { z } from "zod";
@@ -31,6 +33,8 @@ import ColumnSubHeading from "./ColumnSubHeading.vue";
 import InputText from "./InputText.vue";
 import ButtonSubmit from "./ButtonSubmit.vue";
 import ButtonBack from "./ButtonBack.vue";
+
+const store = inject("store") as IStore;
 
 const validationSchema = toFormValidator(
   z.object({
@@ -58,9 +62,26 @@ function emitGoBack(): void {
   emit("goBack");
 }
 
-const onSubmit = handleSubmit((values, { resetForm }) => {
-  console.log("YOU SUBMITED", values);
-  resetForm();
+const onSubmit = handleSubmit(async (values, { resetForm }) => {
+  const newProject = {
+    _id: "",
+    title: values.title,
+    description: values.description,
+    typeId: 1,
+    completed: false,
+    archived: false,
+    dateCreated: null,
+    dateModified: null,
+  };
+
+  try {
+    await store.projects.addProject(newProject);
+    resetForm();
+  } catch (error) {
+    const e = error as Error;
+    // Move to notification
+    console.error(e.message);
+  }
 });
 </script>
 

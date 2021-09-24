@@ -1,9 +1,16 @@
 "use strict";
 
-import { app, protocol, BrowserWindow } from "electron";
+import { app, protocol, BrowserWindow, ipcMain } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS3_DEVTOOLS } from "electron-devtools-installer";
+import path from "path";
+import fs from "fs";
+
 const isDevelopment = process.env.NODE_ENV !== "production";
+
+// Keep a global reference of the window object, if you don't, the window will
+// be closed automatically when the JavaScript object is garbage collected.
+let win: BrowserWindow;
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -12,7 +19,7 @@ protocol.registerSchemesAsPrivileged([
 
 async function createWindow() {
   // Create the browser window.
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     minWidth: 500,
     minHeight: 400,
     width: 1024,
@@ -24,6 +31,7 @@ async function createWindow() {
       nodeIntegration: process.env
         .ELECTRON_NODE_INTEGRATION as unknown as boolean,
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
+      preload: path.join(__dirname, "preload.js"),
     },
   });
 
@@ -61,7 +69,8 @@ app.on("ready", async () => {
     // Install Vue Devtools
     try {
       await installExtension(VUEJS3_DEVTOOLS);
-    } catch (e) {
+    } catch (error) {
+      const e = error as Error;
       console.error("Vue Devtools failed to install:", e.toString());
     }
   }
@@ -82,3 +91,13 @@ if (isDevelopment) {
     });
   }
 }
+
+// Setup secure access to ipc
+ipcMain.on("toMain", (event, args) => {
+  fs.readFile("./preload.js", (error, data) => {
+    // Do something with file contents
+    console.log(args);
+    // Send result back to renderer process
+    // win.webContents.send("fromMain", responseObj);
+  });
+});

@@ -2,11 +2,8 @@ import { reactive } from "vue";
 import IProject from "@/interfaces/IProject";
 import IProjectStore from "../interfaces/IProjectStore";
 import ProjectState from "@/renderer/store/types/ProjectState";
-// Instead of hitting API, need to hit backend --- yet to be implemented
 
 export default class ProjectStore implements IProjectStore {
-  readonly #API = "http://localhost:8080/project";
-
   public state: ProjectState;
 
   constructor() {
@@ -38,6 +35,25 @@ export default class ProjectStore implements IProjectStore {
   }
 
   public async addProject(project: IProject): Promise<void | undefined> {
+    try {
+      const win = window as unknown as Window & {
+        ipcRenderer: {
+          send: (channel: string, data: unknown) => Promise<Error | null>;
+        };
+      };
+
+      const response = await win.ipcRenderer.send("toMain", project);
+
+      if (response === null) {
+        console.log("GET ALL PROJECTS");
+      } else {
+        console.log("Display error message");
+      }
+    } catch (error) {
+      const e = error as Error;
+      console.log(e.message);
+    }
+
     // try {
     //   const response = await fetch(`${this.#API}`, {
     //     method: "POST",

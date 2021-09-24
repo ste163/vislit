@@ -5,6 +5,6 @@ export default interface IProject {
   typeId: number;
   completed: boolean;
   archived: boolean;
-  dateCreated: Date;
-  dateModified: Date;
+  dateCreated: Date | null;
+  dateModified: Date | null;
 }
