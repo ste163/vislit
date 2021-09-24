@@ -1,12 +1,32 @@
 <template>
-  <button ref="button" class="base-button-click" @click="createEffect">
+  <button
+    ref="button"
+    :type="type.type"
+    :disabled="isDisabled"
+    class="base-button-click"
+    @click="createEffect"
+  >
     <slot></slot>
   </button>
 </template>
 
 <script setup lang="ts">
+import { ButtonHTMLAttributes, PropType } from "vue";
+
 // eslint-disable-next-line no-undef
 const props = defineProps({
+  type: {
+    type: Object as PropType<ButtonHTMLAttributes>,
+    default: () => {
+      return {
+        type: "button",
+      };
+    },
+  },
+  isDisabled: {
+    type: Boolean,
+    default: false,
+  },
   backgroundColor: {
     type: String,
     default: "var(--lightGray)",

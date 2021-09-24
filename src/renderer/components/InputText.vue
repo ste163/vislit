@@ -61,7 +61,7 @@ const {
   flex-flow: column nowrap;
   position: relative;
   height: 3em;
-  margin: 1em 0;
+  margin: 0.5em 0;
 }
 
 .input-container.error input {

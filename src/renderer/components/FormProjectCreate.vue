@@ -2,15 +2,15 @@
   <div>
     <!-- Must have a single root node to animate with <transition-group /> -->
     <button @click="emitGoBack">Back</button>
-    <form @submit.prevent="onSubmit">
+    <form class="form" @submit.prevent="onSubmit">
       <input-text name="title" type="text" label="Title" />
 
       <input-text name="type" type="text" label="Type" />
 
       <input-text name="description" type="text" label="Description" />
 
-      <!-- Make a create button component that has isDisabled and isActive props -->
-      <button type="submit" :disabled="!meta.dirty">Create</button>
+      <!-- Need to pass in an isSubmitting for loading spinner -->
+      <button-submit :is-disabled="!meta.dirty" />
     </form>
   </div>
 </template>
@@ -20,6 +20,7 @@ import { useForm } from "vee-validate";
 import { toFormValidator } from "@vee-validate/zod";
 import { z } from "zod";
 import InputText from "./InputText.vue";
+import ButtonSubmit from "./ButtonSubmit.vue";
 
 const validationSchema = toFormValidator(
   z.object({
@@ -52,3 +53,10 @@ const onSubmit = handleSubmit((values, { resetForm }) => {
   resetForm();
 });
 </script>
+
+<style>
+.form {
+  display: flex;
+  flex-flow: column nowrap;
+}
+</style>
