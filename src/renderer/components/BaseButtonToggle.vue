@@ -40,7 +40,7 @@ const props = defineProps({
   },
   activeEffectColor: {
     type: String,
-    default: "var(--blue)",
+    default: "var(--primary)",
   },
 });
 

@@ -174,6 +174,6 @@ const resizeHandleLocation = computed(() =>
 .resize-handle:hover,
 .resize-handle-active {
   width: 6px;
-  background-color: var(--blue);
+  background-color: var(--primary);
 }
 </style>

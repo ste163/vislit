@@ -12,7 +12,7 @@ const props = defineProps({
   },
   activeColor: {
     type: String,
-    default: "var(--blue)",
+    default: "var(--primary)",
   },
   spanHeight: {
     type: String,

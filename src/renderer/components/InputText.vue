@@ -73,7 +73,7 @@ const {
 
 .label-active {
   top: -1.5em;
-  color: var(--blue);
+  color: var(--primary);
 }
 
 .input {
