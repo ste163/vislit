@@ -3,14 +3,11 @@
     <!-- Must have a single root node to animate with <transition-group /> -->
     <button @click="emitGoBack">Back</button>
     <form @submit.prevent="onSubmit">
-      <input type="text" v-model="title" placeholder="title" />
-      <span>{{ errors.title }}</span>
+      <input-text name="title" type="text" label="Title" />
 
-      <input type="text" v-model="type" placeholder="type" />
-      <span>{{ errors.type }}</span>
+      <input-text name="type" type="text" label="Type" />
 
-      <input type="text" v-model="description" placeholder="description" />
-      <span>{{ errors.description }}</span>
+      <input-text name="description" type="text" label="Description" />
 
       <!-- Make a create button component that has isDisabled and isActive props -->
       <button type="submit" :disabled="!meta.dirty">Create</button>
@@ -19,9 +16,10 @@
 </template>
 
 <script setup lang="ts">
-import { useForm, useField } from "vee-validate";
+import { useForm } from "vee-validate";
 import { toFormValidator } from "@vee-validate/zod";
 import { z } from "zod";
+import InputText from "./InputText.vue";
 
 const validationSchema = toFormValidator(
   z.object({
@@ -37,14 +35,10 @@ const initialFormValues = {
   description: "",
 };
 
-const { handleSubmit, errors, meta } = useForm({
+const { handleSubmit, meta } = useForm({
   validationSchema,
   initialValues: initialFormValues,
 });
-
-const { value: title } = useField("title");
-const { value: type } = useField("type");
-const { value: description } = useField("description");
 
 // eslint-disable-next-line no-undef
 const emit = defineEmits(["goBack"]);
