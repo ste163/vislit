@@ -95,9 +95,14 @@ if (isDevelopment) {
 // Setup secure access to ipc
 ipcMain.on("toMain", (event, args) => {
   fs.readFile("./preload.js", (error, data) => {
-    // Do something with file contents
+    // Will need a very large switch statement
+    // Will need to create new interfaces for all of the data
+    // that extend those, but adds a DataType: "project", "progress", "goal"; then a
+    // method: get-all, get-by-id, delete, etc
+
     console.log(args);
+
     // Send result back to renderer process
-    // win.webContents.send("fromMain", responseObj);
+    win.webContents.send("fromMain", false);
   });
 });

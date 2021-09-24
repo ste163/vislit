@@ -2,6 +2,8 @@ import { reactive } from "vue";
 import IProject from "@/interfaces/IProject";
 import IProjectStore from "../interfaces/IProjectStore";
 import ProjectState from "@/renderer/store/types/ProjectState";
+import IWindow from "../interfaces/IWindow";
+import convertToRequest from "../utils/convertToRequest";
 
 export default class ProjectStore implements IProjectStore {
   public state: ProjectState;
@@ -36,15 +38,23 @@ export default class ProjectStore implements IProjectStore {
 
   public async addProject(project: IProject): Promise<void | undefined> {
     try {
-      const win = window as unknown as Window & {
-        ipcRenderer: {
-          send: (channel: string, data: unknown) => Promise<Error | null>;
-        };
-      };
+      const win = window as unknown as IWindow;
 
-      const response = await win.ipcRenderer.send("toMain", project);
+      const projectRequest = convertToRequest(project, "add", "project");
 
-      if (response === null) {
+      let response = false;
+
+      await win.ipcRenderer.send("toMain", projectRequest);
+
+      // It's not waiting!!! -> If I can't get it figured out, will have to
+      // remove the contextBridge and just expose the entire ipcRenderer to the browser
+      await win.ipcRenderer.receive("fromMain", async (res) => {
+        console.log("RECEIVED FROM BACKEND", res);
+        response = res as boolean;
+        return res;
+      });
+      console.log("Reassigned", response);
+      if (response) {
         console.log("GET ALL PROJECTS");
       } else {
         console.log("Display error message");
