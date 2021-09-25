@@ -16,6 +16,9 @@
   "dependencies": {
     "@vee-validate/zod": "^4.4.7",
     "core-js": "^3.6.5",
+    "lodash": "^4.17.21",
+    "lowdb": "^3.0.0",
+    "nanoid": "^3.1.25",
     "vee-validate": "^4.4.11",
     "vue": "^3.2.6",
     "vue-router": "^4.0.11",
