@@ -3,7 +3,6 @@ import IProject from "@/interfaces/IProject";
 import IProjectStore from "../interfaces/IProjectStore";
 import ProjectState from "@/renderer/store/types/ProjectState";
 import IWindow from "../interfaces/IWindow";
-import convertToRequest from "../utils/convertToRequest";
 
 export default class ProjectStore implements IProjectStore {
   public state: ProjectState;
@@ -40,9 +39,7 @@ export default class ProjectStore implements IProjectStore {
     try {
       const win = window as unknown as IWindow;
 
-      const projectRequest = convertToRequest(project, "add", "project");
-
-      const response = await win.api.send("projects-add", projectRequest);
+      const response = await win.api.send("projects-add", project);
 
       console.log("RESPONSE WAS:", response);
       if (response) {
