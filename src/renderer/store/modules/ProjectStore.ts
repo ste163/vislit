@@ -42,18 +42,9 @@ export default class ProjectStore implements IProjectStore {
 
       const projectRequest = convertToRequest(project, "add", "project");
 
-      let response = false;
+      const response = await win.api.send("projects-add", projectRequest);
 
-      await win.ipcRenderer.send("toMain", projectRequest);
-
-      // It's not waiting!!! -> If I can't get it figured out, will have to
-      // remove the contextBridge and just expose the entire ipcRenderer to the browser
-      await win.ipcRenderer.receive("fromMain", async (res) => {
-        console.log("RECEIVED FROM BACKEND", res);
-        response = res as boolean;
-        return res;
-      });
-      console.log("Reassigned", response);
+      console.log("RESPONSE WAS:", response);
       if (response) {
         console.log("GET ALL PROJECTS");
       } else {

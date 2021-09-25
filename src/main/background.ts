@@ -92,17 +92,8 @@ if (isDevelopment) {
   }
 }
 
-// Setup secure access to ipc
-ipcMain.on("toMain", (event, args) => {
-  fs.readFile("./preload.js", (error, data) => {
-    // Will need a very large switch statement
-    // Will need to create new interfaces for all of the data
-    // that extend those, but adds a DataType: "project", "progress", "goal"; then a
-    // method: get-all, get-by-id, delete, etc
-
-    console.log(args);
-
-    // Send result back to renderer process
-    win.webContents.send("fromMain", false);
-  });
+ipcMain.handle("projects-add", (e, project) => {
+  console.log("projectToAdd", project);
+  return "IT WORKS!";
+  // return projectController.add(project);
 });

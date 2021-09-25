@@ -1,13 +1,8 @@
-// IWindow extends Window but adds the secure ipcRenderer channels
-
+// IWindow extends Window but adds the secure api channels
 import IProject from "@/interfaces/IProject";
 
 export default interface IWindow extends Window {
-  ipcRenderer: {
-    send: (channel: string, data: unknown) => Promise<void>;
-    receive: (
-      channel: string,
-      func: (res: boolean | IProject) => Promise<boolean | IProject>
-    ) => Promise<boolean | IProject>;
+  api: {
+    send: (channel: string, data: unknown) => Promise<unknown>;
   };
 }
