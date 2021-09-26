@@ -4,7 +4,7 @@ import { app, protocol, BrowserWindow, ipcMain } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS3_DEVTOOLS } from "electron-devtools-installer";
 import path from "path";
-import fs from "fs";
+import Database from "./api/database";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -16,6 +16,14 @@ let win: BrowserWindow;
 protocol.registerSchemesAsPrivileged([
   { scheme: "app", privileges: { secure: true, standard: true } },
 ]);
+
+try {
+  const database = new Database(app);
+  console.log(database);
+} catch (error) {
+  const e = error as Error;
+  console.log(e);
+}
 
 async function createWindow() {
   // Create the browser window.
