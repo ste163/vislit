@@ -37,9 +37,9 @@ export default class ProjectStore implements IProjectStore {
 
   public async addProject(project: IProject): Promise<void | undefined> {
     try {
-      const win = window as unknown as IWindow;
+      const { api } = window as unknown as IWindow;
 
-      const response = await win.api.send("projects-add", project);
+      const response = await api.send("projects-add", project);
 
       if (response) {
         console.log("GET ALL PROJECTS");
@@ -78,7 +78,7 @@ export default class ProjectStore implements IProjectStore {
     //         mode: "cors-anywhere",
     //         "Content-Type": "application/json",
     //       },
-    //       body: JSON.stringify({ _id: id }),
+    //       body: JSON.stringify({ id: id }),
     //     });
     //     if (response.status === 200) {
     //       this.getProjects();

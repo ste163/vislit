@@ -17,6 +17,7 @@ protocol.registerSchemesAsPrivileged([
   { scheme: "app", privileges: { secure: true, standard: true } },
 ]);
 
+// For now, instantiate db, controllers, & repos here
 try {
   const database = new Database(app);
   console.log(database);

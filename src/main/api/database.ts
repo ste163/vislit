@@ -1,24 +1,10 @@
 import { App } from "electron";
 import { JSONFileSync, LowSync, MemorySync } from "lowdb";
-import lodash, { ObjectChain } from "lodash";
+import lodash from "lodash";
 import { nanoid } from "nanoid/non-secure";
 import IProject from "@/interfaces/IProject";
-
-interface IDatabase {
-  dbType: string;
-  projects: Array<IProject>;
-  types: Array<unknown>;
-  progress: Array<unknown>;
-  notes: Array<unknown>;
-  projectLexicon: Array<unknown>;
-  lexicon: Array<unknown>;
-  words: Array<unknown>;
-}
-
-// Needed to include the chain function w/o errors
-interface ILowDb extends LowSync<IDatabase> {
-  chain: ObjectChain<IDatabase>;
-}
+import IDatabase from "./interfaces/IDatabase";
+import ILowDb from "./interfaces/ILowDb";
 
 export default class Database {
   #app: App;
@@ -70,7 +56,7 @@ export default class Database {
     this.#isTestEnv = process.env.NODE_ENV;
     this.db = loadDatabase();
     this.generateUniqueId = (item: IProject) => {
-      item._id = nanoid(21);
+      item.id = nanoid(21);
       return item;
     };
   }
