@@ -2,17 +2,18 @@ import { App } from "electron";
 import { JSONFileSync, LowSync, MemorySync } from "lowdb";
 import lodash from "lodash";
 import { nanoid } from "nanoid/non-secure";
-import IProject from "@/interfaces/IProject";
 import IDatabase from "./interfaces/IDatabase";
+import IProject from "@/interfaces/IProject";
+import IVislitDatabase from "./interfaces/IVislitDatabase";
 import ILowDb from "./interfaces/ILowDb";
 
-export default class Database {
+export default class Database implements IDatabase {
+  public db: ILowDb;
+  public generateUniqueId: (item: IProject) => IProject;
+
   #app: App;
   #isTestEnv: string | undefined;
   #getDbPath: () => string;
-
-  public db: ILowDb;
-  public generateUniqueId: (item: IProject) => IProject;
 
   constructor(app: App) {
     this.#getDbPath = (): string => {
@@ -23,10 +24,10 @@ export default class Database {
     const loadDatabase = (): ILowDb => {
       const adapter =
         this.#isTestEnv === "test"
-          ? new MemorySync<IDatabase>() // in-memory test database
-          : new JSONFileSync<IDatabase>(this.#getDbPath());
+          ? new MemorySync<IVislitDatabase>() // in-memory test database
+          : new JSONFileSync<IVislitDatabase>(this.#getDbPath());
 
-      const db = new LowSync<IDatabase>(adapter) as ILowDb;
+      const db = new LowSync<IVislitDatabase>(adapter) as ILowDb;
 
       db.read();
 

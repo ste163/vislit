@@ -1,16 +1,17 @@
 import IProject from "@/interfaces/IProject";
 import IProjectController from "../interfaces/IProjectController";
+import IProjectRepository from "../interfaces/IProjectRepository";
 
 export default class ProjectController implements IProjectController {
-  // #projectRepository
+  #projectRepository: IProjectRepository;
 
-  // constructor(projectRepository) {
-  //   // this.projectRepository = projectRepository;
-  //   // this.searchController = searchController;
-  // }
+  constructor(projectRepository: IProjectRepository) {
+    this.#projectRepository = projectRepository;
+    // this.searchController = searchController;
+  }
 
   _checkForTitleTaken(title: string): void {
-    const project = this.projectRepository.getByTitle(title);
+    const project = this.#projectRepository.getByTitle(title);
 
     // Only add/update project if it's undefined
     if (project !== undefined) {
@@ -22,7 +23,7 @@ export default class ProjectController implements IProjectController {
 
   getAll(): Array<IProject> | Error {
     try {
-      return this.projectRepository.getAll();
+      return this.#projectRepository.getAll();
     } catch (e) {
       const error = e as Error;
       console.error(error);
@@ -32,7 +33,7 @@ export default class ProjectController implements IProjectController {
 
   getById(id: string): IProject | Error {
     try {
-      const project = this.projectRepository.getById(id);
+      const project = this.#projectRepository.getById(id);
 
       if (project === undefined) {
         throw new Error(`Project with id ${id} not in database`);
@@ -50,7 +51,7 @@ export default class ProjectController implements IProjectController {
     try {
       this._checkForTitleTaken(project.title);
 
-      const response = this.projectRepository.add(project);
+      const response = this.#projectRepository.add(project);
 
       // this.searchController.addProject(response);
       return response;
@@ -78,9 +79,9 @@ export default class ProjectController implements IProjectController {
       // Update only certain properties
       projectToUpdate.title = project.title;
       projectToUpdate.description = project.description;
-      // NOTE: Add a last updated field??? - might be good?
+      projectToUpdate.dateModified = new Date();
 
-      const updatedProject = this.projectRepository.update(projectToUpdate);
+      const updatedProject = this.#projectRepository.update(projectToUpdate);
 
       // this.searchController.updateProject(
       //   originalProjectForIndex,
@@ -103,7 +104,7 @@ export default class ProjectController implements IProjectController {
         throw new Error("Project not in database");
       }
 
-      this.projectRepository.delete(id);
+      this.#projectRepository.delete(id);
 
       // this.searchController.removeProject(project);
 
