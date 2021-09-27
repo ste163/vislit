@@ -10,8 +10,11 @@ export default class ProjectRepository implements IProjectRepository {
   }
 
   getAll(): Array<IProject> {
-    const projects = this.#database.db.data?.projects;
-    return projects === undefined ? [] : projects;
+    if (this.#database.db.data !== null) {
+      return this.#database.db.data.projects;
+    } else {
+      throw Error("Db data was null");
+    }
   }
 
   getById(id: string): IProject {
@@ -26,30 +29,41 @@ export default class ProjectRepository implements IProjectRepository {
   }
 
   add(project: IProject): IProject {
-    this.#database.db.data?.projects.push(
-      this.#database.generateUniqueId(project)
-    );
+    if (this.#database.db.data !== null) {
+      this.#database.db.data.projects.push(
+        this.#database.generateUniqueId(project)
+      );
 
-    this.#database.db.write();
+      this.#database.db.write();
 
-    const addedProject = this.getByTitle(project.title);
+      const addedProject = this.getByTitle(project.title);
 
-    return addedProject;
+      return addedProject;
+    } else {
+      throw Error("Db data was null");
+    }
   }
 
   update(project: IProject): IProject {
     // Some code duplication from delete & add
-    // It's needed because we only should .write()
-    // Once we're finished updated
-    this.#database.db.chain.get("projects").remove({ id: project.id }).value();
+    // It's needed because we should only .write()
+    // once we're finished updating
+    if (this.#database.db.data !== null) {
+      this.#database.db.chain
+        .get("projects")
+        .remove({ id: project.id })
+        .value();
 
-    this.#database.db.data?.projects.push(project);
+      this.#database.db.data.projects.push(project);
 
-    this.#database.db.write();
+      this.#database.db.write();
 
-    const updatedProject = this.getById(project.id);
+      const updatedProject = this.getById(project.id);
 
-    return updatedProject;
+      return updatedProject;
+    } else {
+      throw Error("Db data was null");
+    }
   }
 
   delete(id: string): void {

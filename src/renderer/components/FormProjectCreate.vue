@@ -64,7 +64,7 @@ function emitGoBack(): void {
 
 const onSubmit = handleSubmit(async (values, { resetForm }) => {
   const newProject = {
-    _id: "",
+    id: "",
     title: values.title,
     description: values.description,
     typeId: 1,

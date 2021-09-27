@@ -10,7 +10,7 @@ export default class ProjectController implements IProjectController {
     // this.searchController = searchController;
   }
 
-  _checkForTitleTaken(title: string): void {
+  #checkForTitleTaken(title: string): void {
     const project = this.#projectRepository.getByTitle(title);
 
     // Only add/update project if it's undefined
@@ -49,7 +49,7 @@ export default class ProjectController implements IProjectController {
 
   add(project: IProject): IProject | Error {
     try {
-      this._checkForTitleTaken(project.title);
+      this.#checkForTitleTaken(project.title);
 
       const response = this.#projectRepository.add(project);
 
@@ -73,7 +73,7 @@ export default class ProjectController implements IProjectController {
         return projectToUpdate; // return thrown error
       }
 
-      this._checkForTitleTaken(project.title);
+      this.#checkForTitleTaken(project.title);
 
       // When here, we're good to update!
       // Update only certain properties

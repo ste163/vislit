@@ -5,12 +5,17 @@ import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS3_DEVTOOLS } from "electron-devtools-installer";
 import path from "path";
 import Database from "./api/database";
+import IProjectController from "./api/interfaces/IProjectController";
+import ProjectRepository from "./api/repositories/projectRepository";
+import ProjectController from "./api/controllers/projectController";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win: BrowserWindow;
+
+let projectController: IProjectController;
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -20,7 +25,10 @@ protocol.registerSchemesAsPrivileged([
 // For now, instantiate db, controllers, & repos here
 try {
   const database = new Database(app);
-  console.log(database);
+
+  const projectRepository = new ProjectRepository(database);
+
+  projectController = new ProjectController(projectRepository);
 } catch (error) {
   const e = error as Error;
   console.log(e);
@@ -102,7 +110,5 @@ if (isDevelopment) {
 }
 
 ipcMain.handle("projects-add", (e, project) => {
-  console.log("projectToAdd", project);
-  return "IT WORKS!";
-  // return projectController.add(project);
+  return projectController.add(project);
 });
