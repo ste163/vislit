@@ -41,7 +41,6 @@ export default class ProjectStore implements IProjectStore {
 
       const response = await win.api.send("projects-add", project);
 
-      console.log("RESPONSE WAS:", response);
       if (response) {
         console.log("GET ALL PROJECTS");
       } else {
