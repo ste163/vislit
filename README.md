@@ -1,5 +1,7 @@
 # Vislit
 
+[![Node.js CI](https://github.com/ste163/vislit/actions/workflows/node.js.yml/badge.svg)](https://github.com/ste163/vislit/actions/workflows/node.js.yml)
+
 > Linux, Mac, Windows app for tracking, visualizing, and analyzing writing projects
 
 Vislit is currently in development, shooting for a late 2021 release date for the earliest version. For more information:
