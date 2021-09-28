@@ -27,4 +27,4 @@ jobs:
           cache: "yarn"
       - name: Install deps
         run: yarn --frozen-lockfile
-      - run: npm test
+      - run: yarn test
