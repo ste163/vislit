@@ -110,17 +110,17 @@ const isRightColumnDivEmpty = computed(() => checkIsDropZoneEmpty("right"));
 
 watch(() => route.path, store.application.setActiveView);
 
+onMounted(async () => {
+  if (store.projects !== null) {
+    await store.projects.getProjects();
+  }
+});
+
 // Needed to reset references based on vue docs
 // TODO: Check to see if that's really needed
 onBeforeUpdate(() => {
   leftColumnDivs.value = [];
   rightColumnDivs.value = [];
-});
-
-onMounted(async () => {
-  if (store.projects !== null) {
-    await store.projects.getProjects();
-  }
 });
 </script>
 

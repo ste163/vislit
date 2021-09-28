@@ -4,7 +4,7 @@
 import { contextBridge, ipcRenderer } from "electron";
 
 // whitelist channels
-const validChannels = ["projects-add"];
+const validChannels = ["projects-add", "projects-get-all"];
 
 // Expose protected methods that allow the renderer process to use
 // the ipcRenderer without exposing the entire object

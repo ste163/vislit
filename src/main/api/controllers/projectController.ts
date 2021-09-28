@@ -67,7 +67,7 @@ export default class ProjectController implements IProjectController {
       const projectToUpdate = this.getById(project.id);
       // Must get a copy of original project
       // before its updated, so it can be removed from search index
-      const originalProjectForIndex = { ...projectToUpdate };
+      // const originalProjectForIndex = { ...projectToUpdate };
 
       if (projectToUpdate instanceof Error) {
         return projectToUpdate; // return thrown error

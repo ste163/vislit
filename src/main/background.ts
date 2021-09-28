@@ -109,6 +109,10 @@ if (isDevelopment) {
   }
 }
 
+ipcMain.handle("projects-get-all", (e) => {
+  return projectController.getAll();
+});
+
 ipcMain.handle("projects-add", (e, project) => {
   return projectController.add(project);
 });

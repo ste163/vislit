@@ -19,20 +19,23 @@ export default class ProjectStore implements IProjectStore {
   }
 
   public async getProjects(): Promise<void | undefined> {
-    // try {
-    //   const response = await fetch(`${this.#API}`, {
-    //     method: "GET",
-    //     headers: {
-    //       mode: "cors-anywhere",
-    //     },
-    //   });
-    //   const projects: Array<IProject> = await response.json();
-    //   this.#setProjects(projects);
-    // } catch (error) {
-    //   const e = error as Error;
-    //   console.error(e.message);
-    //   return undefined;
-    // }
+    try {
+      const { api } = window as unknown as IWindow;
+
+      const response: Array<IProject> = (await api.send(
+        "projects-get-all",
+        ""
+      )) as Array<IProject>;
+
+      if (response) {
+        this.#setProjects(response);
+      } else {
+        // Display error message
+      }
+    } catch (error) {
+      const e = error as Error;
+      console.log(e.message);
+    }
   }
 
   public async addProject(project: IProject): Promise<void | undefined> {
@@ -42,7 +45,8 @@ export default class ProjectStore implements IProjectStore {
       const response = await api.send("projects-add", project);
 
       if (response) {
-        console.log("GET ALL PROJECTS");
+        // Display success message
+        this.getProjects();
       } else {
         console.log("Display error message");
       }
