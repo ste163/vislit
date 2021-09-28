@@ -109,6 +109,7 @@ if (isDevelopment) {
   }
 }
 
+// API Endpoints
 ipcMain.handle("projects-get-all", (e) => {
   return projectController.getAll();
 });

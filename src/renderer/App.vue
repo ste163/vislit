@@ -65,7 +65,7 @@
 
 <script setup lang="ts">
 import { provide, ref, computed, watch, onBeforeUpdate, onMounted } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import store from "./store/index";
 import TheSidebar from "./components/TheSidebar.vue";
 import ColumnDropZone from "./components/ColumnDropZone.vue";
@@ -74,6 +74,7 @@ import useColumns from "./composables/useColumns";
 
 provide("store", store); // Makes store available to every child component
 
+const router = useRouter();
 const route = useRoute();
 
 const leftColumnDivs = ref<Array<HTMLDivElement>>([]);
@@ -112,7 +113,13 @@ watch(() => route.path, store.application.setActiveView);
 
 onMounted(async () => {
   if (store.projects !== null) {
-    await store.projects.getProjects();
+    await store.projects.getProjects(); // if there was an error here, user will recieve it
+
+    if (store.projects.state.all.length > 0) {
+      console.log("Set the most recently modified/created project first");
+    } else {
+      router.push("/"); // sends user to Welcome screen, as they have no data
+    }
   }
 });
 
@@ -132,8 +139,10 @@ onBeforeUpdate(() => {
 }
 
 .dashboard {
+  display: flex;
+  flex-flow: column nowrap;
   flex-grow: 1;
-  margin-left: 1em;
+  margin: 1em;
   /*
   TODO:
   SET user-select to none when either

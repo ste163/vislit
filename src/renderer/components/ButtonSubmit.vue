@@ -17,6 +17,7 @@ import BaseButtonClick from "./BaseButtonClick.vue";
 
 // TODO:
 // isSubmtting prop & loading spinner
+// backgroundColorDisabled prop
 
 // eslint-disable-next-line no-undef
 const props = defineProps({

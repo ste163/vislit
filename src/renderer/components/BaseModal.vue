@@ -56,12 +56,12 @@ function emitCloseModal(): void {
   top: 35%;
   left: 44%;
   background-color: var(--white);
-  padding: 0.25em;
+  padding: 1em;
   min-height: 10em;
   max-height: fit-content;
-  min-width: 10em;
-  max-width: fit-content;
+  width: clamp(5em, 50%, 17em);
   border-radius: 5px;
+  box-shadow: #6e6e6e4d 0px 0px 40px;
 }
 
 .modal-card-header {

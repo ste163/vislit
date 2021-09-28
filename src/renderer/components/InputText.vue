@@ -11,6 +11,7 @@
     >
     <p class="input-error" v-show="errorMessage">{{ errorMessage }}</p>
     <input
+      class="input"
       :name="name"
       :id="name"
       :type="type"
@@ -42,6 +43,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  backgroundColor: {
+    type: String,
+    default: "var(--white)",
+  },
 });
 
 const {
@@ -62,6 +67,10 @@ const {
   position: relative;
   height: 3em;
   margin: 0.5em 0;
+}
+
+.input {
+  background-color: v-bind(backgroundColor);
 }
 
 .input-container.error input {

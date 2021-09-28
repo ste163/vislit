@@ -54,7 +54,7 @@ const props = defineProps({
 });
 
 const isResizing = ref<boolean>(false);
-const columnWidth = ref<string>("10em");
+const columnWidth = ref<string>("300px");
 const columnElement = ref<HTMLDivElement | null>(null);
 
 function handleColumnClose(): void {

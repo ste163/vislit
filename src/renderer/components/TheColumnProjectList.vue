@@ -1,7 +1,7 @@
 <template>
-  <base-button-click @click="emitClick" :background-color="'var(--white)'"
-    >Create</base-button-click
-  >
+  <base-button-click @click="emitClick" :background-color="'var(--white)'">
+    Create
+  </base-button-click>
 </template>
 
 <script setup lang="ts">

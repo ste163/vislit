@@ -5,7 +5,7 @@
     <!-- Needs to include props for: isTextShown which has isMinimized passed in -->
     <div>
       <div class="sidebar-header" draggable="false">Views</div>
-      <button-router-link :route="'/'" class="sidebar-button">
+      <button-router-link :route="'/summary'" class="sidebar-button">
         <template v-slot:icon>
           <app-icon-summary class="button-icon" />
         </template>
@@ -86,6 +86,10 @@ import AppIconProject from "./AppIconProject.vue";
 import AppIconNote from "./AppIconNote.vue";
 import AppIconLexicon from "./AppIconLexicon.vue";
 import AppIconSetting from "./AppIconSetting.vue";
+
+// Need to have an isDisabled
+// That checks if we're on the welcome page
+// If we're on the welcome page, disable the sidebar
 </script>
 
 <style scoped>
@@ -94,6 +98,7 @@ import AppIconSetting from "./AppIconSetting.vue";
   flex-flow: column nowrap;
   justify-content: space-between;
   background-color: var(--white);
+  min-width: 170px;
   width: 10em;
   padding: 0.5em 0em;
   box-shadow: #00000027 -10px 0px 30px;

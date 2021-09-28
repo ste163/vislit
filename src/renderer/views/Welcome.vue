@@ -1,0 +1,49 @@
+<template>
+  <base-card>
+    <!-- Need a left hand 'gutter', that holds the notification dots -->
+    <template v-slot:header> Welcome to Vislit! </template>
+
+    <base-card-content>
+      <template v-slot:header> Import previous Vislit Data</template>
+      If you've already used Vislit, you can import your data by clicking the
+      button below, or from File -> Import Vislit Data.
+    </base-card-content>
+
+    <base-card-content>
+      <template v-slot:header>Choose save location for Vislit Data</template>
+      By default, Vislit stores your data in your Documents folder. If you would
+      prefer to store data in a Google Drive, OneDrive, DropBox, or other cloud
+      provider's folder, you may select that new or later by going to File ->
+      Change Save Location.
+    </base-card-content>
+
+    <base-card-content>
+      <template v-slot:header>Create a Project</template>
+      To get started writing and tracking your progress, create a project.
+
+      <template v-slot:buttons>
+        <base-button-click
+          @click="isModalActive = !isModalActive"
+          :background-color="'var(--primary)'"
+          :text-color="'var(--white)'"
+          >Create a Project</base-button-click
+        >
+      </template>
+    </base-card-content>
+  </base-card>
+
+  <form-project-create-modal
+    :is-form-modal-active="isModalActive"
+    @close-modal="isModalActive = false"
+  />
+</template>
+
+<script setup lang="ts">
+import { ref } from "vue";
+import BaseCard from "../components/BaseCard.vue";
+import BaseCardContent from "../components/BaseCardContent.vue";
+import BaseButtonClick from "../components/BaseButtonClick.vue";
+import FormProjectCreateModal from "../components/FormProjectCreateModal.vue";
+
+const isModalActive = ref<boolean>(false);
+</script>

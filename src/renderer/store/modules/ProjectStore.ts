@@ -23,8 +23,7 @@ export default class ProjectStore implements IProjectStore {
       const { api } = window as unknown as IWindow;
 
       const response: Array<IProject> = (await api.send(
-        "projects-get-all",
-        ""
+        "projects-get-all"
       )) as Array<IProject>;
 
       if (response) {
@@ -33,6 +32,9 @@ export default class ProjectStore implements IProjectStore {
         // Display error message
       }
     } catch (error) {
+      // This is one of the biggest errors that could occur
+      // as the entire sidebar and app is locked to the welcome page
+      // so this error needs to be trigger the alert from Main Process
       const e = error as Error;
       console.log(e.message);
     }
@@ -54,24 +56,6 @@ export default class ProjectStore implements IProjectStore {
       const e = error as Error;
       console.log(e.message);
     }
-
-    // try {
-    //   const response = await fetch(`${this.#API}`, {
-    //     method: "POST",
-    //     headers: {
-    //       mode: "cors-anywhere",
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(project),
-    //   });
-    //   if (response.status === 200) {
-    //     this.getProjects();
-    //   }
-    // } catch (error) {
-    //   const e = error as Error;
-    //   console.error(e.message);
-    //   return undefined;
-    // }
   }
 
   public async deleteProject(id: string): Promise<void | undefined> {
