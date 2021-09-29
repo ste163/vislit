@@ -1,8 +1,8 @@
 <template>
   <section class="content-container">
-    <header>
-      <div>
-        <!-- Optional notification dot -->
+    <header class="content-header">
+      <div class="notification-container">
+        <slot name="notification-dot"></slot>
       </div>
       <h2>
         <slot name="header"></slot>
@@ -22,6 +22,17 @@
 <style scoped>
 .content-container {
   margin: 1em 0em;
+  position: relative;
+}
+
+.content-header {
+  display: flex;
+  align-items: center;
+}
+
+.notification-container {
+  position: absolute;
+  left: -20px;
 }
 
 .button-container {
