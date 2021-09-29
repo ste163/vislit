@@ -6,7 +6,7 @@
       </div>
       <slot></slot>
     </div>
-    <span :class="!isActive ? 'effect-end' : 'effect-start'"></span>
+    <span :class="isActive ? 'effect-start' : 'effect-end'"></span>
   </button>
 </template>
 
@@ -45,9 +45,9 @@ const button = ref<HTMLButtonElement | null>(null);
 const buttonDiameter = ref<number>(0);
 const buttonRadius = ref<number>(0);
 
-const spanHeight = ref<string>("0px");
-const spanWidth = ref<string>("0px");
-const spanLeft = ref<string>("0px");
+const spanHeight = ref<string>("170px");
+const spanWidth = ref<string>("170px");
+const spanLeft = ref<string>("22px");
 
 function setActive(e: MouseEvent): void {
   if (button.value !== null) {
@@ -67,14 +67,6 @@ onMounted(() => {
       button.value.clientHeight
     );
     buttonRadius.value = buttonDiameter.value / 2;
-
-    if (props.isActive === true) {
-      // Active route onMount needs size for fill effect
-      spanWidth.value = spanHeight.value = `${buttonDiameter.value}px`;
-      spanLeft.value = `${
-        0 - (button.value.offsetLeft + buttonRadius.value)
-      }px`;
-    }
   }
 });
 </script>

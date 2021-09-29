@@ -4,7 +4,7 @@
     :type="type.type"
     :disabled="isDisabled"
     class="base-button-click"
-    @click="createEffect"
+    @click="createEffectOnClick"
   >
     <slot></slot>
   </button>
@@ -40,7 +40,7 @@ const props = defineProps({
 // eslint-disable-next-line no-undef
 const emit = defineEmits(["click"]);
 
-function createEffect(e: MouseEvent): void {
+function createEffectOnClick(e: MouseEvent): void {
   emit("click");
   const button = e.target as HTMLButtonElement;
 
