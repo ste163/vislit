@@ -96,7 +96,14 @@ onMounted(() => {
   height: 31px;
 
   color: v-bind(baseTextColor);
+  fill: var(--black);
   background-color: v-bind(baseBackgroundColor);
+}
+
+.button:disabled {
+  color: var(--gray) !important;
+  fill: var(--gray) !important;
+  cursor: default;
 }
 
 /* Svg icon only inherits from .text-wrapper, not sure why; so fill is placed on .text-wrapper */
@@ -111,7 +118,6 @@ onMounted(() => {
   margin-top: 0.55em;
   margin-left: 1.25em;
   z-index: 1;
-  fill: var(--black);
 
   /*
    margin handles positioning ->
@@ -119,7 +125,6 @@ onMounted(() => {
    text and icon will always be properly centered
   */
 
-  color: v-bind(baseTextColor) !important;
   transition: all 0.275s ease-in;
 }
 

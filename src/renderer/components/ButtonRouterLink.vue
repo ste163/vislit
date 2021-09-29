@@ -1,6 +1,11 @@
 <template>
-  <router-link class="router-link" :to="route" draggable="false">
-    <base-button-toggle :isActive="isActiveRoute">
+  <router-link
+    class="router-link"
+    :class="{ 'router-link-disabled': isDisabled }"
+    :to="route"
+    draggable="false"
+  >
+    <base-button-toggle :isActive="isActiveRoute" :isDisabled="isDisabled">
       <template v-slot:btn-icon>
         <slot name="icon"> </slot>
       </template>
@@ -13,6 +18,7 @@
 import { computed, inject } from "vue";
 import BaseButtonToggle from "./BaseButtonToggle.vue";
 import IStore from "../store/interfaces/IStore";
+import useIsSidebarDisabled from "../composables/useIsSidebarDisabled";
 
 const store = inject("store") as IStore;
 
@@ -25,6 +31,8 @@ const props = defineProps({
   },
 });
 
+const isDisabled = useIsSidebarDisabled();
+
 const isActiveRoute = computed(() =>
   store.application.state.activeView === props.route ? true : false
 );
@@ -35,5 +43,9 @@ const isActiveRoute = computed(() =>
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 800;
+}
+
+.router-link-disabled {
+  pointer-events: none;
 }
 </style>

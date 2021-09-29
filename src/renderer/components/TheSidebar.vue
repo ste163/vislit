@@ -4,7 +4,13 @@
     <!-- Make sidebar minimize-able -->
     <!-- Needs to include props for: isTextShown which has isMinimized passed in -->
     <div>
-      <div class="sidebar-header" draggable="false">Views</div>
+      <div
+        class="sidebar-header"
+        draggable="false"
+        :class="{ 'sidebar-header-disabled': isSidebarDisabled }"
+      >
+        Views
+      </div>
       <button-router-link :route="'/summary'" class="sidebar-button">
         <template v-slot:icon>
           <app-icon-summary class="button-icon" />
@@ -40,7 +46,13 @@
         Thesaurus
       </button-router-link>
 
-      <div class="sidebar-header top-margin" draggable="false">Columns</div>
+      <div
+        class="sidebar-header top-margin"
+        :class="{ 'sidebar-header-disabled': isSidebarDisabled }"
+        draggable="false"
+      >
+        Columns
+      </div>
       <button-column class="sidebar-button">
         <template v-slot:icon>
           <app-icon-project class="button-icon" />
@@ -86,6 +98,9 @@ import AppIconProject from "./AppIconProject.vue";
 import AppIconNote from "./AppIconNote.vue";
 import AppIconLexicon from "./AppIconLexicon.vue";
 import AppIconSetting from "./AppIconSetting.vue";
+import useIsSidebarDisabled from "../composables/useIsSidebarDisabled";
+
+const isSidebarDisabled = useIsSidebarDisabled();
 </script>
 
 <style scoped>
@@ -107,6 +122,10 @@ import AppIconSetting from "./AppIconSetting.vue";
   font-size: 0.8em;
   margin-left: 1.25em;
   cursor: default;
+}
+
+.sidebar-header-disabled {
+  color: var(--gray);
 }
 .sidebar-button {
   margin: 0.1em 0;
