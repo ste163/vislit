@@ -46,16 +46,16 @@ function emitCloseModal(): void {
 .modal-background {
   position: absolute;
   z-index: 100;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   background-color: #0000000f;
   backdrop-filter: blur(3px);
 }
 
 .modal-card {
   position: absolute;
-  top: 35%;
-  left: 44%;
+  top: 30vh;
+  left: 40vw;
   background-color: var(--white);
   padding: 1em;
   min-height: 10em;

@@ -80,12 +80,14 @@
   --white: white;
 
   --primary: #3772ff;
+  --primary-pulse: #3773ffb0;
   --warning: #b24c63;
   --warning-transparent: #b24c6314;
   --success: #68b684;
   --success-transparent: #68b68429;
   --success-dark: #497a5a;
   --notification: #fdca40;
+  --notification-pulse: #fdcb40c7;
 }
 
 /* overrides */

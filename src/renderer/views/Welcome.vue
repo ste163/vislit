@@ -36,7 +36,9 @@
 
     <base-card-content>
       <template v-slot:notification-dot>
-        <notification-dot :dot-color="'var(--primary)'"
+        <notification-dot
+          :dot-color="'var(--primary)'"
+          :pulse-color="'var(--primary-pulse)'"
       /></template>
 
       <template v-slot:header> Create a Project </template>

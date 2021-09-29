@@ -10,7 +10,9 @@
 
     <base-card-content>
       <template v-slot:notification-dot>
-        <notification-dot :dot-color="'var(--notification)'"
+        <notification-dot
+          :dot-color="'var(--notification)'"
+          :pulse-color="'var(--notification-pulse)'"
       /></template>
 
       <template v-slot:header> Goal </template>
@@ -27,7 +29,7 @@
     </base-card-content>
 
     <base-card-content>
-      <template v-slot:header> Continue from last time </template>
+      <template v-slot:header> Start writing </template>
       Start writing in the Document Writer to see the last couple paragraphs
       written.
 

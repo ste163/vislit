@@ -31,7 +31,13 @@
   </column-drop-zone>
 
   <main class="dashboard">
-    <router-view />
+    <router-view v-slot="{ Component }">
+      <transition name="dash-navigation" mode="out-in">
+        <div :key="dashTransitionKey">
+          <component :is="Component" />
+        </div>
+      </transition>
+    </router-view>
   </main>
 
   <column-drop-zone
@@ -77,6 +83,7 @@ provide("store", store); // Makes store available to every child component
 const router = useRouter();
 const route = useRoute();
 
+const dashTransitionKey = ref<number>(0);
 const leftColumnDivs = ref<Array<HTMLDivElement>>([]);
 const rightColumnDivs = ref<Array<HTMLDivElement>>([]);
 
@@ -109,7 +116,15 @@ function setDropZoneRefs(element: unknown | null, dropZone: string): void {
 const isLeftColumnDivEmpty = computed(() => checkIsDropZoneEmpty("left"));
 const isRightColumnDivEmpty = computed(() => checkIsDropZoneEmpty("right"));
 
+// Needed to force re-render because Summary page state change doesn't trigger the animation
+function forceReRenderOnProjectChange(): void {
+  ++dashTransitionKey.value;
+}
+
 watch(() => route.path, store.application.setActiveView);
+
+// Must use router to get the 'to' & 'from' objects
+watch(() => router.currentRoute.value, forceReRenderOnProjectChange);
 
 onMounted(async () => {
   if (store.projects !== null) {
@@ -146,7 +161,7 @@ onBeforeUpdate(() => {
   display: flex;
   flex-flow: column nowrap;
   flex-grow: 1;
-  margin: 1em;
+  margin: 1.5em;
   /*
   TODO:
   SET user-select to none when either
@@ -158,6 +173,19 @@ onBeforeUpdate(() => {
 
 .column-drag-active {
   opacity: 0.5;
+}
+
+/* Router animations */
+.dash-navigation-enter-from,
+.dash-navigation-leave-to {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+.dash-navigation-leave-active,
+.dash-navigation-enter-active {
+  transition: all 0.15s;
+  position: absolute;
 }
 
 /* Open column drop-shadow */
