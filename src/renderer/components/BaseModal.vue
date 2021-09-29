@@ -48,6 +48,7 @@ function emitCloseModal(): void {
   z-index: 100;
   width: 100%;
   height: 100%;
+  background-color: #0000000f;
   backdrop-filter: blur(3px);
 }
 

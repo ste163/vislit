@@ -26,8 +26,9 @@
           @click="isModalActive = !isModalActive"
           :background-color="'var(--primary)'"
           :text-color="'var(--white)'"
-          >Create a Project</base-button-click
         >
+          Create a Project
+        </base-button-click>
       </template>
     </base-card-content>
   </base-card>

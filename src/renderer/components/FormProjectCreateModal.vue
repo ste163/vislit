@@ -1,5 +1,5 @@
 <template>
-  <!-- This is used only on the Welcome page -->
+  <!-- Used only on the Welcome page -->
   <base-modal
     :is-modal-active="isFormModalActive"
     @close-modal="emitCloseModal"
@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { inject } from "vue";
+import { inject, watch } from "vue";
 import IStore from "../store/interfaces/IStore";
 import { useForm } from "vee-validate";
 import { toFormValidator } from "@vee-validate/zod";
@@ -76,7 +76,7 @@ const initialFormValues = {
   description: "",
 };
 
-const { handleSubmit, meta } = useForm({
+const { handleSubmit, meta, resetForm } = useForm({
   validationSchema,
   initialValues: initialFormValues,
 });
@@ -102,6 +102,9 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
     console.error(e.message);
   }
 });
+
+// Needed otherwise the form attempts to 'submit' when opened on initial render
+watch(() => props.isFormModalActive, resetForm);
 </script>
 
 <style scoped>
