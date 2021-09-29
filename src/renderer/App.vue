@@ -116,15 +116,12 @@ function setDropZoneRefs(element: unknown | null, dropZone: string): void {
 const isLeftColumnDivEmpty = computed(() => checkIsDropZoneEmpty("left"));
 const isRightColumnDivEmpty = computed(() => checkIsDropZoneEmpty("right"));
 
-// Needed to force re-render because Summary page state change doesn't trigger the animation
-function forceReRenderOnProjectChange(): void {
-  ++dashTransitionKey.value;
+function updateStateOnRouteChange(route: string): void {
+  store.application.setActiveView(route);
+  ++dashTransitionKey.value; // needed to force re-rendering of component to ensure animation is always triggered
 }
 
-watch(() => route.path, store.application.setActiveView);
-
-// Must use router to get the 'to' & 'from' objects
-watch(() => router.currentRoute.value, forceReRenderOnProjectChange);
+watch(() => route.path, updateStateOnRouteChange);
 
 onMounted(async () => {
   if (store.projects !== null) {
