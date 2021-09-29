@@ -11,28 +11,40 @@
       >
         Views
       </div>
-      <button-router-link :route="'/summary'" class="sidebar-button">
+      <button-router-link
+        :route="`/summary/${store.projects.state.active?.id}`"
+        class="sidebar-button"
+      >
         <template v-slot:icon>
           <app-icon-summary class="button-icon" />
         </template>
         Summary
       </button-router-link>
 
-      <button-router-link :route="'/writer'" class="sidebar-button">
+      <button-router-link
+        :route="`/writer/${store.projects.state.active?.id}`"
+        class="sidebar-button"
+      >
         <template v-slot:icon>
           <app-icon-writer class="button-icon" />
         </template>
         Document Writer
       </button-router-link>
 
-      <button-router-link :route="'/progress'" class="sidebar-button">
+      <button-router-link
+        :route="`/progress/${store.projects.state.active?.id}`"
+        class="sidebar-button"
+      >
         <template v-slot:icon>
           <app-icon-progress class="button-icon" />
         </template>
         Progress
       </button-router-link>
 
-      <button-router-link :route="'/visualization'" class="sidebar-button">
+      <button-router-link
+        :route="`/visualization/${store.projects.state.active?.id}`"
+        class="sidebar-button"
+      >
         <template v-slot:icon>
           <app-icon-visualization class="button-icon" />
         </template>
@@ -87,6 +99,9 @@
 </template>
 
 <script setup lang="ts">
+import { inject } from "vue";
+import IStore from "../store/interfaces/IStore";
+import useIsSidebarDisabled from "../composables/useIsSidebarDisabled";
 import ButtonRouterLink from "./ButtonRouterLink.vue";
 import AppIconSummary from "./AppIconSummary.vue";
 import AppIconWriter from "./AppIconWriter.vue";
@@ -98,7 +113,8 @@ import AppIconProject from "./AppIconProject.vue";
 import AppIconNote from "./AppIconNote.vue";
 import AppIconLexicon from "./AppIconLexicon.vue";
 import AppIconSetting from "./AppIconSetting.vue";
-import useIsSidebarDisabled from "../composables/useIsSidebarDisabled";
+
+const store = inject("store") as IStore;
 
 const isSidebarDisabled = useIsSidebarDisabled();
 </script>

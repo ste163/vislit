@@ -29,13 +29,17 @@
       />
 
       <!-- Need to pass in an isSubmitting for loading spinner -->
-      <button-submit :is-disabled="!meta.dirty" />
+      <button-submit
+        :is-disabled="!meta.dirty"
+        :background-color-disabled="'var(--lightGray)'"
+      />
     </form>
   </base-modal>
 </template>
 
 <script setup lang="ts">
 import { inject, watch } from "vue";
+import { useRouter } from "vue-router";
 import IStore from "../store/interfaces/IStore";
 import { useForm } from "vee-validate";
 import { toFormValidator } from "@vee-validate/zod";
@@ -45,6 +49,8 @@ import ButtonSubmit from "./ButtonSubmit.vue";
 import BaseModal from "./BaseModal.vue";
 
 const store = inject("store") as IStore;
+
+const router = useRouter();
 
 // eslint-disable-next-line no-undef
 const props = defineProps({
@@ -94,8 +100,12 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
   };
 
   try {
-    await store.projects.addProject(newProject);
-    resetForm();
+    const project = await store.projects.addProject(newProject);
+
+    if (project !== undefined) {
+      router.push(`/summary/${project.id}`);
+      resetForm();
+    }
   } catch (error) {
     const e = error as Error;
     // Move to notification

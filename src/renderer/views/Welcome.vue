@@ -1,6 +1,5 @@
 <template>
   <base-card>
-    <!-- Need a left hand 'gutter', that holds the notification dots -->
     <template v-slot:header> Welcome to Vislit! </template>
 
     <base-card-content>

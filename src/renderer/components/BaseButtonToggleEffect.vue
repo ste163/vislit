@@ -17,17 +17,17 @@ const props = defineProps({
   spanHeight: {
     type: String,
     required: true,
-    default: "0px",
+    default: "170px",
   },
   spanWidth: {
     type: String,
     required: true,
-    default: "0px",
+    default: "170px",
   },
   spanLeft: {
     type: String,
     required: true,
-    default: "0px",
+    default: "-88px",
   },
 });
 </script>

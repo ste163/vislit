@@ -74,6 +74,7 @@ function createEffect(e: MouseEvent): void {
   font-size: 0.78rem;
   font-weight: 900;
   cursor: pointer;
+  transition: 0.2s background-color;
 
   color: v-bind(textColor);
   background-color: v-bind(backgroundColor);

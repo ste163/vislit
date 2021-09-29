@@ -85,6 +85,7 @@
   --success: #68b684;
   --success-transparent: #68b68429;
   --success-dark: #497a5a;
+  --notification: #fdca40;
 }
 
 /* overrides */
@@ -139,6 +140,10 @@ h3 {
   padding: 0;
   font-weight: 300;
   font-size: 0.95em;
+}
+
+a {
+  color: var(--black);
 }
 
 p {

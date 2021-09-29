@@ -18,6 +18,10 @@ export default class ProjectStore implements IProjectStore {
     this.state.all = projects;
   }
 
+  public setActiveProject(project: IProject): void {
+    this.state.active = project;
+  }
+
   public async getProjects(): Promise<void | undefined> {
     try {
       const { api } = window as unknown as IWindow;
@@ -40,17 +44,19 @@ export default class ProjectStore implements IProjectStore {
     }
   }
 
-  public async addProject(project: IProject): Promise<void | undefined> {
+  public async addProject(project: IProject): Promise<IProject | undefined> {
     try {
       const { api } = window as unknown as IWindow;
 
-      const response = await api.send("projects-add", project);
+      const response = (await api.send("projects-add", project)) as IProject;
 
-      if (response) {
+      if (response instanceof Error === false) {
         // Display success message
-        this.getProjects();
+        this.setActiveProject(response);
+        return response;
       } else {
         console.log("Display error message");
+        return undefined;
       }
     } catch (error) {
       const e = error as Error;

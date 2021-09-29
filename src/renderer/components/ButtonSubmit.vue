@@ -17,13 +17,16 @@ import BaseButtonClick from "./BaseButtonClick.vue";
 
 // TODO:
 // isSubmtting prop & loading spinner
-// backgroundColorDisabled prop
 
 // eslint-disable-next-line no-undef
 const props = defineProps({
   isDisabled: {
     type: Boolean,
     default: false,
+  },
+  backgroundColorDisabled: {
+    type: String,
+    default: "var(--white)",
   },
 });
 
@@ -42,7 +45,9 @@ function emitSubmit(): void {
 <style scoped>
 .disabled {
   color: var(--gray);
-  background-color: white;
   cursor: default;
+  transition: 0.2s background-color;
+
+  background-color: v-bind(backgroundColorDisabled);
 }
 </style>

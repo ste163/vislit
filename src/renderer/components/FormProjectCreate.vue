@@ -25,6 +25,7 @@
 
 <script setup lang="ts">
 import { inject } from "vue";
+import { useRouter } from "vue-router";
 import IStore from "../store/interfaces/IStore";
 import { useForm } from "vee-validate";
 import { toFormValidator } from "@vee-validate/zod";
@@ -35,6 +36,8 @@ import ButtonSubmit from "./ButtonSubmit.vue";
 import ButtonBack from "./ButtonBack.vue";
 
 const store = inject("store") as IStore;
+
+const router = useRouter();
 
 const validationSchema = toFormValidator(
   z.object({
@@ -75,8 +78,12 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
   };
 
   try {
-    await store.projects.addProject(newProject);
-    resetForm();
+    const project = await store.projects.addProject(newProject);
+
+    if (project !== undefined) {
+      router.push(`/summary/${project.id}`);
+      resetForm();
+    }
   } catch (error) {
     const e = error as Error;
     // Move to notification

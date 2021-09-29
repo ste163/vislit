@@ -8,25 +8,25 @@ const routes: Array<RouteRecordRaw> = [
     component: Welcome,
   },
   {
-    path: "/summary",
+    path: "/summary/:id",
     name: "Summary",
     component: () =>
       import(/* webpackChunkName: "summary" */ "../views/Summary.vue"),
   },
   {
-    path: "/writer",
+    path: "/writer/:id",
     name: "Writer",
     component: () =>
       import(/* webpackChunkName: "writer" */ "../views/Writer.vue"),
   },
   {
-    path: "/progress",
+    path: "/progress/:id",
     name: "Progress",
     component: () =>
       import(/* webpackChunkName: "progress" */ "../views/Progress.vue"),
   },
   {
-    path: "/visualization",
+    path: "/visualization/:id",
     name: "Visualization",
     component: () =>
       import(
