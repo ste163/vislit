@@ -51,6 +51,11 @@ export default class ProjectController implements IProjectController {
     try {
       this.#checkForTitleTaken(project.title);
 
+      const date = new Date();
+
+      project.dateCreated = date;
+      project.dateModified = date; // setting here so getProjects can always return the most recent project first
+
       const response = this.#projectRepository.add(project);
 
       // this.searchController.addProject(response);

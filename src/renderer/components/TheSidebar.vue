@@ -86,10 +86,6 @@ import AppIconProject from "./AppIconProject.vue";
 import AppIconNote from "./AppIconNote.vue";
 import AppIconLexicon from "./AppIconLexicon.vue";
 import AppIconSetting from "./AppIconSetting.vue";
-
-// Need to have an isDisabled
-// That checks if we're on the welcome page
-// If we're on the welcome page, disable the sidebar
 </script>
 
 <style scoped>

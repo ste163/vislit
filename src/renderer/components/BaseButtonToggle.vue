@@ -1,5 +1,5 @@
 <template>
-  <button ref="button" class="button" @click="setActive">
+  <button ref="button" class="button" @click="setActive" :disabled="isDisabled">
     <div class="text-wrapper" :class="isActive ? 'text-wrapper-active' : ''">
       <div class="icon-container">
         <slot name="btn-icon"></slot>
@@ -23,6 +23,10 @@ import BaseButtonToggleEffect from "./BaseButtonToggleEffect.vue";
 // eslint-disable-next-line no-undef
 const props = defineProps({
   isActive: {
+    type: Boolean,
+    required: true,
+  },
+  isDisabled: {
     type: Boolean,
     required: true,
   },

@@ -11,7 +11,28 @@ export default class ProjectRepository implements IProjectRepository {
 
   getAll(): Array<IProject> {
     if (this.#database.db.data !== null) {
-      return this.#database.db.data.projects;
+      const projects = this.#database.db.data.projects;
+
+      // This will most likely need to move into a util at some point & probably move to having an IDateModified
+      const sortedByMostRecent = projects.sort(
+        (a: IProject, b: IProject): number => {
+          if (a.dateModified !== null && b.dateModified !== null) {
+            const aDate = new Date(a.dateModified);
+            const bDate = new Date(b.dateModified);
+
+            if (aDate > bDate) {
+              return -1;
+            } else if (aDate < bDate) {
+              return 1;
+            } else {
+              return 0;
+            }
+          } else {
+            throw Error("Date modified for project was null");
+          }
+        }
+      );
+      return sortedByMostRecent;
     } else {
       throw Error("Db data was null");
     }

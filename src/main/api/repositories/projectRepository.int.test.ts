@@ -14,6 +14,9 @@ import ProjectRepository from "./projectRepository";
 
 let projectRepository: IProjectRepository;
 
+const dateForIt = new Date();
+const dateForShining = new Date();
+
 beforeEach(() => {
   const app = {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -32,8 +35,8 @@ beforeEach(() => {
         typeId: 1,
         completed: false,
         archived: false,
-        dateCreated: null,
-        dateModified: null,
+        dateCreated: dateForIt,
+        dateModified: dateForIt,
       },
       {
         id: "2",
@@ -42,8 +45,8 @@ beforeEach(() => {
         typeId: 1,
         completed: false,
         archived: false,
-        dateCreated: null,
-        dateModified: null,
+        dateCreated: dateForShining,
+        dateModified: dateForShining,
       },
     ];
   }
@@ -60,8 +63,8 @@ test("can get all projects", () => {
       typeId: 1,
       completed: false,
       archived: false,
-      dateCreated: null,
-      dateModified: null,
+      dateCreated: dateForIt,
+      dateModified: dateForIt,
     },
     {
       id: "2",
@@ -70,8 +73,8 @@ test("can get all projects", () => {
       typeId: 1,
       completed: false,
       archived: false,
-      dateCreated: null,
-      dateModified: null,
+      dateCreated: dateForShining,
+      dateModified: dateForShining,
     },
   ]);
 });
@@ -86,8 +89,8 @@ test("can get a project by title", () => {
     typeId: 1,
     completed: false,
     archived: false,
-    dateCreated: null,
-    dateModified: null,
+    dateCreated: dateForShining,
+    dateModified: dateForShining,
   });
 });
 
@@ -107,8 +110,8 @@ test("can get project by id", () => {
     typeId: 1,
     completed: false,
     archived: false,
-    dateCreated: null,
-    dateModified: null,
+    dateCreated: dateForShining,
+    dateModified: dateForShining,
   });
 });
 
@@ -119,6 +122,8 @@ test("trying to get project by id not in database throws error", () => {
 });
 
 test("can add project to database", () => {
+  const date = new Date();
+
   const newProject = {
     id: "1000",
     title: "The Dead Zone",
@@ -126,8 +131,8 @@ test("can add project to database", () => {
     typeId: 1,
     completed: false,
     archived: false,
-    dateCreated: null,
-    dateModified: null,
+    dateCreated: date,
+    dateModified: date,
   };
 
   projectRepository.add(newProject);
@@ -138,6 +143,8 @@ test("can add project to database", () => {
 });
 
 test("can update project", () => {
+  const dateModified = new Date();
+
   const updatedProject = {
     id: "1",
     title: "It - by S.K.",
@@ -145,8 +152,8 @@ test("can update project", () => {
     typeId: 1,
     completed: false,
     archived: false,
-    dateCreated: null,
-    dateModified: null,
+    dateCreated: dateForIt,
+    dateModified: dateModified,
   };
 
   const response = projectRepository.update(updatedProject);
@@ -158,8 +165,8 @@ test("can update project", () => {
     typeId: 1,
     completed: false,
     archived: false,
-    dateCreated: null,
-    dateModified: null,
+    dateCreated: dateForIt,
+    dateModified: dateModified,
   });
 });
 

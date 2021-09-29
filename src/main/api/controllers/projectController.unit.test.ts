@@ -39,16 +39,8 @@ test("can add project", () => {
     dateModified: null,
   };
 
-  expect(projectController.add(project)).toEqual({
-    id: "1",
-    title: "It",
-    description: "A murderous clown attacks a town",
-    typeId: 1,
-    completed: false,
-    archived: false,
-    dateCreated: null,
-    dateModified: null,
-  });
+  // Must check for title; can't compare because adding project adds a date
+  expect(projectController.add(project)).toHaveProperty("title", "It");
 });
 
 test("trying to add project with same name returns error", () => {

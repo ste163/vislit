@@ -113,10 +113,15 @@ watch(() => route.path, store.application.setActiveView);
 
 onMounted(async () => {
   if (store.projects !== null) {
-    await store.projects.getProjects(); // if there was an error here, user will recieve it
+    await store.projects.getProjects(); // doesn't need to be wrapped in try/catch because getProjects will trigger an error if there is one
 
     if (store.projects.state.all.length > 0) {
       console.log("Set the most recently modified/created project first");
+      // set active project to most recent
+      // check local storage for last visited route
+      // push to that route or "/summary" if no route available
+      // router.push("/summary");
+      router.push("/");
     } else {
       router.push("/"); // sends user to Welcome screen, as they have no data
     }
