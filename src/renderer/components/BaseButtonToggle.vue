@@ -6,19 +6,12 @@
       </div>
       <slot></slot>
     </div>
-    <base-button-toggle-effect
-      :isActive="!isActive"
-      :activeColor="activeEffectColor"
-      :spanHeight="spanHeight"
-      :spanWidth="spanWidth"
-      :spanLeft="spanLeft"
-    />
+    <span :class="!isActive ? 'effect-end' : 'effect-start'"></span>
   </button>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import BaseButtonToggleEffect from "./BaseButtonToggleEffect.vue";
 
 // eslint-disable-next-line no-undef
 const props = defineProps({
@@ -136,5 +129,46 @@ onMounted(() => {
 
 .icon-container {
   margin-right: 0.5em;
+}
+
+/* Effect */
+
+.effect-end {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  background-color: v-bind(activeEffectColor);
+  transition: 0.24s ease-in;
+
+  height: 0;
+  width: 0;
+  left: 0;
+  top: 0;
+}
+
+@keyframes effect-end {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.effect-start {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(4);
+  background-color: v-bind(activeEffectColor);
+  transition: 0.24s ease-out;
+
+  height: v-bind(spanHeight);
+  width: v-bind(spanWidth);
+  left: v-bind(spanLeft);
+}
+
+@keyframes effect-start {
+  to {
+    transform: scale(0);
+    opacity: 1;
+  }
 }
 </style>
