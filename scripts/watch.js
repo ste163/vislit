@@ -1,8 +1,8 @@
 #!/usr/bin/node
 
-const {createServer, build, createLogger} = require('vite');
+const { createServer, build, createLogger } = require('vite');
 const electronPath = require('electron');
-const {spawn} = require('child_process');
+const { spawn } = require('child_process');
 
 
 /** @type 'production' | 'development' | 'test' */

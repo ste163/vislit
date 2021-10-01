@@ -1,5 +1,5 @@
-const {writeFile, readFile} = require('fs/promises');
-const {execSync} = require('child_process');
+const { writeFile, readFile } = require('fs/promises');
+const { execSync } = require('child_process');
 const electron = require('electron');
 const path = require('path');
 

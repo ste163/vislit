@@ -1,17 +1,17 @@
-import {contextBridge} from 'electron';
+// Securely exposes IPC to the renderer. This is the only way
+// for the renderer to communicate with the main process.
+// for more info: https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration
+import { contextBridge, ipcRenderer } from "electron";
 
-const apiKey = 'electron';
-/**
- * @see https://github.com/electron/electron/issues/21437#issuecomment-573522360
- */
-const api: ElectronApi = {
-	versions: process.versions,
-};
+// whitelist channels
+const validChannels = ["projects-add", "projects-get-all"];
 
-/**
- * The "Main World" is the JavaScript context that your main renderer code runs in.
- * By default, the page you load in your renderer executes code in this world.
- *
- * @see https://www.electronjs.org/docs/api/context-bridge
- */
-contextBridge.exposeInMainWorld(apiKey, api);
+// Expose protected methods that allow the renderer process to use
+// the ipcRenderer without exposing the entire object
+contextBridge.exposeInMainWorld("api", {
+  send: async (channel: string, data: unknown): Promise<unknown> => {
+    if (validChannels.includes(channel)) {
+      return await ipcRenderer.invoke(channel, data);
+    }
+  },
+});

@@ -1,8 +1,6 @@
-interface ElectronApi {
-	readonly versions: Readonly<NodeJS.ProcessVersions>;
-}
-
 declare interface Window {
-	electron: Readonly<ElectronApi>;
+  api: {
+    send: (channel: string, data?: unknown) => Promise<unknown>;
+  };
 	electronRequire?: NodeRequire;
 }

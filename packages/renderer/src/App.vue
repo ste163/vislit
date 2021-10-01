@@ -1,5 +1,10 @@
+
+<script setup lang="ts">
+import AppNavigation from "/@/components/AppNavigation.vue";
+
+</script>
+
 <template>
-  <p>Test</p>
   <img
     alt="Vue logo"
     src="../assets/logo.svg"
@@ -9,17 +14,6 @@
   <router-view />
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import AppNavigation from "/@/components/AppNavigation.vue";
-
-export default defineComponent({
-	name: "App",
-	components: {
-		AppNavigation,
-	},
-});
-</script>
 
 <style>
 #app {
