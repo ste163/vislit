@@ -8,9 +8,7 @@
   "extends": [
     "eslint:recommended",
     /** @see https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/eslint-plugin#recommended-configs */
-    "plugin:vue/vue3-recommended",
-    "plugin:@typescript-eslint/recommended",
-    "@vue/eslint-config-typescript"
+    "plugin:@typescript-eslint/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {

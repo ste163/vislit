@@ -5,7 +5,8 @@
 	},
 	"extends": [
 		/** @see https://eslint.vuejs.org/rules/ */
-		"plugin:vue/vue3-recommended"
+		"plugin:vue/vue3-recommended",
+		"@vue/eslint-config-typescript"
 	],
 	"parserOptions": {
 		"parser": "@typescript-eslint/parser",
