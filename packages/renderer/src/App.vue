@@ -1,4 +1,5 @@
 <template>
+  <p>Test</p>
   <img
     alt="Vue logo"
     src="../assets/logo.svg"
@@ -9,11 +10,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import AppNavigation from '/@/components/AppNavigation.vue';
+import { defineComponent } from "vue";
+import AppNavigation from "/@/components/AppNavigation.vue";
 
 export default defineComponent({
-	name: 'App',
+	name: "App",
 	components: {
 		AppNavigation,
 	},
