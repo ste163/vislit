@@ -1,22 +1,20 @@
 {
-  "compilerOptions": {
-    "target": "esnext",
-    "useDefineForClassFields": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "strict": true,
-    "jsx": "preserve",
-    "sourceMap": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "lib": ["esnext", "dom"]
-  },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "src/main/preload.js",
-    "src/main/main.ts"
-  ]
+	"compilerOptions": {
+		"module": "esnext",
+		"target": "esnext",
+		"sourceMap": true,
+		"moduleResolution": "Node",
+		"skipLibCheck": true,
+		"strict": true,
+		"isolatedModules": true,
+		"types": [
+			"node"
+		],
+		"typeRoots": [
+			"node_modules/@types"
+		],
+		"lib": [
+			"ESNext"
+		]
+	}
 }
