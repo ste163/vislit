@@ -51,8 +51,11 @@
     "vue-tsc": ">=0.3.0"
   },
   "dependencies": {
+    "@vee-validate/zod": "^4.5.2",
     "electron-updater": "4.6.0",
+    "vee-validate": "^4.5.2",
     "vue": ">=3.2.13",
-    "vue-router": ">=4.0.11"
+    "vue-router": ">=4.0.11",
+    "zod": "^3.9.5"
   }
 }
