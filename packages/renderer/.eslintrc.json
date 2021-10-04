@@ -1,0 +1,29 @@
+{
+	"env": {
+		"browser": true,
+		"node": false
+	},
+	"extends": [
+		/** @see https://eslint.vuejs.org/rules/ */
+		"plugin:vue/vue3-recommended",
+		"@vue/eslint-config-typescript"
+	],
+	"parserOptions": {
+		"parser": "@typescript-eslint/parser",
+		"ecmaVersion": 12,
+		"sourceType": "module"
+	},
+	"rules": {
+		"indent": [
+			"error",
+			"tab",
+			{
+				"ignoredNodes": [
+					"ConditionalExpression"
+				]
+			}
+		],
+		"no-mixed-spaces-and-tabs": "off",
+		"@typescript-eslint/no-unused-vars": "off"
+	}
+}

@@ -9,5 +9,7 @@ module.exports = {
   },
   verbose: true,
   preset: "ts-jest",
-  testEnvironment: "node",
+  testEnvironment: "jest-environment-node",
+  moduleDirectories: ["node_modules"],
+  transform: {},
 };

@@ -17,3 +17,6 @@ Vislit is currently in development, shooting for a late 2021 release date for th
 - Visualization - see goal progress with data visualizations
 - Search - quickly search Merriam-Websters Collegiate Thesaurus and Dictionary and store words you'd like to use later in word collections
 - Data privacy - your writing data is yours. The only time Vislit connects to the internet is when you search the thesaurus or dictionary. Export your writing data and store it any way you want.
+
+### Special Thanks
+- cawa-93 for the [vite-electron-builder](https://github.com/cawa-93/vite-electron-builder) template

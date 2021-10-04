@@ -1,0 +1,160 @@
+@font-face {
+  font-family: "Noto";
+  src: url(../assets/fonts/NotoSerif-Regular.ttf);
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Noto";
+  src: url(../assets/fonts/NotoSerif-Bold.ttf);
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Heebo";
+  src: url(../assets/fonts/Heebo-ExtraLight.ttf);
+  font-weight: 200;
+}
+
+@font-face {
+  font-family: "Heebo";
+  src: url(../assets/fonts/Heebo-Light.ttf);
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "Heebo";
+  src: url(../assets/fonts/Heebo-Medium.ttf);
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Heebo";
+  src: url(../assets/fonts/Heebo-Regular.ttf);
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Heebo";
+  src: url(../assets/fonts/Heebo-SemiBold.ttf);
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "Heebo";
+  src: url(../assets/fonts/Heebo-Bold.ttf);
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "Heebo";
+  src: url(./assets/fonts/Heebo-ExtraBold.ttf);
+  font-weight: 800;
+}
+
+@font-face {
+  font-family: "Heebo";
+  src: url(../assets/fonts/Heebo-Black.ttf);
+  font-weight: 900;
+}
+
+:root {
+  /* Fot */
+  --fontFamilySans: "Heebo", sans-serif;
+  --fontFamilySerif: "Noto", serif;
+  --letterSpacingSmaller: 0.05em;
+  --letterSpacingSmall: 0.1em;
+  --letterSpacingMedium: 0.2em;
+
+  /* Color */
+  --dashboardBackground: #e5e5e5;
+  --columnBackground: #f6f6f6;
+  --columnHeader: #f0f0f0;
+
+  --black: #333333;
+
+  --lightestGray: #f6f6f6;
+  --lightGray: #f0f0f0;
+  --gray: #9b9b9b;
+
+  --white: white;
+
+  --primary: #3772ff;
+  --primary-pulse: #3773ffb0;
+  --warning: #b24c63;
+  --warning-transparent: #b24c6314;
+  --success: #68b684;
+  --success-transparent: #68b68429;
+  --success-dark: #497a5a;
+  --notification: #fdca40;
+  --notification-pulse: #fdcb40c7;
+}
+
+/* overrides */
+body {
+  font-family: "Heebo";
+  font-weight: 300;
+  background-color: var(--dashboardBackground);
+  color: var(--black);
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+input {
+  background-color: var(--white);
+  border: 2px solid transparent;
+  border-radius: 0.3em;
+  padding: 0.4em;
+  outline: 0;
+  transition: all 0.3s ease-in-out;
+}
+
+input:focus {
+  border-color: var(--primary);
+}
+
+button {
+  outline: 0;
+  border: 0;
+  border-radius: 0.4rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem; /* Equates to ~13.5pxs -> don't go smaller than that */
+  cursor: pointer;
+}
+
+h1 {
+  margin: 0;
+  padding: 0;
+  font-family: "Noto";
+  font-weight: 400;
+  font-size: 1.5em;
+}
+
+h2 {
+  margin: 0;
+  padding: 0;
+  font-size: 0.9em;
+}
+
+h3 {
+  margin: 0;
+  padding: 0;
+  font-weight: 300;
+  font-size: 0.95em;
+}
+
+a {
+  color: var(--black);
+}
+
+p {
+  padding: 0;
+  margin: 0;
+  font-size: 0.9em;
+}
+
+/* global */
+.button-icon {
+  height: 1rem;
+}
