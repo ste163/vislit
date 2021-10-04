@@ -1,3 +1,17 @@
+<script setup lang="ts">
+import { ref } from "vue";
+import TheColumnProjectList from "./TheColumnProjectList.vue";
+import FormProjectCreate from "./FormProjectCreate.vue"; // maybe rename to TheColumnProjectForm
+
+// Need to inject the store so we can track global project state
+
+const isFormActive = ref<boolean>(false);
+
+function setActiveColumnView(): void {
+	isFormActive.value = !isFormActive.value;
+}
+</script>
+
 <template>
   <transition-group name="slide-fade">
     <the-column-project-list
@@ -12,20 +26,6 @@
     />
   </transition-group>
 </template>
-
-<script setup lang="ts">
-import { ref } from "vue";
-import TheColumnProjectList from "./TheColumnProjectList.vue";
-import FormProjectCreate from "./FormProjectCreate.vue"; // maybe rename to TheColumnProjectForm
-
-// Need to inject the store so we can track global project state
-
-const isFormActive = ref<boolean>(false);
-
-function setActiveColumnView(): void {
-	isFormActive.value = !isFormActive.value;
-}
-</script>
 
 <style scoped>
 /* Need to move into a global area so all columns can use this */

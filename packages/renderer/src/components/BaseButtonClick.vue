@@ -1,15 +1,3 @@
-<template>
-  <button
-    ref="button"
-    :type="type.type"
-    :disabled="isDisabled"
-    class="base-button-click"
-    @click="createEffectOnClick"
-  >
-    <slot />
-  </button>
-</template>
-
 <script setup lang="ts">
 import type { ButtonHTMLAttributes, PropType } from "vue";
 
@@ -65,6 +53,18 @@ function createEffectOnClick(e: MouseEvent): void {
 	}
 }
 </script>
+
+<template>
+  <button
+    ref="button"
+    :type="type.type"
+    :disabled="isDisabled"
+    class="base-button-click"
+    @click="createEffectOnClick"
+  >
+    <slot />
+  </button>
+</template>
 
 <style>
 .base-button-click {

@@ -1,5 +1,5 @@
+import type { IProject } from "interfaces";
 import type ProjectState from "../types/ProjectState";
-import type { IProject } from "../../../../shared/interfaces";
 
 export default interface IProjectStore {
   state: ProjectState;

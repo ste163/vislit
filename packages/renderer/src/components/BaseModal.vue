@@ -1,3 +1,22 @@
+<script setup lang="ts">
+import ButtonClose from "./ButtonClose.vue";
+// eslint-disable-next-line no-undef
+const props = defineProps({
+	isModalActive: {
+		type: Boolean,
+		required: true,
+		default: false,
+	},
+});
+
+// eslint-disable-next-line no-undef
+const emit = defineEmits(["closeModal"]);
+
+function emitCloseModal(): void {
+	emit("closeModal");
+}
+</script>
+
 <template>
   <teleport to="#modal-container">
     <transition name="blur">
@@ -27,25 +46,6 @@
     </transition>
   </teleport>
 </template>
-
-<script setup lang="ts">
-import ButtonClose from "./ButtonClose.vue";
-// eslint-disable-next-line no-undef
-const props = defineProps({
-	isModalActive: {
-		type: Boolean,
-		required: true,
-		default: false,
-	},
-});
-
-// eslint-disable-next-line no-undef
-const emit = defineEmits(["closeModal"]);
-
-function emitCloseModal(): void {
-	emit("closeModal");
-}
-</script>
 
 <style scoped>
 .modal-background {

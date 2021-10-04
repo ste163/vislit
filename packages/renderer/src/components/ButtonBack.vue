@@ -1,12 +1,3 @@
-<template>
-  <button
-    class="button-back"
-    @click="emitClick"
-  >
-    <app-icon-back />
-  </button>
-</template>
-
 <script setup lang="ts">
 import AppIconBack from "./AppIconBack.vue";
 
@@ -21,6 +12,15 @@ function emitClick(): void {
 	emit("click");
 }
 </script>
+
+<template>
+  <button
+    class="button-back"
+    @click="emitClick"
+  >
+    <app-icon-back />
+  </button>
+</template>
 
 <style scoped>
 .button-back {

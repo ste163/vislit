@@ -1,7 +1,3 @@
-<template>
-  <div class="notification-dot pulse" />
-</template>
-
 <script setup lang="ts">
 // eslint-disable-next-line no-undef
 const props = defineProps({
@@ -15,6 +11,10 @@ const props = defineProps({
 	},
 });
 </script>
+
+<template>
+  <div class="notification-dot pulse" />
+</template>
 
 <style scoped>
 .notification-dot {

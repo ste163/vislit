@@ -1,3 +1,23 @@
+<script setup lang="ts">
+import BaseModal from "./BaseModal.vue";
+
+// eslint-disable-next-line no-undef
+const props = defineProps({
+	isFormModalActive: {
+		type: Boolean,
+		required: true,
+		default: false,
+	},
+});
+
+// eslint-disable-next-line no-undef
+const emit = defineEmits(["closeFormModal"]);
+
+function emitCloseFormModal(): void {
+	emit("closeFormModal");
+}
+</script>
+
 <template>
   <!-- Copied from original test version of FormProjectCreate -->
   <base-modal
@@ -29,23 +49,3 @@
     </form>
   </base-modal>
 </template>
-
-<script setup lang="ts">
-import BaseModal from "./BaseModal.vue";
-
-// eslint-disable-next-line no-undef
-const props = defineProps({
-	isFormModalActive: {
-		type: Boolean,
-		required: true,
-		default: false,
-	},
-});
-
-// eslint-disable-next-line no-undef
-const emit = defineEmits(["closeFormModal"]);
-
-function emitCloseFormModal(): void {
-	emit("closeFormModal");
-}
-</script>

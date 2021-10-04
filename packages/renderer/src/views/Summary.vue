@@ -1,3 +1,21 @@
+<script setup lang="ts">
+import { ref, inject } from "vue";
+import BaseCard from "../components/BaseCard.vue";
+import BaseCardContent from "../components/BaseCardContent.vue";
+import BaseButtonClick from "../components/BaseButtonClick.vue";
+import FormProjectCreateModal from "../components/FormProjectCreateModal.vue";
+import NotificationDot from "../components/NotificationDot.vue";
+import type IStore from "../store/interfaces/IStore";
+
+const store = inject("store") as IStore;
+
+const isModalActive = ref<boolean>(false);
+
+function openWindow(): void {
+	console.log("Open window in main process");
+}
+</script>
+
 <template>
   <!-- TODO:
 - summary card template
@@ -62,24 +80,6 @@
     @close-modal="isModalActive = false"
   />
 </template>
-
-<script setup lang="ts">
-import { ref, inject } from "vue";
-import BaseCard from "../components/BaseCard.vue";
-import BaseCardContent from "../components/BaseCardContent.vue";
-import BaseButtonClick from "../components/BaseButtonClick.vue";
-import FormProjectCreateModal from "../components/FormProjectCreateModal.vue";
-import NotificationDot from "../components/NotificationDot.vue";
-import type IStore from "../store/interfaces/IStore";
-
-const store = inject("store") as IStore;
-
-const isModalActive = ref<boolean>(false);
-
-function openWindow(): void {
-	console.log("Open window in main process");
-}
-</script>
 
 <style>
 .button-spacing {

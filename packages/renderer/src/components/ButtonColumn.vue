@@ -1,26 +1,9 @@
-<template>
-  <base-button-toggle
-    :is-active="isColumnActive"
-    :active-effect-color="'var(--lightGray)'"
-    active-text-color="'var(--black)'"
-    :is-disabled="isDisabled"
-    @click="toggleColumnActive"
-  >
-    <template #btn-icon>
-      <slot name="icon" />
-    </template>
-    <div ref="columnTitle">
-      <slot />
-    </div>
-  </base-button-toggle>
-</template>
-
 <script setup lang="ts">
 import { inject, ref, computed } from "vue";
+import type { IColumn } from "interfaces";
 import BaseButtonToggle from "./BaseButtonToggle.vue";
 import type IStore from "../store/interfaces/IStore";
 import useIsSidebarDisabled from "../composables/useIsSidebarDisabled";
-import type { IColumn } from "../../../shared/interfaces";
 
 const store = inject("store") as IStore;
 
@@ -46,3 +29,20 @@ function toggleColumnActive(): void {
 	}
 }
 </script>
+
+<template>
+  <base-button-toggle
+    :is-active="isColumnActive"
+    :active-effect-color="'var(--lightGray)'"
+    active-text-color="'var(--black)'"
+    :is-disabled="isDisabled"
+    @click="toggleColumnActive"
+  >
+    <template #btn-icon>
+      <slot name="icon" />
+    </template>
+    <div ref="columnTitle">
+      <slot />
+    </div>
+  </base-button-toggle>
+</template>

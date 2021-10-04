@@ -1,7 +1,7 @@
 // Handles all column events and logic
+import type { IColumn } from "interfaces";
 import type { ComputedRef, Ref} from "vue";
 import { computed, ref } from "vue";
-import type { IColumn } from "../../../shared/interfaces";
 import type IStore from "../store/interfaces/IStore";
 
 // SORTING IS BROKEN AFTER IMPLEMENTING COLUMN COMPONENTS

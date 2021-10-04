@@ -1,48 +1,3 @@
-<template>
-  <div class="form-container">
-    <!-- Must have a single root node to animate with <transition-group /> -->
-
-    <div class="form-container-header">
-      <button-back
-        class="back-button"
-        @click="emitGoBack"
-      />
-
-      <column-sub-heading
-        class="form-title"
-      >
-        Create New Project
-      </column-sub-heading>
-    </div>
-
-    <form
-      class="form"
-      @submit.prevent="onSubmit"
-    >
-      <input-text
-        name="title"
-        type="text"
-        label="Title"
-      />
-
-      <input-text
-        name="type"
-        type="text"
-        label="Type"
-      />
-
-      <input-text
-        name="description"
-        type="text"
-        label="Description"
-      />
-
-      <!-- Need to pass in an isSubmitting for loading spinner -->
-      <button-submit :is-disabled="!meta.dirty" />
-    </form>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { inject } from "vue";
 import { useRouter } from "vue-router";
@@ -111,6 +66,51 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
 	}
 });
 </script>
+
+<template>
+  <div class="form-container">
+    <!-- Must have a single root node to animate with <transition-group /> -->
+
+    <div class="form-container-header">
+      <button-back
+        class="back-button"
+        @click="emitGoBack"
+      />
+
+      <column-sub-heading
+        class="form-title"
+      >
+        Create New Project
+      </column-sub-heading>
+    </div>
+
+    <form
+      class="form"
+      @submit.prevent="onSubmit"
+    >
+      <input-text
+        name="title"
+        type="text"
+        label="Title"
+      />
+
+      <input-text
+        name="type"
+        type="text"
+        label="Type"
+      />
+
+      <input-text
+        name="description"
+        type="text"
+        label="Description"
+      />
+
+      <!-- Need to pass in an isSubmitting for loading spinner -->
+      <button-submit :is-disabled="!meta.dirty" />
+    </form>
+  </div>
+</template>
 
 <style scoped>
 .form-container {

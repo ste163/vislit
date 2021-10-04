@@ -1,23 +1,3 @@
-<template>
-  <button
-    ref="button"
-    class="button"
-    :disabled="isDisabled"
-    @click="setActive"
-  >
-    <div
-      class="text-wrapper"
-      :class="isActive ? 'text-wrapper-active' : ''"
-    >
-      <div class="icon-container">
-        <slot name="btn-icon" />
-      </div>
-      <slot />
-    </div>
-    <span :class="isActive ? 'effect-start' : 'effect-end'" />
-  </button>
-</template>
-
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 
@@ -79,6 +59,26 @@ onMounted(() => {
 });
 </script>
 
+<template>
+  <button
+    ref="button"
+    class="button"
+    :disabled="isDisabled"
+    @click="setActive"
+  >
+    <div
+      class="text-wrapper"
+      :class="isActive ? 'text-wrapper-active' : ''"
+    >
+      <div class="icon-container">
+        <slot name="btn-icon" />
+      </div>
+      <slot />
+    </div>
+    <span :class="isActive ? 'effect-start' : 'effect-end'" />
+  </button>
+</template>
+
 <style scoped>
 .button {
   position: relative;
@@ -132,7 +132,6 @@ onMounted(() => {
 }
 
 /* Effect */
-
 .effect-end {
   position: absolute;
   border-radius: 50%;

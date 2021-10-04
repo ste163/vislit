@@ -1,45 +1,8 @@
-<template>
-  <div
-    ref="columnElement"
-    class="column-container"
-  >
-    <div class="column-content-container">
-      <header
-        class="column-header"
-        draggable="true"
-        @dragstart="$emit('dragstart', $event)"
-        @dragend="$emit('dragend', $event)"
-      >
-        <div class="column-header-text">
-          {{ column.header }}
-        </div>
-        <button-close
-          class="column-header-close"
-          @click="handleColumnClose"
-        />
-      </header>
-
-      <div class="column-content">
-        <the-column-project v-if="column.header === 'Projects'" />
-        <the-column-note v-if="column.header === 'Notes'" />
-        <the-column-lexicon v-if="column.header === 'Lexicons'" />
-        <the-column-setting v-if="column.header === 'Settings'" />
-      </div>
-    </div>
-
-    <div
-      class="resize-handle"
-      :class="isResizing ? 'resize-handle-active' : ''"
-      @mousedown="handleResizeMouseDown"
-    />
-  </div>
-</template>
-
 <script setup lang="ts">
 import type { PropType} from "vue";
 import { inject, ref, computed } from "vue";
-import type { IColumn } from "../../../shared/interfaces";
 import type IStore from "../store/interfaces/IStore";
+import type { IColumn } from "interfaces";
 import ButtonClose from "./ButtonClose.vue";
 import TheColumnProject from "./TheColumnProject.vue";
 import TheColumnNote from "./TheColumnNote.vue";
@@ -131,6 +94,44 @@ const resizeHandleLocation = computed(() =>
   props.dropZone === "left" ? "row" : "row-reverse",
 );
 </script>
+
+<template>
+  <div
+    ref="columnElement"
+    class="column-container"
+  >
+    <div class="column-content-container">
+      <header
+        class="column-header"
+        draggable="true"
+        @dragstart="$emit('dragstart', $event)"
+        @dragend="$emit('dragend', $event)"
+      >
+        <div class="column-header-text">
+          {{ column.header }}
+        </div>
+        <button-close
+          class="column-header-close"
+          @click="handleColumnClose"
+        />
+      </header>
+
+      <div class="column-content">
+        <the-column-project v-if="column.header === 'Projects'" />
+        <the-column-note v-if="column.header === 'Notes'" />
+        <the-column-lexicon v-if="column.header === 'Lexicons'" />
+        <the-column-setting v-if="column.header === 'Settings'" />
+      </div>
+    </div>
+
+    <div
+      class="resize-handle"
+      :class="isResizing ? 'resize-handle-active' : ''"
+      @mousedown="handleResizeMouseDown"
+    />
+  </div>
+</template>
+
 
 <style>
 .column-container {

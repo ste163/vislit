@@ -1,16 +1,3 @@
-<template>
-  <base-button-click
-    :type="buttonType"
-    :background-color="'var(--primary)'"
-    :text-color="'var(--white)'"
-    :is-disabled="isDisabled"
-    :class="{ disabled: isDisabled }"
-    @click="emitSubmit"
-  >
-    Create
-  </base-button-click>
-</template>
-
 <script setup lang="ts">
 import type { ButtonHTMLAttributes } from "vue";
 import BaseButtonClick from "./BaseButtonClick.vue";
@@ -41,6 +28,19 @@ function emitSubmit(): void {
 	emit("submitClick");
 }
 </script>
+
+<template>
+  <base-button-click
+    :type="buttonType"
+    :background-color="'var(--primary)'"
+    :text-color="'var(--white)'"
+    :is-disabled="isDisabled"
+    :class="{ disabled: isDisabled }"
+    @click="emitSubmit"
+  >
+    Create
+  </base-button-click>
+</template>
 
 <style scoped>
 .disabled {

@@ -1,8 +1,7 @@
 import { reactive } from "vue";
-import type IProject from "@/interfaces/IProject";
+import type { IProject } from "interfaces";
 import type IProjectStore from "../interfaces/IProjectStore";
-import type ProjectState from "@/renderer/store/types/ProjectState";
-import type IWindow from "../interfaces/IWindow";
+import type ProjectState from "../types/ProjectState";
 
 export default class ProjectStore implements IProjectStore {
   public state: ProjectState;
@@ -24,7 +23,7 @@ export default class ProjectStore implements IProjectStore {
 
   public async getProjects(): Promise<void | undefined> {
   	try {
-  		const { api } = window as unknown as IWindow;
+  		const { api } = window;
 
   		const response: Array<IProject> = (await api.send(
   			"projects-get-all",
@@ -46,7 +45,7 @@ export default class ProjectStore implements IProjectStore {
 
   public async addProject(project: IProject): Promise<IProject | undefined> {
   	try {
-  		const { api } = window as unknown as IWindow;
+  		const { api } = window;
 
   		const response = (await api.send("projects-add", project)) as IProject;
 

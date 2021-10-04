@@ -1,3 +1,24 @@
+<script setup lang="ts">
+import { inject } from "vue";
+import type IStore from "../store/interfaces/IStore";
+import useIsSidebarDisabled from "../composables/useIsSidebarDisabled";
+import ButtonRouterLink from "./ButtonRouterLink.vue";
+import AppIconSummary from "./AppIconSummary.vue";
+import AppIconWriter from "./AppIconWriter.vue";
+import AppIconProgress from "./AppIconProgress.vue";
+import AppIconVisualization from "./AppIconVisualization.vue";
+import AppIconThesaurus from "./AppIconThesaurus.vue";
+import ButtonColumn from "./ButtonColumn.vue";
+import AppIconProject from "./AppIconProject.vue";
+import AppIconNote from "./AppIconNote.vue";
+import AppIconLexicon from "./AppIconLexicon.vue";
+import AppIconSetting from "./AppIconSetting.vue";
+
+const store = inject("store") as IStore;
+
+const isSidebarDisabled = useIsSidebarDisabled();
+</script>
+
 <template>
   <nav class="sidebar-container">
     <!-- TODO -->
@@ -100,27 +121,6 @@
     </div>
   </nav>
 </template>
-
-<script setup lang="ts">
-import { inject } from "vue";
-import type IStore from "../store/interfaces/IStore";
-import useIsSidebarDisabled from "../composables/useIsSidebarDisabled";
-import ButtonRouterLink from "./ButtonRouterLink.vue";
-import AppIconSummary from "./AppIconSummary.vue";
-import AppIconWriter from "./AppIconWriter.vue";
-import AppIconProgress from "./AppIconProgress.vue";
-import AppIconVisualization from "./AppIconVisualization.vue";
-import AppIconThesaurus from "./AppIconThesaurus.vue";
-import ButtonColumn from "./ButtonColumn.vue";
-import AppIconProject from "./AppIconProject.vue";
-import AppIconNote from "./AppIconNote.vue";
-import AppIconLexicon from "./AppIconLexicon.vue";
-import AppIconSetting from "./AppIconSetting.vue";
-
-const store = inject("store") as IStore;
-
-const isSidebarDisabled = useIsSidebarDisabled();
-</script>
 
 <style scoped>
 .sidebar-container {

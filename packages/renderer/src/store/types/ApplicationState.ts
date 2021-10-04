@@ -1,5 +1,4 @@
-import type { IDropZone } from "../../../../shared/interfaces";
-import type { IColumn } from "../../../../shared/interfaces";
+import type { IColumn, IDropZone } from "interfaces";
 
 type ApplicationState = {
   activeView: string;

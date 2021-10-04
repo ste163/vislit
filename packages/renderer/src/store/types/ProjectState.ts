@@ -1,4 +1,4 @@
-import type IProject from "@/interfaces/IProject";
+import type { IProject } from "interfaces";
 
 type ProjectState = {
   all: Array<IProject>;

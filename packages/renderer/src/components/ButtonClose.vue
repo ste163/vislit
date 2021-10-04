@@ -1,12 +1,3 @@
-<template>
-  <button
-    class="button-close"
-    @click="emitClick"
-  >
-    <app-icon-close />
-  </button>
-</template>
-
 <script setup lang="ts">
 import AppIconClose from "./AppIconClose.vue";
 
@@ -21,6 +12,15 @@ function emitClick(): void {
 	emit("click");
 }
 </script>
+
+<template>
+  <button
+    class="button-close"
+    @click="emitClick"
+  >
+    <app-icon-close />
+  </button>
+</template>
 
 <style scoped>
 .button-close {

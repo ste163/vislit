@@ -1,17 +1,3 @@
-<template>
-  <div
-    class="drop-zone"
-    :class="dropZoneStyle"
-    @drop="$emit('drop', $event)"
-    @dragover="$emit('dragover', $event)"
-    @dragenter.prevent
-  >
-    <slot>
-      <!-- Column Containers -->
-    </slot>
-  </div>
-</template>
-
 <script lang="ts">
 import type { PropType } from "vue";
 import { computed, defineComponent } from "vue";
@@ -49,6 +35,20 @@ export default defineComponent({
 	},
 });
 </script>
+
+<template>
+  <div
+    class="drop-zone"
+    :class="dropZoneStyle"
+    @drop="$emit('drop', $event)"
+    @dragover="$emit('dragover', $event)"
+    @dragenter.prevent
+  >
+    <slot>
+      <!-- Column Containers -->
+    </slot>
+  </div>
+</template>
 
 <style scoped>
 .drop-zone {

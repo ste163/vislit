@@ -1,31 +1,3 @@
-<template>
-  <div
-    class="input-container"
-    :class="{ error: !!errorMessage, success: meta.valid && meta.dirty }"
-  >
-    <label
-      :for="name"
-      class="label"
-      :class="meta.dirty ? 'label-active' : ''"
-    >{{ label }}</label>
-    <p
-      v-show="errorMessage"
-      class="input-error"
-    >
-      {{ errorMessage }}
-    </p>
-    <input
-      :id="name"
-      class="input"
-      :name="name"
-      :type="type"
-      :value="inputValue"
-      @input="handleChange"
-      @blur="handleBlur"
-    >
-  </div>
-</template>
-
 <script setup lang="ts">
 import { useField } from "vee-validate";
 
@@ -63,6 +35,34 @@ const {
 	initialValue: props.value,
 });
 </script>
+
+<template>
+  <div
+    class="input-container"
+    :class="{ error: !!errorMessage, success: meta.valid && meta.dirty }"
+  >
+    <label
+      :for="name"
+      class="label"
+      :class="meta.dirty ? 'label-active' : ''"
+    >{{ label }}</label>
+    <p
+      v-show="errorMessage"
+      class="input-error"
+    >
+      {{ errorMessage }}
+    </p>
+    <input
+      :id="name"
+      class="input"
+      :name="name"
+      :type="type"
+      :value="inputValue"
+      @input="handleChange"
+      @blur="handleBlur"
+    >
+  </div>
+</template>
 
 <style scoped>
 .input-container {

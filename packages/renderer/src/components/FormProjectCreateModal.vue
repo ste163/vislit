@@ -1,47 +1,3 @@
-<template>
-  <!-- Used only on the Welcome page -->
-  <base-modal
-    :is-modal-active="isFormModalActive"
-    @close-modal="emitCloseModal"
-  >
-    <template #header>
-      Create Project
-    </template>
-
-    <form
-      class="form"
-      @submit.prevent="onSubmit"
-    >
-      <input-text
-        name="title"
-        type="text"
-        label="Title"
-        :background-color="'var(--lightGray)'"
-      />
-
-      <input-text
-        name="type"
-        type="text"
-        label="Type"
-        :background-color="'var(--lightGray)'"
-      />
-
-      <input-text
-        name="description"
-        type="text"
-        label="Description"
-        :background-color="'var(--lightGray)'"
-      />
-
-      <!-- Need to pass in an isSubmitting for loading spinner -->
-      <button-submit
-        :is-disabled="!meta.dirty"
-        :background-color-disabled="'var(--lightGray)'"
-      />
-    </form>
-  </base-modal>
-</template>
-
 <script setup lang="ts">
 import { inject, watch } from "vue";
 import { useRouter } from "vue-router";
@@ -121,6 +77,50 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
 // Needed otherwise the form attempts to 'submit' when opened on initial render
 watch(() => props.isFormModalActive, resetForm);
 </script>
+
+<template>
+  <!-- Used only on the Welcome page -->
+  <base-modal
+    :is-modal-active="isFormModalActive"
+    @close-modal="emitCloseModal"
+  >
+    <template #header>
+      Create Project
+    </template>
+
+    <form
+      class="form"
+      @submit.prevent="onSubmit"
+    >
+      <input-text
+        name="title"
+        type="text"
+        label="Title"
+        :background-color="'var(--lightGray)'"
+      />
+
+      <input-text
+        name="type"
+        type="text"
+        label="Type"
+        :background-color="'var(--lightGray)'"
+      />
+
+      <input-text
+        name="description"
+        type="text"
+        label="Description"
+        :background-color="'var(--lightGray)'"
+      />
+
+      <!-- Need to pass in an isSubmitting for loading spinner -->
+      <button-submit
+        :is-disabled="!meta.dirty"
+        :background-color-disabled="'var(--lightGray)'"
+      />
+    </form>
+  </base-modal>
+</template>
 
 <style scoped>
 .form {
