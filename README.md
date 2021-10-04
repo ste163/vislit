@@ -1,6 +1,6 @@
 # Vislit
 
-[![Node.js CI](https://github.com/ste163/vislit/actions/workflows/node.js.yml/badge.svg)](https://github.com/ste163/vislit/actions/workflows/node.js.yml)
+[![Node.js CI Build](https://github.com/ste163/vislit/actions/workflows/tests.yml/badge.svg)](https://github.com/ste163/vislit/actions/workflows/tests.yml)
 
 > Linux, Mac, Windows app for tracking, visualizing, and analyzing writing projects
 
