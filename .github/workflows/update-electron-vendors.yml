@@ -1,4 +1,4 @@
-name: Update Electon vendors versions
+name: Update Electron vendors versions
 on:
   push:
     branches:
