@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 import type { App } from "electron";
-import Database from "../database";
+import Database from "../database"; // Jest currently can not import ESM packages, so Lowdb crashes tests -- using older version of lowdb
 import ProjectRepository from "./projectRepository";
 import type IProjectRepository from "../interfaces/IProjectRepository";
 // Why only projectRepo integration tests?
