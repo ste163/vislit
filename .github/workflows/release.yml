@@ -99,7 +99,7 @@ jobs:
           cache: 'npm'
 
       - name: Install Snapcraft for Ubuntu
-        if: matrix.os == "ubuntu-latest"
+        if: matrix.os == ubuntu-latest
         run: sudo snap install snapcraft --classic
 
       - name: Install dependencies
