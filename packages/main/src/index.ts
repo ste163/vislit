@@ -1,6 +1,24 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
 import { URL } from "url";
+import Database from "./api/database";
+import type IProjectController from "./api/interfaces/IProjectController";
+import ProjectRepository from "./api/repositories/projectRepository";
+import ProjectController from "./api/controllers/projectController";
+
+let projectController: IProjectController;
+
+// For now, instantiate db, controllers, & repos here
+try {
+  const database = new Database(app);
+
+  const projectRepository = new ProjectRepository(database);
+
+  projectController = new ProjectController(projectRepository);
+} catch (error) {
+  const e = error as Error;
+  console.log(e);
+}
 
 const isSingleInstance = app.requestSingleInstanceLock();
 
@@ -95,3 +113,12 @@ if (import.meta.env.PROD) {
     .then(({ autoUpdater }) => autoUpdater.checkForUpdatesAndNotify())
     .catch((e) => console.error("Failed check updates:", e));
 }
+
+// API Endpoints
+ipcMain.handle("projects-get-all", () => {
+  return projectController.getAll();
+});
+
+ipcMain.handle("projects-add", (e, project) => {
+  return projectController.add(project);
+});
