@@ -58,6 +58,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
 		if (project !== undefined) {
 			router.push(`/summary/${project.id}`);
 			resetForm();
+			emitGoBack();
 		}
 	} catch (error) {
 		const e = error as Error;

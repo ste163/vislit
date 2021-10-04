@@ -1,5 +1,9 @@
 <script setup lang="ts">
+import { inject, onMounted } from "vue";
+import type IStore from "../store/interfaces/IStore";
 import BaseButtonClick from "./BaseButtonClick.vue";
+
+const store = inject("store") as IStore;
 
 // eslint-disable-next-line no-undef
 const emit = defineEmits(["createClick"]);
@@ -7,13 +11,89 @@ const emit = defineEmits(["createClick"]);
 function emitClick(): void {
 	emit("createClick");
 }
+
+onMounted(async () => {
+	// Always get the most up-to-date list of projects when column opens
+	if (store.projects !== null) {
+		await store.projects.getProjects();
+		console.log(store.projects.state.all);
+	}
+});
 </script>
 
 <template>
-  <base-button-click
-    :background-color="'var(--white)'"
-    @click="emitClick"
-  >
-    Create
-  </base-button-click>
+  <div>
+    <!-- Move the Create button, checkbox & search bar into ColumnListControls component -->
+    <div class="column-list-controls">
+      <base-button-click
+        :background-color="'var(--white)'"
+        @click="emitClick"
+      >
+        Create Project
+      </base-button-click>
+  
+      <!-- Checkbox component for: Show detailed project information -->
+  
+      <!-- Searchbar for Filter Projects by Title, Type, or Description -->
+    </div>
+
+    <!-- By default, show In Progress header: need header component that's dynamic -->
+
+    <!-- Will need if checks for if the project.archived !== true, place in In progress -->
+
+    <!-- if project.archived === true, place in Archived, with a grayed out color, and at the bottom of the list always -->
+
+    <!-- If searching for anything, hide all other items, and make the header say: Filtering by: term -->
+
+    <!-- ColumnListHeader Component -->
+    <h2 class="column-list-header">
+      In progress
+    </h2>
+
+    <!-- List of Items -> to be moved into ColumnListItem -->
+    <div class="column-list-item-container">
+      <!-- Click event needs to set active column & update the route to match the new id. OR id needs to be linked directly to active project
+        that would be better, always change the id when active project changes, so refetch data
+      -->
+      <button
+        v-for="project in store.projects.state.all"
+        :key="project.id"
+        class="column-list-item"
+        :class="{'column-list-item-active': store.projects.state.active?.id === project.id}"
+        @click="store.projects.setActiveProject(project)"
+      >
+        {{ project.title }}
+      </button>
+    </div>
+  </div>
 </template>
+
+<style scoped>
+.column-list-controls {
+  margin: 1em 0 2em 0;
+}
+
+.column-list-header {
+  font-size: 0.85rem;
+  font-weight: 300;
+  letter-spacing: var(--letterSpacingSmall);
+  margin: 0.5em 0;
+}
+
+.column-list-item-container {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.column-list-item {
+  font-weight: 700;
+  letter-spacing: var(--letterSpacingSmaller);
+  margin: 0.5em 0;
+    text-align: left;
+}
+
+.column-list-item-active {
+  background-color: var(--primary);
+  color: var(--white);
+}
+</style>
