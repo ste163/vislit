@@ -49,8 +49,15 @@ let mainWindow: BrowserWindow | null = null;
 const createWindow = async () => {
   mainWindow = new BrowserWindow({
     show: false, // Use 'ready-to-show' event to show window
+    minWidth: 500,
+    minHeight: 400,
+    width: 1024,
+    height: 768,
+    backgroundColor: "#e5e5e5",
     webPreferences: {
       nativeWindowOpen: true,
+      nodeIntegration: false,
+      contextIsolation: true,
       preload: join(__dirname, "../../preload/dist/index.cjs"),
     },
   });
