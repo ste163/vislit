@@ -2,17 +2,9 @@ name: Test Node.js CI Build
 
 on:
   push:
-    branches: [main]
-    paths:
-      - "packages/**"
-      - "tests/**"
-      - "package-lock.json"
+    branches: [ main ]
   pull_request:
-    branches: [main]
-    paths:
-      - "packages/**"
-      - "tests/**"
-      - "package-lock.json"
+    branches: [ main ]
 
 jobs:
   build:
