@@ -27,14 +27,6 @@
   "browserslist": [
     "Chrome 94"
   ],
-  "build": {
-    "productName": "Vislit",
-    "copyright": "Copyright © 2021 ${author}",
-    "linux": {
-      "target": "AppImage",
-      "category": "Office"
-    }
-  },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged",
     "pre-push": "npm run typecheck"
