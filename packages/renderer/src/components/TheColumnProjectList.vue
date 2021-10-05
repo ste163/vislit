@@ -88,7 +88,7 @@ onMounted(async () => {
 .column-list-item {
   font-weight: 700;
   letter-spacing: var(--letterSpacingSmaller);
-  margin: 0.5em 0;
+  margin: 0.25em 0;
     text-align: left;
 }
 

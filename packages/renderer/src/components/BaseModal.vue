@@ -53,8 +53,8 @@ function emitCloseModal(): void {
   z-index: 100;
   width: 100vw;
   height: 100vh;
-  background-color: #0000000f;
-  backdrop-filter: blur(3px);
+  background-color: #0000001e;
+  backdrop-filter: blur(2px);
 }
 
 .modal-card {
