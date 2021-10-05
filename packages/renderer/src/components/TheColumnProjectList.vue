@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { inject, onMounted } from "vue";
+import { inject, onMounted, watch } from "vue";
 import type IStore from "../store/interfaces/IStore";
 import BaseButtonClick from "./BaseButtonClick.vue";
+import ColumnListHeader from "./ColumnListHeader.vue";
+import ColumnListItem from "./ColumnListItem.vue";
 
 const store = inject("store") as IStore;
 
@@ -11,6 +13,16 @@ const emit = defineEmits(["createClick"]);
 function emitClick(): void {
 	emit("createClick");
 }
+
+// Move this watcher and updateRoute function into
+// useUpdateRouteId
+// This should probably live at the App.vue level...
+// So that it will work with any & all changse to the id?
+function updateRouteId(): void {
+	console.log("UPDATES ROUTE ID");
+}
+
+watch(() => store.projects.state.active?.id, updateRouteId);
 
 onMounted(async () => {
 	// Always get the most up-to-date list of projects when column opens
@@ -45,25 +57,19 @@ onMounted(async () => {
 
     <!-- If searching for anything, hide all other items, and make the header say: Filtering by: term -->
 
-    <!-- ColumnListHeader Component -->
-    <h2 class="column-list-header">
-      In progress
-    </h2>
+    <column-list-header>In Progress</column-list-header>
 
     <!-- List of Items -> to be moved into ColumnListItem -->
     <div class="column-list-item-container">
       <!-- Click event needs to set active column & update the route to match the new id. OR id needs to be linked directly to active project
         that would be better, always change the id when active project changes, so refetch data
       -->
-      <button
+      <column-list-item 
         v-for="project in store.projects.state.all"
         :key="project.id"
-        class="column-list-item"
-        :class="{'column-list-item-active': store.projects.state.active?.id === project.id}"
+        :project="project"
         @click="store.projects.setActiveProject(project)"
-      >
-        {{ project.title }}
-      </button>
+      />
     </div>
   </div>
 </template>
@@ -83,17 +89,5 @@ onMounted(async () => {
 .column-list-item-container {
   display: flex;
   flex-flow: column nowrap;
-}
-
-.column-list-item {
-  font-weight: 700;
-  letter-spacing: var(--letterSpacingSmaller);
-  margin: 0.25em 0;
-    text-align: left;
-}
-
-.column-list-item-active {
-  background-color: var(--primary);
-  color: var(--white);
 }
 </style>
