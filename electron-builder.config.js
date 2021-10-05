@@ -18,14 +18,12 @@ const config = {
 	extraMetadata: {
 		version: process.env.VITE_APP_VERSION,
 	},
-	build: {
-    productName: "Vislit",
-    copyright: "Copyright © 2021 ${author}",
-    linux: {
-      target: "AppImage",
-      category: "Office",
-    },
-  },
+	productName: "Vislit",
+	copyright: "Copyright © 2021 ${author}",
+	linux: {
+		target: "AppImage",
+		category: "Office",
+	},
 };
 
 module.exports = config;

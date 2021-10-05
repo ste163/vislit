@@ -20,7 +20,7 @@ function emitClick(): void {
 
 function updateRouteId(id: string | undefined): void {
 	const routeName = router.currentRoute.value.name;
-  
+
 	router.push({
 		name: routeName,
 		params: {
@@ -29,6 +29,8 @@ function updateRouteId(id: string | undefined): void {
 	} as RouteLocationRaw);
 }
 
+// Must pass anonymous function into watch before calling updateRouteId
+// Otherwise there's an overload error in TS (even though it works correctly)
 watch(() => store.projects.state.active?.id, () => updateRouteId(store.projects.state.active?.id));
 
 onMounted(async () => {
