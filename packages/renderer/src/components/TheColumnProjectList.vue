@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { inject, onMounted, watch } from "vue";
+import type { RouteLocationRaw} from "vue-router";
+import { useRouter } from "vue-router";
 import type IStore from "../store/interfaces/IStore";
 import BaseButtonClick from "./BaseButtonClick.vue";
 import ColumnListHeader from "./ColumnListHeader.vue";
 import ColumnListItem from "./ColumnListItem.vue";
 
 const store = inject("store") as IStore;
+
+const router = useRouter();
 
 // eslint-disable-next-line no-undef
 const emit = defineEmits(["createClick"]);
@@ -14,15 +18,18 @@ function emitClick(): void {
 	emit("createClick");
 }
 
-// Move this watcher and updateRoute function into
-// useUpdateRouteId
-// This should probably live at the App.vue level...
-// So that it will work with any & all changse to the id?
-function updateRouteId(): void {
-	console.log("UPDATES ROUTE ID");
+function updateRouteId(id: string | undefined): void {
+	const routeName = router.currentRoute.value.name;
+  
+	router.push({
+		name: routeName,
+		params: {
+			id,
+		},
+	} as RouteLocationRaw);
 }
 
-watch(() => store.projects.state.active?.id, updateRouteId);
+watch(() => store.projects.state.active?.id, () => updateRouteId(store.projects.state.active?.id));
 
 onMounted(async () => {
 	// Always get the most up-to-date list of projects when column opens
