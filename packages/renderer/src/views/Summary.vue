@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { ref, inject } from "vue";
+import type IStore from "../store/interfaces/IStore";
 import BaseCard from "../components/BaseCard.vue";
 import BaseCardContent from "../components/BaseCardContent.vue";
 import BaseButtonClick from "../components/BaseButtonClick.vue";
 import FormProjectCreateModal from "../components/FormProjectCreateModal.vue";
 import NotificationDot from "../components/NotificationDot.vue";
-import type IStore from "../store/interfaces/IStore";
+import ButtonEllipsis from "../components/ButtonEllipsis.vue";
 
 const store = inject("store") as IStore;
 
 const isModalActive = ref<boolean>(false);
+const isEllipsisMenuActive = ref<boolean>(false);
 
 function openWindow(): void {
 	console.log("Open window in main process");
@@ -18,12 +20,32 @@ function openWindow(): void {
 
 <template>
   <!-- TODO:
-- summary card template
 - rename base card to BaseTemplateCard
+- delete modal
+- ellipsis menu buttons
 -->
-  <base-card>
+  <base-card
+    :is-ellipsis-menu-active="isEllipsisMenuActive"
+    @clickOutside="isEllipsisMenuActive = false;"
+  >
     <template #header>
       {{ store.projects.state.active?.title }}
+    </template>
+
+    <template #ellipsis-button>
+      <button-ellipsis
+        :is-active="isEllipsisMenuActive"
+        @click="isEllipsisMenuActive = !isEllipsisMenuActive"
+      />
+    </template>
+
+    <template #ellipsis-menu>
+      <button>Edit Project</button>
+      <button>Edit Goal</button>
+      <!-- If completed, Mark Project as In Progress -->
+      <button>Mark Project as Completed</button> 
+      <button>Archive Project</button>
+      <button>Delete Project</button>
     </template>
 
     <base-card-content>
@@ -74,6 +96,8 @@ function openWindow(): void {
       </template>
     </base-card-content>
   </base-card>
+
+  <!-- Delete modal -->
 
   <form-project-create-modal
     :is-form-modal-active="isModalActive"

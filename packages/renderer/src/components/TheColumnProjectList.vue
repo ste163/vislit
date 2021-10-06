@@ -70,9 +70,6 @@ onMounted(async () => {
 
     <!-- List of Items -> to be moved into ColumnListItem -->
     <div class="column-list-item-container">
-      <!-- Click event needs to set active column & update the route to match the new id. OR id needs to be linked directly to active project
-        that would be better, always change the id when active project changes, so refetch data
-      -->
       <column-list-item 
         v-for="project in store.projects.state.all"
         :key="project.id"
