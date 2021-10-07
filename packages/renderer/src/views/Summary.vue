@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { ref, inject } from "vue";
 import type IStore from "../store/interfaces/IStore";
-import BaseCard from "../components/BaseCard.vue";
+import BaseTemplateCard from "../components/BaseTemplateCard.vue";
 import BaseCardContent from "../components/BaseCardContent.vue";
 import BaseButtonClick from "../components/BaseButtonClick.vue";
 import FormProjectCreateModal from "../components/FormProjectCreateModal.vue";
 import NotificationDot from "../components/NotificationDot.vue";
 import ButtonEllipsis from "../components/ButtonEllipsis.vue";
+import ButtonEllipsisItem from "../components/ButtonEllipsisItem.vue";
 
 const store = inject("store") as IStore;
 
@@ -16,6 +17,26 @@ const isEllipsisMenuActive = ref<boolean>(false);
 function openWindow(): void {
 	console.log("Open window in main process");
 }
+
+function openEditProjectModal(): void {
+	console.log("OPEN EDIT PROJECT MODAL");
+}
+
+function openEditGoalModal(): void {
+	console.log("OPEN EDIT GOAL MODAL");
+}
+
+function toggleProjectComplete(): void {
+	console.log("TOGGLE PROJECT COMPLETE/INPROGRESS");
+}
+
+function toggleProjectArchived(): void {
+	console.log("TOGGLED PROJECT ARCHIVED");
+}
+
+function openDeleteConfirmationModal(): void {
+	console.log("OPEN DELETE MODAL");
+}
 </script>
 
 <template>
@@ -24,7 +45,7 @@ function openWindow(): void {
 - delete modal
 - ellipsis menu buttons
 -->
-  <base-card
+  <base-template-card
     :is-ellipsis-menu-active="isEllipsisMenuActive"
     @clickOutside="isEllipsisMenuActive = false;"
   >
@@ -40,12 +61,23 @@ function openWindow(): void {
     </template>
 
     <template #ellipsis-menu>
-      <button>Edit Project</button>
-      <button>Edit Goal</button>
+      <button-ellipsis-item @click="openEditProjectModal">
+        Edit Project
+      </button-ellipsis-item>
+      <!-- ONLY SHOW EDIT GOAL IF GOAL HASN'T BEEN CREATED; OTHERWISE, OPEN GOAL MODAL -->
+      <button-ellipsis-item @click="openEditGoalModal">
+        Edit Goal
+      </button-ellipsis-item>
       <!-- If completed, Mark Project as In Progress -->
-      <button>Mark Project as Completed</button> 
-      <button>Archive Project</button>
-      <button>Delete Project</button>
+      <button-ellipsis-item @click="toggleProjectComplete">
+        Mark Project as Completed
+      </button-ellipsis-item> 
+      <button-ellipsis-item @click="toggleProjectArchived">
+        Archive Project
+      </button-ellipsis-item>
+      <button-ellipsis-item @click="openDeleteConfirmationModal">
+        Delete Project
+      </button-ellipsis-item>
     </template>
 
     <base-card-content>
@@ -95,7 +127,7 @@ function openWindow(): void {
         </base-button-click>
       </template>
     </base-card-content>
-  </base-card>
+  </base-template-card>
 
   <!-- Delete modal -->
 

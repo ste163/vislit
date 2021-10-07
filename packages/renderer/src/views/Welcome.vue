@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import BaseCard from "../components/BaseCard.vue";
+import BaseTemplateCard from "../components/BaseTemplateCard.vue";
 import BaseCardContent from "../components/BaseCardContent.vue";
 import BaseButtonClick from "../components/BaseButtonClick.vue";
 import FormProjectCreateModal from "../components/FormProjectCreateModal.vue";
@@ -14,7 +14,7 @@ function openWindow(): void {
 </script>
 
 <template>
-  <base-card>
+  <base-template-card>
     <template #header>
       Welcome to Vislit!
     </template>
@@ -78,7 +78,7 @@ function openWindow(): void {
         </base-button-click>
       </template>
     </base-card-content>
-  </base-card>
+  </base-template-card>
 
   <form-project-create-modal
     :is-form-modal-active="isModalActive"

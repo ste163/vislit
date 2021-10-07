@@ -45,4 +45,8 @@ const props = defineProps({
 .button-ellipsis.active > svg > path {
   fill: var(--primary);
 }
+
+.button-ellipsis > svg > path, .button-ellipsis.active > svg > path {
+  transition: fill 0.2s
+}
 </style>
