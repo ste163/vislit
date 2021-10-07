@@ -64,22 +64,21 @@ export default class ProjectStore implements IProjectStore {
   }
 
   public async deleteProject(id: string): Promise<void | undefined> {
-  	//   try {
-  	//     const response = await fetch(`${this.#API}`, {
-  	//       method: "DELETE",
-  	//       headers: {
-  	//         mode: "cors-anywhere",
-  	//         "Content-Type": "application/json",
-  	//       },
-  	//       body: JSON.stringify({ id: id }),
-  	//     });
-  	//     if (response.status === 200) {
-  	//       this.getProjects();
-  	//     }
-  	//   } catch (error) {
-  	//     const e = error as Error;
-  	//     console.error(e.message);
-  	//     return undefined;
-  	//   }
+  	try {
+  		const { api } = window;
+
+  		const response = await api.send("projects-delete", id);
+  
+  		if (response instanceof Error === false) {
+  			// Display success message
+  			this.getProjects();
+  		}	else {
+  			console.log("Display error message");
+  			return undefined;
+  		}
+  	} catch (error) {
+  		const e = error as Error;
+  		console.log(e.message);
+  	}
   }
 }

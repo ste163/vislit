@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
 import { URL } from "url";
+import type { IProject } from "interfaces";
 import Database from "./api/database";
 import type IProjectController from "./api/interfaces/IProjectController";
 import ProjectRepository from "./api/repositories/projectRepository";
@@ -126,6 +127,14 @@ ipcMain.handle("projects-get-all", () => {
   return projectController.getAll();
 });
 
-ipcMain.handle("projects-add", (e, project) => {
+ipcMain.handle("projects-add", (e, project: IProject) => {
   return projectController.add(project);
+});
+
+ipcMain.handle("projects-update", (e, project: IProject) => {
+  console.log("UPDATE", project);
+});
+
+ipcMain.handle("projects-delete", (e, projectId: string) => {
+  return projectController.delete(projectId);
 });
