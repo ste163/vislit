@@ -54,7 +54,7 @@ function emitCloseModal(): void {
   width: 100vw;
   height: 100vh;
   background-color: #0000001e;
-  backdrop-filter: blur(2px);
+  /* backdrop-filter: blur(2px); ---> performance is too slow; look into improvements*/
 }
 
 .modal-card {
@@ -65,7 +65,7 @@ function emitCloseModal(): void {
   padding: 1em;
   min-height: 10em;
   max-height: fit-content;
-  width: clamp(5em, 50%, 17em);
+  width: fit-content;
   border-radius: 5px;
   box-shadow: #6e6e6e4d 0px 0px 40px;
 }
@@ -75,6 +75,7 @@ function emitCloseModal(): void {
   flex-flow: row nowrap;
   justify-content: space-between;
   align-items: center;
+  padding-left: 0.5em;
 }
 
 .modal-card-header-close {
@@ -84,6 +85,7 @@ function emitCloseModal(): void {
 .modal-card-content {
   display: flex;
   flex-flow: column nowrap;
+  padding: 0 0.5em;
 }
 
 /* animations */

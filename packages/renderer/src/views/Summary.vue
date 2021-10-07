@@ -5,13 +5,15 @@ import BaseTemplateCard from "../components/BaseTemplateCard.vue";
 import BaseCardContent from "../components/BaseCardContent.vue";
 import BaseButtonClick from "../components/BaseButtonClick.vue";
 import FormProjectCreateModal from "../components/FormProjectCreateModal.vue";
+import FormProjectDeleteModal from "../components/FormProjectDeleteModal.vue";
 import NotificationDot from "../components/NotificationDot.vue";
 import ButtonEllipsis from "../components/ButtonEllipsis.vue";
 import ButtonEllipsisItem from "../components/ButtonEllipsisItem.vue";
 
 const store = inject("store") as IStore;
 
-const isModalActive = ref<boolean>(false);
+const isEditFormModalActive = ref<boolean>(false);
+const isDeleteModalActive = ref<boolean>(false);
 const isEllipsisMenuActive = ref<boolean>(false);
 
 function openWindow(): void {
@@ -35,16 +37,11 @@ function toggleProjectArchived(): void {
 }
 
 function openDeleteConfirmationModal(): void {
-	console.log("OPEN DELETE MODAL");
+	isDeleteModalActive.value = true;
 }
 </script>
 
 <template>
-  <!-- TODO:
-- rename base card to BaseTemplateCard
-- delete modal
-- ellipsis menu buttons
--->
   <base-template-card
     :is-ellipsis-menu-active="isEllipsisMenuActive"
     @clickOutside="isEllipsisMenuActive = false;"
@@ -96,7 +93,7 @@ function openDeleteConfirmationModal(): void {
       <template #buttons>
         <base-button-click
           :background-color="'var(--notification)'"
-          @click="isModalActive = !isModalActive"
+          @click="isEditFormModalActive = !isEditFormModalActive"
         >
           Create Goal
         </base-button-click>
@@ -129,11 +126,14 @@ function openDeleteConfirmationModal(): void {
     </base-card-content>
   </base-template-card>
 
-  <!-- Delete modal -->
+  <form-project-delete-modal
+    :is-modal-active="isDeleteModalActive"
+    @close-modal="isDeleteModalActive = false"
+  />
 
   <form-project-create-modal
-    :is-form-modal-active="isModalActive"
-    @close-modal="isModalActive = false"
+    :is-form-modal-active="isEditFormModalActive"
+    @close-modal="isEditFormModalActive = false"
   />
 </template>
 
