@@ -10,8 +10,11 @@ import NotificationDot from "../components/NotificationDot.vue";
 import ButtonEllipsis from "../components/ButtonEllipsis.vue";
 import ButtonEllipsisItem from "../components/ButtonEllipsisItem.vue";
 import useDateFormatFull from "../composables/useDateFormatFull";
-import ProjectStatusTag from "../components/ProjectStatusTag.vue";
+import ProjectStatusTags from "../components/ProjectStatusTags.vue";
 import type { IProject } from "interfaces";
+
+// TODO:
+// If completed or archived, no longer able to add/edit content
 
 const store = inject("store") as IStore;
 
@@ -25,10 +28,8 @@ const activeProject = computed(() => {
 
 const formatedDate = useDateFormatFull(activeProject.value.dateModified);
 
-
-
 function openWindow(): void {
-	console.log("Open window in main process");
+	console.log("ROUTE TO NEW PAGE");
 }
 
 function openEditProjectModal(): void {
@@ -40,16 +41,50 @@ function openEditGoalModal(): void {
 }
 
 function toggleProjectComplete(): void {
-	console.log("TOGGLE PROJECT COMPLETE/INPROGRESS");
+	const updatedProject: IProject = {
+		id: activeProject.value.id,
+		typeId: activeProject.value.typeId,
+		title: activeProject.value.title,
+		description: activeProject.value.description,
+		completed: !activeProject.value.completed,
+		archived: activeProject.value.archived,
+		dateModified: activeProject.value.dateModified,
+		dateCreated: activeProject.value.dateCreated,
+	};
+
+	store.projects.updateProject(updatedProject);
 }
 
 function toggleProjectArchived(): void {
-	console.log("TOGGLED PROJECT ARCHIVED");
+	const updatedProject: IProject = {
+		id: activeProject.value.id,
+		typeId: activeProject.value.typeId,
+		title: activeProject.value.title,
+		description: activeProject.value.description,
+		completed: activeProject.value.completed,
+		archived: !activeProject.value.archived,
+		dateModified: activeProject.value.dateModified,
+		dateCreated: activeProject.value.dateCreated,
+	};
+
+	store.projects.updateProject(updatedProject);
 }
 
 function openDeleteConfirmationModal(): void {
 	isDeleteModalActive.value = true;
 }
+
+// const ellipsisMenuGoalText = computed(() => {
+// Setup goal then change the text correctly
+// })
+
+const ellipsisMenuCompletedText = computed(() => {
+	return activeProject.value.completed ? "Mark Project as In Progress" : "Mark Project as Completed";
+});
+
+const ellipsisMenuArchivedText = computed(() => {
+	return activeProject.value.archived ? "Un-archive Project" : "Archive Project";
+});
 </script>
 
 <template>
@@ -62,7 +97,7 @@ function openDeleteConfirmationModal(): void {
     </template>
 
     <template #sub-header>
-      <project-status-tag :project="activeProject" /> {{ activeProject.typeId }} | Last updated on {{ formatedDate }}
+      <project-status-tags :project="activeProject" /> {{ activeProject.typeId }} | Last updated on {{ formatedDate }}
     </template>
 
     <template #description>
@@ -84,12 +119,11 @@ function openDeleteConfirmationModal(): void {
       <button-ellipsis-item @click="openEditGoalModal">
         Edit Goal
       </button-ellipsis-item>
-      <!-- If completed, Mark Project as In Progress -->
       <button-ellipsis-item @click="toggleProjectComplete">
-        Mark Project as Completed
+        {{ ellipsisMenuCompletedText }}
       </button-ellipsis-item> 
       <button-ellipsis-item @click="toggleProjectArchived">
-        Archive Project
+        {{ ellipsisMenuArchivedText }}
       </button-ellipsis-item>
       <button-ellipsis-item @click="openDeleteConfirmationModal">
         Delete Project

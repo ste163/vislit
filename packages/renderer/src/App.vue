@@ -113,10 +113,7 @@ onBeforeUpdate(() => {
 
   <main class="dashboard">
     <router-view v-slot="{ Component }">
-      <transition
-        name="dash-navigation"
-        mode="out-in"
-      >
+      <transition name="dash-navigation">
         <div :key="dashTransitionKey">
           <component :is="Component" />
         </div>
@@ -185,12 +182,11 @@ onBeforeUpdate(() => {
 .dash-navigation-enter-from,
 .dash-navigation-leave-to {
   opacity: 0;
-  transform: translateY(4px);
 }
 
 .dash-navigation-leave-active,
 .dash-navigation-enter-active {
-  transition: all 0.15s;
+  transition: all 0.25s;
   position: absolute;
 }
 

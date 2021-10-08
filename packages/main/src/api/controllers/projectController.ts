@@ -79,12 +79,18 @@ export default class ProjectController implements IProjectController {
         return projectToUpdate; // return thrown error
       }
 
-      this.#checkForTitleTaken(project.title);
+      // ADD TEST: Only check for title if the titles do not match
+      if (project.title !== projectToUpdate.title) {
+        this.#checkForTitleTaken(project.title);
+      }
 
       // When here, we're good to update!
       // Update only certain properties
       projectToUpdate.title = project.title;
       projectToUpdate.description = project.description;
+      projectToUpdate.archived = project.archived;
+      projectToUpdate.completed = project.completed;
+      projectToUpdate.typeId = project.typeId;
       projectToUpdate.dateModified = new Date();
 
       const updatedProject = this.#projectRepository.update(projectToUpdate);

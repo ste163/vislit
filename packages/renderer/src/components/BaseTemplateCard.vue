@@ -58,7 +58,8 @@ const emit = defineEmits(["clickOutside"]);
   background-color: white;
   padding: 1em 1em 1.5em 2em;
   border-radius: 0.35em;
-  width: clamp(370px, 50vw, 500px);
+  min-width: 370px;
+  max-width: 600px;
 }
 
 .card-header {

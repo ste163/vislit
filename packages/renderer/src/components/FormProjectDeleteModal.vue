@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { IProject } from 'interfaces';
 import { inject } from 'vue';
 import type IStore from '../store/interfaces/IStore';
 import BaseTemplateModalDelete from './BaseTemplateModalDelete.vue';
@@ -14,7 +15,26 @@ const props = defineProps({
 });
 
 function archiveProject(): void {
-	console.log("ARCHIVE IT!");
+
+	if (store.projects.state.active !== null) {
+		const updatedProject: IProject = {
+			id: store.projects.state.active.id,
+			typeId: store.projects.state.active.typeId,
+			title: store.projects.state.active.title,
+			description: store.projects.state.active.description,
+			completed: store.projects.state.active.completed,
+			archived: !store.projects.state.active.archived,
+			dateModified: store.projects.state.active.dateModified,
+			dateCreated: store.projects.state.active.dateCreated,
+		}; 
+		const response = store.projects.updateProject(updatedProject);
+
+		if (response !== undefined) {
+			//emit modal close
+		}
+	} else {
+		console.error("Active project is null, cannot archive");
+	}
 }
 
 function deleteProject(): void {
@@ -23,6 +43,7 @@ function deleteProject(): void {
 
 		if (response !== undefined) {
 			// Route to latest project OR, if there are none, route to Welcome
+			// emit modal close
 		}
 	} else {
 		console.error("Active project is null, cannot delete");

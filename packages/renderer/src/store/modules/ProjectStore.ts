@@ -63,6 +63,26 @@ export default class ProjectStore implements IProjectStore {
   	}
   }
 
+  public async updateProject(project: IProject): Promise<IProject | undefined> {
+  	try {
+  		const { api } = window;
+
+  		const response = (await api.send("projects-update", project)) as IProject;
+
+  		if (response instanceof Error === false) {
+  			// Display success message
+  			this.setActiveProject(response);
+  			return response;
+  		} else {
+  			console.log("Display error message");
+  			return undefined;
+  		}
+  	} catch (error) {
+  		const e = error as Error;
+  		console.log(e.message);
+  	}
+  }
+
   public async deleteProject(id: string): Promise<void | undefined> {
   	try {
   		const { api } = window;

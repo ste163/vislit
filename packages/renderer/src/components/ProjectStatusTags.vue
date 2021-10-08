@@ -16,22 +16,31 @@ const backgroundColor = ref<string>("var(--primary)");
 
 function setStatusTagText(): string {
 	if (props.project.archived === false && props.project.completed === false) {
+		backgroundColor.value = 'var(--primary)';
+		textColor.value = 'var(--white)';
 		return "IN PROGRESS";
 	} else if (props.project.completed === true) {
 		backgroundColor.value = 'var(--success)';
+		textColor.value = 'var(--white)';
 		return "COMPLETED";
-	} else if (props.project.archived === true) {
-		backgroundColor.value = 'var(--lightGray)';
-		textColor.value = 'var(--black)';
-		return "ARCHIVED";
 	}
-	return "NO STATUS";
+	// Or it's not in-progress but it's been archived
+	backgroundColor.value = 'var(--primary)';
+	textColor.value = 'var(--white)';
+	return "RETIRED";
 }
 
 const statusTagText = computed(() => setStatusTagText());
 </script>
 
 <template>
+  <div
+    v-if="props.project.archived"
+    class="container container-archived"
+  >
+    ARCHIVED
+  </div>
+
   <div class="container">
     {{ statusTagText }}
   </div>
@@ -49,5 +58,10 @@ const statusTagText = computed(() => setStatusTagText());
 	
 	color: v-bind(textColor);
 	background-color: v-bind(backgroundColor);
+}
+
+.container-archived {
+	color: var(--black);
+	background-color: var(--lightGray);
 }
 </style>

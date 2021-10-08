@@ -132,7 +132,7 @@ ipcMain.handle("projects-add", (e, project: IProject) => {
 });
 
 ipcMain.handle("projects-update", (e, project: IProject) => {
-  console.log("UPDATE", project);
+  return projectController.update(project);
 });
 
 ipcMain.handle("projects-delete", (e, projectId: string) => {

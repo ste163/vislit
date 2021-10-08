@@ -6,6 +6,7 @@ export default interface IProjectStore {
   setActiveProject: (project: IProject) => void;
   getProjects: () => Promise<void | undefined>;
   addProject: (project: IProject) => Promise<IProject | undefined>;
+  updateProject: (project: IProject) => Promise<IProject | undefined>;
   deleteProject: (id: string) => Promise<void | undefined>;
 // eslint-disable-next-line semi
 }
