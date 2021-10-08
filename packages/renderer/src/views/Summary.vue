@@ -89,6 +89,7 @@ const ellipsisMenuArchivedText = computed(() => {
 
 <template>
   <base-template-card
+    v-if="activeProject !== null"
     :is-ellipsis-menu-active="isEllipsisMenuActive"
     @clickOutside="isEllipsisMenuActive = false;"
   >
@@ -181,7 +182,7 @@ const ellipsisMenuArchivedText = computed(() => {
 
   <form-project-delete-modal
     :is-modal-active="isDeleteModalActive"
-    @close-modal="isDeleteModalActive = false"
+    @handle-delete-modal-close="isDeleteModalActive = false"
   />
 
   <form-project-create-modal

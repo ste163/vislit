@@ -17,7 +17,7 @@ export default class ProjectStore implements IProjectStore {
   	this.state.all = projects;
   }
 
-  public setActiveProject(project: IProject): void {
+  public setActiveProject(project: IProject | null): void {
   	this.state.active = project;
   }
 
@@ -52,6 +52,7 @@ export default class ProjectStore implements IProjectStore {
   		if (response instanceof Error === false) {
   			// Display success message
   			this.setActiveProject(response);
+  			await this.getProjects();
   			return response;
   		} else {
   			console.log("Display error message");
@@ -72,6 +73,7 @@ export default class ProjectStore implements IProjectStore {
   		if (response instanceof Error === false) {
   			// Display success message
   			this.setActiveProject(response);
+  			await	this.getProjects();
   			return response;
   		} else {
   			console.log("Display error message");
@@ -83,7 +85,7 @@ export default class ProjectStore implements IProjectStore {
   	}
   }
 
-  public async deleteProject(id: string): Promise<void | undefined> {
+  public async deleteProject(id: string): Promise<true | undefined> {
   	try {
   		const { api } = window;
 
@@ -91,7 +93,8 @@ export default class ProjectStore implements IProjectStore {
   
   		if (response instanceof Error === false) {
   			// Display success message
-  			this.getProjects();
+  			await this.getProjects();
+  			return true;
   		}	else {
   			console.log("Display error message");
   			return undefined;

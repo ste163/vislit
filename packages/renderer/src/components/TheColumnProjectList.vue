@@ -35,9 +35,8 @@ watch(() => store.projects.state.active?.id, () => updateRouteId(store.projects.
 
 onMounted(async () => {
 	// Always get the most up-to-date list of projects when column opens
-	if (store.projects !== null) {
+	if (store.projects !== null && store.projects.state.active !== null) {
 		await store.projects.getProjects();
-		console.log(store.projects.state.all);
 	}
 });
 </script>

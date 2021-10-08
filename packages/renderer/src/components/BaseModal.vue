@@ -63,7 +63,7 @@ function emitCloseModal(): void {
   left: 40vw;
   background-color: var(--white);
   padding: 1em;
-  min-height: 10em;
+  min-height: 8em;
   max-height: fit-content;
   width: fit-content;
   border-radius: 5px;

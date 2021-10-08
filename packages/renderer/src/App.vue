@@ -164,7 +164,8 @@ onBeforeUpdate(() => {
   display: flex;
   flex-flow: column nowrap;
   flex-grow: 1;
-  margin: 1.5em;
+  margin: 2.5em;
+  align-items: center;
   /*
   TODO:
   SET user-select to none when either
