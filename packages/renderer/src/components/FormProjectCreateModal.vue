@@ -127,5 +127,6 @@ watch(() => props.isFormModalActive, resetForm);
   display: flex;
   flex-flow: column nowrap;
   margin-top: 1em;
+  width: 15em;
 }
 </style>

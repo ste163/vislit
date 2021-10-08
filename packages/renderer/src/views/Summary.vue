@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, inject } from "vue";
+import { ref, inject, computed } from "vue";
 import type IStore from "../store/interfaces/IStore";
 import BaseTemplateCard from "../components/BaseTemplateCard.vue";
 import BaseCardContent from "../components/BaseCardContent.vue";
@@ -9,12 +9,23 @@ import FormProjectDeleteModal from "../components/FormProjectDeleteModal.vue";
 import NotificationDot from "../components/NotificationDot.vue";
 import ButtonEllipsis from "../components/ButtonEllipsis.vue";
 import ButtonEllipsisItem from "../components/ButtonEllipsisItem.vue";
+import useDateFormatFull from "../composables/useDateFormatFull";
+import ProjectStatusTag from "../components/ProjectStatusTag.vue";
+import type { IProject } from "interfaces";
 
 const store = inject("store") as IStore;
 
 const isEditFormModalActive = ref<boolean>(false);
 const isDeleteModalActive = ref<boolean>(false);
 const isEllipsisMenuActive = ref<boolean>(false);
+
+const activeProject = computed(() => {
+	return  store.projects.state.active as IProject;
+});
+
+const formatedDate = useDateFormatFull(activeProject.value.dateModified);
+
+
 
 function openWindow(): void {
 	console.log("Open window in main process");
@@ -47,7 +58,15 @@ function openDeleteConfirmationModal(): void {
     @clickOutside="isEllipsisMenuActive = false;"
   >
     <template #header>
-      {{ store.projects.state.active?.title }}
+      {{ activeProject.title }}
+    </template>
+
+    <template #sub-header>
+      <project-status-tag :project="activeProject" /> {{ activeProject.typeId }} | Last updated on {{ formatedDate }}
+    </template>
+
+    <template #description>
+      {{ activeProject.description }} 
     </template>
 
     <template #ellipsis-button>

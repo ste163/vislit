@@ -14,9 +14,19 @@ const emit = defineEmits(["clickOutside"]);
 <template>
   <div class="card">
     <header class="card-header">
-      <h1>
-        <slot name="header" />
-      </h1>
+      <div>
+        <h1>
+          <slot name="header" />
+        </h1>
+  
+        <div class="sub-header">
+          <slot name="sub-header" />
+        </div>
+
+        <p class="description">
+          <slot name="description" />
+        </p>
+      </div>
 
       <div v-click-outside="() => emit('clickOutside')">
         <slot name="ellipsis-button" />
@@ -55,6 +65,22 @@ const emit = defineEmits(["clickOutside"]);
   display: flex;
   justify-content: space-between;
   position: relative;
+}
+
+.sub-header, .description {
+  margin-top: 0.25em;
+  font-size: 0.8em;
+  font-weight: 300;
+}
+
+.sub-header {
+  display: flex;
+  align-items: center;
+}
+
+.description {
+  margin-top: 0.45em;
+  font-style: italic;
 }
 
 .ellipsis-menu {
