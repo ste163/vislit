@@ -59,7 +59,6 @@ async function deleteProject(): Promise<void> {
 				store.application.state.columns.forEach((column) => column.isActive = false);
 				router.replace(`/`);
 			}
-		
 		}
 	} else {
 		console.error("Active project is null, cannot delete");

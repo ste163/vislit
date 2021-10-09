@@ -7,9 +7,11 @@ import BaseButtonToggle from "./BaseButtonToggle.vue";
 
 const store = inject("store") as IStore;
 
+// Prop for section? with a type that contains the strings: "inProgress", "Archived", "Completed"
+// then decide colors based on that
+
 // eslint-disable-next-line no-undef
 const props = defineProps({
-	// eslint-disable-next-line vue/require-default-prop
 	project: {
 		type: Object as PropType<IProject>,
 		required: true,

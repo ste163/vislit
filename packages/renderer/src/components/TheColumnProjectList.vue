@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { inject, onMounted, watch } from "vue";
+import type { IProject } from "interfaces";
+import type { ComputedRef} from "vue";
+import { computed, inject, onMounted, watch } from "vue";
 import type { RouteLocationRaw} from "vue-router";
 import { useRouter } from "vue-router";
 import type IStore from "../store/interfaces/IStore";
@@ -29,6 +31,31 @@ function updateRouteId(id: string | undefined): void {
 	} as RouteLocationRaw);
 }
 
+const inProgressProjects: ComputedRef<IProject[]> = computed(() => {
+	return store.projects.state.all.filter(
+		(project) => project.archived === false && project.completed === false,
+	);
+});
+
+
+const completedProjects: ComputedRef<IProject[]> = computed(() => {
+	return store.projects.state.all.filter(
+		(project) => project.archived === false && project.completed === true,
+	);
+});
+
+const archivedCompletedProjects: ComputedRef<IProject[]> = computed(() => {
+	return store.projects.state.all.filter(
+		(project) => project.archived === true && project.completed === true,
+	);
+});
+
+const archivedRetiredProjects: ComputedRef<IProject[]> = computed(() => {
+	return store.projects.state.all.filter(
+		(project) => project.archived === true && project.completed === false,
+	);
+});
+
 // Must pass anonymous function into watch before calling updateRouteId
 // Otherwise there's an overload error in TS (even though it works correctly)
 watch(() => store.projects.state.active?.id, () => updateRouteId(store.projects.state.active?.id));
@@ -51,30 +78,62 @@ onMounted(async () => {
       >
         Create Project
       </base-button-click>
-  
       <!-- Checkbox component for: Show detailed project information -->
-  
       <!-- Searchbar for Filter Projects by Title, Type, or Description -->
     </div>
 
-    <!-- By default, show In Progress header: need header component that's dynamic -->
-
-    <!-- Will need if checks for if the project.archived !== true, place in In progress -->
-
-    <!-- if project.archived === true, place in Archived, with a grayed out color, and at the bottom of the list always -->
-
     <!-- If searching for anything, hide all other items, and make the header say: Filtering by: term -->
 
-    <column-list-header>In Progress</column-list-header>
+    <div v-if="inProgressProjects.length > 0">
+      <column-list-header>In Progress</column-list-header>
+      <!-- List of Items -> to be moved into ColumnListItem -->
+      <div class="column-list-item-container">
+        <column-list-item 
+          v-for="project in inProgressProjects"
+          :key="project.id"
+          :project="project"
+          @click="store.projects.setActiveProject(project)"
+        />
+      </div>
+    </div>
 
-    <!-- List of Items -> to be moved into ColumnListItem -->
-    <div class="column-list-item-container">
-      <column-list-item 
-        v-for="project in store.projects.state.all"
-        :key="project.id"
-        :project="project"
-        @click="store.projects.setActiveProject(project)"
-      />
+    <!-- style as greyed? -->
+    <div v-if="completedProjects.length > 0">
+      <column-list-header>Completed</column-list-header>
+      <div class="column-list-item-container">
+        <column-list-item 
+          v-for="project in completedProjects"
+          :key="project.id"
+          :project="project"
+          @click="store.projects.setActiveProject(project)"
+        />
+      </div>
+    </div>
+
+    <!-- Style as greyed -->
+    <div v-if="archivedCompletedProjects.length > 0">
+      <column-list-header>Archived, Completed</column-list-header>
+      <div class="column-list-item-container">
+        <column-list-item 
+          v-for="project in archivedCompletedProjects"
+          :key="project.id"
+          :project="project"
+          @click="store.projects.setActiveProject(project)"
+        />
+      </div>
+    </div>
+
+    <!-- Style as greyed -->
+    <div v-if="archivedRetiredProjects.length > 0">
+      <column-list-header>Archived, Retired</column-list-header>
+      <div class="column-list-item-container">
+        <column-list-item 
+          v-for="project in archivedRetiredProjects"
+          :key="project.id"
+          :project="project"
+          @click="store.projects.setActiveProject(project)"
+        />
+      </div>
     </div>
   </div>
 </template>
