@@ -144,40 +144,41 @@ test("trying to update project with id not in database returns error", () => {
   );
 });
 
-test("trying to update project with title already in database returns error", () => {
-  const projectRepository = {
-    getById: jest.fn(() => {
-      return {
-        id: "1",
-        title: "It",
-        description: "A murderous clown attacks a town",
-      };
-    }),
-    getByTitle: jest.fn((project) => project),
-  };
+// Need new tests for duplicate title checking
+// test("trying to update project with title already in database returns error", () => {
+//   const projectRepository = {
+//     getById: jest.fn(() => {
+//       return {
+//         id: "1",
+//         title: "It",
+//         description: "A murderous clown attacks a town",
+//       };
+//     }),
+//     getByTitle: jest.fn((project) => project),
+//   };
 
-  // const searchController = {};
+//   // const searchController = {};
 
-  const projectController = new ProjectController(
-    projectRepository as unknown as IProjectRepository,
-    // searchController
-  );
+//   const projectController = new ProjectController(
+//     projectRepository as unknown as IProjectRepository,
+//     // searchController
+//   );
 
-  const project = {
-    id: "1",
-    title: "It",
-    description: "A murderous clown attacks a town",
-    typeId: 1,
-    completed: false,
-    archived: false,
-    dateCreated: null,
-    dateModified: null,
-  };
+//   const project = {
+//     id: "1",
+//     title: "It",
+//     description: "A murderous clown attacks a town",
+//     typeId: 1,
+//     completed: false,
+//     archived: false,
+//     dateCreated: null,
+//     dateModified: null,
+//   };
 
-  expect(projectController.update(project)).toEqual(
-    new Error("Project title already in database"),
-  );
-});
+//   expect(projectController.update(project)).toEqual(
+//     new Error("Project title already in database"),
+//   );
+// });
 
 test("can delete project", () => {
   const projectRepository = {

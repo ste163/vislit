@@ -54,9 +54,10 @@ async function deleteProject(): Promise<void> {
 				store.projects.setActiveProject(store.projects.state.all[0]);
 				router.push(`/summary/${store.projects.state.all[0].id}`);
 			} else {
-				// Need to close ALL columns BEFORE pushing & setting null
-				router.push(`/`);
-				store.projects.setActiveProject(null);
+				// All Projects have been deleted
+				// Need to close all open columns as they rely on projects state
+				store.application.state.columns.forEach((column) => column.isActive = false);
+				router.replace(`/`);
 			}
 		
 		}

@@ -1,16 +1,24 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { inject, onMounted, ref } from "vue";
 import BaseTemplateCard from "../components/BaseTemplateCard.vue";
 import BaseCardContent from "../components/BaseCardContent.vue";
 import BaseButtonClick from "../components/BaseButtonClick.vue";
 import FormProjectCreateModal from "../components/FormProjectCreateModal.vue";
 import NotificationDot from "../components/NotificationDot.vue";
+import type IStore from "../store/interfaces/IStore";
 
+const store = inject("store") as IStore;
 const isModalActive = ref<boolean>(false);
 
 function openWindow(): void {
 	console.log("Open window in main process");
 }
+
+// Needed to ensure that if the user deletes all projects
+// The activeProject will be reset at the correct point in time
+onMounted(() => {
+	store.projects.setActiveProject(null);
+});
 </script>
 
 <template>
