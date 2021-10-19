@@ -1,3 +1,4 @@
+<!-- Handles all possible content for Project Column (list & form) -->
 <script setup lang="ts">
 import { ref } from "vue";
 import TheColumnProjectList from "./TheColumnProjectList.vue";

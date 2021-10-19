@@ -141,6 +141,7 @@ onMounted(async () => {
 <style scoped>
 .column-list-controls {
   margin: 1em 0 2em 0;
+  padding: 0.5em 0.75em;
 }
 
 .column-list-header {
@@ -148,6 +149,7 @@ onMounted(async () => {
   font-weight: 300;
   letter-spacing: var(--letterSpacingSmall);
   margin: 0.5em 0;
+  padding: 0.5em 0.75em;
 }
 
 .column-list-item-container {

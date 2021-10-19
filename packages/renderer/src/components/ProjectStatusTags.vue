@@ -25,8 +25,8 @@ function setStatusTagText(): string {
 		return "COMPLETED";
 	}
 	// Or it's not in-progress but it's been archived
-	backgroundColor.value = 'var(--primary)';
-	textColor.value = 'var(--white)';
+	backgroundColor.value = 'var(--lightGray)';
+	textColor.value = 'var(--black)';
 	return "RETIRED";
 }
 
@@ -48,13 +48,13 @@ const statusTagText = computed(() => setStatusTagText());
 
 <style scoped>
 .container {
-	font-size: 0.85em;
+	font-size: 0.8em;
 	font-weight: 900;
 	width: max-content;
-	padding: 0 0.35em;
+	padding: 0.1em 0.35em;
 	padding-top: 0.2em;
 	border-radius: 3px;
-	margin-right: 0.5em;
+	margin-right: 0.85em;
 	
 	color: v-bind(textColor);
 	background-color: v-bind(backgroundColor);

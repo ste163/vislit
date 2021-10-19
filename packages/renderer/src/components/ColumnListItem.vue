@@ -45,6 +45,7 @@ it's based on the left absolute position -->
   font-weight: 700;
   letter-spacing: var(--letterSpacingSmaller);
   margin: 0.25em 0;
-    text-align: left;
+  text-align: left;
+  border-radius: 0;
 }
 </style>

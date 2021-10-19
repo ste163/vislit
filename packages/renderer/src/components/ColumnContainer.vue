@@ -171,7 +171,7 @@ const resizeHandleLocation = computed(() =>
 
 .column-content {
   font-size: 0.85em;
-  padding: 0.5em 0.75em 0.5em 0.75em;
+  padding: 0.5em 0;
 }
 
 .resize-handle {

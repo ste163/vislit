@@ -28,8 +28,12 @@ const activeProject = computed(() => {
 
 const formatedDate = useDateFormatFull(activeProject.value.dateModified);
 
-function openWindow(): void {
-	console.log("ROUTE TO NEW PAGE");
+function openNotesColumn(): void {
+	store.application.state.columns.forEach((column) => {
+		if (column.header === 'Notes') {
+			column.isActive = !column.isActive;
+		}
+	});
 }
 
 function openEditProjectModal(): void {
@@ -68,10 +72,6 @@ function toggleProjectArchived(): void {
 	};
 
 	store.projects.updateProject(updatedProject);
-}
-
-function openDeleteConfirmationModal(): void {
-	isDeleteModalActive.value = true;
 }
 
 // const ellipsisMenuGoalText = computed(() => {
@@ -126,7 +126,7 @@ const ellipsisMenuArchivedText = computed(() => {
       <button-ellipsis-item @click="toggleProjectArchived">
         {{ ellipsisMenuArchivedText }}
       </button-ellipsis-item>
-      <button-ellipsis-item @click="openDeleteConfirmationModal">
+      <button-ellipsis-item @click="() => isDeleteModalActive = true">
         Delete Project
       </button-ellipsis-item>
     </template>
@@ -164,7 +164,7 @@ const ellipsisMenuArchivedText = computed(() => {
       <template #buttons>
         <base-button-click
           :background-color="'var(--lightGray)'"
-          @click="openWindow"
+          @click="() => $router.push(`/writer/${activeProject.id}`)"
         >
           Open Document Writer
         </base-button-click>
@@ -172,7 +172,7 @@ const ellipsisMenuArchivedText = computed(() => {
         <base-button-click
           :background-color="'var(--lightGray)'"
           class="button-spacing"
-          @click="openWindow"
+          @click="openNotesColumn"
         >
           Open Notes
         </base-button-click>
