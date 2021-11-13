@@ -12,9 +12,10 @@ const editor = useEditor({
 </script>
 
 <template>
-  <h1>Document Writer</h1>
-
-  <div v-if="editor">
+  <div
+    v-if="editor"
+    class="control-container"
+  >
     <button
       :class="{ 'is-active': editor.isActive('bold') }"
       @click="editor.chain().focus().toggleBold().run()"
@@ -111,9 +112,15 @@ const editor = useEditor({
 </template>
 
 <style scoped>
+.control-container {
+  background-color: var(--white);
+  margin-bottom: 1em;
+}
 .doc-editor {
   background-color: var(--white);
   padding: 0.5em;
+  overflow-y: scroll;
+  height: 80vh;
 }
 
 </style>
