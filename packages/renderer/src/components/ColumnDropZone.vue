@@ -56,7 +56,7 @@ export default defineComponent({
   flex-flow: row nowrap;
   background-color: #3773ff50;
   position: relative;
-  min-width: 30px;
+  /* min-width: 30px;  */
   width: fit-content;
   max-width: 2000px;
   animation: drop-zone 3s infinite;

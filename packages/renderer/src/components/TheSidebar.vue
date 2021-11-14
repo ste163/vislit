@@ -17,6 +17,8 @@ import AppIconSetting from "./AppIconSetting.vue";
 const store = inject("store") as IStore;
 
 const isSidebarDisabled = useIsSidebarDisabled();
+
+const handleSidebarOpen = () => console.log("OPEN/CLOSE");
 </script>
 
 <template>
@@ -118,6 +120,18 @@ const isSidebarDisabled = useIsSidebarDisabled();
         </template>
         Settings
       </button-column>
+
+      <button
+        class="btn-none arrow__container--sidebar"
+        @click="handleSidebarOpen"
+      >
+        <div
+          :class="{
+            'arrow--sidebar': true,
+            // 'arrow--sidebar--active': !isSidebarMinimized
+          }"
+        />
+      </button>
     </div>
   </nav>
 </template>
@@ -152,5 +166,63 @@ const isSidebarDisabled = useIsSidebarDisabled();
 
 .top-margin {
   margin-top: 1.5em;
+}
+
+/* Side-bar Arrow */
+.arrow__container--sidebar {
+  display: flex;
+  background-color: white;
+  height: 50px;
+  margin-top: 10px;
+  padding: 10px 0;
+  padding-right: 30px;
+  padding-left: 35px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.arrow__container--sidebar:hover > .arrow--sidebar::after,
+.arrow--sidebar::before {
+  background-color: black;
+}
+
+.arrow__container--sidebar:hover > .arrow--sidebar::before {
+  background-color: black;
+}
+
+.arrow__container--sidebar:hover {
+  background-color: lightgray;
+}
+
+.arrow__container--sidebar:active {
+  background-color: gray;
+}
+
+.arrow--sidebar::after,
+.arrow--sidebar::before {
+  content: "";
+  display: block;
+  width: 18px;
+  height: 3.5px;
+  border-radius: 10px;
+  background-color: white;
+  margin: 3px 0px;
+  transition: 0.3s;
+}
+
+.arrow--sidebar::after {
+  transform: rotate(-29deg) translate(-2px, 0px);
+}
+
+.arrow--sidebar::before {
+  transform: rotate(-153deg) translate(1px, 0px);
+}
+
+.arrow--sidebar--active::after {
+  transform: rotate(-145deg) translate(-7px, 0px);
+}
+
+.arrow--sidebar--active::before {
+  transform: rotate(-35deg) translate(4px, 4px);
 }
 </style>

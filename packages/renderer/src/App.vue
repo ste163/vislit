@@ -79,78 +79,80 @@ onBeforeUpdate(() => {
 <template>
   <the-sidebar />
 
-  <column-drop-zone
-    class="drop-zone-left"
-    :drop-zone="'left'"
-    :is-dragging-active="isDraggingActive"
-    :is-drop-zone-empty="isLeftColumnDivEmpty"
-    @drop="onColumnDrop($event, 'left')"
-    @dragover="onDropZoneDragOver($event, 'left')"
-  >
-    <transition-group
-      name="drop-zone-column-list"
-      mode="in-out"
+  <div class="overflow-x-auto flex flex-grow-1">
+    <column-drop-zone
+      class="drop-zone-left"
+      :drop-zone="'left'"
+      :is-dragging-active="isDraggingActive"
+      :is-drop-zone-empty="isLeftColumnDivEmpty"
+      @drop="onColumnDrop($event, 'left')"
+      @dragover="onDropZoneDragOver($event, 'left')"
     >
-      <!-- Need div wrapper; refs can't be on component instances, only actuall dom nodes-->
-      <div
-        v-for="column in getColumnsInDropZone('left')"
-        :ref="(el) => setDropZoneRefs(el, 'left')"
-        :key="column.header"
-        class="drop-zone-column-item"
+      <transition-group
+        name="drop-zone-column-list"
+        mode="in-out"
       >
-        <column-container
-          :drop-zone="'left'"
-          :column="column"
-          :class="
-            activeDragColumnHeader === column.header ? 'column-drag-active' : ''
-          "
-          @dragstart="onColumnDragStart($event, column.header, 'left')"
-          @dragend="onColumnDragEnd()"
-        />
-      </div>
-    </transition-group>
-  </column-drop-zone>
-
-  <main class="dashboard">
-    <router-view v-slot="{ Component }">
-      <transition name="dash-navigation">
-        <div :key="dashTransitionKey">
-          <component :is="Component" />
+        <!-- Need div wrapper; refs can't be on component instances, only actuall dom nodes-->
+        <div
+          v-for="column in getColumnsInDropZone('left')"
+          :ref="(el) => setDropZoneRefs(el, 'left')"
+          :key="column.header"
+          class="drop-zone-column-item"
+        >
+          <column-container
+            :drop-zone="'left'"
+            :column="column"
+            :class="
+              activeDragColumnHeader === column.header ? 'column-drag-active' : ''
+            "
+            @dragstart="onColumnDragStart($event, column.header, 'left')"
+            @dragend="onColumnDragEnd()"
+          />
         </div>
-      </transition>
-    </router-view>
-  </main>
+      </transition-group>
+    </column-drop-zone>
 
-  <column-drop-zone
-    class="drop-zone-right"
-    :drop-zone="'right'"
-    :is-dragging-active="isDraggingActive"
-    :is-drop-zone-empty="isRightColumnDivEmpty"
-    @drop="onColumnDrop($event, 'right')"
-    @dragover="onDropZoneDragOver($event, 'right')"
-  >
-    <transition-group
-      name="drop-zone-column-list"
-      mode="in-out"
+    <main class="dashboard">
+      <router-view v-slot="{ Component }">
+        <transition name="dash-navigation">
+          <div :key="dashTransitionKey">
+            <component :is="Component" />
+          </div>
+        </transition>
+      </router-view>
+    </main>
+
+    <column-drop-zone
+      class="drop-zone-right"
+      :drop-zone="'right'"
+      :is-dragging-active="isDraggingActive"
+      :is-drop-zone-empty="isRightColumnDivEmpty"
+      @drop="onColumnDrop($event, 'right')"
+      @dragover="onDropZoneDragOver($event, 'right')"
     >
-      <div
-        v-for="column in getColumnsInDropZone('right')"
-        :ref="(el) => setDropZoneRefs(el, 'right')"
-        :key="column.header"
-        class="drop-zone-column-item"
+      <transition-group
+        name="drop-zone-column-list"
+        mode="in-out"
       >
-        <column-container
-          :drop-zone="'right'"
-          :column="column"
-          :class="
-            activeDragColumnHeader === column.header ? 'column-drag-active' : ''
-          "
-          @dragstart="onColumnDragStart($event, column.header, 'right')"
-          @dragend="onColumnDragEnd()"
-        />
-      </div>
-    </transition-group>
-  </column-drop-zone>
+        <div
+          v-for="column in getColumnsInDropZone('right')"
+          :ref="(el) => setDropZoneRefs(el, 'right')"
+          :key="column.header"
+          class="drop-zone-column-item"
+        >
+          <column-container
+            :drop-zone="'right'"
+            :column="column"
+            :class="
+              activeDragColumnHeader === column.header ? 'column-drag-active' : ''
+            "
+            @dragstart="onColumnDragStart($event, column.header, 'right')"
+            @dragend="onColumnDragEnd()"
+          />
+        </div>
+      </transition-group>
+    </column-drop-zone>
+  </div>
 </template>
 
 <style>
