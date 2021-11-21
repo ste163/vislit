@@ -10,6 +10,7 @@ export default class ApplicationStore implements IApplicationStore {
   	// Read last activeView state from localStorage; If none, set to "/"
   	// Columns needs to be pulled/saved in localStorage
   	this.state = reactive({
+  		isSidebarMinimized: false, // read and save to localStorage
   		activeView: "/",
   		dropZones: [
   			{
@@ -60,4 +61,11 @@ export default class ApplicationStore implements IApplicationStore {
   setActiveView = (view: string): void => {
   	this.state.activeView = view;
   };
+
+  setIsSidebarMinimized = (): void => {
+	  // read from localStorage
+	  // if no isSidebarMinimized, set to false
+	  // else, set as localStorage value
+	  this.state.isSidebarMinimized = !this.state.isSidebarMinimized;
+  }
 }

@@ -17,8 +17,6 @@ import AppIconSetting from "./AppIconSetting.vue";
 const store = inject("store") as IStore;
 
 const isSidebarDisabled = useIsSidebarDisabled();
-
-const handleSidebarOpen = () => console.log("OPEN/CLOSE");
 </script>
 
 <template>
@@ -113,7 +111,7 @@ const handleSidebarOpen = () => console.log("OPEN/CLOSE");
       </button-column>
     </div>
 
-    <div>
+    <div class="flex flex-col">
       <button-column class="sidebar-button">
         <template #icon>
           <app-icon-setting class="button-icon" />
@@ -123,7 +121,7 @@ const handleSidebarOpen = () => console.log("OPEN/CLOSE");
 
       <button
         class="btn-none arrow__container--sidebar"
-        @click="handleSidebarOpen"
+        @click="store.application.setIsSidebarMinimized"
       >
         <div
           :class="{
@@ -171,12 +169,8 @@ const handleSidebarOpen = () => console.log("OPEN/CLOSE");
 /* Side-bar Arrow */
 .arrow__container--sidebar {
   display: flex;
-  background-color: white;
-  height: 50px;
   margin-top: 10px;
-  padding: 10px 0;
-  padding-right: 30px;
-  padding-left: 35px;
+  margin-right: 10px;
   justify-content: flex-end;
   align-items: center;
 }
@@ -190,14 +184,6 @@ const handleSidebarOpen = () => console.log("OPEN/CLOSE");
   background-color: black;
 }
 
-.arrow__container--sidebar:hover {
-  background-color: lightgray;
-}
-
-.arrow__container--sidebar:active {
-  background-color: gray;
-}
-
 .arrow--sidebar::after,
 .arrow--sidebar::before {
   content: "";
@@ -205,17 +191,17 @@ const handleSidebarOpen = () => console.log("OPEN/CLOSE");
   width: 18px;
   height: 3.5px;
   border-radius: 10px;
-  background-color: white;
+  background-color: black;
   margin: 3px 0px;
   transition: 0.3s;
 }
 
 .arrow--sidebar::after {
-  transform: rotate(-29deg) translate(-2px, 0px);
+  transform: rotate(-30deg) translate(-1px, 0px);
 }
 
 .arrow--sidebar::before {
-  transform: rotate(-153deg) translate(1px, 0px);
+  transform: rotate(-147deg) translate(1px, 0px);
 }
 
 .arrow--sidebar--active::after {
