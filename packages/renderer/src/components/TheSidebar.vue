@@ -22,7 +22,10 @@ const isSidebarDisabled = useIsSidebarDisabled();
 <template>
   <nav
     class="sidebar-container"
-    :class="store.application.state.isSidebarMinimized ? 'sidebar-minimized' : 'sidebar-open' 
+    :class="
+      store.application.state.isSidebarMinimized
+        ? 'sidebar-minimized'
+        : 'sidebar-open'
     "
   >
     <!-- TODO -->
@@ -34,7 +37,7 @@ const isSidebarDisabled = useIsSidebarDisabled();
         draggable="false"
         :class="{ 'sidebar-header-disabled': isSidebarDisabled }"
       >
-        Views
+        <span v-if="!store.application.state.isSidebarMinimized"> Views </span>
       </div>
       <button-router-link
         :route="`/summary/${store.projects.state.active?.id}`"
@@ -43,7 +46,9 @@ const isSidebarDisabled = useIsSidebarDisabled();
         <template #icon>
           <app-icon-summary class="button-icon" />
         </template>
-        Summary
+        <span v-if="!store.application.state.isSidebarMinimized">
+          Summary
+        </span>
       </button-router-link>
 
       <button-router-link
@@ -53,7 +58,9 @@ const isSidebarDisabled = useIsSidebarDisabled();
         <template #icon>
           <app-icon-writer class="button-icon" />
         </template>
-        Document Writer
+        <span v-if="!store.application.state.isSidebarMinimized">
+          Document Writer
+        </span>
       </button-router-link>
 
       <button-router-link
@@ -63,7 +70,9 @@ const isSidebarDisabled = useIsSidebarDisabled();
         <template #icon>
           <app-icon-progress class="button-icon" />
         </template>
-        Progress
+        <span v-if="!store.application.state.isSidebarMinimized">
+          Progress
+        </span>
       </button-router-link>
 
       <button-router-link
@@ -73,7 +82,9 @@ const isSidebarDisabled = useIsSidebarDisabled();
         <template #icon>
           <app-icon-visualization class="button-icon" />
         </template>
-        Visualizations
+        <span v-if="!store.application.state.isSidebarMinimized">
+          Visualizations
+        </span>
       </button-router-link>
 
       <button-router-link
@@ -83,7 +94,9 @@ const isSidebarDisabled = useIsSidebarDisabled();
         <template #icon>
           <app-icon-thesaurus class="button-icon" />
         </template>
-        Thesaurus
+        <span v-if="!store.application.state.isSidebarMinimized">
+          Thesaurus
+        </span>
       </button-router-link>
 
       <div
@@ -91,36 +104,44 @@ const isSidebarDisabled = useIsSidebarDisabled();
         :class="{ 'sidebar-header-disabled': isSidebarDisabled }"
         draggable="false"
       >
-        Columns
+        <span v-if="!store.application.state.isSidebarMinimized">
+          Columns
+        </span>
       </div>
       <button-column class="sidebar-button">
         <template #icon>
           <app-icon-project class="button-icon" />
         </template>
-        Projects
+        <span v-if="!store.application.state.isSidebarMinimized">
+          Projects
+        </span>
       </button-column>
 
       <button-column class="sidebar-button">
         <template #icon>
           <app-icon-note class="button-icon" />
         </template>
-        Notes
+        <span v-if="!store.application.state.isSidebarMinimized"> Notes </span>
       </button-column>
 
       <button-column class="sidebar-button">
         <template #icon>
           <app-icon-lexicon class="button-icon" />
         </template>
-        Lexicons
+        <span v-if="!store.application.state.isSidebarMinimized">
+          Lexicons
+        </span>
       </button-column>
     </div>
 
     <div class="flex flex-col">
-      <button-column class="sidebar-button">
+      <button-column class="mb-8">
         <template #icon>
           <app-icon-setting class="button-icon" />
         </template>
-        Settings
+        <span v-if="!store.application.state.isSidebarMinimized">
+          Settings
+        </span>
       </button-column>
 
       <button
@@ -130,7 +151,8 @@ const isSidebarDisabled = useIsSidebarDisabled();
         <div
           :class="{
             'arrow--sidebar': true,
-            'arrow--sidebar--active': !store.application.state.isSidebarMinimized
+            'arrow--sidebar--active':
+              !store.application.state.isSidebarMinimized,
           }"
         />
       </button>
@@ -138,28 +160,27 @@ const isSidebarDisabled = useIsSidebarDisabled();
   </nav>
 </template>
 
-<style>
+<style scoped>
 .sidebar-container {
   background-color: var(--white);
   box-shadow: #00000027 -10px 0px 30px;
-    @apply flex
+  @apply flex
       flex-col
       flex-nowrap
       justify-between
       py-2
       select-none
       z-10
-      transition-all
+      transition-all;
 }
 
 .sidebar-minimized {
-  @apply w-12
+  @apply w-12;
 }
 
 .sidebar-open {
-  @apply w-40
+  @apply w-40 min-w-max;
 }
-
 
 .sidebar-header {
   font-weight: 300;
@@ -181,20 +202,18 @@ const isSidebarDisabled = useIsSidebarDisabled();
 
 /* Side-bar Arrow */
 .arrow__container--sidebar {
-  display: flex;
-  margin-top: 10px;
-  margin-right: 10px;
-  justify-content: flex-end;
-  align-items: center;
+  transform: scale(0.8);
+  position: absolute;
+  bottom: 5px;
 }
 
 .arrow__container--sidebar:hover > .arrow--sidebar::after,
 .arrow--sidebar::before {
-  background-color: black;
+  background-color: var(--black);
 }
 
 .arrow__container--sidebar:hover > .arrow--sidebar::before {
-  background-color: black;
+  background-color: var(--black);;
 }
 
 .arrow--sidebar::after,
@@ -204,7 +223,7 @@ const isSidebarDisabled = useIsSidebarDisabled();
   width: 18px;
   height: 3.5px;
   border-radius: 10px;
-  background-color: black;
+  background-color: var(--black);;
   margin: 3px 0px;
   transition: 0.3s;
 }

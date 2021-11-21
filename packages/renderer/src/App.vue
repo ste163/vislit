@@ -79,7 +79,7 @@ onBeforeUpdate(() => {
 <template>
   <the-sidebar />
 
-  <div class="overflow-x-auto flex flex-grow-1">
+  <div class="flex overflow-x-auto flex-nowrap flex-grow-1">
     <column-drop-zone
       class="drop-zone-left"
       :drop-zone="'left'"
