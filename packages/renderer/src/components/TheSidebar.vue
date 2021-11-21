@@ -22,7 +22,7 @@ const isSidebarDisabled = useIsSidebarDisabled();
 <template>
   <nav
     class="sidebar-container"
-    :class="store.application.state.isSidebarMinimized ? 'sidebar-mininized' : 'sidebar-open' 
+    :class="store.application.state.isSidebarMinimized ? 'sidebar-minimized' : 'sidebar-open' 
     "
   >
     <!-- TODO -->
@@ -138,24 +138,28 @@ const isSidebarDisabled = useIsSidebarDisabled();
   </nav>
 </template>
 
-<style scoped>
+<style>
 .sidebar-container {
   background-color: var(--white);
-  min-width: 170px;
-  width: 10em;
-  padding: 0.5em 0em;
   box-shadow: #00000027 -10px 0px 30px;
-  @layer components {
-    @apply {
-      flex
+    @apply flex
       flex-col
       flex-nowrap
       justify-between
+      py-2
       select-none
       z-10
-      }
-    }
+      transition-all
 }
+
+.sidebar-minimized {
+  @apply w-12
+}
+
+.sidebar-open {
+  @apply w-40
+}
+
 
 .sidebar-header {
   font-weight: 300;
