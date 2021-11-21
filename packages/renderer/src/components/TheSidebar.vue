@@ -20,7 +20,11 @@ const isSidebarDisabled = useIsSidebarDisabled();
 </script>
 
 <template>
-  <nav class="sidebar-container">
+  <nav
+    class="sidebar-container"
+    :class="store.application.state.isSidebarMinimized ? 'sidebar-mininized' : 'sidebar-open' 
+    "
+  >
     <!-- TODO -->
     <!-- Make sidebar minimize-able -->
     <!-- Needs to include props for: isTextShown which has isMinimized passed in -->
@@ -126,7 +130,7 @@ const isSidebarDisabled = useIsSidebarDisabled();
         <div
           :class="{
             'arrow--sidebar': true,
-            // 'arrow--sidebar--active': !isSidebarMinimized
+            'arrow--sidebar--active': !store.application.state.isSidebarMinimized
           }"
         />
       </button>
@@ -136,16 +140,21 @@ const isSidebarDisabled = useIsSidebarDisabled();
 
 <style scoped>
 .sidebar-container {
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: space-between;
   background-color: var(--white);
   min-width: 170px;
   width: 10em;
   padding: 0.5em 0em;
   box-shadow: #00000027 -10px 0px 30px;
-  user-select: none;
-  z-index: 1;
+  @layer components {
+    @apply {
+      flex
+      flex-col
+      flex-nowrap
+      justify-between
+      select-none
+      z-10
+      }
+    }
 }
 
 .sidebar-header {
