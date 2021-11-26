@@ -8,11 +8,11 @@ const store = inject("store") as IStore;
 
 // eslint-disable-next-line no-undef
 const props = defineProps({
-	route: {
-		type: String,
-		required: true,
-		default: "/",
-	},
+  route: {
+    type: String,
+    required: true,
+    default: "/",
+  },
 });
 
 const isDisabled = useIsSidebarDisabled();

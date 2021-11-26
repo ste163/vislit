@@ -3,18 +3,18 @@ import BaseModal from "./BaseModal.vue";
 
 // eslint-disable-next-line no-undef
 const props = defineProps({
-	isFormModalActive: {
-		type: Boolean,
-		required: true,
-		default: false,
-	},
+  isFormModalActive: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
 });
 
 // eslint-disable-next-line no-undef
 const emit = defineEmits(["closeFormModal"]);
 
 function emitCloseFormModal(): void {
-	emit("closeFormModal");
+  emit("closeFormModal");
 }
 </script>
 

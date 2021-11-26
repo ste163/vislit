@@ -9,7 +9,7 @@ import AppIconClose from "./AppIconClose.vue";
 const emit = defineEmits(["click"]);
 
 function emitClick(): void {
-	emit("click");
+  emit("click");
 }
 </script>
 

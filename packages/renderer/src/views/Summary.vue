@@ -23,55 +23,55 @@ const isDeleteModalActive = ref<boolean>(false);
 const isEllipsisMenuActive = ref<boolean>(false);
 
 const activeProject = computed(() => {
-	return  store.projects.state.active as IProject;
+  return  store.projects.state.active as IProject;
 });
 
 const formatedDate = useDateFormatFull(activeProject.value.dateModified);
 
 function openNotesColumn(): void {
-	store.application.state.columns.forEach((column) => {
-		if (column.header === 'Notes') {
-			column.isActive = !column.isActive;
-		}
-	});
+  store.application.state.columns.forEach((column) => {
+    if (column.header === 'Notes') {
+      column.isActive = !column.isActive;
+    }
+  });
 }
 
 function openEditProjectModal(): void {
-	console.log("OPEN EDIT PROJECT MODAL");
+  console.log("OPEN EDIT PROJECT MODAL");
 }
 
 function openEditGoalModal(): void {
-	console.log("OPEN EDIT GOAL MODAL");
+  console.log("OPEN EDIT GOAL MODAL");
 }
 
 function toggleProjectComplete(): void {
-	const updatedProject: IProject = {
-		id: activeProject.value.id,
-		typeId: activeProject.value.typeId,
-		title: activeProject.value.title,
-		description: activeProject.value.description,
-		completed: !activeProject.value.completed,
-		archived: activeProject.value.archived,
-		dateModified: activeProject.value.dateModified,
-		dateCreated: activeProject.value.dateCreated,
-	};
+  const updatedProject: IProject = {
+    id: activeProject.value.id,
+    typeId: activeProject.value.typeId,
+    title: activeProject.value.title,
+    description: activeProject.value.description,
+    completed: !activeProject.value.completed,
+    archived: activeProject.value.archived,
+    dateModified: activeProject.value.dateModified,
+    dateCreated: activeProject.value.dateCreated,
+  };
 
-	store.projects.updateProject(updatedProject);
+  store.projects.updateProject(updatedProject);
 }
 
 function toggleProjectArchived(): void {
-	const updatedProject: IProject = {
-		id: activeProject.value.id,
-		typeId: activeProject.value.typeId,
-		title: activeProject.value.title,
-		description: activeProject.value.description,
-		completed: activeProject.value.completed,
-		archived: !activeProject.value.archived,
-		dateModified: activeProject.value.dateModified,
-		dateCreated: activeProject.value.dateCreated,
-	};
+  const updatedProject: IProject = {
+    id: activeProject.value.id,
+    typeId: activeProject.value.typeId,
+    title: activeProject.value.title,
+    description: activeProject.value.description,
+    completed: activeProject.value.completed,
+    archived: !activeProject.value.archived,
+    dateModified: activeProject.value.dateModified,
+    dateCreated: activeProject.value.dateCreated,
+  };
 
-	store.projects.updateProject(updatedProject);
+  store.projects.updateProject(updatedProject);
 }
 
 // const ellipsisMenuGoalText = computed(() => {
@@ -79,11 +79,11 @@ function toggleProjectArchived(): void {
 // })
 
 const ellipsisMenuCompletedText = computed(() => {
-	return activeProject.value.completed ? "Mark Project as In Progress" : "Mark Project as Completed";
+  return activeProject.value.completed ? "Mark Project as In Progress" : "Mark Project as Completed";
 });
 
 const ellipsisMenuArchivedText = computed(() => {
-	return activeProject.value.archived ? "Un-archive Project" : "Archive Project";
+  return activeProject.value.archived ? "Un-archive Project" : "Archive Project";
 });
 </script>
 

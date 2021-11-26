@@ -28,330 +28,330 @@ type columnLayout = {
 
 // Need to pass in HTMLDivElements because I need real references from template to get sizes
 export default function useColumns(
-	store: IStore,
-	leftDropZoneColumns: Ref<HTMLDivElement[]>,
-	rightDropZoneColumns: Ref<HTMLDivElement[]>,
+  store: IStore,
+  leftDropZoneColumns: Ref<HTMLDivElement[]>,
+  rightDropZoneColumns: Ref<HTMLDivElement[]>,
 ): columnLayout {
-	const columns = store.application.state.columns;
+  const columns = store.application.state.columns;
 
-	const activeDragColumn = ref<IColumn>({
-		header: "blank",
-		isActive: true,
-		dropZone: "blank",
-		position: Number.NEGATIVE_INFINITY,
-		width: "200px",
-	});
-	const activeDragColumnHeader = ref<string>("");
-	const currentHoveredDropZone = ref<string>("");
-	const initialHoveredDropZone = ref<string>("");
+  const activeDragColumn = ref<IColumn>({
+    header: "blank",
+    isActive: true,
+    dropZone: "blank",
+    position: Number.NEGATIVE_INFINITY,
+    width: "200px",
+  });
+  const activeDragColumnHeader = ref<string>("");
+  const currentHoveredDropZone = ref<string>("");
+  const initialHoveredDropZone = ref<string>("");
 
-	const DRAG_ERROR = "Event was not a drag event.";
+  const DRAG_ERROR = "Event was not a drag event.";
 
-	// ******
-	// Events
-	// ******
-	function onColumnDragStart(
-		event: DragEvent,
-		header: string,
-		initialDropZone: string,
-	): void {
-		if (event.dataTransfer !== null) {
-			event.dataTransfer.dropEffect = "move";
-			event.dataTransfer.effectAllowed = "move";
-			activeDragColumnHeader.value = header; // Assigns CSS for dragging start
-			initialHoveredDropZone.value = initialDropZone;
-		} else {
-			console.error(DRAG_ERROR);
-		}
-	}
+  // ******
+  // Events
+  // ******
+  function onColumnDragStart(
+    event: DragEvent,
+    header: string,
+    initialDropZone: string,
+  ): void {
+    if (event.dataTransfer !== null) {
+      event.dataTransfer.dropEffect = "move";
+      event.dataTransfer.effectAllowed = "move";
+      activeDragColumnHeader.value = header; // Assigns CSS for dragging start
+      initialHoveredDropZone.value = initialDropZone;
+    } else {
+      console.error(DRAG_ERROR);
+    }
+  }
 
-	// Removes preview styles
-	function onColumnDragEnd(): void {
-		activeDragColumnHeader.value = "";
-	}
+  // Removes preview styles
+  function onColumnDragEnd(): void {
+    activeDragColumnHeader.value = "";
+  }
 
-	// Main drag-drop & sort logic runs here, whenever mouse moves
-	function onDropZoneDragOver(event: DragEvent, dropZone: string): void {
-		if (event !== undefined) {
-			event.preventDefault();
+  // Main drag-drop & sort logic runs here, whenever mouse moves
+  function onDropZoneDragOver(event: DragEvent, dropZone: string): void {
+    if (event !== undefined) {
+      event.preventDefault();
 
-			if (event.dataTransfer !== null) {
-				currentHoveredDropZone.value = dropZone;
+      if (event.dataTransfer !== null) {
+        currentHoveredDropZone.value = dropZone;
 
-				columns.forEach((column) => {
-					if (column.header === activeDragColumnHeader.value) {
-						column.dropZone = dropZone;
-					}
-				});
+        columns.forEach((column) => {
+          if (column.header === activeDragColumnHeader.value) {
+            column.dropZone = dropZone;
+          }
+        });
 
-				const afterColumnIndex = getDragAfterColumnIndex(dropZone, event.x);
+        const afterColumnIndex = getDragAfterColumnIndex(dropZone, event.x);
 
-				updateColumnPositionsOnDrag(afterColumnIndex);
-			}
-		}
-	}
+        updateColumnPositionsOnDrag(afterColumnIndex);
+      }
+    }
+  }
 
-	function onColumnDrop(event: DragEvent, dropZone: string): void {
-		if (event !== undefined) {
-			if (event.dataTransfer !== null) {
-				const column = findActiveColumn();
-				currentHoveredDropZone.value = ""; // resets value for watcher
+  function onColumnDrop(event: DragEvent, dropZone: string): void {
+    if (event !== undefined) {
+      if (event.dataTransfer !== null) {
+        const column = findActiveColumn();
+        currentHoveredDropZone.value = ""; // resets value for watcher
 
-				simplifyColumnPositionsOnDrop();
+        simplifyColumnPositionsOnDrop();
 
-				if (column !== undefined) {
-					column.dropZone = dropZone; // moves column into the correct drop zone
-				}
-			} else {
-				console.error(DRAG_ERROR);
-			}
-		}
-	}
+        if (column !== undefined) {
+          column.dropZone = dropZone; // moves column into the correct drop zone
+        }
+      } else {
+        console.error(DRAG_ERROR);
+      }
+    }
+  }
 
-	// ******
-	// Helpers
-	// ******
-	function getColumnsInDropZone(dropZone: string): IColumn[] {
-		return sortedColumns.value.filter((column) => column.dropZone === dropZone);
-	}
+  // ******
+  // Helpers
+  // ******
+  function getColumnsInDropZone(dropZone: string): IColumn[] {
+    return sortedColumns.value.filter((column) => column.dropZone === dropZone);
+  }
 
-	function getDragAfterColumnIndex(
-		dropZone: string,
-		mouseX: number,
-	): number | undefined {
-		let allColumnsInDropZone: Array<HTMLDivElement> = [];
+  function getDragAfterColumnIndex(
+    dropZone: string,
+    mouseX: number,
+  ): number | undefined {
+    let allColumnsInDropZone: Array<HTMLDivElement> = [];
 
-		// Set currently dragged divs in state
-		if (dropZone === "left") {
-			allColumnsInDropZone = leftDropZoneColumns.value;
-		} else {
-			allColumnsInDropZone = rightDropZoneColumns.value;
-		}
+    // Set currently dragged divs in state
+    if (dropZone === "left") {
+      allColumnsInDropZone = leftDropZoneColumns.value;
+    } else {
+      allColumnsInDropZone = rightDropZoneColumns.value;
+    }
 
-		const allColumnsExceptActive: Array<HTMLDivElement> =
+    const allColumnsExceptActive: Array<HTMLDivElement> =
       allColumnsInDropZone.filter((column) => {
-      	return (
-      	// If Div structure changes in ColumnContainer.vue, this needs to change
-      		column.children[0].children[0].children[0].innerHTML !==
+        return (
+        // If Div structure changes in ColumnContainer.vue, this needs to change
+          column.children[0].children[0].children[0].innerHTML !==
           activeDragColumnHeader.value
-      	);
+        );
       });
 
-		return findClosestColumnIndex(allColumnsExceptActive, mouseX);
-	}
+    return findClosestColumnIndex(allColumnsExceptActive, mouseX);
+  }
 
-	function findClosestColumnIndex(
-		columns: Array<HTMLDivElement>,
-		mouseX: number,
-	): number | undefined {
-		let columnIndex: number | undefined;
-		let closestOffset = Number.NEGATIVE_INFINITY;
-		let closestElement: HTMLDivElement; // which is going to be the element that is CLOSEST to our left
+  function findClosestColumnIndex(
+    columns: Array<HTMLDivElement>,
+    mouseX: number,
+  ): number | undefined {
+    let columnIndex: number | undefined;
+    let closestOffset = Number.NEGATIVE_INFINITY;
+    let closestElement: HTMLDivElement; // which is going to be the element that is CLOSEST to our left
 
-		for (let i = 0; i < columns.length; i++) {
-			const childElement: HTMLDivElement = columns[i];
-			closestElement = childElement;
+    for (let i = 0; i < columns.length; i++) {
+      const childElement: HTMLDivElement = columns[i];
+      closestElement = childElement;
 
-			const box: DOMRect = childElement.getBoundingClientRect();
-			const cursorOffset: number = mouseX - box.left - box.width / 2;
+      const box: DOMRect = childElement.getBoundingClientRect();
+      const cursorOffset: number = mouseX - box.left - box.width / 2;
 
-			if (cursorOffset < 0 && cursorOffset > closestOffset) {
-				closestElement = childElement;
-				closestOffset = cursorOffset;
+      if (cursorOffset < 0 && cursorOffset > closestOffset) {
+        closestElement = childElement;
+        closestOffset = cursorOffset;
 
-				// If Div structure changes in ColumnContainer.vue, this needs to change
-				return (columnIndex = findColumnIndexByInnerHTML(
-					closestElement.children[0].children[0].children[0].innerHTML,
-				));
-			} else {
-				columnIndex = undefined;
-			}
-		}
+        // If Div structure changes in ColumnContainer.vue, this needs to change
+        return (columnIndex = findColumnIndexByInnerHTML(
+          closestElement.children[0].children[0].children[0].innerHTML,
+        ));
+      } else {
+        columnIndex = undefined;
+      }
+    }
 
-		return columnIndex;
-	}
+    return columnIndex;
+  }
 
-	function updateColumnPositionsOnDrag(closestIndex: number | undefined): void {
-		const dropZoneColumns = getColumnsInDropZone(currentHoveredDropZone.value);
+  function updateColumnPositionsOnDrag(closestIndex: number | undefined): void {
+    const dropZoneColumns = getColumnsInDropZone(currentHoveredDropZone.value);
 
-		const activeDragColumn = findActiveColumn();
+    const activeDragColumn = findActiveColumn();
 
-		if (activeDragColumn !== undefined && dropZoneColumns.length > 0) {
-			if (closestIndex !== undefined) {
-				// then we are hovering to the left of a column, so begin repositioning
-				sortColumnsOnDrag(activeDragColumn, closestIndex);
-			} else {
-				// else we're hovering to the farthest right of a drop zone
-				positionColumnToFarRight(dropZoneColumns, activeDragColumn);
-			}
-		}
-	}
+    if (activeDragColumn !== undefined && dropZoneColumns.length > 0) {
+      if (closestIndex !== undefined) {
+        // then we are hovering to the left of a column, so begin repositioning
+        sortColumnsOnDrag(activeDragColumn, closestIndex);
+      } else {
+        // else we're hovering to the farthest right of a drop zone
+        positionColumnToFarRight(dropZoneColumns, activeDragColumn);
+      }
+    }
+  }
 
-	function sortColumnsOnDrag(
-		activeDragColumn: IColumn,
-		closestIndex: number,
-	): void {
-		const columnsInDropZone = getColumnsInDropZone(
-			currentHoveredDropZone.value,
-		);
-		const columnToRight: IColumn = columns[closestIndex]; // needs to be based on the full columns array to get correct column
+  function sortColumnsOnDrag(
+    activeDragColumn: IColumn,
+    closestIndex: number,
+  ): void {
+    const columnsInDropZone = getColumnsInDropZone(
+      currentHoveredDropZone.value,
+    );
+    const columnToRight: IColumn = columns[closestIndex]; // needs to be based on the full columns array to get correct column
 
-		if (columnToRight !== undefined) {
-			const farRightColumn = columnsInDropZone[columnsInDropZone.length - 1];
-			activeDragColumn.position = columnToRight.position - 1;
-			if (columnToRight.position < farRightColumn.position) {
-				columnToRight.position = columnToRight.position + 1; // must update the columnToRight position or sorting can have too many duplicates
-			}
+    if (columnToRight !== undefined) {
+      const farRightColumn = columnsInDropZone[columnsInDropZone.length - 1];
+      activeDragColumn.position = columnToRight.position - 1;
+      if (columnToRight.position < farRightColumn.position) {
+        columnToRight.position = columnToRight.position + 1; // must update the columnToRight position or sorting can have too many duplicates
+      }
 
-			handleColumnSort(columnsInDropZone, columnToRight);
-			handleDuplicatePositions(columnsInDropZone);
-		}
-	}
+      handleColumnSort(columnsInDropZone, columnToRight);
+      handleDuplicatePositions(columnsInDropZone);
+    }
+  }
 
-	function positionColumnToFarRight(
-		dropZoneColumns: IColumn[],
-		activeDragColumn: IColumn,
-	): void {
-		const farthestRightColumn = dropZoneColumns[dropZoneColumns.length - 1];
+  function positionColumnToFarRight(
+    dropZoneColumns: IColumn[],
+    activeDragColumn: IColumn,
+  ): void {
+    const farthestRightColumn = dropZoneColumns[dropZoneColumns.length - 1];
 
-		if (
-			activeDragColumn !== undefined &&
+    if (
+      activeDragColumn !== undefined &&
       activeDragColumn.position <
         dropZoneColumns[dropZoneColumns.length - 1].position
-		) {
-			activeDragColumn.position = farthestRightColumn.position + 1;
-		}
-	}
+    ) {
+      activeDragColumn.position = farthestRightColumn.position + 1;
+    }
+  }
 
-	function handleColumnSort(
-		columnsInDropZone: IColumn[],
-		columnToRight: IColumn,
-	): void {
-		const indexOfRepositionedColumn = columnsInDropZone
-			.map((column) => column.header)
-			.indexOf(columnToRight.header);
+  function handleColumnSort(
+    columnsInDropZone: IColumn[],
+    columnToRight: IColumn,
+  ): void {
+    const indexOfRepositionedColumn = columnsInDropZone
+      .map((column) => column.header)
+      .indexOf(columnToRight.header);
 
-		const columnsToReposition = columnsInDropZone.slice(
-			0,
-			indexOfRepositionedColumn - 1,
-		);
+    const columnsToReposition = columnsInDropZone.slice(
+      0,
+      indexOfRepositionedColumn - 1,
+    );
 
-		if (columnsToReposition.length > 0) {
-			columnsToReposition.forEach((column) => {
-				if (column.position >= columnsToReposition[0].position) {
-					column.position = column.position - 1;
-				}
-			});
-		}
-	}
+    if (columnsToReposition.length > 0) {
+      columnsToReposition.forEach((column) => {
+        if (column.position >= columnsToReposition[0].position) {
+          column.position = column.position - 1;
+        }
+      });
+    }
+  }
 
-	function handleDuplicatePositions(columnsInDropZone: IColumn[]): void {
-		const duplicatePosition = findDuplicateColumnPosition(columnsInDropZone);
+  function handleDuplicatePositions(columnsInDropZone: IColumn[]): void {
+    const duplicatePosition = findDuplicateColumnPosition(columnsInDropZone);
 
-		if (duplicatePosition !== undefined) {
-			const indexOfFirstDuplicate = columnsInDropZone
-				.map((column) => column.position)
-				.indexOf(duplicatePosition);
+    if (duplicatePosition !== undefined) {
+      const indexOfFirstDuplicate = columnsInDropZone
+        .map((column) => column.position)
+        .indexOf(duplicatePosition);
 
-			if (indexOfFirstDuplicate !== undefined) {
-				for (let i = indexOfFirstDuplicate; i < columnsInDropZone.length; i++) {
-					if (i === indexOfFirstDuplicate) {
-						columnsInDropZone[i].position = i - 1;
-					}
-				}
-			}
-		}
-	}
+      if (indexOfFirstDuplicate !== undefined) {
+        for (let i = indexOfFirstDuplicate; i < columnsInDropZone.length; i++) {
+          if (i === indexOfFirstDuplicate) {
+            columnsInDropZone[i].position = i - 1;
+          }
+        }
+      }
+    }
+  }
 
-	function findDuplicateColumnPosition(
-		dropZoneColumns: Array<IColumn>,
-	): number {
-		const positions = dropZoneColumns.map((column) => column.position);
+  function findDuplicateColumnPosition(
+    dropZoneColumns: Array<IColumn>,
+  ): number {
+    const positions = dropZoneColumns.map((column) => column.position);
 
-		const set = new Set(positions);
+    const set = new Set(positions);
 
-		const duplicate = positions.filter((position) => {
-			if (set.has(position)) {
-				set.delete(position);
-			} else {
-				return position;
-			}
-		});
+    const duplicate = positions.filter((position) => {
+      if (set.has(position)) {
+        set.delete(position);
+      } else {
+        return position;
+      }
+    });
 
-		return duplicate[0];
-	}
+    return duplicate[0];
+  }
 
-	function findActiveColumn(): IColumn | undefined {
-		const activeColumn = columns.find(
-			(column) => column.header === activeDragColumnHeader.value,
-		);
+  function findActiveColumn(): IColumn | undefined {
+    const activeColumn = columns.find(
+      (column) => column.header === activeDragColumnHeader.value,
+    );
 
-		if (activeColumn !== undefined) {
-			activeDragColumn.value = activeColumn;
-			return activeColumn;
-		} else {
-			return undefined;
-		}
-	}
+    if (activeColumn !== undefined) {
+      activeDragColumn.value = activeColumn;
+      return activeColumn;
+    } else {
+      return undefined;
+    }
+  }
 
-	function findColumnIndexByInnerHTML(innerHTML: string): number {
-		return columns.map((column) => column.header).indexOf(innerHTML);
-	}
+  function findColumnIndexByInnerHTML(innerHTML: string): number {
+    return columns.map((column) => column.header).indexOf(innerHTML);
+  }
 
-	function simplifyColumnPositionsOnDrop(): void {
-		// Because column positions increase or decrease infinitely while dragging,
-		// when column drops into drop zone, simplify positions for both drop zones
-		// based on the length of each drop zone array
+  function simplifyColumnPositionsOnDrop(): void {
+    // Because column positions increase or decrease infinitely while dragging,
+    // when column drops into drop zone, simplify positions for both drop zones
+    // based on the length of each drop zone array
 
-		// Need the state and not the div references
-		const leftColumns = columns.filter((column) => column.dropZone === "left");
-		const rightColumns = columns.filter(
-			(column) => column.dropZone === "right",
-		);
+    // Need the state and not the div references
+    const leftColumns = columns.filter((column) => column.dropZone === "left");
+    const rightColumns = columns.filter(
+      (column) => column.dropZone === "right",
+    );
 
-		// Because columns are sorted by position
-		// set their new positions based on their index value
-		assignPositionByIndex(leftColumns);
-		assignPositionByIndex(rightColumns);
-	}
+    // Because columns are sorted by position
+    // set their new positions based on their index value
+    assignPositionByIndex(leftColumns);
+    assignPositionByIndex(rightColumns);
+  }
 
-	function assignPositionByIndex(columnsToReposition: IColumn[]): void {
-		for (let i = 0; i < columnsToReposition.length; i++) {
-			columnsToReposition[i].position = i;
-		}
-	}
+  function assignPositionByIndex(columnsToReposition: IColumn[]): void {
+    for (let i = 0; i < columnsToReposition.length; i++) {
+      columnsToReposition[i].position = i;
+    }
+  }
 
-	function sortColumns(): Array<IColumn> {
-		const sorted = columns.sort((a, b) => {
-			if (a.position < b.position) {
-				return -1;
-			} else if (a.position > b.position) {
-				return 1;
-			} else {
-				return 0;
-			}
-		});
+  function sortColumns(): Array<IColumn> {
+    const sorted = columns.sort((a, b) => {
+      if (a.position < b.position) {
+        return -1;
+      } else if (a.position > b.position) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
 
-		return getOnlyActiveColumns(sorted);
-	}
+    return getOnlyActiveColumns(sorted);
+  }
 
-	function getOnlyActiveColumns(columns: Array<IColumn>): Array<IColumn> {
-		return columns.filter((column) => column.isActive === true);
-	}
+  function getOnlyActiveColumns(columns: Array<IColumn>): Array<IColumn> {
+    return columns.filter((column) => column.isActive === true);
+  }
 
-	const sortedColumns = computed(() => sortColumns());
-	const isDraggingActive = computed(() =>
+  const sortedColumns = computed(() => sortColumns());
+  const isDraggingActive = computed(() =>
     activeDragColumnHeader.value === "" ? false : true,
-	);
+  );
 
-	return {
-		sortedColumns,
-		isDraggingActive,
-		activeDragColumnHeader,
-		getColumnsInDropZone,
-		onColumnDragStart,
-		onColumnDragEnd,
-		onDropZoneDragOver,
-		onColumnDrop,
-	};
+  return {
+    sortedColumns,
+    isDraggingActive,
+    activeDragColumnHeader,
+    getColumnsInDropZone,
+    onColumnDragStart,
+    onColumnDragEnd,
+    onDropZoneDragOver,
+    onColumnDrop,
+  };
 }

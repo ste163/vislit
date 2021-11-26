@@ -7,7 +7,7 @@ export default class Store implements IStore {
   public projects: IProjectStore;
 
   constructor(application: IApplicationStore, projectStore: IProjectStore) {
-  	this.application = application;
-  	this.projects = projectStore;
+    this.application = application;
+    this.projects = projectStore;
   }
 }

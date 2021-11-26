@@ -12,16 +12,16 @@ const store = inject("store") as IStore;
 
 // eslint-disable-next-line no-undef
 const props = defineProps({
-	project: {
-		type: Object as PropType<IProject>,
-		required: true,
-	},
+  project: {
+    type: Object as PropType<IProject>,
+    required: true,
+  },
 });
 
 const isActive = ref<boolean>(store.projects.state.active?.id === props.project?.id);
 
 function setActive(): void {
-	isActive.value =  store.projects.state.active?.id === props.project?.id;
+  isActive.value =  store.projects.state.active?.id === props.project?.id;
 }
 
 watch(() => store.projects.state.active?.id, setActive);

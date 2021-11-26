@@ -3,54 +3,54 @@ import type { ButtonHTMLAttributes, PropType } from "vue";
 
 // eslint-disable-next-line no-undef
 const props = defineProps({
-	type: {
-		type: Object as PropType<ButtonHTMLAttributes>,
-		default: () => {
-			return {
-				type: "button",
-			};
-		},
-	},
-	isDisabled: {
-		type: Boolean,
-		default: false,
-	},
-	backgroundColor: {
-		type: String,
-		default: "var(--lightGray)",
-	},
-	textColor: {
-		type: String,
-		default: "var(--black)",
-	},
+  type: {
+    type: Object as PropType<ButtonHTMLAttributes>,
+    default: () => {
+      return {
+        type: "button",
+      };
+    },
+  },
+  isDisabled: {
+    type: Boolean,
+    default: false,
+  },
+  backgroundColor: {
+    type: String,
+    default: "var(--lightGray)",
+  },
+  textColor: {
+    type: String,
+    default: "var(--black)",
+  },
 });
 
 // eslint-disable-next-line no-undef
 const emit = defineEmits(["click"]);
 
 function createEffectOnClick(e: MouseEvent): void {
-	emit("click");
-	const button = e.target as HTMLButtonElement;
+  emit("click");
+  const button = e.target as HTMLButtonElement;
 
-	if (button) {
-		const circle = document.createElement("span");
-		const diameter = Math.max(button.clientWidth, button.clientHeight);
-		const radius = diameter / 2;
+  if (button) {
+    const circle = document.createElement("span");
+    const diameter = Math.max(button.clientWidth, button.clientHeight);
+    const radius = diameter / 2;
 
-		circle.style.width = circle.style.height = `${diameter}px`;
-		circle.style.left = `${e.offsetX - radius}px`;
-		circle.style.top = `${e.offsetY - radius}px`;
-		circle.classList.add("base-button-click-effect");
+    circle.style.width = circle.style.height = `${diameter}px`;
+    circle.style.left = `${e.offsetX - radius}px`;
+    circle.style.top = `${e.offsetY - radius}px`;
+    circle.classList.add("base-button-click-effect");
 
-		const previousCircle = button.getElementsByClassName(
-			"base-button-click-effect",
-		)[0];
-		if (previousCircle) {
-			previousCircle.remove();
-		}
+    const previousCircle = button.getElementsByClassName(
+      "base-button-click-effect",
+    )[0];
+    if (previousCircle) {
+      previousCircle.remove();
+    }
 
-		button.appendChild(circle);
-	}
+    button.appendChild(circle);
+  }
 }
 </script>
 

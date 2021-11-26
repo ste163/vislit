@@ -7,25 +7,25 @@ import BaseButtonClick from "./BaseButtonClick.vue";
 
 // eslint-disable-next-line no-undef
 const props = defineProps({
-	isDisabled: {
-		type: Boolean,
-		default: false,
-	},
-	backgroundColorDisabled: {
-		type: String,
-		default: "var(--white)",
-	},
+  isDisabled: {
+    type: Boolean,
+    default: false,
+  },
+  backgroundColorDisabled: {
+    type: String,
+    default: "var(--white)",
+  },
 });
 
 const buttonType = {
-	type: "submit",
+  type: "submit",
 } as ButtonHTMLAttributes;
 
 // eslint-disable-next-line no-undef
 const emit = defineEmits(["submitClick"]);
 
 function emitSubmit(): void {
-	emit("submitClick");
+  emit("submitClick");
 }
 </script>
 

@@ -17,62 +17,62 @@ const leftColumnDivs = ref<Array<HTMLDivElement>>([]);
 const rightColumnDivs = ref<Array<HTMLDivElement>>([]);
 
 const {
-	sortedColumns,
-	isDraggingActive,
-	activeDragColumnHeader,
-	getColumnsInDropZone,
-	onColumnDragStart,
-	onColumnDragEnd,
-	onDropZoneDragOver,
-	onColumnDrop,
+  sortedColumns,
+  isDraggingActive,
+  activeDragColumnHeader,
+  getColumnsInDropZone,
+  onColumnDragStart,
+  onColumnDragEnd,
+  onDropZoneDragOver,
+  onColumnDrop,
 } = useColumns(store, leftColumnDivs, rightColumnDivs);
 
 function checkIsDropZoneEmpty(dropZone: string): boolean {
-	const dropZoneColumns = sortedColumns.value.filter(
-		(column) => column.dropZone === dropZone,
-	);
-	return dropZoneColumns.length === 0 ? true : false;
+  const dropZoneColumns = sortedColumns.value.filter(
+    (column) => column.dropZone === dropZone,
+  );
+  return dropZoneColumns.length === 0 ? true : false;
 }
 
 function setDropZoneRefs(element: unknown | null, dropZone: string): void {
-	if (element !== null) {
+  if (element !== null) {
     dropZone === "left"
       ? leftColumnDivs.value.push(element as HTMLDivElement)
       : rightColumnDivs.value.push(element as HTMLDivElement);
-	}
+  }
 }
 
 const isLeftColumnDivEmpty = computed(() => checkIsDropZoneEmpty("left"));
 const isRightColumnDivEmpty = computed(() => checkIsDropZoneEmpty("right"));
 
 function updateStateOnRouteChange(route: string): void {
-	store.application.setActiveView(route);
-	++dashTransitionKey.value; // needed to force re-rendering of component to ensure animation is always triggered
+  store.application.setActiveView(route);
+  ++dashTransitionKey.value; // needed to force re-rendering of component to ensure animation is always triggered
 }
 
 watch(() => route.path, updateStateOnRouteChange);
 
 onMounted(async () => {
-	if (store.projects !== null) {
-		await store.projects.getProjects(); // doesn't need to be wrapped in try/catch because getProjects will trigger an error if there is one
+  if (store.projects !== null) {
+    await store.projects.getProjects(); // doesn't need to be wrapped in try/catch because getProjects will trigger an error if there is one
 
-		if (store.projects.state.all.length > 0) {
-			// check local storage for last selected project
-			// OR set most recent as active -> need to add that step
-			store.projects.setActiveProject(store.projects.state.all[0]);
-			// check local storage for last visited route
-			router.push(`/summary/${store.projects.state.all[0].id}`);
-		} else {
-			router.push("/"); // sends user to Welcome screen, as they have no data
-		}
-	}
+    if (store.projects.state.all.length > 0) {
+      // check local storage for last selected project
+      // OR set most recent as active -> need to add that step
+      store.projects.setActiveProject(store.projects.state.all[0]);
+      // check local storage for last visited route
+      router.push(`/summary/${store.projects.state.all[0].id}`);
+    } else {
+      router.push("/"); // sends user to Welcome screen, as they have no data
+    }
+  }
 });
 
 // Needed to reset references based on vue docs
 // TODO: Check to see if that's really needed
 onBeforeUpdate(() => {
-	leftColumnDivs.value = [];
-	rightColumnDivs.value = [];
+  leftColumnDivs.value = [];
+  rightColumnDivs.value = [];
 });
 </script>
 

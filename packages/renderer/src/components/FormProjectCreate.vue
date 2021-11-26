@@ -15,56 +15,56 @@ const store = inject("store") as IStore;
 const router = useRouter();
 
 const validationSchema = toFormValidator(
-	z.object({
-		title: z.string().nonempty("Title is required."),
-		type: z.string().nonempty("Type is required."),
-		description: z.string().optional(),
-	}),
+  z.object({
+    title: z.string().nonempty("Title is required."),
+    type: z.string().nonempty("Type is required."),
+    description: z.string().optional(),
+  }),
 );
 
 const initialFormValues = {
-	title: "",
-	type: "",
-	description: "",
+  title: "",
+  type: "",
+  description: "",
 };
 
 const { handleSubmit, meta } = useForm({
-	validationSchema,
-	initialValues: initialFormValues,
+  validationSchema,
+  initialValues: initialFormValues,
 });
 
 // eslint-disable-next-line no-undef
 const emit = defineEmits(["goBack"]);
 
 function emitGoBack(): void {
-	emit("goBack");
+  emit("goBack");
 }
 
 const onSubmit = handleSubmit(async (values, { resetForm }) => {
-	const newProject = {
-		id: "",
-		title: values.title,
-		description: values.description,
-		typeId: 1,
-		completed: false,
-		archived: false,
-		dateCreated: null,
-		dateModified: null,
-	};
+  const newProject = {
+    id: "",
+    title: values.title,
+    description: values.description,
+    typeId: 1,
+    completed: false,
+    archived: false,
+    dateCreated: null,
+    dateModified: null,
+  };
 
-	try {
-		const project = await store.projects.addProject(newProject);
+  try {
+    const project = await store.projects.addProject(newProject);
 
-		if (project !== undefined) {
-			router.push(`/summary/${project.id}`);
-			resetForm();
-			emitGoBack();
-		}
-	} catch (error) {
-		const e = error as Error;
-		// Move to notification
-		console.error(e.message);
-	}
+    if (project !== undefined) {
+      router.push(`/summary/${project.id}`);
+      resetForm();
+      emitGoBack();
+    }
+  } catch (error) {
+    const e = error as Error;
+    // Move to notification
+    console.error(e.message);
+  }
 });
 </script>
 

@@ -5,34 +5,34 @@ import { computed, defineComponent } from "vue";
 type DropZone = "left" | "right";
 
 export default defineComponent({
-	props: {
-		isDraggingActive: {
-			type: Boolean,
-			required: true,
-		},
-		isDropZoneEmpty: {
-			type: Boolean,
-			required: true,
-		},
-		dropZone: {
-			type: String as PropType<DropZone>,
-			required: true,
-		},
-	},
-	emits: ["drop", "dragover"],
+  props: {
+    isDraggingActive: {
+      type: Boolean,
+      required: true,
+    },
+    isDropZoneEmpty: {
+      type: Boolean,
+      required: true,
+    },
+    dropZone: {
+      type: String as PropType<DropZone>,
+      required: true,
+    },
+  },
+  emits: ["drop", "dragover"],
 
-	setup(props) {
-		const dropZoneStyle = computed(() => {
-			return {
-				"disable-drop-zone":
+  setup(props) {
+    const dropZoneStyle = computed(() => {
+      return {
+        "disable-drop-zone":
           props.isDraggingActive === false && props.isDropZoneEmpty === true,
-			};
-		});
+      };
+    });
 
-		return {
-			dropZoneStyle,
-		};
-	},
+    return {
+      dropZoneStyle,
+    };
+  },
 });
 </script>
 

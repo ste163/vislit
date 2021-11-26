@@ -1,10 +1,10 @@
 <script setup lang="ts">
 // eslint-disable-next-line no-undef
 const props = defineProps({
-	isEllipsisMenuActive: {
-		type: Boolean,
-		default: false,
-	},
+  isEllipsisMenuActive: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 // eslint-disable-next-line no-undef
