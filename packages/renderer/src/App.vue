@@ -157,28 +157,32 @@ onBeforeUpdate(() => {
 
 <style>
 #app {
-  display: flex;
-  flex-flow: row nowrap;
-  height: 100vh;
+  @apply
+  flex
+  flex-nowrap
+  flex-row
+  h-screen
 }
 
-.dashboard {
-  display: flex;
-  flex-flow: column nowrap;
-  flex-grow: 1;
-  margin: 2.5em;
-  align-items: center;
+.dashboard { 
   /*
   TODO:
-  SET user-select to none when either
-  dragging columns OR resizing.
-  Need global ApplicationStore state for these
+    user-select: none
+    when either
+    dragging columns OR resizing.
   */
-  /* user-select: none; */
+  @apply
+  flex
+  flex-col
+  flex-nowrap
+  flex-grow
+  items-center
+  m-10
 }
 
 .column-drag-active {
-  opacity: 0.5;
+  @apply
+  opacity-50
 }
 
 /* Router animations */

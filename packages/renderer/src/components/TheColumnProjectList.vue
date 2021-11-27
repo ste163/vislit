@@ -13,7 +13,6 @@ const store = inject("store") as IStore;
 
 const router = useRouter();
 
-// eslint-disable-next-line no-undef
 const emit = defineEmits(["createClick"]);
 
 function emitClick(): void {

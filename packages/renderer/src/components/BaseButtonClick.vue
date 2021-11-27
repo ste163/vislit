@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { ButtonHTMLAttributes, PropType } from "vue";
 
-// eslint-disable-next-line no-undef
 const props = defineProps({
   type: {
     type: Object as PropType<ButtonHTMLAttributes>,
@@ -25,7 +24,6 @@ const props = defineProps({
   },
 });
 
-// eslint-disable-next-line no-undef
 const emit = defineEmits(["click"]);
 
 function createEffectOnClick(e: MouseEvent): void {
