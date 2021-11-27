@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
+import { createRouter, createWebHashHistory } from "vue-router";
 import Welcome from "../views/Welcome.vue";
 
 const routes = [
@@ -25,7 +25,7 @@ const routes = [
   {
     path: "/visualization/:id",
     name: "Visualization",
-    component: () => import( "/@/views/Visualization.vue"),
+    component: () => import("/@/views/Visualization.vue"),
   },
   {
     path: "/thesaurus",
@@ -35,10 +35,8 @@ const routes = [
 ];
 
 const router = createRouter({
-  routes, 
+  routes,
   history: createWebHashHistory(),
 });
 
 export default router;
-
-

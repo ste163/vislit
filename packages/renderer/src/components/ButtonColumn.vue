@@ -12,7 +12,7 @@ const columnTitle = ref<HTMLElement>();
 const column = ref<IColumn | undefined>();
 
 const isColumnActive = computed(() =>
-  column.value !== undefined ? column.value.isActive : false,
+  column.value !== undefined ? column.value.isActive : false
 );
 
 function toggleColumnActive(): void {
@@ -20,11 +20,11 @@ function toggleColumnActive(): void {
 
   if (header !== undefined) {
     column.value = store.application.state.columns.find(
-      (column) => column.header === header,
+      (column) => column.header === header
     );
 
     if (column.value !== undefined) {
-      column.value.isActive = !column.value.isActive;  
+      column.value.isActive = !column.value.isActive;
     }
   }
 }
@@ -39,7 +39,7 @@ function toggleColumnActive(): void {
     @click="toggleColumnActive"
   >
     <template #btn-icon>
-      <slot name="icon" /> 
+      <slot name="icon" />
     </template>
     <div ref="columnTitle">
       <slot />

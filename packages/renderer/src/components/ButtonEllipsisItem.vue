@@ -1,5 +1,4 @@
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <!-- Does not use any special button components because it ellipsis menu automatically closes -->
 <template>

@@ -41,7 +41,7 @@ function createEffectOnClick(e: MouseEvent): void {
     circle.classList.add("base-button-click-effect");
 
     const previousCircle = button.getElementsByClassName(
-      "base-button-click-effect",
+      "base-button-click-effect"
     )[0];
     if (previousCircle) {
       previousCircle.remove();

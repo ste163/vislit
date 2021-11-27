@@ -4,5 +4,5 @@ import type ILowDb from "./ILowDb";
 export default interface IDatabase {
   db: ILowDb;
   generateUniqueId: (item: IProject) => IProject;
-// eslint-disable-next-line semi
+  // eslint-disable-next-line semi
 }

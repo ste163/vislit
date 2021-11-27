@@ -16,7 +16,11 @@ const props = defineProps({
 });
 
 // eslint-disable-next-line no-undef
-const emit = defineEmits(["closeModal", "handleArchiveClick", "handleDeleteClick"]);
+const emit = defineEmits([
+  "closeModal",
+  "handleArchiveClick",
+  "handleDeleteClick",
+]);
 
 function emitCloseModal(): void {
   emit("closeModal");
@@ -29,17 +33,11 @@ function emitHandleArchiveClick(): void {
 function emitHandleDeleteClick(): void {
   emit("handleDeleteClick");
 }
-
 </script>
 
 <template>
-  <base-modal
-    :is-modal-active="isModalActive"
-    @close-modal="emitCloseModal"
-  >
-    <template #header>
-      Confirm Deletion
-    </template>
+  <base-modal :is-modal-active="isModalActive" @close-modal="emitCloseModal">
+    <template #header> Confirm Deletion </template>
 
     <div>
       <p class="text-container">
@@ -47,9 +45,7 @@ function emitHandleDeleteClick(): void {
       </p>
 
       <div class="button-container">
-        <base-button-click @click="emitCloseModal">
-          Cancel
-        </base-button-click>
+        <base-button-click @click="emitCloseModal"> Cancel </base-button-click>
         <!-- Need to pass in an isSubmitting for loading spinner for Archive & Delete -->
         <div>
           <base-button-click

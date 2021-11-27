@@ -6,5 +6,5 @@ import type IProjectStore from "./IProjectStore";
 export default interface IStore {
   application: IApplicationStore;
   projects: IProjectStore;
-// eslint-disable-next-line semi
+  // eslint-disable-next-line semi
 }

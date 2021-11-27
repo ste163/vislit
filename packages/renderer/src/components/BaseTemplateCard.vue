@@ -18,7 +18,7 @@ const emit = defineEmits(["clickOutside"]);
         <h1>
           <slot name="header" />
         </h1>
-  
+
         <div class="sub-header">
           <slot name="sub-header" />
         </div>
@@ -30,15 +30,9 @@ const emit = defineEmits(["clickOutside"]);
 
       <div v-click-outside="() => emit('clickOutside')">
         <slot name="ellipsis-button" />
-        
-        <transition
-          name="ellipsis-menu-slide"
-          mode="in-out"
-        >
-          <div
-            v-if="isEllipsisMenuActive"
-            class="ellipsis-menu"
-          >
+
+        <transition name="ellipsis-menu-slide" mode="in-out">
+          <div v-if="isEllipsisMenuActive" class="ellipsis-menu">
             <slot name="ellipsis-menu" />
           </div>
         </transition>
@@ -69,7 +63,8 @@ const emit = defineEmits(["clickOutside"]);
   position: relative;
 }
 
-.sub-header, .description {
+.sub-header,
+.description {
   margin-top: 0.25em;
   font-size: 0.8em;
   font-weight: 300;
@@ -99,7 +94,8 @@ const emit = defineEmits(["clickOutside"]);
 }
 
 /* Ellipsis animation */
-.ellipsis-menu-slide-enter-active, .ellipsis-menu-slide-leave-active {
+.ellipsis-menu-slide-enter-active,
+.ellipsis-menu-slide-leave-active {
   position: absolute;
   transition: all 0.15s;
 }
@@ -107,6 +103,6 @@ const emit = defineEmits(["clickOutside"]);
 .ellipsis-menu-slide-leave-to,
 .ellipsis-menu-slide-enter-from {
   opacity: 0;
-  transform: translateY(-5px)
+  transform: translateY(-5px);
 }
 </style>

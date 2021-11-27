@@ -8,5 +8,5 @@ export default interface IProjectStore {
   addProject: (project: IProject) => Promise<IProject | undefined>;
   updateProject: (project: IProject) => Promise<IProject | undefined>;
   deleteProject: (id: string) => Promise<true | undefined>;
-// eslint-disable-next-line semi
+  // eslint-disable-next-line semi
 }

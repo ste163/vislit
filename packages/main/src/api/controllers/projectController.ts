@@ -1,4 +1,3 @@
-
 import type { IProject } from "interfaces";
 import type IProjectController from "../interfaces/IProjectController";
 import type IProjectRepository from "../interfaces/IProjectRepository";

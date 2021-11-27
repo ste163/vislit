@@ -87,10 +87,7 @@ const isSidebarDisabled = useIsSidebarDisabled();
         </span>
       </button-router-link>
 
-      <button-router-link
-        :route="'/thesaurus'"
-        class="sidebar-button"
-      >
+      <button-router-link :route="'/thesaurus'" class="sidebar-button">
         <template #icon>
           <app-icon-thesaurus class="button-icon" />
         </template>
@@ -183,19 +180,17 @@ const isSidebarDisabled = useIsSidebarDisabled();
 }
 
 .sidebar-header {
-  @apply
-    text-xs
+  @apply text-xs
     cursor-default
     ml-4
-    font-light
+    font-light;
 }
 
 .sidebar-header-disabled {
   color: var(--gray);
 }
 .sidebar-button {
-  @apply
-  my-1
+  @apply my-1;
 }
 
 /* Side-bar Arrow -> no tailwind */
@@ -211,7 +206,7 @@ const isSidebarDisabled = useIsSidebarDisabled();
 }
 
 .arrow__container--sidebar:hover > .arrow--sidebar::before {
-  background-color: var(--black);;
+  background-color: var(--black);
 }
 
 .arrow--sidebar::after,
@@ -221,7 +216,7 @@ const isSidebarDisabled = useIsSidebarDisabled();
   width: 18px;
   height: 3.5px;
   border-radius: 10px;
-  background-color: var(--black);;
+  background-color: var(--black);
   margin: 3px 0px;
   transition: 0.3s;
 }

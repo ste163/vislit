@@ -13,10 +13,7 @@ function emitClick(): void {
 </script>
 
 <template>
-  <button
-    class="button-back"
-    @click="emitClick"
-  >
+  <button class="button-back" @click="emitClick">
     <app-icon-back />
   </button>
 </template>

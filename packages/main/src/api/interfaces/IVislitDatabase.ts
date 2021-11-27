@@ -9,5 +9,5 @@ export default interface IVislitDatabase {
   projectLexicon: Array<unknown>;
   lexicon: Array<unknown>;
   words: Array<unknown>;
-// eslint-disable-next-line semi
+  // eslint-disable-next-line semi
 }

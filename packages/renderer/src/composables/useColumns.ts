@@ -1,6 +1,6 @@
 // Handles all column events and logic
 import type { IColumn } from "interfaces";
-import type { ComputedRef, Ref} from "vue";
+import type { ComputedRef, Ref } from "vue";
 import { computed, ref } from "vue";
 import type IStore from "../store/interfaces/IStore";
 
@@ -30,7 +30,7 @@ type columnLayout = {
 export default function useColumns(
   store: IStore,
   leftDropZoneColumns: Ref<HTMLDivElement[]>,
-  rightDropZoneColumns: Ref<HTMLDivElement[]>,
+  rightDropZoneColumns: Ref<HTMLDivElement[]>
 ): columnLayout {
   const columns = store.application.state.columns;
 
@@ -53,7 +53,7 @@ export default function useColumns(
   function onColumnDragStart(
     event: DragEvent,
     header: string,
-    initialDropZone: string,
+    initialDropZone: string
   ): void {
     if (event.dataTransfer !== null) {
       event.dataTransfer.dropEffect = "move";
@@ -117,7 +117,7 @@ export default function useColumns(
 
   function getDragAfterColumnIndex(
     dropZone: string,
-    mouseX: number,
+    mouseX: number
   ): number | undefined {
     let allColumnsInDropZone: Array<HTMLDivElement> = [];
 
@@ -131,7 +131,7 @@ export default function useColumns(
     const allColumnsExceptActive: Array<HTMLDivElement> =
       allColumnsInDropZone.filter((column) => {
         return (
-        // If Div structure changes in ColumnContainer.vue, this needs to change
+          // If Div structure changes in ColumnContainer.vue, this needs to change
           column.children[0].children[0].children[0].innerHTML !==
           activeDragColumnHeader.value
         );
@@ -142,7 +142,7 @@ export default function useColumns(
 
   function findClosestColumnIndex(
     columns: Array<HTMLDivElement>,
-    mouseX: number,
+    mouseX: number
   ): number | undefined {
     let columnIndex: number | undefined;
     let closestOffset = Number.NEGATIVE_INFINITY;
@@ -161,7 +161,7 @@ export default function useColumns(
 
         // If Div structure changes in ColumnContainer.vue, this needs to change
         return (columnIndex = findColumnIndexByInnerHTML(
-          closestElement.children[0].children[0].children[0].innerHTML,
+          closestElement.children[0].children[0].children[0].innerHTML
         ));
       } else {
         columnIndex = undefined;
@@ -189,10 +189,10 @@ export default function useColumns(
 
   function sortColumnsOnDrag(
     activeDragColumn: IColumn,
-    closestIndex: number,
+    closestIndex: number
   ): void {
     const columnsInDropZone = getColumnsInDropZone(
-      currentHoveredDropZone.value,
+      currentHoveredDropZone.value
     );
     const columnToRight: IColumn = columns[closestIndex]; // needs to be based on the full columns array to get correct column
 
@@ -210,7 +210,7 @@ export default function useColumns(
 
   function positionColumnToFarRight(
     dropZoneColumns: IColumn[],
-    activeDragColumn: IColumn,
+    activeDragColumn: IColumn
   ): void {
     const farthestRightColumn = dropZoneColumns[dropZoneColumns.length - 1];
 
@@ -225,7 +225,7 @@ export default function useColumns(
 
   function handleColumnSort(
     columnsInDropZone: IColumn[],
-    columnToRight: IColumn,
+    columnToRight: IColumn
   ): void {
     const indexOfRepositionedColumn = columnsInDropZone
       .map((column) => column.header)
@@ -233,7 +233,7 @@ export default function useColumns(
 
     const columnsToReposition = columnsInDropZone.slice(
       0,
-      indexOfRepositionedColumn - 1,
+      indexOfRepositionedColumn - 1
     );
 
     if (columnsToReposition.length > 0) {
@@ -264,7 +264,7 @@ export default function useColumns(
   }
 
   function findDuplicateColumnPosition(
-    dropZoneColumns: Array<IColumn>,
+    dropZoneColumns: Array<IColumn>
   ): number {
     const positions = dropZoneColumns.map((column) => column.position);
 
@@ -283,7 +283,7 @@ export default function useColumns(
 
   function findActiveColumn(): IColumn | undefined {
     const activeColumn = columns.find(
-      (column) => column.header === activeDragColumnHeader.value,
+      (column) => column.header === activeDragColumnHeader.value
     );
 
     if (activeColumn !== undefined) {
@@ -306,7 +306,7 @@ export default function useColumns(
     // Need the state and not the div references
     const leftColumns = columns.filter((column) => column.dropZone === "left");
     const rightColumns = columns.filter(
-      (column) => column.dropZone === "right",
+      (column) => column.dropZone === "right"
     );
 
     // Because columns are sorted by position
@@ -341,7 +341,7 @@ export default function useColumns(
 
   const sortedColumns = computed(() => sortColumns());
   const isDraggingActive = computed(() =>
-    activeDragColumnHeader.value === "" ? false : true,
+    activeDragColumnHeader.value === "" ? false : true
   );
 
   return {

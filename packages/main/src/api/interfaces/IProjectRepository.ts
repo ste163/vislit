@@ -7,5 +7,5 @@ export default interface IProjectRepository {
   add: (project: IProject) => IProject;
   update: (project: IProject) => IProject;
   delete: (id: string) => void;
-// eslint-disable-next-line semi
+  // eslint-disable-next-line semi
 }

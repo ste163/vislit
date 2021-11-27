@@ -23,14 +23,14 @@ const isDeleteModalActive = ref<boolean>(false);
 const isEllipsisMenuActive = ref<boolean>(false);
 
 const activeProject = computed(() => {
-  return  store.projects.state.active as IProject;
+  return store.projects.state.active as IProject;
 });
 
 const formatedDate = useDateFormatFull(activeProject.value.dateModified);
 
 function openNotesColumn(): void {
   store.application.state.columns.forEach((column) => {
-    if (column.header === 'Notes') {
+    if (column.header === "Notes") {
       column.isActive = !column.isActive;
     }
   });
@@ -79,11 +79,15 @@ function toggleProjectArchived(): void {
 // })
 
 const ellipsisMenuCompletedText = computed(() => {
-  return activeProject.value.completed ? "Mark Project as In Progress" : "Mark Project as Completed";
+  return activeProject.value.completed
+    ? "Mark Project as In Progress"
+    : "Mark Project as Completed";
 });
 
 const ellipsisMenuArchivedText = computed(() => {
-  return activeProject.value.archived ? "Un-archive Project" : "Archive Project";
+  return activeProject.value.archived
+    ? "Un-archive Project"
+    : "Archive Project";
 });
 </script>
 
@@ -91,18 +95,19 @@ const ellipsisMenuArchivedText = computed(() => {
   <base-template-card
     v-if="activeProject !== null"
     :is-ellipsis-menu-active="isEllipsisMenuActive"
-    @clickOutside="isEllipsisMenuActive = false;"
+    @clickOutside="isEllipsisMenuActive = false"
   >
     <template #header>
       {{ activeProject.title }}
     </template>
 
     <template #sub-header>
-      <project-status-tags :project="activeProject" /> {{ activeProject.typeId }} | Last updated on {{ formatedDate }}
+      <project-status-tags :project="activeProject" />
+      {{ activeProject.typeId }} | Last updated on {{ formatedDate }}
     </template>
 
     <template #description>
-      {{ activeProject.description }} 
+      {{ activeProject.description }}
     </template>
 
     <template #ellipsis-button>
@@ -122,11 +127,11 @@ const ellipsisMenuArchivedText = computed(() => {
       </button-ellipsis-item>
       <button-ellipsis-item @click="toggleProjectComplete">
         {{ ellipsisMenuCompletedText }}
-      </button-ellipsis-item> 
+      </button-ellipsis-item>
       <button-ellipsis-item @click="toggleProjectArchived">
         {{ ellipsisMenuArchivedText }}
       </button-ellipsis-item>
-      <button-ellipsis-item @click="() => isDeleteModalActive = true">
+      <button-ellipsis-item @click="() => (isDeleteModalActive = true)">
         Delete Project
       </button-ellipsis-item>
     </template>
@@ -139,9 +144,7 @@ const ellipsisMenuArchivedText = computed(() => {
         />
       </template>
 
-      <template #header>
-        Goal
-      </template>
+      <template #header> Goal </template>
       Create a goal to begin tracking progress.
 
       <template #buttons>
@@ -155,9 +158,7 @@ const ellipsisMenuArchivedText = computed(() => {
     </base-card-content>
 
     <base-card-content>
-      <template #header>
-        Start writing
-      </template>
+      <template #header> Start writing </template>
       Start writing in the Document Writer to see the last couple paragraphs
       written.
 
