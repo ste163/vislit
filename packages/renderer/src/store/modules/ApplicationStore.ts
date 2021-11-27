@@ -67,5 +67,5 @@ export default class ApplicationStore implements IApplicationStore {
     // if no isSidebarMinimized, set to false
     // else, set as localStorage value
     this.state.isSidebarMinimized = !this.state.isSidebarMinimized;
-  }
+  };
 }
