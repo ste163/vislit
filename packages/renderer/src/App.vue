@@ -29,7 +29,7 @@ const {
 
 function checkIsDropZoneEmpty(dropZone: string): boolean {
   const dropZoneColumns = sortedColumns.value.filter(
-    (column) => column.dropZone === dropZone,
+    (column) => column.dropZone === dropZone
   );
   return dropZoneColumns.length === 0 ? true : false;
 }
@@ -88,10 +88,7 @@ onBeforeUpdate(() => {
       @drop="onColumnDrop($event, 'left')"
       @dragover="onDropZoneDragOver($event, 'left')"
     >
-      <transition-group
-        name="drop-zone-column-list"
-        mode="in-out"
-      >
+      <transition-group name="drop-zone-column-list" mode="in-out">
         <!-- Need div wrapper; refs can't be on component instances, only actuall dom nodes-->
         <div
           v-for="column in getColumnsInDropZone('left')"
@@ -103,7 +100,9 @@ onBeforeUpdate(() => {
             :drop-zone="'left'"
             :column="column"
             :class="
-              activeDragColumnHeader === column.header ? 'column-drag-active' : ''
+              activeDragColumnHeader === column.header
+                ? 'column-drag-active'
+                : ''
             "
             @dragstart="onColumnDragStart($event, column.header, 'left')"
             @dragend="onColumnDragEnd()"
@@ -130,10 +129,7 @@ onBeforeUpdate(() => {
       @drop="onColumnDrop($event, 'right')"
       @dragover="onDropZoneDragOver($event, 'right')"
     >
-      <transition-group
-        name="drop-zone-column-list"
-        mode="in-out"
-      >
+      <transition-group name="drop-zone-column-list" mode="in-out">
         <div
           v-for="column in getColumnsInDropZone('right')"
           :ref="(el) => setDropZoneRefs(el, 'right')"
@@ -144,7 +140,9 @@ onBeforeUpdate(() => {
             :drop-zone="'right'"
             :column="column"
             :class="
-              activeDragColumnHeader === column.header ? 'column-drag-active' : ''
+              activeDragColumnHeader === column.header
+                ? 'column-drag-active'
+                : ''
             "
             @dragstart="onColumnDragStart($event, column.header, 'right')"
             @dragend="onColumnDragEnd()"
@@ -157,32 +155,29 @@ onBeforeUpdate(() => {
 
 <style>
 #app {
-  @apply
-  flex
+  @apply flex
   flex-nowrap
   flex-row
-  h-screen
+  h-screen;
 }
 
-.dashboard { 
+.dashboard {
   /*
   TODO:
     user-select: none
     when either
     dragging columns OR resizing.
   */
-  @apply
-  flex
+  @apply flex
   flex-col
   flex-nowrap
   flex-grow
   items-center
-  m-10
+  m-10;
 }
 
 .column-drag-active {
-  @apply
-  opacity-50
+  @apply opacity-50;
 }
 
 /* Router animations */

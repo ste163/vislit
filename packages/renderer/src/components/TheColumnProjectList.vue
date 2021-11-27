@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { IProject } from "interfaces";
-import type { ComputedRef} from "vue";
+import type { ComputedRef } from "vue";
 import { computed, inject, onMounted, watch } from "vue";
-import type { RouteLocationRaw} from "vue-router";
+import type { RouteLocationRaw } from "vue-router";
 import { useRouter } from "vue-router";
 import type IStore from "../store/interfaces/IStore";
 import BaseButtonClick from "./BaseButtonClick.vue";
@@ -32,32 +32,34 @@ function updateRouteId(id: string | undefined): void {
 
 const inProgressProjects: ComputedRef<IProject[]> = computed(() => {
   return store.projects.state.all.filter(
-    (project) => project.archived === false && project.completed === false,
+    (project) => project.archived === false && project.completed === false
   );
 });
 
-
 const completedProjects: ComputedRef<IProject[]> = computed(() => {
   return store.projects.state.all.filter(
-    (project) => project.archived === false && project.completed === true,
+    (project) => project.archived === false && project.completed === true
   );
 });
 
 const archivedCompletedProjects: ComputedRef<IProject[]> = computed(() => {
   return store.projects.state.all.filter(
-    (project) => project.archived === true && project.completed === true,
+    (project) => project.archived === true && project.completed === true
   );
 });
 
 const archivedRetiredProjects: ComputedRef<IProject[]> = computed(() => {
   return store.projects.state.all.filter(
-    (project) => project.archived === true && project.completed === false,
+    (project) => project.archived === true && project.completed === false
   );
 });
 
 // Must pass anonymous function into watch before calling updateRouteId
 // Otherwise there's an overload error in TS (even though it works correctly)
-watch(() => store.projects.state.active?.id, () => updateRouteId(store.projects.state.active?.id));
+watch(
+  () => store.projects.state.active?.id,
+  () => updateRouteId(store.projects.state.active?.id)
+);
 
 onMounted(async () => {
   // Always get the most up-to-date list of projects when column opens
@@ -71,10 +73,7 @@ onMounted(async () => {
   <div>
     <!-- Move the Create button, checkbox & search bar into ColumnListControls component -->
     <div class="column-list-controls">
-      <base-button-click
-        :background-color="'var(--white)'"
-        @click="emitClick"
-      >
+      <base-button-click :background-color="'var(--white)'" @click="emitClick">
         Create Project
       </base-button-click>
       <!-- Checkbox component for: Show detailed project information -->
@@ -87,7 +86,7 @@ onMounted(async () => {
       <column-list-header>In Progress</column-list-header>
       <!-- List of Items -> to be moved into ColumnListItem -->
       <div class="column-list-item-container">
-        <column-list-item 
+        <column-list-item
           v-for="project in inProgressProjects"
           :key="project.id"
           :project="project"
@@ -100,7 +99,7 @@ onMounted(async () => {
     <div v-if="completedProjects.length > 0">
       <column-list-header>Completed</column-list-header>
       <div class="column-list-item-container">
-        <column-list-item 
+        <column-list-item
           v-for="project in completedProjects"
           :key="project.id"
           :project="project"
@@ -113,7 +112,7 @@ onMounted(async () => {
     <div v-if="archivedCompletedProjects.length > 0">
       <column-list-header>Archived, Completed</column-list-header>
       <div class="column-list-item-container">
-        <column-list-item 
+        <column-list-item
           v-for="project in archivedCompletedProjects"
           :key="project.id"
           :project="project"
@@ -126,7 +125,7 @@ onMounted(async () => {
     <div v-if="archivedRetiredProjects.length > 0">
       <column-list-header>Archived, Retired</column-list-header>
       <div class="column-list-item-container">
-        <column-list-item 
+        <column-list-item
           v-for="project in archivedRetiredProjects"
           :key="project.id"
           :project="project"

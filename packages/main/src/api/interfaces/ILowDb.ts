@@ -5,5 +5,5 @@ import type IVislitDatabase from "./IVislitDatabase";
 // Needed to include the chain function w/o errors
 export default interface ILowDb extends LowSync<IVislitDatabase> {
   chain: ObjectChain<IVislitDatabase>;
-// eslint-disable-next-line semi
+  // eslint-disable-next-line semi
 }

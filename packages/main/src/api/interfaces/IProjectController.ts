@@ -6,5 +6,5 @@ export default interface IProjectController {
   add: (project: IProject) => IProject | Error;
   update: (project: IProject) => IProject | Error;
   delete: (id: string) => true | Error;
-// eslint-disable-next-line semi
+  // eslint-disable-next-line semi
 }

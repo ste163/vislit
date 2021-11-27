@@ -18,7 +18,7 @@ const props = defineProps({
 const isDisabled = useIsSidebarDisabled();
 
 const isActiveRoute = computed(() =>
-  store.application.state.activeView === props.route ? true : false,
+  store.application.state.activeView === props.route ? true : false
 );
 </script>
 
@@ -29,10 +29,7 @@ const isActiveRoute = computed(() =>
     :to="route"
     draggable="false"
   >
-    <base-button-toggle
-      :is-active="isActiveRoute"
-      :is-disabled="isDisabled"
-    >
+    <base-button-toggle :is-active="isActiveRoute" :is-disabled="isDisabled">
       <template #btn-icon>
         <slot name="icon" />
       </template>

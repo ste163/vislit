@@ -11,5 +11,4 @@
   letter-spacing: var(--letterSpacingSmall);
   margin: 0.5em 0;
 }
-
 </style>

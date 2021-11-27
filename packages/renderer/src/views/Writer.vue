@@ -1,21 +1,15 @@
-<script setup lang='ts'>
-import { useEditor, EditorContent } from '@tiptap/vue-3';
-import StarterKit from '@tiptap/starter-kit';
+<script setup lang="ts">
+import { useEditor, EditorContent } from "@tiptap/vue-3";
+import StarterKit from "@tiptap/starter-kit";
 
 const editor = useEditor({
-  content: '<p>I’m running Tiptap with Vue.js. 🎉</p>',
-  extensions: [
-    StarterKit,
-  ],
+  content: "<p>I’m running Tiptap with Vue.js. 🎉</p>",
+  extensions: [StarterKit],
 });
-
 </script>
 
 <template>
-  <div
-    v-if="editor"
-    class="control-container"
-  >
+  <div v-if="editor" class="control-container">
     <button
       :class="{ 'is-active': editor.isActive('bold') }"
       @click="editor.chain().focus().toggleBold().run()"
@@ -97,18 +91,11 @@ const editor = useEditor({
     <button @click="editor.chain().focus().setHardBreak().run()">
       hard break
     </button>
-    <button @click="editor.chain().focus().undo().run()">
-      undo
-    </button>
-    <button @click="editor.chain().focus().redo().run()">
-      redo
-    </button>
+    <button @click="editor.chain().focus().undo().run()">undo</button>
+    <button @click="editor.chain().focus().redo().run()">redo</button>
   </div>
 
-  <editor-content
-    class="doc-editor p-5"
-    :editor="editor"
-  />
+  <editor-content class="doc-editor p-5" :editor="editor" />
 </template>
 
 <style scoped>
@@ -121,5 +108,4 @@ const editor = useEditor({
   overflow-y: scroll;
   height: 100%;
 }
-
 </style>

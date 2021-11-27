@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PropType} from "vue";
+import type { PropType } from "vue";
 import { inject, ref, computed } from "vue";
 import type IStore from "../store/interfaces/IStore";
 import type { IColumn } from "interfaces";
@@ -32,7 +32,7 @@ const columnElement = ref<HTMLDivElement | null>(null);
 
 function handleColumnClose(): void {
   const activeCol = store.application.state.columns.find(
-    (col) => col.header === props.column.header,
+    (col) => col.header === props.column.header
   );
   if (activeCol !== undefined) {
     activeCol.isActive = false;
@@ -91,15 +91,12 @@ function handleResizeMouseDown(e: MouseEvent): void {
 }
 
 const resizeHandleLocation = computed(() =>
-  props.dropZone === "left" ? "row" : "row-reverse",
+  props.dropZone === "left" ? "row" : "row-reverse"
 );
 </script>
 
 <template>
-  <div
-    ref="columnElement"
-    class="column-container"
-  >
+  <div ref="columnElement" class="column-container">
     <div class="column-content-container">
       <header
         class="column-header"
@@ -110,10 +107,7 @@ const resizeHandleLocation = computed(() =>
         <div class="column-header-text">
           {{ column.header }}
         </div>
-        <button-close
-          class="column-header-close"
-          @click="handleColumnClose"
-        />
+        <button-close class="column-header-close" @click="handleColumnClose" />
       </header>
 
       <div class="column-content">
@@ -131,7 +125,6 @@ const resizeHandleLocation = computed(() =>
     />
   </div>
 </template>
-
 
 <style>
 .column-container {

@@ -2,13 +2,12 @@ name: Test Node.js CI Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
-
     runs-on: macos-latest
 
     steps:

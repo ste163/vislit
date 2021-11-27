@@ -24,25 +24,14 @@ function emitCloseFormModal(): void {
     :is-modal-active="isFormModalActive"
     @close-modal="emitCloseFormModal"
   >
-    <template #header>
-      Edit Project
-    </template>
+    <template #header> Edit Project </template>
 
     <form>
-      <input
-        type="text"
-        placeholder="title"
-      >
+      <input type="text" placeholder="title" />
 
-      <input
-        type="text"
-        placeholder="type"
-      >
+      <input type="text" placeholder="type" />
 
-      <input
-        type="text"
-        placeholder="description"
-      >
+      <input type="text" placeholder="description" />
 
       <!-- Make a create button component that has isDisabled and isActive props -->
       <button>Edit</button>

@@ -4,5 +4,5 @@ export default interface IProjectStore {
   state: ApplicationState;
   setActiveView: (view: string) => void;
   setIsSidebarMinimized: () => void;
-// eslint-disable-next-line semi
+  // eslint-disable-next-line semi
 }

@@ -23,14 +23,10 @@ onMounted(() => {
 
 <template>
   <base-template-card>
-    <template #header>
-      Welcome to Vislit!
-    </template>
+    <template #header> Welcome to Vislit! </template>
 
     <base-card-content>
-      <template #header>
-        Import previous Vislit Data
-      </template>
+      <template #header> Import previous Vislit Data </template>
       If you've already used Vislit, you can import your data by clicking the
       button below, or from File -> Import Vislit Data.
 
@@ -45,9 +41,7 @@ onMounted(() => {
     </base-card-content>
 
     <base-card-content>
-      <template #header>
-        Choose save location for Vislit Data
-      </template>
+      <template #header> Choose save location for Vislit Data </template>
       By default, Vislit stores your data in your Documents folder. If you would
       prefer to store data in a Google Drive, OneDrive, DropBox, or other cloud
       provider's folder, you may select that new or later by going to File ->
@@ -71,9 +65,7 @@ onMounted(() => {
         />
       </template>
 
-      <template #header>
-        Create a Project
-      </template>
+      <template #header> Create a Project </template>
       To get started writing and tracking your progress, create a project.
 
       <template #buttons>

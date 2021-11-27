@@ -1,6 +1,8 @@
 if (process.env.VITE_APP_VERSION === undefined) {
-	const now = new Date;
-	process.env.VITE_APP_VERSION = `${now.getUTCFullYear() - 2000}.${now.getUTCMonth() + 1}.${now.getUTCDate()}-${now.getUTCHours() * 60 + now.getUTCMinutes()}`;
+  const now = new Date();
+  process.env.VITE_APP_VERSION = `${now.getUTCFullYear() - 2000}.${
+    now.getUTCMonth() + 1
+  }.${now.getUTCDate()}-${now.getUTCHours() * 60 + now.getUTCMinutes()}`;
 }
 
 /**
@@ -8,22 +10,20 @@ if (process.env.VITE_APP_VERSION === undefined) {
  * @see https://www.electron.build/configuration/configuration
  */
 const config = {
-	directories: {
-		output: 'dist',
-		buildResources: 'buildResources',
-	},
-	files: [
-		'packages/**/dist/**',
-	],
-	extraMetadata: {
-		version: process.env.VITE_APP_VERSION,
-	},
-	productName: "Vislit",
-	copyright: "Copyright © 2021 ${author}",
-	linux: {
-		target: "AppImage",
-		category: "Office",
-	},
+  directories: {
+    output: "dist",
+    buildResources: "buildResources",
+  },
+  files: ["packages/**/dist/**"],
+  extraMetadata: {
+    version: process.env.VITE_APP_VERSION,
+  },
+  productName: "Vislit",
+  copyright: "Copyright © 2021 ${author}",
+  linux: {
+    target: "AppImage",
+    category: "Office",
+  },
 };
 
 module.exports = config;

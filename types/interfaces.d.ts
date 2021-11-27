@@ -6,7 +6,7 @@ declare module "interfaces" {
     position: number;
     width: string; // in px; ie '150px'
   }
-  
+
   interface IProject {
     id: string;
     title: string;
@@ -17,8 +17,7 @@ declare module "interfaces" {
     dateCreated: Date | null;
     dateModified: Date | null;
   }
-  
-  
+
   interface IDropZone {
     name: string;
     maxWidth: string; // in px; ie: '150px' - limits width of columns

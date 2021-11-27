@@ -45,11 +45,9 @@ const {
       :for="name"
       class="label"
       :class="meta.dirty ? 'label-active' : ''"
-    >{{ label }}</label>
-    <p
-      v-show="errorMessage"
-      class="input-error"
+      >{{ label }}</label
     >
+    <p v-show="errorMessage" class="input-error">
       {{ errorMessage }}
     </p>
     <input
@@ -60,7 +58,7 @@ const {
       :value="inputValue"
       @input="handleChange"
       @blur="handleBlur"
-    >
+    />
   </div>
 </template>
 

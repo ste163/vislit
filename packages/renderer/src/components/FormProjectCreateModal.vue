@@ -34,7 +34,7 @@ const validationSchema = toFormValidator(
     title: z.string().nonempty("Title is required."),
     type: z.string().nonempty("Type is required."),
     description: z.string().optional(),
-  }),
+  })
 );
 
 const initialFormValues = {
@@ -84,14 +84,9 @@ watch(() => props.isFormModalActive, resetForm);
     :is-modal-active="isFormModalActive"
     @close-modal="emitCloseModal"
   >
-    <template #header>
-      Create Project
-    </template>
+    <template #header> Create Project </template>
 
-    <form
-      class="form"
-      @submit.prevent="onSubmit"
-    >
+    <form class="form" @submit.prevent="onSubmit">
       <input-text
         name="title"
         type="text"

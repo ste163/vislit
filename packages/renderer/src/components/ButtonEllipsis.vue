@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 // eslint-disable-next-line no-undef
 const props = defineProps({
   isActive: {
@@ -10,10 +9,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <button
-    class="button-ellipsis"
-    :class="{'active': isActive}"
-  >
+  <button class="button-ellipsis" :class="{ active: isActive }">
     <svg
       width="7"
       height="21"
@@ -46,7 +42,8 @@ const props = defineProps({
   fill: var(--primary);
 }
 
-.button-ellipsis > svg > path, .button-ellipsis.active > svg > path {
-  transition: fill 0.2s
+.button-ellipsis > svg > path,
+.button-ellipsis.active > svg > path {
+  transition: fill 0.2s;
 }
 </style>

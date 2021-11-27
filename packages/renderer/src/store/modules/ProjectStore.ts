@@ -26,7 +26,7 @@ export default class ProjectStore implements IProjectStore {
       const { api } = window;
 
       const response: Array<IProject> = (await api.send(
-        "projects-get-all",
+        "projects-get-all"
       )) as Array<IProject>;
 
       if (response) {
@@ -90,12 +90,12 @@ export default class ProjectStore implements IProjectStore {
       const { api } = window;
 
       const response = await api.send("projects-delete", id);
-  
+
       if (response instanceof Error === false) {
         // Display success message
         await this.getProjects();
         return true;
-      }	else {
+      } else {
         console.log("Display error message");
         return undefined;
       }

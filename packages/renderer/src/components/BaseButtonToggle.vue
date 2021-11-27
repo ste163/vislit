@@ -52,7 +52,7 @@ onMounted(() => {
   if (button.value !== null) {
     buttonDiameter.value = Math.max(
       button.value.clientWidth,
-      button.value.clientHeight,
+      button.value.clientHeight
     );
     buttonRadius.value = buttonDiameter.value / 2;
   }
@@ -60,16 +60,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <button
-    ref="button"
-    class="button"
-    :disabled="isDisabled"
-    @click="setActive"
-  >
-    <div
-      class="text-wrapper"
-      :class="isActive ? 'text-wrapper-active' : ''"
-    >
+  <button ref="button" class="button" :disabled="isDisabled" @click="setActive">
+    <div class="text-wrapper" :class="isActive ? 'text-wrapper-active' : ''">
       <div class="icon-container">
         <slot name="btn-icon" />
       </div>

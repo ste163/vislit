@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { computed, inject } from 'vue';
-import { useRouter } from 'vue-router';
-import type { IProject } from 'interfaces';
-import type IStore from '../store/interfaces/IStore';
-import BaseTemplateModalDelete from './BaseTemplateModalDelete.vue';
+import { computed, inject } from "vue";
+import { useRouter } from "vue-router";
+import type { IProject } from "interfaces";
+import type IStore from "../store/interfaces/IStore";
+import BaseTemplateModalDelete from "./BaseTemplateModalDelete.vue";
 
 const store = inject("store") as IStore;
 // eslint-disable-next-line no-undef
@@ -31,7 +31,7 @@ function archiveProject(): void {
       archived: !store.projects.state.active.archived,
       dateModified: store.projects.state.active.dateModified,
       dateCreated: store.projects.state.active.dateCreated,
-    }; 
+    };
     const response = store.projects.updateProject(updatedProject);
 
     if (response !== undefined) {
@@ -44,7 +44,9 @@ function archiveProject(): void {
 
 async function deleteProject(): Promise<void> {
   if (store.projects.state.active !== null) {
-    const response = await store.projects.deleteProject(store.projects.state.active.id);
+    const response = await store.projects.deleteProject(
+      store.projects.state.active.id
+    );
 
     if (response === true) {
       emit("handleDeleteModalClose");
@@ -56,7 +58,9 @@ async function deleteProject(): Promise<void> {
       } else {
         // All Projects have been deleted
         // Need to close all open columns as they rely on projects state
-        store.application.state.columns.forEach((column) => column.isActive = false);
+        store.application.state.columns.forEach(
+          (column) => (column.isActive = false)
+        );
         router.replace(`/`);
       }
     }
@@ -85,7 +89,8 @@ const archiveWarningText = computed(() => {
     @handle-archive-click="archiveProject"
     @handle-delete-click="deleteProject"
   >
-    Deleting this project will irrecoverably delete all progress, goals, notes, and writing.
+    Deleting this project will irrecoverably delete all progress, goals, notes,
+    and writing.
     {{ archiveWarningText }}
   </base-template-modal-delete>
 </template>

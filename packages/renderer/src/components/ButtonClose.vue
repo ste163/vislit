@@ -14,10 +14,7 @@ function emitClick(): void {
 </script>
 
 <template>
-  <button
-    class="button-close"
-    @click="emitClick"
-  >
+  <button class="button-close" @click="emitClick">
     <app-icon-close />
   </button>
 </template>

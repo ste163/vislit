@@ -20,16 +20,11 @@ function emitCloseModal(): void {
 <template>
   <teleport to="#modal-container">
     <transition name="blur">
-      <div
-        v-if="isModalActive"
-        class="modal-background"
-      >
+      <div v-if="isModalActive" class="modal-background">
         <div class="modal-card">
           <div class="modal-card-header">
             <h2>
-              <slot name="header">
-                Header
-              </slot>
+              <slot name="header"> Header </slot>
             </h2>
 
             <button-close
