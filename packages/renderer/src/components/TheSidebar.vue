@@ -17,6 +17,9 @@ import AppIconSetting from "./AppIconSetting.vue";
 const store = inject("store") as IStore;
 
 const isSidebarDisabled = useIsSidebarDisabled();
+
+// TODO:
+// - add <transition /> to animate the sidebar open
 </script>
 
 <template>
@@ -28,9 +31,6 @@ const isSidebarDisabled = useIsSidebarDisabled();
         : 'sidebar-open'
     "
   >
-    <!-- TODO -->
-    <!-- Make sidebar minimize-able -->
-    <!-- Needs to include props for: isTextShown which has isMinimized passed in -->
     <div>
       <div
         class="sidebar-header"
@@ -100,7 +100,7 @@ const isSidebarDisabled = useIsSidebarDisabled();
       </button-router-link>
 
       <div
-        class="sidebar-header top-margin"
+        class="sidebar-header mt-7"
         :class="{ 'sidebar-header-disabled': isSidebarDisabled }"
         draggable="false"
       >
@@ -165,13 +165,13 @@ const isSidebarDisabled = useIsSidebarDisabled();
   background-color: var(--white);
   box-shadow: #00000027 -10px 0px 30px;
   @apply flex
-      flex-col
-      flex-nowrap
-      justify-between
-      py-2
-      select-none
-      z-10
-      transition-all;
+    flex-col
+    flex-nowrap
+    justify-between
+    py-2
+    select-none
+    z-10
+    transition-all;
 }
 
 .sidebar-minimized {
@@ -183,24 +183,22 @@ const isSidebarDisabled = useIsSidebarDisabled();
 }
 
 .sidebar-header {
-  font-weight: 300;
-  font-size: 0.8em;
-  margin-left: 1.25em;
-  cursor: default;
+  @apply
+    text-xs
+    cursor-default
+    ml-4
+    font-light
 }
 
 .sidebar-header-disabled {
   color: var(--gray);
 }
 .sidebar-button {
-  margin: 0.1em 0;
+  @apply
+  my-1
 }
 
-.top-margin {
-  margin-top: 1.5em;
-}
-
-/* Side-bar Arrow */
+/* Side-bar Arrow -> no tailwind */
 .arrow__container--sidebar {
   transform: scale(0.8);
   position: absolute;
