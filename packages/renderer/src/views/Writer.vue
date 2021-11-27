@@ -3,10 +3,10 @@ import { useEditor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit';
 
 const editor = useEditor({
-	content: '<p>I’m running Tiptap with Vue.js. 🎉</p>',
-	extensions: [
-		StarterKit,
-	],
+  content: '<p>I’m running Tiptap with Vue.js. 🎉</p>',
+  extensions: [
+    StarterKit,
+  ],
 });
 
 </script>
@@ -106,7 +106,7 @@ const editor = useEditor({
   </div>
 
   <editor-content
-    class="doc-editor"
+    class="doc-editor p-5"
     :editor="editor"
   />
 </template>
@@ -118,9 +118,8 @@ const editor = useEditor({
 }
 .doc-editor {
   background-color: var(--white);
-  padding: 0.5em;
   overflow-y: scroll;
-  height: 80vh;
+  height: 100%;
 }
 
 </style>

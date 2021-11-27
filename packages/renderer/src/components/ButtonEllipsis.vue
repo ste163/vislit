@@ -2,10 +2,10 @@
 
 // eslint-disable-next-line no-undef
 const props = defineProps({
-	isActive: {
-		type: Boolean,
-		default: false,
-	},
+  isActive: {
+    type: Boolean,
+    default: false,
+  },
 });
 </script>
 

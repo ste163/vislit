@@ -13,47 +13,46 @@ const store = inject("store") as IStore;
 
 const router = useRouter();
 
-// eslint-disable-next-line no-undef
 const emit = defineEmits(["createClick"]);
 
 function emitClick(): void {
-	emit("createClick");
+  emit("createClick");
 }
 
 function updateRouteId(id: string | undefined): void {
-	const routeName = router.currentRoute.value.name;
+  const routeName = router.currentRoute.value.name;
 
-	router.push({
-		name: routeName,
-		params: {
-			id,
-		},
-	} as RouteLocationRaw);
+  router.push({
+    name: routeName,
+    params: {
+      id,
+    },
+  } as RouteLocationRaw);
 }
 
 const inProgressProjects: ComputedRef<IProject[]> = computed(() => {
-	return store.projects.state.all.filter(
-		(project) => project.archived === false && project.completed === false,
-	);
+  return store.projects.state.all.filter(
+    (project) => project.archived === false && project.completed === false,
+  );
 });
 
 
 const completedProjects: ComputedRef<IProject[]> = computed(() => {
-	return store.projects.state.all.filter(
-		(project) => project.archived === false && project.completed === true,
-	);
+  return store.projects.state.all.filter(
+    (project) => project.archived === false && project.completed === true,
+  );
 });
 
 const archivedCompletedProjects: ComputedRef<IProject[]> = computed(() => {
-	return store.projects.state.all.filter(
-		(project) => project.archived === true && project.completed === true,
-	);
+  return store.projects.state.all.filter(
+    (project) => project.archived === true && project.completed === true,
+  );
 });
 
 const archivedRetiredProjects: ComputedRef<IProject[]> = computed(() => {
-	return store.projects.state.all.filter(
-		(project) => project.archived === true && project.completed === false,
-	);
+  return store.projects.state.all.filter(
+    (project) => project.archived === true && project.completed === false,
+  );
 });
 
 // Must pass anonymous function into watch before calling updateRouteId
@@ -61,10 +60,10 @@ const archivedRetiredProjects: ComputedRef<IProject[]> = computed(() => {
 watch(() => store.projects.state.active?.id, () => updateRouteId(store.projects.state.active?.id));
 
 onMounted(async () => {
-	// Always get the most up-to-date list of projects when column opens
-	if (store.projects !== null && store.projects.state.active !== null) {
-		await store.projects.getProjects();
-	}
+  // Always get the most up-to-date list of projects when column opens
+  if (store.projects !== null && store.projects.state.active !== null) {
+    await store.projects.getProjects();
+  }
 });
 </script>
 

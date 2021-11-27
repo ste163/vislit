@@ -9,7 +9,7 @@ import FormProjectCreate from "./FormProjectCreate.vue"; // maybe rename to TheC
 const isFormActive = ref<boolean>(false);
 
 function setActiveColumnView(): void {
-	isFormActive.value = !isFormActive.value;
+  isFormActive.value = !isFormActive.value;
 }
 </script>
 

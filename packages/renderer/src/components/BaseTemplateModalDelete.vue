@@ -4,30 +4,30 @@ import BaseButtonClick from "./BaseButtonClick.vue";
 
 // eslint-disable-next-line no-undef
 const props = defineProps({
-	isModalActive: {
-		type: Boolean,
-		required: true,
-		default: false,
-	},
-	hasArchiveButton: {
-		type: Boolean,
-		default: false,
-	},
+  isModalActive: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  hasArchiveButton: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 // eslint-disable-next-line no-undef
 const emit = defineEmits(["closeModal", "handleArchiveClick", "handleDeleteClick"]);
 
 function emitCloseModal(): void {
-	emit("closeModal");
+  emit("closeModal");
 }
 
 function emitHandleArchiveClick(): void {
-	emit("handleArchiveClick");
+  emit("handleArchiveClick");
 }
 
 function emitHandleDeleteClick(): void {
-	emit("handleDeleteClick");
+  emit("handleDeleteClick");
 }
 
 </script>

@@ -3,36 +3,36 @@ import { useField } from "vee-validate";
 
 // eslint-disable-next-line no-undef
 const props = defineProps({
-	type: {
-		type: String,
-		default: "text",
-	},
-	value: {
-		type: String,
-		default: "",
-	},
-	name: {
-		type: String,
-		required: true,
-	},
-	label: {
-		type: String,
-		required: true,
-	},
-	backgroundColor: {
-		type: String,
-		default: "var(--white)",
-	},
+  type: {
+    type: String,
+    default: "text",
+  },
+  value: {
+    type: String,
+    default: "",
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  label: {
+    type: String,
+    required: true,
+  },
+  backgroundColor: {
+    type: String,
+    default: "var(--white)",
+  },
 });
 
 const {
-	value: inputValue,
-	meta,
-	errorMessage,
-	handleBlur,
-	handleChange,
+  value: inputValue,
+  meta,
+  errorMessage,
+  handleBlur,
+  handleChange,
 } = useField(props.name, undefined, {
-	initialValue: props.value,
+  initialValue: props.value,
 });
 </script>
 

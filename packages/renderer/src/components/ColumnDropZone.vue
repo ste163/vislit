@@ -5,34 +5,34 @@ import { computed, defineComponent } from "vue";
 type DropZone = "left" | "right";
 
 export default defineComponent({
-	props: {
-		isDraggingActive: {
-			type: Boolean,
-			required: true,
-		},
-		isDropZoneEmpty: {
-			type: Boolean,
-			required: true,
-		},
-		dropZone: {
-			type: String as PropType<DropZone>,
-			required: true,
-		},
-	},
-	emits: ["drop", "dragover"],
+  props: {
+    isDraggingActive: {
+      type: Boolean,
+      required: true,
+    },
+    isDropZoneEmpty: {
+      type: Boolean,
+      required: true,
+    },
+    dropZone: {
+      type: String as PropType<DropZone>,
+      required: true,
+    },
+  },
+  emits: ["drop", "dragover"],
 
-	setup(props) {
-		const dropZoneStyle = computed(() => {
-			return {
-				"disable-drop-zone":
+  setup(props) {
+    const dropZoneStyle = computed(() => {
+      return {
+        "disable-drop-zone":
           props.isDraggingActive === false && props.isDropZoneEmpty === true,
-			};
-		});
+      };
+    });
 
-		return {
-			dropZoneStyle,
-		};
-	},
+    return {
+      dropZoneStyle,
+    };
+  },
 });
 </script>
 
@@ -56,7 +56,7 @@ export default defineComponent({
   flex-flow: row nowrap;
   background-color: #3773ff50;
   position: relative;
-  min-width: 30px;
+  /* min-width: 30px;  */
   width: fit-content;
   max-width: 2000px;
   animation: drop-zone 3s infinite;

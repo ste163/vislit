@@ -5,11 +5,10 @@ import AppIconBack from "./AppIconBack.vue";
 // When needed:
 // Add prop for iconColor then bind the color to the stroke
 
-// eslint-disable-next-line no-undef
 const emit = defineEmits(["click"]);
 
 function emitClick(): void {
-	emit("click");
+  emit("click");
 }
 </script>
 

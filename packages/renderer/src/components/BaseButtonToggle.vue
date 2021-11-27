@@ -3,30 +3,30 @@ import { onMounted, ref } from "vue";
 
 // eslint-disable-next-line no-undef
 const props = defineProps({
-	isActive: {
-		type: Boolean,
-		required: true,
-	},
-	isDisabled: {
-		type: Boolean,
-		required: true,
-	},
-	baseBackgroundColor: {
-		type: String,
-		default: "var(--white)",
-	},
-	baseTextColor: {
-		type: String,
-		default: "var(--black)",
-	},
-	activeTextColor: {
-		type: String,
-		default: "var(--white)",
-	},
-	activeEffectColor: {
-		type: String,
-		default: "var(--primary)",
-	},
+  isActive: {
+    type: Boolean,
+    required: true,
+  },
+  isDisabled: {
+    type: Boolean,
+    required: true,
+  },
+  baseBackgroundColor: {
+    type: String,
+    default: "var(--white)",
+  },
+  baseTextColor: {
+    type: String,
+    default: "var(--black)",
+  },
+  activeTextColor: {
+    type: String,
+    default: "var(--white)",
+  },
+  activeEffectColor: {
+    type: String,
+    default: "var(--primary)",
+  },
 });
 
 const button = ref<HTMLButtonElement | null>(null);
@@ -38,24 +38,24 @@ const spanWidth = ref<string>("170px");
 const spanLeft = ref<string>("22px");
 
 function setActive(e: MouseEvent): void {
-	if (button.value !== null) {
-		// Position span based on mouse and button size
-		spanWidth.value = spanHeight.value = `${buttonDiameter.value}px`;
-		spanLeft.value = `${
-			e.clientX - (button.value.offsetLeft + buttonRadius.value)
-		}px`;
-	}
+  if (button.value !== null) {
+    // Position span based on mouse and button size
+    spanWidth.value = spanHeight.value = `${buttonDiameter.value}px`;
+    spanLeft.value = `${
+      e.clientX - (button.value.offsetLeft + buttonRadius.value)
+    }px`;
+  }
 }
 
 onMounted(() => {
-	// Button must be on DOM before getting its size
-	if (button.value !== null) {
-		buttonDiameter.value = Math.max(
-			button.value.clientWidth,
-			button.value.clientHeight,
-		);
-		buttonRadius.value = buttonDiameter.value / 2;
-	}
+  // Button must be on DOM before getting its size
+  if (button.value !== null) {
+    buttonDiameter.value = Math.max(
+      button.value.clientWidth,
+      button.value.clientHeight,
+    );
+    buttonRadius.value = buttonDiameter.value / 2;
+  }
 });
 </script>
 

@@ -1,14 +1,14 @@
 <script setup lang="ts">
 // eslint-disable-next-line no-undef
 const props = defineProps({
-	dotColor: {
-		type: String,
-		default: "var(--primary)",
-	},
-	pulseColor: {
-		type: String,
-		required: true,
-	},
+  dotColor: {
+    type: String,
+    default: "var(--primary)",
+  },
+  pulseColor: {
+    type: String,
+    required: true,
+  },
 });
 </script>
 

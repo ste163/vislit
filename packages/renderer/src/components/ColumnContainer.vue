@@ -13,14 +13,14 @@ const store = inject("store") as IStore;
 
 // eslint-disable-next-line no-undef
 const props = defineProps({
-	column: {
-		type: Object as PropType<IColumn>,
-		required: true,
-	},
-	dropZone: {
-		type: String,
-		required: true,
-	},
+  column: {
+    type: Object as PropType<IColumn>,
+    required: true,
+  },
+  dropZone: {
+    type: String,
+    required: true,
+  },
 });
 
 // eslint-disable-next-line no-undef
@@ -31,12 +31,12 @@ const columnWidth = ref<string>("300px");
 const columnElement = ref<HTMLDivElement | null>(null);
 
 function handleColumnClose(): void {
-	const activeCol = store.application.state.columns.find(
-		(col) => col.header === props.column.header,
-	);
-	if (activeCol !== undefined) {
-		activeCol.isActive = false;
-	}
+  const activeCol = store.application.state.columns.find(
+    (col) => col.header === props.column.header,
+  );
+  if (activeCol !== undefined) {
+    activeCol.isActive = false;
+  }
 }
 
 // TODO:
@@ -59,35 +59,35 @@ function handleColumnClose(): void {
 // so that I can useResize anywhere! OR move it into a
 // useColumnResize composable
 function handleResizeMouseDown(e: MouseEvent): void {
-	isResizing.value = true;
-	const startingX = e.clientX;
+  isResizing.value = true;
+  const startingX = e.clientX;
 
-	window.addEventListener("mousemove", onMouseMove);
-	window.addEventListener("mouseup", onMouseUp);
-	const columnToResize =
+  window.addEventListener("mousemove", onMouseMove);
+  window.addEventListener("mouseup", onMouseUp);
+  const columnToResize =
     columnElement.value !== null
       ? columnElement.value.getBoundingClientRect()
       : null;
 
-	function onMouseMove(e: MouseEvent): void {
-		if (columnElement.value !== null && columnToResize !== null) {
-			if (props.dropZone === "left") {
-				columnWidth.value = `${
-					columnToResize.width - (startingX - e.clientX)
-				}px`;
-			} else {
-				columnWidth.value = `${
-					columnToResize.width + (startingX - e.clientX)
-				}px`;
-			}
-		}
-	}
+  function onMouseMove(e: MouseEvent): void {
+    if (columnElement.value !== null && columnToResize !== null) {
+      if (props.dropZone === "left") {
+        columnWidth.value = `${
+          columnToResize.width - (startingX - e.clientX)
+        }px`;
+      } else {
+        columnWidth.value = `${
+          columnToResize.width + (startingX - e.clientX)
+        }px`;
+      }
+    }
+  }
 
-	function onMouseUp(): void {
-		isResizing.value = false;
-		window.removeEventListener("mousemove", onMouseMove);
-		window.removeEventListener("mouseup", onMouseUp);
-	}
+  function onMouseUp(): void {
+    isResizing.value = false;
+    window.removeEventListener("mousemove", onMouseMove);
+    window.removeEventListener("mouseup", onMouseUp);
+  }
 }
 
 const resizeHandleLocation = computed(() =>

@@ -15,63 +15,63 @@ const router = useRouter();
 
 // eslint-disable-next-line no-undef
 const props = defineProps({
-	isFormModalActive: {
-		type: Boolean,
-		required: true,
-		default: false,
-	},
+  isFormModalActive: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
 });
 
 // eslint-disable-next-line no-undef
 const emit = defineEmits(["closeModal"]);
 
 function emitCloseModal(): void {
-	emit("closeModal");
+  emit("closeModal");
 }
 
 const validationSchema = toFormValidator(
-	z.object({
-		title: z.string().nonempty("Title is required."),
-		type: z.string().nonempty("Type is required."),
-		description: z.string().optional(),
-	}),
+  z.object({
+    title: z.string().nonempty("Title is required."),
+    type: z.string().nonempty("Type is required."),
+    description: z.string().optional(),
+  }),
 );
 
 const initialFormValues = {
-	title: "",
-	type: "",
-	description: "",
+  title: "",
+  type: "",
+  description: "",
 };
 
 const { handleSubmit, meta, resetForm } = useForm({
-	validationSchema,
-	initialValues: initialFormValues,
+  validationSchema,
+  initialValues: initialFormValues,
 });
 
 const onSubmit = handleSubmit(async (values, { resetForm }) => {
-	const newProject = {
-		id: "",
-		title: values.title,
-		description: values.description,
-		typeId: 1,
-		completed: false,
-		archived: false,
-		dateCreated: null,
-		dateModified: null,
-	};
+  const newProject = {
+    id: "",
+    title: values.title,
+    description: values.description,
+    typeId: 1,
+    completed: false,
+    archived: false,
+    dateCreated: null,
+    dateModified: null,
+  };
 
-	try {
-		const project = await store.projects.addProject(newProject);
+  try {
+    const project = await store.projects.addProject(newProject);
 
-		if (project !== undefined) {
-			router.push(`/summary/${project.id}`);
-			resetForm();
-		}
-	} catch (error) {
-		const e = error as Error;
-		// Move to notification
-		console.error(e.message);
-	}
+    if (project !== undefined) {
+      router.push(`/summary/${project.id}`);
+      resetForm();
+    }
+  } catch (error) {
+    const e = error as Error;
+    // Move to notification
+    console.error(e.message);
+  }
 });
 
 // Needed otherwise the form attempts to 'submit' when opened on initial render

@@ -11,13 +11,13 @@ const store = inject("store") as IStore;
 const isModalActive = ref<boolean>(false);
 
 function openWindow(): void {
-	console.log("Open window in main process");
+  console.log("Open window in main process");
 }
 
 // Needed to ensure that if the user deletes all projects
 // The activeProject will be reset at the correct point in time
 onMounted(() => {
-	store.projects.setActiveProject(null);
+  store.projects.setActiveProject(null);
 });
 </script>
 

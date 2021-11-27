@@ -5,29 +5,29 @@ import type { IProject } from 'interfaces';
 
 // eslint-disable-next-line no-undef
 const props = defineProps({
-	project: {
-		type: Object as PropType<IProject>,
-		required: true,
-	},
+  project: {
+    type: Object as PropType<IProject>,
+    required: true,
+  },
 });
 
 const textColor = ref<string>("var(--white)");
 const backgroundColor = ref<string>("var(--primary)");
 
 function setStatusTagText(): string {
-	if (props.project.archived === false && props.project.completed === false) {
-		backgroundColor.value = 'var(--primary)';
-		textColor.value = 'var(--white)';
-		return "IN PROGRESS";
-	} else if (props.project.completed === true) {
-		backgroundColor.value = 'var(--success)';
-		textColor.value = 'var(--white)';
-		return "COMPLETED";
-	}
-	// Or it's not in-progress but it's been archived
-	backgroundColor.value = 'var(--lightGray)';
-	textColor.value = 'var(--black)';
-	return "RETIRED";
+  if (props.project.archived === false && props.project.completed === false) {
+    backgroundColor.value = 'var(--primary)';
+    textColor.value = 'var(--white)';
+    return "IN PROGRESS";
+  } else if (props.project.completed === true) {
+    backgroundColor.value = 'var(--success)';
+    textColor.value = 'var(--white)';
+    return "COMPLETED";
+  }
+  // Or it's not in-progress but it's been archived
+  backgroundColor.value = 'var(--lightGray)';
+  textColor.value = 'var(--black)';
+  return "RETIRED";
 }
 
 const statusTagText = computed(() => setStatusTagText());
