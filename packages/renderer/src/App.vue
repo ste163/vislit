@@ -79,7 +79,7 @@ onBeforeUpdate(() => {
 <template>
   <the-sidebar />
 
-  <div class="flex overflow-x-auto flex-nowrap flex-grow-1">
+  <div class="dashboard">
     <column-drop-zone
       class="drop-zone-left"
       :drop-zone="'left'"
@@ -111,7 +111,7 @@ onBeforeUpdate(() => {
       </transition-group>
     </column-drop-zone>
 
-    <main class="dashboard">
+    <main class="active-view">
       <router-view v-slot="{ Component }">
         <transition name="dash-navigation">
           <div :key="dashTransitionKey">
@@ -162,6 +162,13 @@ onBeforeUpdate(() => {
 }
 
 .dashboard {
+  @apply flex
+  flex-nowrap
+  flex-grow
+  overflow-x-auto;
+}
+
+.active-view {
   /*
   TODO:
     user-select: none
