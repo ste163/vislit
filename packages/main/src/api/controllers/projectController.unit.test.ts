@@ -32,7 +32,7 @@ const PROJECTS: ProjectModel[] = [
   {
     id: "2",
     title: "The Shining",
-    description: "A murderous clown attacks a town",
+    description: "An evil hotel possesses a groundskeeper",
     typeId: 1,
     completed: false,
     archived: false,
@@ -41,7 +41,7 @@ const PROJECTS: ProjectModel[] = [
   },
 ];
 
-describe("project-controller", () => {
+describe("project-controller-unit", () => {
   beforeAll(() => {
     // Disables the console.error messages jest displays in catch blocks
     jest.spyOn(console, "error").mockImplementation(() => {});

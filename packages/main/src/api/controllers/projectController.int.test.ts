@@ -1,12 +1,31 @@
-// getAll projects returns an error
-// can getAll projects
-// getyById returns error
-// can get project by id
-// adding a project with a duplicate title fails
-// adding a project fails and returns error
-// can add project and it's added to search
-// trying to update a project not in database returns error
-// trying to update a project to a title already in database returns error
-// can update project and it's updated in search
-// trying to delete project not in database throws error
-// can delete project and it's removed from search
+describe("project-controller-integration", () => {
+  it("returns error when getting all projects", () => {});
+
+  it("returns all projects", () => {});
+
+  it("returns error if getting project by id is not in db", () => {});
+
+  it("returns error if get by id fails", () => {});
+
+  it("returns project by id and can search for id by title", () => {});
+
+  it("returns duplicate title error if adding a project with a title already in db", () => {});
+
+  it("returns error when adding project fails", () => {});
+
+  it("returns project and is searchable after adding", () => {});
+
+  it("returns error if updating project with id not in db", () => {});
+
+  it("returns error if updating project with new title already in db", () => {});
+
+  it("returns error if updating project fails", () => {});
+
+  it("returns updated project and updated project is searchable", () => {});
+
+  it("returns error if project to delete is not in db", () => {});
+
+  it("returns error if project delete fails", () => {});
+
+  it("returns true and project is no longer searchable on delete", () => {});
+});
