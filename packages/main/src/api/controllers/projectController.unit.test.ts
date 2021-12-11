@@ -1,8 +1,8 @@
 /**
  * @jest-environment node
  */
-import type { IProject } from "./interfaces";
-import type IProjectRepository from "../interfaces/IProjectRepository";
+import type { ProjectModel } from "interfaces";
+import type ProjectRespositoryModel from "../interfaces/ProjectRespositoryModel";
 import ProjectController from "./projectController";
 // No unit tests for getAllProjects
 // not enough controller logic exists to check
@@ -25,11 +25,11 @@ describe("project-controller", () => {
     // };
 
     const projectController = new ProjectController(
-      projectRepository as unknown as IProjectRepository,
+      projectRepository as unknown as ProjectRespositoryModel
       // searchController
     );
 
-    const project: IProject = {
+    const project: ProjectModel = {
       id: "1",
       title: "It",
       description: "A murderous clown attacks a town",
@@ -54,7 +54,7 @@ describe("project-controller", () => {
     // };
 
     const projectController = new ProjectController(
-      projectRepository as unknown as IProjectRepository,
+      projectRepository as unknown as ProjectRespositoryModel
       // searchController
     );
 
@@ -70,7 +70,7 @@ describe("project-controller", () => {
     };
 
     expect(projectController.add(project)).toEqual(
-      new Error("Project title already in database"),
+      new Error("Project title already in database")
     );
   });
 
@@ -97,7 +97,7 @@ describe("project-controller", () => {
     // };
 
     const projectController = new ProjectController(
-      projectRepository as unknown as IProjectRepository,
+      projectRepository as unknown as ProjectRespositoryModel
       // searchController
     );
 
@@ -125,7 +125,7 @@ describe("project-controller", () => {
     // const searchController = {};
 
     const projectController = new ProjectController(
-      projectRepository as unknown as IProjectRepository,
+      projectRepository as unknown as ProjectRespositoryModel
       // searchController
     );
 
@@ -141,7 +141,7 @@ describe("project-controller", () => {
     };
 
     expect(projectController.update(project)).toEqual(
-      new Error(`Project with id 1 not in database`),
+      new Error(`Project with id 1 not in database`)
     );
   });
 
@@ -161,7 +161,7 @@ describe("project-controller", () => {
   //   // const searchController = {};
 
   //   const projectController = new ProjectController(
-  //     projectRepository as unknown as IProjectRepository,
+  //     projectRepository as unknown as ProjectRespositoryModel,
   //     // searchController
   //   );
 
@@ -193,7 +193,7 @@ describe("project-controller", () => {
     // };
 
     const projectController = new ProjectController(
-      projectRepository as unknown as IProjectRepository,
+      projectRepository as unknown as ProjectRespositoryModel
       // searchController
     );
 
@@ -214,14 +214,14 @@ describe("project-controller", () => {
     // };
 
     const projectController = new ProjectController(
-      projectRepository as unknown as IProjectRepository,
+      projectRepository as unknown as ProjectRespositoryModel
       // searchController
     );
 
     projectController.delete("100");
 
     expect(projectController.delete("100")).toEqual(
-      new Error("Project not in database"),
+      new Error("Project not in database")
     );
   });
 });

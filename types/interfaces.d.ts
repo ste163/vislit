@@ -1,5 +1,5 @@
 declare module "interfaces" {
-  interface IColumn {
+  interface ColumnModel {
     header: string;
     isActive: boolean;
     dropZone: string;
@@ -7,7 +7,7 @@ declare module "interfaces" {
     width: string; // in px; ie '150px'
   }
 
-  interface IProject {
+  interface ProjectModel {
     id: string;
     title: string;
     description: string;
@@ -18,7 +18,7 @@ declare module "interfaces" {
     dateModified: Date | null;
   }
 
-  interface IDropZone {
+  interface DropZoneModel {
     name: string;
     maxWidth: string; // in px; ie: '150px' - limits width of columns
     currentWidth: string; // computed property of all the currently active column widths

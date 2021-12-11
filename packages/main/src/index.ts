@@ -1,13 +1,13 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
 import { URL } from "url";
-import type { IProject } from "interfaces";
+import type { ProjectModel } from "interfaces";
 import Database from "./api/database";
-import type IProjectController from "./api/interfaces/IProjectController";
 import ProjectRepository from "./api/repositories/projectRepository";
 import ProjectController from "./api/controllers/projectController";
+import type ProjectControllerModel from "./api/interfaces/ProjectControllerModel";
 
-let projectController: IProjectController;
+let projectController: ProjectControllerModel;
 
 // For now, instantiate db, controllers, & repos here
 try {
@@ -40,7 +40,7 @@ if (import.meta.env.MODE === "development") {
         loadExtensionOptions: {
           allowFileAccess: true,
         },
-      }),
+      })
     )
     .catch((e) => console.error("Failed install extension:", e));
 }
@@ -88,7 +88,7 @@ const createWindow = async () => {
       ? import.meta.env.VITE_DEV_SERVER_URL
       : new URL(
           "../renderer/dist/index.html",
-          "file://" + __dirname,
+          "file://" + __dirname
         ).toString();
 
   await mainWindow.loadURL(pageUrl);
@@ -127,11 +127,11 @@ ipcMain.handle("projects-get-all", () => {
   return projectController.getAll();
 });
 
-ipcMain.handle("projects-add", (e, project: IProject) => {
+ipcMain.handle("projects-add", (e, project: ProjectModel) => {
   return projectController.add(project);
 });
 
-ipcMain.handle("projects-update", (e, project: IProject) => {
+ipcMain.handle("projects-update", (e, project: ProjectModel) => {
   return projectController.update(project);
 });
 

@@ -1,8 +1,8 @@
 import { reactive } from "vue";
-import type IApplicationStore from "../interfaces/IApplicationStore";
+import type ApplicationStoreModel from "../interfaces/ApplicationStoreModel";
 import type ApplicationState from "../types/ApplicationState";
 
-export default class ApplicationStore implements IApplicationStore {
+export default class ApplicationStore implements ApplicationStoreModel {
   public state: ApplicationState;
 
   constructor() {

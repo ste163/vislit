@@ -2,14 +2,14 @@ import type { App } from "electron";
 import lodash from "lodash";
 import { nanoid } from "nanoid/non-secure";
 import { JSONFileSync, LowSync, MemorySync } from "lowdb";
-import type { IProject } from "interfaces";
-import type IDatabase from "./interfaces/IDatabase";
-import type IVislitDatabase from "./interfaces/IVislitDatabase";
-import type ILowDb from "./interfaces/ILowDb";
+import type { ProjectModel } from "interfaces";
+import type DatabaseModel from "./interfaces/DatabaseModel";
+import type VislitDatabaseModel from "./interfaces/VislitDatabaseModel";
+import type LowDbModel from "./interfaces/LowDbModel";
 
-export default class Database implements IDatabase {
-  public db: ILowDb;
-  public generateUniqueId: (item: IProject) => IProject;
+export default class Database implements DatabaseModel {
+  public db: LowDbModel;
+  public generateUniqueId: (item: ProjectModel) => ProjectModel;
 
   #app: App;
   #isTestEnv: string | undefined;
@@ -21,13 +21,13 @@ export default class Database implements IDatabase {
       return `${userDataDirPath}/vislit-database.json`;
     };
 
-    const loadDatabase = (): ILowDb => {
+    const loadDatabase = (): LowDbModel => {
       const adapter =
         this.#isTestEnv === "test"
-          ? new MemorySync<IVislitDatabase>() // in-memory test database
-          : new JSONFileSync<IVislitDatabase>(this.#getDbPath());
+          ? new MemorySync<VislitDatabaseModel>() // in-memory test database
+          : new JSONFileSync<VislitDatabaseModel>(this.#getDbPath());
 
-      const db = new LowSync<IVislitDatabase>(adapter) as ILowDb;
+      const db = new LowSync<VislitDatabaseModel>(adapter) as LowDbModel;
 
       db.read();
 
@@ -56,7 +56,7 @@ export default class Database implements IDatabase {
     this.#app = app;
     this.#isTestEnv = process.env.NODE_ENV;
     this.db = loadDatabase();
-    this.generateUniqueId = (item: IProject) => {
+    this.generateUniqueId = (item: ProjectModel) => {
       item.id = nanoid(21);
       return item;
     };

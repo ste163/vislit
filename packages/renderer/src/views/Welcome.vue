@@ -5,9 +5,9 @@ import BaseCardContent from "../components/BaseCardContent.vue";
 import BaseButtonClick from "../components/BaseButtonClick.vue";
 import FormProjectCreateModal from "../components/FormProjectCreateModal.vue";
 import NotificationDot from "../components/NotificationDot.vue";
-import type IStore from "../store/interfaces/IStore";
+import type StoreModel from "../store/interfaces/StoreModel";
 
-const store = inject("store") as IStore;
+const store = inject("store") as StoreModel;
 const isModalActive = ref<boolean>(false);
 
 function openWindow(): void {

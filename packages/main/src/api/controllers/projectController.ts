@@ -1,11 +1,11 @@
-import type { IProject } from "interfaces";
-import type IProjectController from "../interfaces/IProjectController";
-import type IProjectRepository from "../interfaces/IProjectRepository";
+import type { ProjectModel } from "interfaces";
+import type ProjectControllerModel from "../interfaces/ProjectControllerModel";
+import type ProjectRespositoryModel from "../interfaces/ProjectRespositoryModel";
 
-export default class ProjectController implements IProjectController {
-  #projectRepository: IProjectRepository;
+export default class ProjectController implements ProjectControllerModel {
+  #projectRepository: ProjectRespositoryModel;
 
-  constructor(projectRepository: IProjectRepository) {
+  constructor(projectRepository: ProjectRespositoryModel) {
     this.#projectRepository = projectRepository;
     // this.searchController = searchController;
   }
@@ -21,7 +21,7 @@ export default class ProjectController implements IProjectController {
     // Otherwise, continue running code because no error was thrown
   }
 
-  getAll(): Array<IProject> | Error {
+  getAll(): Array<ProjectModel> | Error {
     try {
       return this.#projectRepository.getAll();
     } catch (e) {
@@ -31,7 +31,7 @@ export default class ProjectController implements IProjectController {
     }
   }
 
-  getById(id: string): IProject | Error {
+  getById(id: string): ProjectModel | Error {
     try {
       const project = this.#projectRepository.getById(id);
 
@@ -47,7 +47,7 @@ export default class ProjectController implements IProjectController {
     }
   }
 
-  add(project: IProject): IProject | Error {
+  add(project: ProjectModel): ProjectModel | Error {
     try {
       this.#checkForTitleTaken(project.title);
 
@@ -67,7 +67,7 @@ export default class ProjectController implements IProjectController {
     }
   }
 
-  update(project: IProject): IProject | Error {
+  update(project: ProjectModel): ProjectModel | Error {
     try {
       const projectToUpdate = this.getById(project.id);
       // Must get a copy of original project

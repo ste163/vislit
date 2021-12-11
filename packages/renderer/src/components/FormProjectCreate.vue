@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { inject } from "vue";
 import { useRouter } from "vue-router";
-import type IStore from "../store/interfaces/IStore";
+import type StoreModel from "../store/interfaces/StoreModel";
 import { useForm } from "vee-validate";
 import { toFormValidator } from "@vee-validate/zod";
 import { z } from "zod";
@@ -10,7 +10,7 @@ import InputText from "./InputText.vue";
 import ButtonSubmit from "./ButtonSubmit.vue";
 import ButtonBack from "./ButtonBack.vue";
 
-const store = inject("store") as IStore;
+const store = inject("store") as StoreModel;
 
 const router = useRouter();
 

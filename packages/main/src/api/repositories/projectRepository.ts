@@ -1,21 +1,21 @@
-import type { IProject } from "interfaces";
-import type IDatabase from "../interfaces/IDatabase";
-import type IProjectRepository from "../interfaces/IProjectRepository";
+import type { ProjectModel } from "interfaces";
+import type DatabaseModel from "../interfaces/DatabaseModel";
+import type ProjectRespositoryModel from "../interfaces/ProjectRespositoryModel";
 
-export default class ProjectRepository implements IProjectRepository {
-  #database: IDatabase;
+export default class ProjectRepository implements ProjectRespositoryModel {
+  #database: DatabaseModel;
 
-  constructor(database: IDatabase) {
+  constructor(database: DatabaseModel) {
     this.#database = database;
   }
 
-  getAll(): Array<IProject> {
+  getAll(): Array<ProjectModel> {
     if (this.#database.db.data !== null) {
       const projects = this.#database.db.data.projects;
 
       // This will most likely need to move into a util at some point & probably move to having an IDateModified
       const sortedByMostRecent = projects.sort(
-        (a: IProject, b: IProject): number => {
+        (a: ProjectModel, b: ProjectModel): number => {
           if (a.dateModified !== null && b.dateModified !== null) {
             const aDate = new Date(a.dateModified);
             const bDate = new Date(b.dateModified);
@@ -30,7 +30,7 @@ export default class ProjectRepository implements IProjectRepository {
           } else {
             throw Error("Date modified for project was null");
           }
-        },
+        }
       );
       return sortedByMostRecent;
     } else {
@@ -38,21 +38,21 @@ export default class ProjectRepository implements IProjectRepository {
     }
   }
 
-  getById(id: string): IProject {
+  getById(id: string): ProjectModel {
     // TODO:
     // get all linked data (currently just progress)
     // Only use db.chain when you need lodash methods
     return this.#database.db.chain.get("projects").find({ id }).value();
   }
 
-  getByTitle(title: string): IProject {
+  getByTitle(title: string): ProjectModel {
     return this.#database.db.chain.get("projects").find({ title }).value();
   }
 
-  add(project: IProject): IProject {
+  add(project: ProjectModel): ProjectModel {
     if (this.#database.db.data !== null) {
       this.#database.db.data.projects.push(
-        this.#database.generateUniqueId(project),
+        this.#database.generateUniqueId(project)
       );
 
       this.#database.db.write();
@@ -65,7 +65,7 @@ export default class ProjectRepository implements IProjectRepository {
     }
   }
 
-  update(project: IProject): IProject {
+  update(project: ProjectModel): ProjectModel {
     // Some code duplication from delete & add
     // It's needed because we should only .write()
     // once we're finished updating

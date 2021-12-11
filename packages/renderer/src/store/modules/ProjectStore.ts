@@ -1,23 +1,23 @@
 import { reactive } from "vue";
-import type { IProject } from "interfaces";
-import type IProjectStore from "../interfaces/IProjectStore";
+import type { ProjectModel } from "interfaces";
+import type ProjectStoreModel from "../interfaces/ProjectStoreModel";
 import type ProjectState from "../types/ProjectState";
 
-export default class ProjectStore implements IProjectStore {
+export default class ProjectStore implements ProjectStoreModel {
   public state: ProjectState;
 
   constructor() {
     this.state = reactive({
-      all: <Array<IProject>>[],
+      all: <Array<ProjectModel>>[],
       active: null,
     });
   }
 
-  #setProjects(projects: Array<IProject>): void {
+  #setProjects(projects: Array<ProjectModel>): void {
     this.state.all = projects;
   }
 
-  public setActiveProject(project: IProject | null): void {
+  public setActiveProject(project: ProjectModel | null): void {
     this.state.active = project;
   }
 
@@ -25,9 +25,9 @@ export default class ProjectStore implements IProjectStore {
     try {
       const { api } = window;
 
-      const response: Array<IProject> = (await api.send(
+      const response: Array<ProjectModel> = (await api.send(
         "projects-get-all"
-      )) as Array<IProject>;
+      )) as Array<ProjectModel>;
 
       if (response) {
         this.#setProjects(response);
@@ -43,11 +43,16 @@ export default class ProjectStore implements IProjectStore {
     }
   }
 
-  public async addProject(project: IProject): Promise<IProject | undefined> {
+  public async addProject(
+    project: ProjectModel
+  ): Promise<ProjectModel | undefined> {
     try {
       const { api } = window;
 
-      const response = (await api.send("projects-add", project)) as IProject;
+      const response = (await api.send(
+        "projects-add",
+        project
+      )) as ProjectModel;
 
       if (response instanceof Error === false) {
         // Display success message
@@ -64,11 +69,16 @@ export default class ProjectStore implements IProjectStore {
     }
   }
 
-  public async updateProject(project: IProject): Promise<IProject | undefined> {
+  public async updateProject(
+    project: ProjectModel
+  ): Promise<ProjectModel | undefined> {
     try {
       const { api } = window;
 
-      const response = (await api.send("projects-update", project)) as IProject;
+      const response = (await api.send(
+        "projects-update",
+        project
+      )) as ProjectModel;
 
       if (response instanceof Error === false) {
         // Display success message

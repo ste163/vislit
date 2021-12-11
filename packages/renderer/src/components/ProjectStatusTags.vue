@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import type { PropType } from "vue";
-import type { IProject } from "interfaces";
+import type { ProjectModel } from "interfaces";
 
 // eslint-disable-next-line no-undef
 const props = defineProps({
   project: {
-    type: Object as PropType<IProject>,
+    type: Object as PropType<ProjectModel>,
     required: true,
   },
 });

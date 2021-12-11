@@ -1,20 +1,20 @@
 <script setup lang="ts">
 import type { PropType } from "vue";
 import { inject, ref, computed } from "vue";
-import type IStore from "../store/interfaces/IStore";
-import type { IColumn } from "interfaces";
+import type StoreModel from "../store/interfaces/StoreModel";
+import type { ColumnModel } from "interfaces";
 import ButtonClose from "./ButtonClose.vue";
 import TheColumnProject from "./TheColumnProject.vue";
 import TheColumnNote from "./TheColumnNote.vue";
 import TheColumnLexicon from "./TheColumnLexicon.vue";
 import TheColumnSetting from "./TheColumnSetting.vue";
 
-const store = inject("store") as IStore;
+const store = inject("store") as StoreModel;
 
 // eslint-disable-next-line no-undef
 const props = defineProps({
   column: {
-    type: Object as PropType<IColumn>,
+    type: Object as PropType<ColumnModel>,
     required: true,
   },
   dropZone: {

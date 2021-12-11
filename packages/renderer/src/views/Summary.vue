@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, inject, computed } from "vue";
-import type IStore from "../store/interfaces/IStore";
+import type IStore from "../store/interfaces/StoreModel";
 import BaseTemplateCard from "../components/BaseTemplateCard.vue";
 import BaseCardContent from "../components/BaseCardContent.vue";
 import BaseButtonClick from "../components/BaseButtonClick.vue";
@@ -11,7 +11,7 @@ import ButtonEllipsis from "../components/ButtonEllipsis.vue";
 import ButtonEllipsisItem from "../components/ButtonEllipsisItem.vue";
 import useDateFormatFull from "../composables/useDateFormatFull";
 import ProjectStatusTags from "../components/ProjectStatusTags.vue";
-import type { IProject } from "interfaces";
+import type { ProjectModel } from "interfaces";
 
 // TODO:
 // If completed or archived, no longer able to add/edit content
@@ -23,7 +23,7 @@ const isDeleteModalActive = ref<boolean>(false);
 const isEllipsisMenuActive = ref<boolean>(false);
 
 const activeProject = computed(() => {
-  return store.projects.state.active as IProject;
+  return store.projects.state.active as ProjectModel;
 });
 
 const formatedDate = useDateFormatFull(activeProject.value.dateModified);
@@ -45,7 +45,7 @@ function openEditGoalModal(): void {
 }
 
 function toggleProjectComplete(): void {
-  const updatedProject: IProject = {
+  const updatedProject: ProjectModel = {
     id: activeProject.value.id,
     typeId: activeProject.value.typeId,
     title: activeProject.value.title,
@@ -60,7 +60,7 @@ function toggleProjectComplete(): void {
 }
 
 function toggleProjectArchived(): void {
-  const updatedProject: IProject = {
+  const updatedProject: ProjectModel = {
     id: activeProject.value.id,
     typeId: activeProject.value.typeId,
     title: activeProject.value.title,

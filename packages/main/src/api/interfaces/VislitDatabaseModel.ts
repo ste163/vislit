@@ -1,13 +1,14 @@
-import type { IProject } from "interfaces";
+import type { ProjectModel } from "interfaces";
 
-export default interface IVislitDatabase {
+interface VislitDatabaseModel {
   dbType: string;
-  projects: Array<IProject>;
+  projects: Array<ProjectModel>;
   types: Array<unknown>;
   progress: Array<unknown>;
   notes: Array<unknown>;
   projectLexicon: Array<unknown>;
   lexicon: Array<unknown>;
   words: Array<unknown>;
-  // eslint-disable-next-line semi
 }
+
+export default VislitDatabaseModel;

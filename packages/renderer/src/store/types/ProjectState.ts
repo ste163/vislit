@@ -1,8 +1,8 @@
-import type { IProject } from "interfaces";
+import type { ProjectModel } from "interfaces";
 
 type ProjectState = {
-  all: Array<IProject>;
-  active: IProject | null;
+  all: Array<ProjectModel>;
+  active: ProjectModel | null;
 };
 
 export default ProjectState;
