@@ -39,8 +39,8 @@ export default class Database implements DatabaseModel {
           types: [],
           progress: [],
           notes: [],
-          projectLexicon: [],
-          lexicon: [],
+          projectLexicons: [],
+          lexicons: [],
           words: [],
         };
 

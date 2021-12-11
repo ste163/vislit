@@ -13,7 +13,6 @@ export default class ProjectRepository implements ProjectRespositoryModel {
     if (this.#database.db.data !== null) {
       const projects = this.#database.db.data.projects;
 
-      // This will most likely need to move into a util at some point & probably move to having an IDateModified
       const sortedByMostRecent = projects.sort(
         (a: ProjectModel, b: ProjectModel): number => {
           if (a.dateModified !== null && b.dateModified !== null) {

@@ -5,17 +5,21 @@ import type { ProjectModel } from "interfaces";
 import Database from "./api/database";
 import ProjectRepository from "./api/repositories/projectRepository";
 import ProjectController from "./api/controllers/projectController";
+import SearchController from "./api/controllers/searchController";
 import type ProjectControllerModel from "./api/interfaces/ProjectControllerModel";
 
+// declared outside of try block so it can be accessed by IPC
 let projectController: ProjectControllerModel;
 
 // For now, instantiate db, controllers, & repos here
 try {
   const database = new Database(app);
-
   const projectRepository = new ProjectRepository(database);
-
-  projectController = new ProjectController(projectRepository);
+  const searchController = new SearchController(projectRepository);
+  projectController = new ProjectController(
+    projectRepository,
+    searchController
+  );
 } catch (error) {
   const e = error as Error;
   console.log(e);
@@ -138,3 +142,6 @@ ipcMain.handle("projects-update", (e, project: ProjectModel) => {
 ipcMain.handle("projects-delete", (e, projectId: string) => {
   return projectController.delete(projectId);
 });
+
+// project search endpoint
+// project auto-suggestion search endpoint
