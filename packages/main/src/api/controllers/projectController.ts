@@ -71,15 +71,13 @@ export default class ProjectController implements ProjectControllerModel {
       const originalProjectForIndex = { ...projectToUpdate };
 
       if (projectToUpdate instanceof Error) {
-        return projectToUpdate; // return thrown error
+        return projectToUpdate; // returns thrown error
       }
 
-      // ADD TEST: Only check for title if the titles do not match
       if (project.title !== projectToUpdate.title) {
         this.#checkForTitleTaken(project.title);
       }
 
-      // When here, we're good to update!
       // Update only certain properties
       projectToUpdate.title = project.title;
       projectToUpdate.description = project.description;
