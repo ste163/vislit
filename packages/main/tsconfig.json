@@ -7,5 +7,5 @@
     }
   },
   "files": ["src/index.ts"],
-  "include": ["../../types/interfaces.d.ts"]
+  "include": ["../../types/**/*.d.ts"]
 }
