@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 import type { App } from "electron";
-import Database from "../database"; // Jest currently can not import ESM packages, so Lowdb crashes tests -- using older version of lowdb
+import Database from "../database";
 import ProjectRepository from "./projectRepository";
 import type ProjectRespositoryModel from "../interfaces/ProjectRespositoryModel";
 // Why only projectRepo integration tests?
@@ -20,7 +20,6 @@ describe("project-respository", () => {
 
   beforeEach(() => {
     const app = {
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
       dialog: jest.fn(() => {}), // not needed yet, but will be added later
     };
     const database = new Database(app as unknown as App);
@@ -53,7 +52,11 @@ describe("project-respository", () => {
     }
   });
 
-  test("can get all projects", () => {
+  // need all negative scenarios first
+
+  // then happy path
+
+  it("can get all projects", () => {
     const projects = projectRepository.getAll();
 
     expect(projects).toEqual([
@@ -80,7 +83,7 @@ describe("project-respository", () => {
     ]);
   });
 
-  test("can get a project by title", () => {
+  it("can get a project by title", () => {
     const project = projectRepository.getByTitle("The Shining");
 
     expect(project).toEqual({
@@ -95,13 +98,13 @@ describe("project-respository", () => {
     });
   });
 
-  test("trying to get project by title not in database returns undefined", () => {
+  it("trying to get project by title not in database returns undefined", () => {
     const project = projectRepository.getByTitle("The Dead Zone");
 
     expect(project).toBeUndefined();
   });
 
-  test("can get project by id", () => {
+  it("can get project by id", () => {
     const project = projectRepository.getById("2");
 
     expect(project).toEqual({
@@ -116,13 +119,13 @@ describe("project-respository", () => {
     });
   });
 
-  test("trying to get project by id not in database throws error", () => {
+  it("trying to get project by id not in database throws error", () => {
     const project = projectRepository.getById("100");
 
     expect(project).toBeUndefined();
   });
 
-  test("can add project to database", () => {
+  it("can add project to database", () => {
     const date = new Date();
 
     const newProject = {
@@ -144,7 +147,7 @@ describe("project-respository", () => {
     expect(projects.length).toEqual(3);
   });
 
-  test("can update project", () => {
+  it("can update project", () => {
     const dateModified = new Date();
 
     const updatedProject = {
@@ -172,7 +175,7 @@ describe("project-respository", () => {
     });
   });
 
-  test("can delete project", () => {
+  it("can delete project", () => {
     projectRepository.delete("1");
 
     const projects = projectRepository.getAll();

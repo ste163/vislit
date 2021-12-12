@@ -3,225 +3,282 @@
  */
 import type { ProjectModel } from "interfaces";
 import type ProjectRespositoryModel from "../interfaces/ProjectRespositoryModel";
+import type SearchControllerModel from "../interfaces/SearchControllerModel";
 import ProjectController from "./projectController";
-// No unit tests for getAllProjects
-// not enough controller logic exists to check
+// No unit tests for getAllProjects, not enough controller logic exists to check
 
-describe("project-controller", () => {
-  beforeEach(() => {
+const PROJECT: ProjectModel = {
+  id: "1",
+  title: "It",
+  description: "A murderous clown attacks a town",
+  typeId: 1,
+  completed: false,
+  archived: false,
+  dateCreated: null,
+  dateModified: null,
+};
+
+const PROJECTS: ProjectModel[] = [
+  {
+    id: "1",
+    title: "It",
+    description: "A murderous clown attacks a town",
+    typeId: 1,
+    completed: false,
+    archived: false,
+    dateCreated: null,
+    dateModified: null,
+  },
+  {
+    id: "2",
+    title: "The Shining",
+    description: "An evil hotel possesses a groundskeeper",
+    typeId: 1,
+    completed: false,
+    archived: false,
+    dateCreated: null,
+    dateModified: null,
+  },
+];
+
+describe("project-controller-unit", () => {
+  beforeAll(() => {
     // Disables the console.error messages jest displays in catch blocks
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     jest.spyOn(console, "error").mockImplementation(() => {});
   });
 
-  test("can add project", () => {
-    const projectRepository = {
-      getByTitle: jest.fn(() => undefined),
-      add: jest.fn((project) => project),
+  it("returns error when getting all projects", () => {
+    const mockProjectRespository = {
+      getAll: jest.fn(() => {
+        throw new Error();
+      }),
     };
-
-    // const searchController = {
-    //   addProject: jest.fn(() => true),
-    // };
+    const mockSearchController = null;
 
     const projectController = new ProjectController(
-      projectRepository as unknown as ProjectRespositoryModel
-      // searchController
+      mockProjectRespository as unknown as ProjectRespositoryModel,
+      mockSearchController as unknown as SearchControllerModel
     );
 
-    const project: ProjectModel = {
-      id: "1",
-      title: "It",
-      description: "A murderous clown attacks a town",
-      typeId: 1,
-      completed: false,
-      archived: false,
-      dateCreated: null,
-      dateModified: null,
-    };
-
-    // Must check for title; can't compare because adding project adds a date
-    expect(projectController.add(project)).toHaveProperty("title", "It");
+    expect(projectController.getAll()).toEqual(new Error());
   });
 
-  test("trying to add project with same name returns error", () => {
-    const projectRepository = {
-      getByTitle: jest.fn((project) => project), // causes error to be thrown
+  it("returns all projects", () => {
+    const mockProjectRespository = {
+      getAll: jest.fn(() => PROJECTS),
     };
-
-    // const searchController = {
-    //   addProject: jest.fn(() => true),
-    // };
+    const mockSearchController = null;
 
     const projectController = new ProjectController(
-      projectRepository as unknown as ProjectRespositoryModel
-      // searchController
+      mockProjectRespository as unknown as ProjectRespositoryModel,
+      mockSearchController as unknown as SearchControllerModel
     );
 
-    const project = {
-      id: "1",
-      title: "It",
-      description: "A murderous clown attacks a town",
-      typeId: 1,
-      completed: false,
-      archived: false,
-      dateCreated: null,
-      dateModified: null,
-    };
+    expect(projectController.getAll()).toEqual(PROJECTS);
+  });
 
-    expect(projectController.add(project)).toEqual(
+  it("returns error when get by id fails", () => {
+    const mockProjectRespository = {
+      getById: jest.fn((id: string) => undefined),
+    };
+    const mockSearchController = null;
+
+    const projectController = new ProjectController(
+      mockProjectRespository as unknown as ProjectRespositoryModel,
+      mockSearchController as unknown as SearchControllerModel
+    );
+
+    expect(projectController.getById("123")).toEqual(
+      new Error("Project with id 123 not in database")
+    );
+  });
+
+  it("returns project by id", () => {
+    const mockProjectRespository = {
+      getById: jest.fn(() => PROJECT),
+    };
+    const mockSearchController = null;
+
+    const projectController = new ProjectController(
+      mockProjectRespository as unknown as ProjectRespositoryModel,
+      mockSearchController as unknown as SearchControllerModel
+    );
+
+    expect(projectController.getById("1")).toEqual(PROJECT);
+  });
+
+  it("returns duplicate title error when adding project with title already in db", () => {
+    const mockProjectRespository = {
+      getByTitle: jest.fn(() => PROJECT),
+    };
+    const mockSearchController = null;
+
+    const projectController = new ProjectController(
+      mockProjectRespository as unknown as ProjectRespositoryModel,
+      mockSearchController as unknown as SearchControllerModel
+    );
+
+    expect(projectController.add(PROJECT)).toEqual(
       new Error("Project title already in database")
     );
   });
 
-  test("can update project", () => {
-    const projectRepository = {
-      getById: jest.fn(() => {
-        return {
-          id: "1",
-          title: "It",
-          description: "A murderous clown attacks a town",
-          typeId: 1,
-          completed: false,
-          archived: false,
-          dateCreated: null,
-          dateModified: null,
-        };
-      }),
+  it("returns error when add project fails", () => {
+    const mockProjectRespository = {
       getByTitle: jest.fn(() => undefined),
-      update: jest.fn((project) => project),
+      add: jest.fn(() => {
+        throw new Error();
+      }),
     };
-
-    // const searchController = {
-    //   updateProject: jest.fn(() => {}),
-    // };
+    const mockSearchController = null;
 
     const projectController = new ProjectController(
-      projectRepository as unknown as ProjectRespositoryModel
-      // searchController
+      mockProjectRespository as unknown as ProjectRespositoryModel,
+      mockSearchController as unknown as SearchControllerModel
     );
 
-    const project = {
-      id: "1",
-      title: "It",
-      description: "A murderous clown attacks a town",
-      typeId: 1,
-      completed: false,
-      archived: false,
-      dateCreated: null,
-      dateModified: null,
-    };
-
-    // Cannot do deep equality check as the dateModified becomes the new Date().
-    // Two new Date()'s will never be the same time
-    expect(projectController.update(project)).toHaveProperty("title", "It");
+    expect(projectController.add(PROJECT)).toEqual(new Error());
   });
 
-  test("trying to update project with id not in database returns error", () => {
-    const projectRepository = {
-      getById: jest.fn(() => undefined),
+  it("adds project to database and returns the project", () => {
+    const mockProjectRespository = {
+      getByTitle: jest.fn(() => undefined),
+      add: jest.fn(() => PROJECT),
     };
-
-    // const searchController = {};
+    const mockSearchController = {
+      addProject: jest.fn(() => undefined),
+    };
 
     const projectController = new ProjectController(
-      projectRepository as unknown as ProjectRespositoryModel
-      // searchController
+      mockProjectRespository as unknown as ProjectRespositoryModel,
+      mockSearchController as unknown as SearchControllerModel
     );
 
-    const project = {
-      id: "1",
-      title: "It",
-      description: "A murderous clown attacks a town",
-      typeId: 1,
-      completed: false,
-      archived: false,
-      dateCreated: null,
-      dateModified: null,
-    };
+    expect(projectController.add(PROJECT)).toEqual(PROJECT);
+  });
 
-    expect(projectController.update(project)).toEqual(
-      new Error(`Project with id 1 not in database`)
+  it("returns error if updating a project with id not in database", () => {
+    const mockProjectRespository = {
+      getById: jest.fn((id) => {
+        throw new Error(`Project with id ${id} not in database`);
+      }),
+    };
+    const mockSearchController = null;
+
+    const projectController = new ProjectController(
+      mockProjectRespository as unknown as ProjectRespositoryModel,
+      mockSearchController as unknown as SearchControllerModel
+    );
+
+    expect(projectController.update(PROJECT)).toEqual(
+      new Error("Project with id 1 not in database")
     );
   });
 
-  // Need new tests for duplicate title checking
-  // test("trying to update project with title already in database returns error", () => {
-  //   const projectRepository = {
-  //     getById: jest.fn(() => {
-  //       return {
-  //         id: "1",
-  //         title: "It",
-  //         description: "A murderous clown attacks a town",
-  //       };
-  //     }),
-  //     getByTitle: jest.fn((project) => project),
-  //   };
-
-  //   // const searchController = {};
-
-  //   const projectController = new ProjectController(
-  //     projectRepository as unknown as ProjectRespositoryModel,
-  //     // searchController
-  //   );
-
-  //   const project = {
-  //     id: "1",
-  //     title: "It",
-  //     description: "A murderous clown attacks a town",
-  //     typeId: 1,
-  //     completed: false,
-  //     archived: false,
-  //     dateCreated: null,
-  //     dateModified: null,
-  //   };
-
-  //   expect(projectController.update(project)).toEqual(
-  //     new Error("Project title already in database"),
-  //   );
-  // });
-
-  test("can delete project", () => {
-    const projectRepository = {
-      getById: jest.fn((id) => id),
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      delete: jest.fn(() => {}),
+  it("returns duplicate title error when attempting to update project to a title already in db", () => {
+    const updatedProject = { ...PROJECT };
+    updatedProject.title = "NEW TITLE";
+    const mockProjectRespository = {
+      getById: jest.fn(() => PROJECT),
+      getByTitle: jest.fn(() => PROJECT),
     };
-
-    // const searchController = {
-    //   removeProject: jest.fn(() => {}),
-    // };
+    const mockSearchController = null;
 
     const projectController = new ProjectController(
-      projectRepository as unknown as ProjectRespositoryModel
-      // searchController
+      mockProjectRespository as unknown as ProjectRespositoryModel,
+      mockSearchController as unknown as SearchControllerModel
     );
 
-    const success = projectController.delete("1");
-
-    expect(success).toEqual(true);
+    expect(projectController.update(updatedProject)).toEqual(
+      new Error("Project title already in database")
+    );
   });
 
-  test("trying to delete project with id not in database returns error", () => {
-    const projectRepository = {
-      getById: jest.fn(() => undefined),
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      delete: jest.fn(() => {}),
+  it("returns error when updating project fails", () => {
+    const mockProjectRespository = {
+      getById: jest.fn(() => PROJECT),
+      getByTitle: jest.fn(() => PROJECT),
+      update: jest.fn(() => {
+        throw new Error();
+      }),
     };
-
-    // const searchController = {
-    //   removeProject: jest.fn(() => {}),
-    // };
+    const mockSearchController = null;
 
     const projectController = new ProjectController(
-      projectRepository as unknown as ProjectRespositoryModel
-      // searchController
+      mockProjectRespository as unknown as ProjectRespositoryModel,
+      mockSearchController as unknown as SearchControllerModel
     );
 
-    projectController.delete("100");
+    expect(projectController.update(PROJECT)).toEqual(new Error());
+  });
 
-    expect(projectController.delete("100")).toEqual(
+  it("updates project and returns updated project", () => {
+    const mockProjectRespository = {
+      getById: jest.fn(() => PROJECT),
+      getByTitle: jest.fn(() => PROJECT),
+      update: jest.fn(() => PROJECT),
+    };
+    const mockSearchController = {
+      updateProject: jest.fn(() => undefined),
+    };
+
+    const projectController = new ProjectController(
+      mockProjectRespository as unknown as ProjectRespositoryModel,
+      mockSearchController as unknown as SearchControllerModel
+    );
+
+    expect(projectController.update(PROJECT)).toEqual(PROJECT);
+  });
+
+  it("returns error if project to delete is not in database", () => {
+    const mockProjectRespository = {
+      getById: jest.fn((id) => {
+        throw new Error(`Project with id ${id} not in database`);
+      }),
+    };
+    const mockSearchController = null;
+
+    const projectController = new ProjectController(
+      mockProjectRespository as unknown as ProjectRespositoryModel,
+      mockSearchController as unknown as SearchControllerModel
+    );
+
+    expect(projectController.delete(PROJECT.id)).toEqual(
       new Error("Project not in database")
     );
+  });
+
+  it("returns error if deleting project fails", () => {
+    const mockProjectRespository = {
+      getById: jest.fn(() => PROJECT),
+      delete: jest.fn(() => {
+        throw new Error();
+      }),
+    };
+    const mockSearchController = null;
+
+    const projectController = new ProjectController(
+      mockProjectRespository as unknown as ProjectRespositoryModel,
+      mockSearchController as unknown as SearchControllerModel
+    );
+
+    expect(projectController.delete(PROJECT.id)).toEqual(new Error());
+  });
+
+  it("returns true if project was deleted", () => {
+    const mockProjectRespository = {
+      getById: jest.fn(() => PROJECT),
+      delete: jest.fn(() => undefined),
+    };
+    const mockSearchController = {
+      deleteProject: jest.fn(() => undefined),
+    };
+
+    const projectController = new ProjectController(
+      mockProjectRespository as unknown as ProjectRespositoryModel,
+      mockSearchController as unknown as SearchControllerModel
+    );
+
+    expect(projectController.delete(PROJECT.id)).toEqual(true);
   });
 });

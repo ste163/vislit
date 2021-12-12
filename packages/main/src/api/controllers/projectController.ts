@@ -1,33 +1,31 @@
 import type { ProjectModel } from "interfaces";
 import type ProjectControllerModel from "../interfaces/ProjectControllerModel";
 import type ProjectRespositoryModel from "../interfaces/ProjectRespositoryModel";
+import type SearchControllerModel from "../interfaces/SearchControllerModel";
 
 export default class ProjectController implements ProjectControllerModel {
   #projectRepository: ProjectRespositoryModel;
+  #searchController: SearchControllerModel;
 
-  constructor(projectRepository: ProjectRespositoryModel) {
+  constructor(
+    projectRepository: ProjectRespositoryModel,
+    searchController: SearchControllerModel
+  ) {
     this.#projectRepository = projectRepository;
-    // this.searchController = searchController;
+    this.#searchController = searchController;
   }
 
   #checkForTitleTaken(title: string): void {
     const project = this.#projectRepository.getByTitle(title);
-
-    // Only add/update project if it's undefined
-    if (project !== undefined) {
-      throw new Error("Project title already in database");
-    }
-
-    // Otherwise, continue running code because no error was thrown
+    if (project) throw new Error("Project title already in database");
   }
 
   getAll(): Array<ProjectModel> | Error {
     try {
       return this.#projectRepository.getAll();
-    } catch (e) {
-      const error = e as Error;
-      console.error(error);
-      return error;
+    } catch (e: any | Error) {
+      console.error(e);
+      return e;
     }
   }
 
@@ -40,10 +38,9 @@ export default class ProjectController implements ProjectControllerModel {
       }
 
       return project;
-    } catch (e) {
-      const error = e as Error;
-      console.error(error);
-      return error;
+    } catch (e: any | Error) {
+      console.error(e);
+      return e;
     }
   }
 
@@ -58,12 +55,11 @@ export default class ProjectController implements ProjectControllerModel {
 
       const response = this.#projectRepository.add(project);
 
-      // this.searchController.addProject(response);
+      this.#searchController.addProject(response);
       return response;
-    } catch (e) {
-      const error = e as Error;
-      console.error(error);
-      return error;
+    } catch (e: any | Error) {
+      console.error(e);
+      return e;
     }
   }
 
@@ -72,18 +68,16 @@ export default class ProjectController implements ProjectControllerModel {
       const projectToUpdate = this.getById(project.id);
       // Must get a copy of original project
       // before its updated, so it can be removed from search index
-      // const originalProjectForIndex = { ...projectToUpdate };
+      const originalProjectForIndex = { ...projectToUpdate };
 
       if (projectToUpdate instanceof Error) {
-        return projectToUpdate; // return thrown error
+        return projectToUpdate; // returns thrown error
       }
 
-      // ADD TEST: Only check for title if the titles do not match
       if (project.title !== projectToUpdate.title) {
         this.#checkForTitleTaken(project.title);
       }
 
-      // When here, we're good to update!
       // Update only certain properties
       projectToUpdate.title = project.title;
       projectToUpdate.description = project.description;
@@ -94,16 +88,15 @@ export default class ProjectController implements ProjectControllerModel {
 
       const updatedProject = this.#projectRepository.update(projectToUpdate);
 
-      // this.searchController.updateProject(
-      //   originalProjectForIndex,
-      //   updatedProject
-      // );
+      this.#searchController.updateProject(
+        originalProjectForIndex as ProjectModel,
+        updatedProject
+      );
 
       return updatedProject;
-    } catch (e) {
-      const error = e as Error;
-      console.error(error);
-      return error;
+    } catch (e: any | Error) {
+      console.error(e);
+      return e;
     }
   }
 
@@ -116,14 +109,12 @@ export default class ProjectController implements ProjectControllerModel {
       }
 
       this.#projectRepository.delete(id);
-
-      // this.searchController.removeProject(project);
+      this.#searchController.deleteProject(project);
 
       return true;
-    } catch (e) {
-      const error = e as Error;
-      console.error(error);
-      return error;
+    } catch (e: any | Error) {
+      console.error(e);
+      return e;
     }
   }
 }

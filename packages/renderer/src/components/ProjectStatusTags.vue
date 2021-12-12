@@ -3,7 +3,6 @@ import { computed, ref } from "vue";
 import type { PropType } from "vue";
 import type { ProjectModel } from "interfaces";
 
-// eslint-disable-next-line no-undef
 const props = defineProps({
   project: {
     type: Object as PropType<ProjectModel>,

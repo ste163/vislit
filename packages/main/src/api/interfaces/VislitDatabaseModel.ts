@@ -6,8 +6,8 @@ interface VislitDatabaseModel {
   types: Array<unknown>;
   progress: Array<unknown>;
   notes: Array<unknown>;
-  projectLexicon: Array<unknown>;
-  lexicon: Array<unknown>;
+  projectLexicons: Array<unknown>;
+  lexicons: Array<unknown>;
   words: Array<unknown>;
 }
 
