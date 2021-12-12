@@ -60,9 +60,7 @@ describe("project-controller-unit", () => {
       mockSearchController as unknown as SearchControllerModel
     );
 
-    const error = new Error();
-
-    expect(projectController.getAll()).toEqual(error);
+    expect(projectController.getAll()).toEqual(new Error());
   });
 
   it("returns all projects", () => {
@@ -90,9 +88,9 @@ describe("project-controller-unit", () => {
       mockSearchController as unknown as SearchControllerModel
     );
 
-    const error = new Error("Project with id 123 not in database");
-
-    expect(projectController.getById("123")).toEqual(error);
+    expect(projectController.getById("123")).toEqual(
+      new Error("Project with id 123 not in database")
+    );
   });
 
   it("returns project by id", () => {
@@ -120,9 +118,9 @@ describe("project-controller-unit", () => {
       mockSearchController as unknown as SearchControllerModel
     );
 
-    const error = new Error("Project title already in database");
-
-    expect(projectController.add(PROJECT)).toEqual(error);
+    expect(projectController.add(PROJECT)).toEqual(
+      new Error("Project title already in database")
+    );
   });
 
   it("returns error when add project fails", () => {
@@ -139,9 +137,7 @@ describe("project-controller-unit", () => {
       mockSearchController as unknown as SearchControllerModel
     );
 
-    const error = new Error();
-
-    expect(projectController.add(PROJECT)).toEqual(error);
+    expect(projectController.add(PROJECT)).toEqual(new Error());
   });
 
   it("adds project to database and returns the project", () => {
@@ -174,9 +170,9 @@ describe("project-controller-unit", () => {
       mockSearchController as unknown as SearchControllerModel
     );
 
-    const error = new Error("Project with id 1 not in database");
-
-    expect(projectController.update(PROJECT)).toEqual(error);
+    expect(projectController.update(PROJECT)).toEqual(
+      new Error("Project with id 1 not in database")
+    );
   });
 
   it("returns duplicate title error when attempting to update project to a title already in db", () => {
@@ -193,9 +189,9 @@ describe("project-controller-unit", () => {
       mockSearchController as unknown as SearchControllerModel
     );
 
-    const error = new Error("Project title already in database");
-
-    expect(projectController.update(updatedProject)).toEqual(error);
+    expect(projectController.update(updatedProject)).toEqual(
+      new Error("Project title already in database")
+    );
   });
 
   it("returns error when updating project fails", () => {
@@ -213,9 +209,7 @@ describe("project-controller-unit", () => {
       mockSearchController as unknown as SearchControllerModel
     );
 
-    const error = new Error();
-
-    expect(projectController.update(PROJECT)).toEqual(error);
+    expect(projectController.update(PROJECT)).toEqual(new Error());
   });
 
   it("updates project and returns updated project", () => {
@@ -249,9 +243,9 @@ describe("project-controller-unit", () => {
       mockSearchController as unknown as SearchControllerModel
     );
 
-    const error = new Error("Project not in database");
-
-    expect(projectController.delete(PROJECT.id)).toEqual(error);
+    expect(projectController.delete(PROJECT.id)).toEqual(
+      new Error("Project not in database")
+    );
   });
 
   it("returns error if deleting project fails", () => {
@@ -268,9 +262,7 @@ describe("project-controller-unit", () => {
       mockSearchController as unknown as SearchControllerModel
     );
 
-    const error = new Error();
-
-    expect(projectController.delete(PROJECT.id)).toEqual(error);
+    expect(projectController.delete(PROJECT.id)).toEqual(new Error());
   });
 
   it("returns true if project was deleted", () => {

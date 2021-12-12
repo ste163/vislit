@@ -1,7 +1,7 @@
-import type { App } from "electron";
 import lodash from "lodash";
 import { nanoid } from "nanoid/non-secure";
 import { JSONFileSync, LowSync, MemorySync } from "lowdb";
+import type { App } from "electron";
 import type { ProjectModel } from "interfaces";
 import type DatabaseModel from "./interfaces/DatabaseModel";
 import type VislitDatabaseModel from "./interfaces/VislitDatabaseModel";
