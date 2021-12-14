@@ -10,6 +10,7 @@ export default class ProjectController implements ProjectControllerModel {
   constructor(
     projectRepository: ProjectRespositoryModel,
     searchController: SearchControllerModel
+    // pass in the fileSystemHandler
   ) {
     this.#projectRepository = projectRepository;
     this.#searchController = searchController;
@@ -56,6 +57,12 @@ export default class ProjectController implements ProjectControllerModel {
       const response = this.#projectRepository.add(project);
 
       this.#searchController.addProject(response);
+
+      // create file directory structure
+      // of id-projectNameWithoutSpaces -> actually, do not do project names because that'd be too hard to update
+      // only do ids
+      // then /documents & /notes
+
       return response;
     } catch (e: any | Error) {
       console.error(e);
@@ -110,6 +117,8 @@ export default class ProjectController implements ProjectControllerModel {
 
       this.#projectRepository.delete(id);
       this.#searchController.deleteProject(project);
+
+      // delete fs directories
 
       return true;
     } catch (e: any | Error) {

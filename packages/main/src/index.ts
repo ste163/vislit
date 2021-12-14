@@ -31,8 +31,16 @@ try {
   // linux & windows use different slashes -> is this a problem?
   if (!fs.existsSync(`${userDataPath}/projects`))
     fs.mkdirSync(`${userDataPath}/projects`);
-  if (!fs.existsSync(`${userDataPath}/notes`))
-    fs.mkdirSync(`${userDataPath}/notes`);
+
+  // structure is:
+  // projects/aj12sd23
+  // projects/aj12sd23/documents
+  // projects/aj12sd23/notes
+
+  // when a project is created, create the
+  // initial directory with /documents & /notes
+
+  // when project is deleted, delete all files & directories
 } catch (error) {
   console.log(error);
 }
