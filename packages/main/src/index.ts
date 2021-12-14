@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
 import { URL } from "url";
+import fs from "fs"; // export only what's needed later
 import type { ProjectModel } from "interfaces";
 import Database from "./api/database";
 import ProjectRepository from "./api/repositories/projectRepository";
@@ -21,8 +22,19 @@ try {
     searchController
   );
 } catch (error) {
-  const e = error as Error;
-  console.log(e);
+  console.log(error);
+}
+
+// For now, check for projects & notes directories here -> create if not found
+try {
+  const userDataPath = app.getPath("userData");
+  // linux & windows use different slashes -> is this a problem?
+  if (!fs.existsSync(`${userDataPath}/projects`))
+    fs.mkdirSync(`${userDataPath}/projects`);
+  if (!fs.existsSync(`${userDataPath}/notes`))
+    fs.mkdirSync(`${userDataPath}/notes`);
+} catch (error) {
+  console.log(error);
 }
 
 const isSingleInstance = app.requestSingleInstanceLock();
@@ -131,17 +143,29 @@ ipcMain.handle("projects-get-all", () => {
   return projectController.getAll();
 });
 
-ipcMain.handle("projects-add", (e, project: ProjectModel) => {
+ipcMain.handle("projects-add", (_e, project: ProjectModel) => {
   return projectController.add(project);
 });
 
-ipcMain.handle("projects-update", (e, project: ProjectModel) => {
+ipcMain.handle("projects-update", (_e, project: ProjectModel) => {
   return projectController.update(project);
 });
 
-ipcMain.handle("projects-delete", (e, projectId: string) => {
+ipcMain.handle("projects-delete", (_e, projectId: string) => {
   return projectController.delete(projectId);
 });
 
 // project search endpoint
 // project auto-suggestion search endpoint
+
+// writer
+ipcMain.handle("writer-save", (_e, html: string) => {
+  // should make an object w/ metadata
+  // {
+  //   projectId: "so we can place it in the correct directory",
+  //   html: 'all my stuffs'
+  //   createAt: new Date() -> added at this point
+  // }
+  console.log(html);
+  return "Received HTML on backend!";
+});

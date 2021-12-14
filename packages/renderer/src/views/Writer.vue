@@ -6,6 +6,17 @@ const editor = useEditor({
   content: "<p>I’m running Tiptap with Vue.js. 🎉</p>",
   extensions: [StarterKit],
 });
+
+async function onSubmit(): Promise<void> {
+  try {
+    const html = editor.value.getHTML();
+    const { api } = window;
+    const response = await api.send("writer-save", html);
+    console.log(response);
+  } catch (error: any) {
+    console.error(error);
+  }
+}
 </script>
 
 <template>
@@ -96,6 +107,8 @@ const editor = useEditor({
   </div>
 
   <editor-content class="doc-editor p-5" :editor="editor" />
+
+  <button @click="onSubmit">Save Content</button>
 </template>
 
 <style scoped>
