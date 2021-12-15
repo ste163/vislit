@@ -33,6 +33,8 @@ class FileSystemController implements fileSystemController {
     const userData = this.getUserDataPath();
     fs.rmdirSync(`${userData}/projects/${projectId}`, { recursive: true });
   }
+
+  // writeHtmlFile(project | note?)
 }
 
 export default FileSystemController;

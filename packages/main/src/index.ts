@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
 import { URL } from "url";
-import fs from "fs"; // export only what's needed later
+import { existsSync, mkdirSync } from "fs";
 import type { ProjectModel } from "interfaces";
 import Database from "./api/database";
 import FileSystemController from "./api/controllers/fileSystemController";
@@ -30,13 +30,13 @@ try {
   console.log(error);
 }
 
-// For now, check for projects & notes directories here -> create if not found
+// For now, check for projects & notes directories here
 try {
   const userDataPath = app.getPath("userData");
   console.log(userDataPath);
   // linux & windows use different slashes -> is this a problem?
-  if (!fs.existsSync(`${userDataPath}/projects`))
-    fs.mkdirSync(`${userDataPath}/projects`);
+  if (!existsSync(`${userDataPath}/projects`))
+    mkdirSync(`${userDataPath}/projects`);
 } catch (error) {
   console.log(error);
 }
