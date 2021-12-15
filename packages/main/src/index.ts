@@ -4,6 +4,7 @@ import { URL } from "url";
 import fs from "fs"; // export only what's needed later
 import type { ProjectModel } from "interfaces";
 import Database from "./api/database";
+import FileSystemController from "./api/controllers/fileSystemController";
 import ProjectRepository from "./api/repositories/projectRepository";
 import ProjectController from "./api/controllers/projectController";
 import SearchController from "./api/controllers/searchController";
@@ -15,11 +16,15 @@ let projectController: ProjectControllerModel;
 // For now, instantiate db, controllers, & repos here
 try {
   const database = new Database(app);
+  const fileSystemController = new FileSystemController(
+    app.getPath("userData")
+  );
   const projectRepository = new ProjectRepository(database);
   const searchController = new SearchController(projectRepository);
   projectController = new ProjectController(
     projectRepository,
-    searchController
+    searchController,
+    fileSystemController
   );
 } catch (error) {
   console.log(error);
@@ -28,19 +33,10 @@ try {
 // For now, check for projects & notes directories here -> create if not found
 try {
   const userDataPath = app.getPath("userData");
+  console.log(userDataPath);
   // linux & windows use different slashes -> is this a problem?
   if (!fs.existsSync(`${userDataPath}/projects`))
     fs.mkdirSync(`${userDataPath}/projects`);
-
-  // structure is:
-  // projects/aj12sd23
-  // projects/aj12sd23/documents
-  // projects/aj12sd23/notes
-
-  // when a project is created, create the
-  // initial directory with /documents & /notes
-
-  // when project is deleted, delete all files & directories
 } catch (error) {
   console.log(error);
 }
