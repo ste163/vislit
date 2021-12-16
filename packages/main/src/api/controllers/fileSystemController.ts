@@ -1,8 +1,10 @@
 import fs from "fs";
+import formatDate from "../helpers/formatDate";
 // Why abstract fs functions?
 // Because to utilize fs, need file paths exposed by electron's { app }
 
 // TODO:
+// write file
 // returning list of files in directory
 // retreiving files?
 
@@ -34,7 +36,21 @@ class FileSystemController implements fileSystemController {
     fs.rmdirSync(`${userData}/projects/${projectId}`, { recursive: true });
   }
 
-  // writeHtmlFile(project | note?)
+  writeHtmlFile(htmlData: {
+    id: string;
+    html: string;
+    type: "projects" | "notes";
+    createdAt: string;
+  }) {
+    try {
+      const userData = `${this.getUserDataPath()}/${htmlData.type}/${
+        htmlData.id
+      }/${formatDate(htmlData.createdAt)}.html`;
+      fs.writeFileSync(userData, htmlData.html);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 }
 
 export default FileSystemController;

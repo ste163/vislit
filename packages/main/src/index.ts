@@ -168,7 +168,7 @@ ipcMain.handle("writer-save", (_e, html: string) => {
   // {
   //   projectId: "so we can place it in the correct directory",
   //   html: 'all my stuffs'
-  //   createAt: new Date() -> added at this point
+  //   createAt: new Date() -> added at this point -> WRONG, added at frontend
   // }
   console.log(html);
   return "Received HTML on backend!";
