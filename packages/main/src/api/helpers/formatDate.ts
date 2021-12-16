@@ -1,4 +1,4 @@
-function formatDate(date: Date | string): string {
+function formatDate(date: Date | string): string | Error {
   try {
     if (!(date instanceof Date) && typeof date !== "string")
       throw new Error("Can only format strings or dates");
@@ -17,7 +17,7 @@ function formatDate(date: Date | string): string {
     }
   } catch (error) {
     console.error(error);
-    return error;
+    return error as Error;
   }
 }
 
