@@ -161,7 +161,6 @@ ipcMain.handle("projects-delete", (_e, projectId: string) => {
 // project search endpoint
 // project auto-suggestion search endpoint
 
-// writer
 ipcMain.handle(
   "writer-save",
   (
