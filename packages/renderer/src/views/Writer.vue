@@ -23,7 +23,8 @@ async function onSubmit(): Promise<void> {
     };
     const response = await api.send("writer-save", data);
     // check if error
-    // or save data
+    // or true
+    // display success or error banner
     console.log(response);
   } catch (error: any) {
     console.error(error);
