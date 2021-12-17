@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, inject, computed } from "vue";
-import type IStore from "../store/interfaces/StoreModel";
+import type StoreModel from "../store/interfaces/StoreModel";
 import BaseTemplateCard from "../components/BaseTemplateCard.vue";
 import BaseCardContent from "../components/BaseCardContent.vue";
 import BaseButtonClick from "../components/BaseButtonClick.vue";
@@ -16,7 +16,7 @@ import type { ProjectModel } from "interfaces";
 // TODO:
 // If completed or archived, no longer able to add/edit content
 
-const store = inject("store") as IStore;
+const store = inject("store") as StoreModel;
 
 const isEditFormModalActive = ref<boolean>(false);
 const isDeleteModalActive = ref<boolean>(false);

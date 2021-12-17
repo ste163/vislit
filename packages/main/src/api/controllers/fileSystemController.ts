@@ -39,16 +39,18 @@ class FileSystemController implements fileSystemController {
   writeHtmlFile(htmlData: {
     id: string;
     html: string;
-    type: "projects" | "notes";
-    createdAt: string;
-  }) {
+    type: "documents" | "notes";
+    createdAt: Date;
+  }): true | Error {
     try {
-      const userData = `${this.getUserDataPath()}/${htmlData.type}/${
-        htmlData.id
+      const userData = `${this.getUserDataPath()}/projects/${htmlData.id}/${
+        htmlData.type
       }/${formatDate(htmlData.createdAt)}.html`;
       fs.writeFileSync(userData, htmlData.html);
-    } catch (error) {
+      return true;
+    } catch (error: any | Error) {
       console.error(error);
+      return error;
     }
   }
 }

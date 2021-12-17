@@ -1,6 +1,10 @@
 <script setup lang="ts">
+import { inject } from "vue";
 import { useEditor, EditorContent } from "@tiptap/vue-3";
 import StarterKit from "@tiptap/starter-kit";
+import type StoreModel from "../store/interfaces/StoreModel";
+
+const store = inject("store") as StoreModel;
 
 const editor = useEditor({
   content: "<p>I’m running Tiptap with Vue.js. 🎉</p>",
@@ -11,7 +15,15 @@ async function onSubmit(): Promise<void> {
   try {
     const html = editor.value.getHTML();
     const { api } = window;
-    const response = await api.send("writer-save", html);
+    const data = {
+      id: store.projects.state.active?.id,
+      html,
+      type: "documents",
+      createdAt: new Date(),
+    };
+    const response = await api.send("writer-save", data);
+    // check if error
+    // or save data
     console.log(response);
   } catch (error: any) {
     console.error(error);

@@ -12,13 +12,12 @@ import type ProjectControllerModel from "./api/interfaces/ProjectControllerModel
 
 // declared outside of try block so it can be accessed by IPC
 let projectController: ProjectControllerModel;
+let fileSystemController: FileSystemController;
 
 // For now, instantiate db, controllers, & repos here
 try {
   const database = new Database(app);
-  const fileSystemController = new FileSystemController(
-    app.getPath("userData")
-  );
+  fileSystemController = new FileSystemController(app.getPath("userData"));
   const projectRepository = new ProjectRepository(database);
   const searchController = new SearchController(projectRepository);
   projectController = new ProjectController(
@@ -163,13 +162,17 @@ ipcMain.handle("projects-delete", (_e, projectId: string) => {
 // project auto-suggestion search endpoint
 
 // writer
-ipcMain.handle("writer-save", (_e, html: string) => {
-  // should make an object w/ metadata
-  // {
-  //   projectId: "so we can place it in the correct directory",
-  //   html: 'all my stuffs'
-  //   createAt: new Date() -> added at this point -> WRONG, added at frontend
-  // }
-  console.log(html);
-  return "Received HTML on backend!";
-});
+ipcMain.handle(
+  "writer-save",
+  (
+    _e,
+    data: {
+      id: string;
+      html: string;
+      type: "documents" | "notes";
+      createdAt: Date;
+    }
+  ) => {
+    return fileSystemController.writeHtmlFile(data);
+  }
+);

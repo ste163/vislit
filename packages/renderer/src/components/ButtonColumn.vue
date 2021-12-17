@@ -2,10 +2,10 @@
 import { inject, ref, computed } from "vue";
 import type { ColumnModel } from "interfaces";
 import BaseButtonToggle from "./BaseButtonToggle.vue";
-import type IStore from "../store/interfaces/StoreModel";
+import type StoreModel from "../store/interfaces/StoreModel";
 import useIsSidebarDisabled from "../composables/useIsSidebarDisabled";
 
-const store = inject("store") as IStore;
+const store = inject("store") as StoreModel;
 
 const isDisabled = useIsSidebarDisabled();
 const columnTitle = ref<HTMLElement>();

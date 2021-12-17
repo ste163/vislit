@@ -2,10 +2,10 @@
 import { computed, inject } from "vue";
 import { useRouter } from "vue-router";
 import type { ProjectModel } from "interfaces";
-import type IStore from "../store/interfaces/StoreModel";
+import type StoreModel from "../store/interfaces/StoreModel";
 import BaseTemplateModalDelete from "./BaseTemplateModalDelete.vue";
 
-const store = inject("store") as IStore;
+const store = inject("store") as StoreModel;
 // eslint-disable-next-line no-undef
 const props = defineProps({
   isModalActive: {
