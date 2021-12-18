@@ -1,17 +1,16 @@
 import type { ProjectModel } from "interfaces";
-import type ProjectControllerModel from "../interfaces/ProjectControllerModel";
-import type ProjectRespositoryModel from "../interfaces/ProjectRespositoryModel";
-import type SearchControllerModel from "../interfaces/SearchControllerModel";
+import type SearchController from "./searchController";
 import type FileSystemController from "./fileSystemController";
+import type ProjectRepository from "../repositories/projectRepository";
 
-export default class ProjectController implements ProjectControllerModel {
-  #projectRepository: ProjectRespositoryModel;
-  #searchController: SearchControllerModel;
+ class ProjectController {
+  #projectRepository: ProjectRepository;
+  #searchController: SearchController;
   #fileSystemController: FileSystemController;
 
   constructor(
-    projectRepository: ProjectRespositoryModel,
-    searchController: SearchControllerModel,
+    projectRepository: ProjectRepository,
+    searchController: SearchController,
     fileSystemController: FileSystemController
   ) {
     this.#projectRepository = projectRepository;
@@ -67,7 +66,7 @@ export default class ProjectController implements ProjectControllerModel {
       console.error(e);
       return e;
     }
-  }
+  } 
 
   update(project: ProjectModel): ProjectModel | Error {
     try {
@@ -125,3 +124,5 @@ export default class ProjectController implements ProjectControllerModel {
     }
   }
 }
+
+export default ProjectController;

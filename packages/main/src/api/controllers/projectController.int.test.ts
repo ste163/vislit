@@ -1,22 +1,18 @@
 /**
  * @jest-environment node
  */
+import Database from "../database";
 import ProjectController from "./projectController";
 import ProjectRepository from "../repositories/projectRepository";
 import SearchController from "./searchController";
-import Database from "../database";
-import type DatabaseModel from "../interfaces/DatabaseModel";
-import type ProjectRespositoryModel from "../interfaces/ProjectRespositoryModel";
-import type SearchControllerModel from "../interfaces/SearchControllerModel";
-import type ProjectControllerModel from "../interfaces/ProjectControllerModel";
 import type { ProjectModel } from "interfaces";
 import type FileSystemController from "./fileSystemController";
 
 let seedData: ProjectModel[];
-let database: DatabaseModel;
-let projectRepository: ProjectRespositoryModel;
-let searchController: SearchControllerModel;
-let projectController: ProjectControllerModel;
+let database: Database;
+let projectRepository: ProjectRepository;
+let searchController: SearchController;
+let projectController: ProjectController;
 let fileSystemController: FileSystemController;
 
 describe("project-controller-integration", () => {
@@ -73,7 +69,7 @@ describe("project-controller-integration", () => {
     };
 
     projectController = new ProjectController(
-      mockProjectRespository as unknown as ProjectRespositoryModel,
+      mockProjectRespository as unknown as ProjectRepository,
       searchController,
       fileSystemController
     );
@@ -99,7 +95,7 @@ describe("project-controller-integration", () => {
     };
 
     projectController = new ProjectController(
-      mockProjectRespository as unknown as ProjectRespositoryModel,
+      mockProjectRespository as unknown as ProjectRepository,
       searchController,
       fileSystemController
     );
@@ -138,7 +134,7 @@ describe("project-controller-integration", () => {
     };
 
     projectController = new ProjectController(
-      mockProjectRespository as unknown as ProjectRespositoryModel,
+      mockProjectRespository as unknown as ProjectRepository,
       searchController,
       fileSystemController
     );
@@ -232,7 +228,7 @@ describe("project-controller-integration", () => {
     };
 
     projectController = new ProjectController(
-      mockProjectRespository as unknown as ProjectRespositoryModel,
+      mockProjectRespository as unknown as ProjectRepository,
       searchController,
       fileSystemController
     );
@@ -274,7 +270,7 @@ describe("project-controller-integration", () => {
     };
 
     projectController = new ProjectController(
-      mockProjectRespository as unknown as ProjectRespositoryModel,
+      mockProjectRespository as unknown as ProjectRepository,
       searchController,
       fileSystemController
     );

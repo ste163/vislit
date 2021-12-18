@@ -8,11 +8,10 @@ import FileSystemController from "./api/controllers/fileSystemController";
 import ProjectRepository from "./api/repositories/projectRepository";
 import ProjectController from "./api/controllers/projectController";
 import SearchController from "./api/controllers/searchController";
-import type ProjectControllerModel from "./api/interfaces/ProjectControllerModel";
 import type htmlData from "./api/types/htmlData";
 
 // declared outside of try block so it can be accessed by IPC
-let projectController: ProjectControllerModel;
+let projectController: ProjectController;
 let fileSystemController: FileSystemController;
 
 // For now, instantiate db, controllers, & repos here

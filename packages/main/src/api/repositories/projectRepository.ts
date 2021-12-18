@@ -1,8 +1,7 @@
 import type { ProjectModel } from "interfaces";
 import type DatabaseModel from "../interfaces/DatabaseModel";
-import type ProjectRespositoryModel from "../interfaces/ProjectRespositoryModel";
 
-export default class ProjectRepository implements ProjectRespositoryModel {
+ class ProjectRepository {
   #database: DatabaseModel;
 
   constructor(database: DatabaseModel) {
@@ -100,3 +99,5 @@ export default class ProjectRepository implements ProjectRespositoryModel {
     this.#database.db.write();
   }
 }
+
+export default ProjectRepository;
