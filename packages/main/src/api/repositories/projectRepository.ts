@@ -1,10 +1,10 @@
 import type { ProjectModel } from "interfaces";
-import type DatabaseModel from "../interfaces/DatabaseModel";
+import type Database from "../database";
 
  class ProjectRepository {
-  #database: DatabaseModel;
+  #database: Database;
 
-  constructor(database: DatabaseModel) {
+  constructor(database: Database) {
     this.#database = database;
   }
 
