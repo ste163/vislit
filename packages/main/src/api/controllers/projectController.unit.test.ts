@@ -4,6 +4,7 @@
 import type { ProjectModel } from "interfaces";
 import type ProjectRespositoryModel from "../interfaces/ProjectRespositoryModel";
 import type SearchControllerModel from "../interfaces/SearchControllerModel";
+import type FileSystemController from "./fileSystemController";
 import ProjectController from "./projectController";
 // No unit tests for getAllProjects, not enough controller logic exists to check
 
@@ -54,10 +55,12 @@ describe("project-controller-unit", () => {
       }),
     };
     const mockSearchController = null;
+    const mockFileSystemController = null;
 
     const projectController = new ProjectController(
       mockProjectRespository as unknown as ProjectRespositoryModel,
-      mockSearchController as unknown as SearchControllerModel
+      mockSearchController as unknown as SearchControllerModel,
+      mockFileSystemController as unknown as FileSystemController
     );
 
     expect(projectController.getAll()).toEqual(new Error());
@@ -68,10 +71,12 @@ describe("project-controller-unit", () => {
       getAll: jest.fn(() => PROJECTS),
     };
     const mockSearchController = null;
+    const mockFileSystemController = null;
 
     const projectController = new ProjectController(
       mockProjectRespository as unknown as ProjectRespositoryModel,
-      mockSearchController as unknown as SearchControllerModel
+      mockSearchController as unknown as SearchControllerModel,
+      mockFileSystemController as unknown as FileSystemController
     );
 
     expect(projectController.getAll()).toEqual(PROJECTS);
@@ -82,10 +87,12 @@ describe("project-controller-unit", () => {
       getById: jest.fn((id: string) => undefined),
     };
     const mockSearchController = null;
+    const mockFileSystemController = null;
 
     const projectController = new ProjectController(
       mockProjectRespository as unknown as ProjectRespositoryModel,
-      mockSearchController as unknown as SearchControllerModel
+      mockSearchController as unknown as SearchControllerModel,
+      mockFileSystemController as unknown as FileSystemController
     );
 
     expect(projectController.getById("123")).toEqual(
@@ -98,10 +105,12 @@ describe("project-controller-unit", () => {
       getById: jest.fn(() => PROJECT),
     };
     const mockSearchController = null;
+    const mockFileSystemController = null;
 
     const projectController = new ProjectController(
       mockProjectRespository as unknown as ProjectRespositoryModel,
-      mockSearchController as unknown as SearchControllerModel
+      mockSearchController as unknown as SearchControllerModel,
+      mockFileSystemController as unknown as FileSystemController
     );
 
     expect(projectController.getById("1")).toEqual(PROJECT);
@@ -112,10 +121,12 @@ describe("project-controller-unit", () => {
       getByTitle: jest.fn(() => PROJECT),
     };
     const mockSearchController = null;
+    const mockFileSystemController = null;
 
     const projectController = new ProjectController(
       mockProjectRespository as unknown as ProjectRespositoryModel,
-      mockSearchController as unknown as SearchControllerModel
+      mockSearchController as unknown as SearchControllerModel,
+      mockFileSystemController as unknown as FileSystemController
     );
 
     expect(projectController.add(PROJECT)).toEqual(
@@ -131,10 +142,12 @@ describe("project-controller-unit", () => {
       }),
     };
     const mockSearchController = null;
+    const mockFileSystemController = null;
 
     const projectController = new ProjectController(
       mockProjectRespository as unknown as ProjectRespositoryModel,
-      mockSearchController as unknown as SearchControllerModel
+      mockSearchController as unknown as SearchControllerModel,
+      mockFileSystemController as unknown as FileSystemController
     );
 
     expect(projectController.add(PROJECT)).toEqual(new Error());
@@ -148,10 +161,14 @@ describe("project-controller-unit", () => {
     const mockSearchController = {
       addProject: jest.fn(() => undefined),
     };
+    const mockFileSystemController = {
+      makeProjectDirectory: jest.fn(() => undefined),
+    };
 
     const projectController = new ProjectController(
       mockProjectRespository as unknown as ProjectRespositoryModel,
-      mockSearchController as unknown as SearchControllerModel
+      mockSearchController as unknown as SearchControllerModel,
+      mockFileSystemController as unknown as FileSystemController
     );
 
     expect(projectController.add(PROJECT)).toEqual(PROJECT);
@@ -164,10 +181,12 @@ describe("project-controller-unit", () => {
       }),
     };
     const mockSearchController = null;
+    const mockFileSystemController = null;
 
     const projectController = new ProjectController(
       mockProjectRespository as unknown as ProjectRespositoryModel,
-      mockSearchController as unknown as SearchControllerModel
+      mockSearchController as unknown as SearchControllerModel,
+      mockFileSystemController as unknown as FileSystemController
     );
 
     expect(projectController.update(PROJECT)).toEqual(
@@ -183,10 +202,12 @@ describe("project-controller-unit", () => {
       getByTitle: jest.fn(() => PROJECT),
     };
     const mockSearchController = null;
+    const mockFileSystemController = null;
 
     const projectController = new ProjectController(
       mockProjectRespository as unknown as ProjectRespositoryModel,
-      mockSearchController as unknown as SearchControllerModel
+      mockSearchController as unknown as SearchControllerModel,
+      mockFileSystemController as unknown as FileSystemController
     );
 
     expect(projectController.update(updatedProject)).toEqual(
@@ -203,10 +224,12 @@ describe("project-controller-unit", () => {
       }),
     };
     const mockSearchController = null;
+    const mockFileSystemController = null;
 
     const projectController = new ProjectController(
       mockProjectRespository as unknown as ProjectRespositoryModel,
-      mockSearchController as unknown as SearchControllerModel
+      mockSearchController as unknown as SearchControllerModel,
+      mockFileSystemController as unknown as FileSystemController
     );
 
     expect(projectController.update(PROJECT)).toEqual(new Error());
@@ -221,10 +244,12 @@ describe("project-controller-unit", () => {
     const mockSearchController = {
       updateProject: jest.fn(() => undefined),
     };
+    const mockFileSystemController = null;
 
     const projectController = new ProjectController(
       mockProjectRespository as unknown as ProjectRespositoryModel,
-      mockSearchController as unknown as SearchControllerModel
+      mockSearchController as unknown as SearchControllerModel,
+      mockFileSystemController as unknown as FileSystemController
     );
 
     expect(projectController.update(PROJECT)).toEqual(PROJECT);
@@ -237,10 +262,12 @@ describe("project-controller-unit", () => {
       }),
     };
     const mockSearchController = null;
+    const mockFileSystemController = null;
 
     const projectController = new ProjectController(
       mockProjectRespository as unknown as ProjectRespositoryModel,
-      mockSearchController as unknown as SearchControllerModel
+      mockSearchController as unknown as SearchControllerModel,
+      mockFileSystemController as unknown as FileSystemController
     );
 
     expect(projectController.delete(PROJECT.id)).toEqual(
@@ -256,10 +283,12 @@ describe("project-controller-unit", () => {
       }),
     };
     const mockSearchController = null;
+    const mockFileSystemController = null;
 
     const projectController = new ProjectController(
       mockProjectRespository as unknown as ProjectRespositoryModel,
-      mockSearchController as unknown as SearchControllerModel
+      mockSearchController as unknown as SearchControllerModel,
+      mockFileSystemController as unknown as FileSystemController
     );
 
     expect(projectController.delete(PROJECT.id)).toEqual(new Error());
@@ -273,10 +302,14 @@ describe("project-controller-unit", () => {
     const mockSearchController = {
       deleteProject: jest.fn(() => undefined),
     };
+    const mockFileSystemController = {
+      deleteProjectDirectory: jest.fn(() => undefined),
+    };
 
     const projectController = new ProjectController(
       mockProjectRespository as unknown as ProjectRespositoryModel,
-      mockSearchController as unknown as SearchControllerModel
+      mockSearchController as unknown as SearchControllerModel,
+      mockFileSystemController as unknown as FileSystemController
     );
 
     expect(projectController.delete(PROJECT.id)).toEqual(true);

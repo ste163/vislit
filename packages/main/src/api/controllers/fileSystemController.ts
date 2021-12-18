@@ -1,7 +1,6 @@
 import fs from "fs";
 import formatDate from "../helpers/formatDate";
-// Why abstract fs functions?
-// Because to utilize fs, need file paths exposed by electron's { app }
+import type htmlData from "../types/htmlData";
 
 // TODO:
 // Return array of all files in a directory
@@ -12,6 +11,11 @@ interface fileSystemController {
   getUserDataPath: () => string;
   makeProjectDirectory: (projectId: string) => void;
   deleteProjectDirectory: (projectId: string) => void;
+  writeHtmlFile: (htmlData: htmlData) => true | Error;
+  readMostRecentHtmlFile: (
+    id: string,
+    type: "documents" | "notes"
+  ) => string | Error;
 }
 
 class FileSystemController implements fileSystemController {
@@ -36,12 +40,7 @@ class FileSystemController implements fileSystemController {
     fs.rmdirSync(`${userData}/projects/${projectId}`, { recursive: true });
   }
 
-  writeHtmlFile(htmlData: {
-    id: string;
-    html: string;
-    type: "documents" | "notes";
-    createdAt: Date;
-  }): true | Error {
+  writeHtmlFile(htmlData: htmlData): true | Error {
     try {
       const userData = `${this.getUserDataPath()}/projects/${htmlData.id}/${
         htmlData.type
@@ -57,7 +56,7 @@ class FileSystemController implements fileSystemController {
   readMostRecentHtmlFile(
     id: string,
     type: "documents" | "notes"
-  ): string | Error | void {
+  ): string | Error {
     try {
       const userData = `${this.getUserDataPath()}/projects/${id}/${type}`;
       const files = fs.readdirSync(userData);

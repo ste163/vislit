@@ -9,6 +9,7 @@ import ProjectRepository from "./api/repositories/projectRepository";
 import ProjectController from "./api/controllers/projectController";
 import SearchController from "./api/controllers/searchController";
 import type ProjectControllerModel from "./api/interfaces/ProjectControllerModel";
+import type htmlData from "./api/types/htmlData";
 
 // declared outside of try block so it can be accessed by IPC
 let projectController: ProjectControllerModel;
@@ -170,17 +171,6 @@ ipcMain.handle("writer-get-by-id", (_e, projectId: string) => {
   console.log("GET PROJECTS FOR", projectId);
 });
 
-ipcMain.handle(
-  "writer-save",
-  (
-    _e,
-    data: {
-      id: string;
-      html: string;
-      type: "documents" | "notes";
-      createdAt: Date;
-    }
-  ) => {
-    return fileSystemController.writeHtmlFile(data);
-  }
-);
+ipcMain.handle("writer-save", (_e, data: htmlData) => {
+  return fileSystemController.writeHtmlFile(data);
+});
