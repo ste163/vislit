@@ -45,9 +45,25 @@ class FileSystemController implements fileSystemController {
     try {
       const userData = `${this.getUserDataPath()}/projects/${htmlData.id}/${
         htmlData.type
-      }/${formatDate(htmlData.createdAt)}.html`;
+      }/${formatDate(htmlData.createdAt)}-${htmlData.id}.html`;
       fs.writeFileSync(userData, htmlData.html);
       return true;
+    } catch (error: any | Error) {
+      console.error(error);
+      return error;
+    }
+  }
+
+  readMostRecentHtmlFile(
+    id: string,
+    type: "documents" | "notes"
+  ): string | Error | void {
+    try {
+      const userData = `${this.getUserDataPath()}/projects/${id}/${type}`;
+      const files = fs.readdirSync(userData);
+      // for now, assuming last file in list is most recent
+      const mostRecentFileName = files[files.length - 1];
+      return fs.readFileSync(`${userData}/${mostRecentFileName}`, "utf-8");
     } catch (error: any | Error) {
       console.error(error);
       return error;

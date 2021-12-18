@@ -161,6 +161,15 @@ ipcMain.handle("projects-delete", (_e, projectId: string) => {
 // project search endpoint
 // project auto-suggestion search endpoint
 
+// Writer
+ipcMain.handle("writer-get-most-recent", (_e, projectId: string) => {
+  return fileSystemController.readMostRecentHtmlFile(projectId, "documents");
+});
+
+ipcMain.handle("writer-get-by-id", (_e, projectId: string) => {
+  console.log("GET PROJECTS FOR", projectId);
+});
+
 ipcMain.handle(
   "writer-save",
   (
