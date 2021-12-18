@@ -1,10 +1,52 @@
 <script setup lang="ts">
+import { inject, onMounted } from "vue";
+import type { Content } from "@tiptap/vue-3";
 import { useEditor, EditorContent } from "@tiptap/vue-3";
 import StarterKit from "@tiptap/starter-kit";
+import type StoreModel from "../store/interfaces/StoreModel";
+
+const store = inject("store") as StoreModel;
 
 const editor = useEditor({
-  content: "<p>I’m running Tiptap with Vue.js. 🎉</p>",
+  content: "<h1></h1>",
   extensions: [StarterKit],
+});
+
+async function onSubmit(): Promise<void> {
+  try {
+    const html = editor.value.getHTML();
+    const { api } = window;
+    const data = {
+      id: store.projects.state.active?.id,
+      html,
+      type: "documents",
+      createdAt: new Date(),
+    };
+    const response = await api.send("writer-save", data);
+    // check if error
+    // or true
+    // display success or error banner
+    console.log(response);
+  } catch (error: any) {
+    console.error(error);
+  }
+}
+
+onMounted(async () => {
+  // TODO:
+  // fetch array of all file names to display on frontend for selecting
+  // once one is selected, make another call to fetch that html data
+  // then display
+  try {
+    const { api } = window;
+    const mostRecentDocument = (await api.send(
+      "writer-get-most-recent",
+      store.projects.state.active?.id
+    )) as Content;
+    editor.value.commands.setContent(mostRecentDocument);
+  } catch (error: any | Error) {
+    console.error(error);
+  }
 });
 </script>
 
@@ -96,6 +138,8 @@ const editor = useEditor({
   </div>
 
   <editor-content class="doc-editor p-5" :editor="editor" />
+
+  <button @click="onSubmit">Save Content</button>
 </template>
 
 <style scoped>

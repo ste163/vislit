@@ -2,17 +2,21 @@ import type { ProjectModel } from "interfaces";
 import type ProjectControllerModel from "../interfaces/ProjectControllerModel";
 import type ProjectRespositoryModel from "../interfaces/ProjectRespositoryModel";
 import type SearchControllerModel from "../interfaces/SearchControllerModel";
+import type FileSystemController from "./fileSystemController";
 
 export default class ProjectController implements ProjectControllerModel {
   #projectRepository: ProjectRespositoryModel;
   #searchController: SearchControllerModel;
+  #fileSystemController: FileSystemController;
 
   constructor(
     projectRepository: ProjectRespositoryModel,
-    searchController: SearchControllerModel
+    searchController: SearchControllerModel,
+    fileSystemController: FileSystemController
   ) {
     this.#projectRepository = projectRepository;
     this.#searchController = searchController;
+    this.#fileSystemController = fileSystemController;
   }
 
   #checkForTitleTaken(title: string): void {
@@ -56,6 +60,8 @@ export default class ProjectController implements ProjectControllerModel {
       const response = this.#projectRepository.add(project);
 
       this.#searchController.addProject(response);
+      this.#fileSystemController.makeProjectDirectory(response.id);
+
       return response;
     } catch (e: any | Error) {
       console.error(e);
@@ -110,6 +116,7 @@ export default class ProjectController implements ProjectControllerModel {
 
       this.#projectRepository.delete(id);
       this.#searchController.deleteProject(project);
+      this.#fileSystemController.deleteProjectDirectory(id);
 
       return true;
     } catch (e: any | Error) {

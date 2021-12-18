@@ -1,28 +1,44 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
 import { URL } from "url";
+import { existsSync, mkdirSync } from "fs";
 import type { ProjectModel } from "interfaces";
 import Database from "./api/database";
+import FileSystemController from "./api/controllers/fileSystemController";
 import ProjectRepository from "./api/repositories/projectRepository";
 import ProjectController from "./api/controllers/projectController";
 import SearchController from "./api/controllers/searchController";
 import type ProjectControllerModel from "./api/interfaces/ProjectControllerModel";
+import type htmlData from "./api/types/htmlData";
 
 // declared outside of try block so it can be accessed by IPC
 let projectController: ProjectControllerModel;
+let fileSystemController: FileSystemController;
 
 // For now, instantiate db, controllers, & repos here
 try {
   const database = new Database(app);
+  fileSystemController = new FileSystemController(app.getPath("userData"));
   const projectRepository = new ProjectRepository(database);
   const searchController = new SearchController(projectRepository);
   projectController = new ProjectController(
     projectRepository,
-    searchController
+    searchController,
+    fileSystemController
   );
 } catch (error) {
-  const e = error as Error;
-  console.log(e);
+  console.log(error);
+}
+
+// For now, check for projects & notes directories here
+try {
+  const userDataPath = app.getPath("userData");
+  console.log(userDataPath);
+  // linux & windows use different slashes -> is this a problem?
+  if (!existsSync(`${userDataPath}/projects`))
+    mkdirSync(`${userDataPath}/projects`);
+} catch (error) {
+  console.log(error);
 }
 
 const isSingleInstance = app.requestSingleInstanceLock();
@@ -131,17 +147,30 @@ ipcMain.handle("projects-get-all", () => {
   return projectController.getAll();
 });
 
-ipcMain.handle("projects-add", (e, project: ProjectModel) => {
+ipcMain.handle("projects-add", (_e, project: ProjectModel) => {
   return projectController.add(project);
 });
 
-ipcMain.handle("projects-update", (e, project: ProjectModel) => {
+ipcMain.handle("projects-update", (_e, project: ProjectModel) => {
   return projectController.update(project);
 });
 
-ipcMain.handle("projects-delete", (e, projectId: string) => {
+ipcMain.handle("projects-delete", (_e, projectId: string) => {
   return projectController.delete(projectId);
 });
 
 // project search endpoint
 // project auto-suggestion search endpoint
+
+// Writer
+ipcMain.handle("writer-get-most-recent", (_e, projectId: string) => {
+  return fileSystemController.readMostRecentHtmlFile(projectId, "documents");
+});
+
+ipcMain.handle("writer-get-by-id", (_e, projectId: string) => {
+  console.log("GET PROJECTS FOR", projectId);
+});
+
+ipcMain.handle("writer-save", (_e, data: htmlData) => {
+  return fileSystemController.writeHtmlFile(data);
+});

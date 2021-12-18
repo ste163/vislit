@@ -10,23 +10,21 @@ import type ProjectRespositoryModel from "../interfaces/ProjectRespositoryModel"
 import type SearchControllerModel from "../interfaces/SearchControllerModel";
 import type ProjectControllerModel from "../interfaces/ProjectControllerModel";
 import type { ProjectModel } from "interfaces";
+import type FileSystemController from "./fileSystemController";
 
 let seedData: ProjectModel[];
 let database: DatabaseModel;
 let projectRepository: ProjectRespositoryModel;
 let searchController: SearchControllerModel;
 let projectController: ProjectControllerModel;
+let fileSystemController: FileSystemController;
 
 describe("project-controller-integration", () => {
   beforeEach(() => {
     jest.spyOn(console, "error").mockImplementation(() => {});
-
     const { app } = jest.requireMock("electron");
-
     database = new Database(app);
-
     const seedDate = new Date();
-
     seedData = [
       {
         id: "1",
@@ -56,9 +54,14 @@ describe("project-controller-integration", () => {
 
     projectRepository = new ProjectRepository(database);
     searchController = new SearchController(projectRepository);
+    const mockFileSystemController = {
+      makeProjectDirectory: jest.fn(() => undefined),
+      deleteProjectDirectory: jest.fn(() => undefined),
+    } as unknown as FileSystemController;
     projectController = new ProjectController(
       projectRepository,
-      searchController
+      searchController,
+      mockFileSystemController
     );
   });
 
@@ -71,7 +74,8 @@ describe("project-controller-integration", () => {
 
     projectController = new ProjectController(
       mockProjectRespository as unknown as ProjectRespositoryModel,
-      searchController
+      searchController,
+      fileSystemController
     );
 
     expect(projectController.getAll()).toEqual(new Error());
@@ -96,7 +100,8 @@ describe("project-controller-integration", () => {
 
     projectController = new ProjectController(
       mockProjectRespository as unknown as ProjectRespositoryModel,
-      searchController
+      searchController,
+      fileSystemController
     );
 
     expect(projectController.getById("20")).toEqual(new Error());
@@ -134,7 +139,8 @@ describe("project-controller-integration", () => {
 
     projectController = new ProjectController(
       mockProjectRespository as unknown as ProjectRespositoryModel,
-      searchController
+      searchController,
+      fileSystemController
     );
 
     expect(
@@ -227,7 +233,8 @@ describe("project-controller-integration", () => {
 
     projectController = new ProjectController(
       mockProjectRespository as unknown as ProjectRespositoryModel,
-      searchController
+      searchController,
+      fileSystemController
     );
 
     expect(projectController.update(projectToUpdate)).toEqual(new Error());
@@ -268,7 +275,8 @@ describe("project-controller-integration", () => {
 
     projectController = new ProjectController(
       mockProjectRespository as unknown as ProjectRespositoryModel,
-      searchController
+      searchController,
+      fileSystemController
     );
 
     expect(projectController.delete("1")).toEqual(new Error());

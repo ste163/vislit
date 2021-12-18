@@ -9,6 +9,9 @@ const validChannels = [
   "projects-add",
   "projects-update",
   "projects-delete",
+  "writer-get-most-recent",
+  "writer-get-by-id",
+  "writer-save",
 ];
 
 // Expose protected methods that allow the renderer process to use
