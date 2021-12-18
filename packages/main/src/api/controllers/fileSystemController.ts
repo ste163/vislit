@@ -4,9 +4,9 @@ import formatDate from "../helpers/formatDate";
 // Because to utilize fs, need file paths exposed by electron's { app }
 
 // TODO:
-// write file
-// returning list of files in directory
-// retreiving files?
+// Return array of all files in a directory
+// Delete an individual file
+// Get an individual file by name (related to returning the array as that gives the file name)
 
 interface fileSystemController {
   getUserDataPath: () => string;
