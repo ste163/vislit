@@ -23,7 +23,7 @@ describe("project-controller-integration", () => {
     const seedDate = new Date();
     seedData = [
       {
-        id: '1',
+        id: "1",
         title: "It",
         description: "A murderous clown attacks a town",
         typeId: 1,
@@ -44,10 +44,7 @@ describe("project-controller-integration", () => {
       },
     ];
 
-    if (database.db.data !== null) {
-      database.db.data.projects = seedData;
-    }
-
+    database.db.data!.projects = seedData;
     projectRepository = new ProjectRepository(database);
     searchController = new SearchController(projectRepository);
     const mockFileSystemController = {

@@ -1,19 +1,10 @@
 /**
  * @jest-environment node
  */
-
-// getAll throws error
-// can get all projects
-// trying to add project with type in db throws error
-// adding a new type that's not in db throws error
-// can add new type
-// trying to delete a project by id not in db throws error
-// can delete type
-
 import type { Type } from "interfaces";
 import Database from "../database";
-import type TypeRepository from "../repositories/typeRepository";
-import type TypeController from "./typeController";
+import TypeRepository from "../repositories/typeRepository";
+import TypeController from "./typeController";
 
 let seedData: Type[];
 let database: Database;
@@ -55,5 +46,25 @@ describe("type-controller-integration", () => {
         value: "poetry collection",
       },
     ];
+
+    database.db.data!.types = seedData;
+    typeRepository = new TypeRepository(database);
+    typeController = new TypeController(typeRepository);
   });
+
+  it("returns error when get all types fails", () => {});
+
+  it("returns all types sorted alphabetically", () => {});
+
+  it("returns error when trying to add a type already in db", () => {});
+
+  it("returns error when adding type fails", () => {});
+
+  it("returns added type successfully", () => {});
+
+  it("returns error when trying to delete type by id not in database", () => {});
+
+  it("returns error when deleting type fails", () => {});
+
+  it("returns true when deleting is successful", () => {});
 });
