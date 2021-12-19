@@ -15,16 +15,11 @@ import type Database from "../database";
       const sortedByMostRecent = projects.sort(
         (a: Project, b: Project): number => {
           if (a.dateModified !== null && b.dateModified !== null) {
-            const aDate = new Date(a.dateModified);
-            const bDate = new Date(b.dateModified);
-
-            if (aDate > bDate) {
-              return -1;
-            } else if (aDate < bDate) {
-              return 1;
-            } else {
-              return 0;
-            }
+            const dateA = new Date(a.dateModified);
+            const dateB = new Date(b.dateModified);
+            if (dateA > dateB) return -1;
+            if (dateA < dateB) return 1;
+            return 0;
           } else {
             throw Error("Date modified for project was null");
           }
