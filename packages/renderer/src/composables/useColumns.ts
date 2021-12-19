@@ -2,7 +2,7 @@
 import type { Column } from "interfaces";
 import type { ComputedRef, Ref } from "vue";
 import { computed, ref } from "vue";
-import type StoreModel from "../store/interfaces/StoreModel";
+import type Store from '../store/Store';
 
 // SORTING IS BROKEN AFTER IMPLEMENTING COLUMN COMPONENTS
 // Attempt to refactor it where it's based on column.position = index of where it is in the array
@@ -28,7 +28,7 @@ type columnLayout = {
 
 // Need to pass in HTMLDivElements because I need real references from template to get sizes
 export default function useColumns(
-  store: StoreModel,
+  store: Store,
   leftDropZoneColumns: Ref<HTMLDivElement[]>,
   rightDropZoneColumns: Ref<HTMLDivElement[]>
 ): columnLayout {

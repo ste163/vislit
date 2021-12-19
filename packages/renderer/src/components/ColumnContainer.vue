@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PropType } from "vue";
 import { inject, ref, computed } from "vue";
-import type StoreModel from "../store/interfaces/StoreModel";
+import type Store from '../store/Store';
 import type { Column } from "interfaces";
 import ButtonClose from "./ButtonClose.vue";
 import TheColumnProject from "./TheColumnProject.vue";
@@ -9,9 +9,8 @@ import TheColumnNote from "./TheColumnNote.vue";
 import TheColumnLexicon from "./TheColumnLexicon.vue";
 import TheColumnSetting from "./TheColumnSetting.vue";
 
-const store = inject("store") as StoreModel;
+const store = inject("store") as Store;
 
-// eslint-disable-next-line no-undef
 const props = defineProps({
   column: {
     type: Object as PropType<Column>,
@@ -23,7 +22,6 @@ const props = defineProps({
   },
 });
 
-// eslint-disable-next-line no-undef
 const emits = defineEmits(["dragstart", "dragend"]);
 
 const isResizing = ref<boolean>(false);

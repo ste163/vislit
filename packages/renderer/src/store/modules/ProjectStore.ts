@@ -1,9 +1,8 @@
 import { reactive } from "vue";
 import type { Project } from "interfaces";
-import type ProjectStoreModel from "../interfaces/ProjectStoreModel";
 import type ProjectState from "../types/ProjectState";
 
-export default class ProjectStore implements ProjectStoreModel {
+class ProjectStore {
   public state: ProjectState;
 
   constructor() {
@@ -115,3 +114,5 @@ export default class ProjectStore implements ProjectStoreModel {
     }
   }
 }
+
+export default ProjectStore;

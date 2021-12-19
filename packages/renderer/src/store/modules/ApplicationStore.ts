@@ -1,8 +1,7 @@
 import { reactive } from "vue";
-import type ApplicationStoreModel from "../interfaces/ApplicationStoreModel";
 import type ApplicationState from "../types/ApplicationState";
 
-export default class ApplicationStore implements ApplicationStoreModel {
+class ApplicationStore  {
   public state: ApplicationState;
 
   constructor() {
@@ -69,3 +68,5 @@ export default class ApplicationStore implements ApplicationStoreModel {
     this.state.isSidebarMinimized = !this.state.isSidebarMinimized;
   };
 }
+
+export default ApplicationStore;

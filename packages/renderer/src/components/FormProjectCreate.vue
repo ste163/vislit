@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { inject } from "vue";
 import { useRouter } from "vue-router";
-import type StoreModel from "../store/interfaces/StoreModel";
+import type Store from '../store/Store';
 import { useForm } from "vee-validate";
 import { toFormValidator } from "@vee-validate/zod";
 import { z } from "zod";
@@ -10,7 +10,7 @@ import InputText from "./InputText.vue";
 import ButtonSubmit from "./ButtonSubmit.vue";
 import ButtonBack from "./ButtonBack.vue";
 
-const store = inject("store") as StoreModel;
+const store = inject("store") as Store;
 
 const router = useRouter();
 
@@ -33,7 +33,6 @@ const { handleSubmit, meta } = useForm({
   initialValues: initialFormValues,
 });
 
-// eslint-disable-next-line no-undef
 const emit = defineEmits(["goBack"]);
 
 function emitGoBack(): void {

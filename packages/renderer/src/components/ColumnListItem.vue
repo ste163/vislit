@@ -2,15 +2,14 @@
 import { inject, ref, watch } from "vue";
 import type { PropType } from "vue";
 import type { Project } from "interfaces";
-import type StoreModel from "../store/interfaces/StoreModel";
+import type Store from '../store/Store';
 import BaseButtonToggle from "./BaseButtonToggle.vue";
 
-const store = inject("store") as StoreModel;
+const store = inject("store") as Store;
 
 // Prop for section? with a type that contains the strings: "inProgress", "Archived", "Completed"
 // then decide colors based on that
 
-// eslint-disable-next-line no-undef
 const props = defineProps({
   project: {
     type: Object as PropType<Project>,

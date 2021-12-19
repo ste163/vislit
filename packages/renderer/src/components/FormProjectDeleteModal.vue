@@ -2,11 +2,11 @@
 import { computed, inject } from "vue";
 import { useRouter } from "vue-router";
 import type { Project } from "interfaces";
-import type StoreModel from "../store/interfaces/StoreModel";
+import type Store from '../store/Store';
 import BaseTemplateModalDelete from "./BaseTemplateModalDelete.vue";
 
-const store = inject("store") as StoreModel;
-// eslint-disable-next-line no-undef
+const store = inject("store") as Store;
+
 const props = defineProps({
   isModalActive: {
     type: Boolean,
@@ -15,7 +15,6 @@ const props = defineProps({
   },
 });
 
-// eslint-disable-next-line no-undef
 const emit = defineEmits(["handleDeleteModalClose"]);
 
 const router = useRouter();
