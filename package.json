@@ -33,7 +33,7 @@
     "pre-push": "npm run typecheck"
   },
   "lint-staged": {
-    "packages/*/src/**.{js,ts,vue}": "prettier --write .",
+    "packages/**/src/**.{js,ts,vue}": "prettier --write .",
     "*.{js,ts,vue}": "eslint --cache --fix"
   },
   "devDependencies": {

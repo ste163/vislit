@@ -24,7 +24,7 @@ describe("project-controller-integration", () => {
     seedData = [
       {
         id: "1",          
-        title: "It",          
+        title: 'It',          
         description: "A murderous clown attacks a town",  
         typeId: 1,
         completed: false,
