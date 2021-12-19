@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { computed, inject } from "vue";
 import { useRouter } from "vue-router";
-import type { ProjectModel } from "interfaces";
-import type StoreModel from "../store/interfaces/StoreModel";
+import type { Project } from "interfaces";
+import type Store from '../store/Store';
 import BaseTemplateModalDelete from "./BaseTemplateModalDelete.vue";
 
-const store = inject("store") as StoreModel;
-// eslint-disable-next-line no-undef
+const store = inject("store") as Store;
+
 const props = defineProps({
   isModalActive: {
     type: Boolean,
@@ -15,14 +15,13 @@ const props = defineProps({
   },
 });
 
-// eslint-disable-next-line no-undef
 const emit = defineEmits(["handleDeleteModalClose"]);
 
 const router = useRouter();
 
 function archiveProject(): void {
   if (store.projects.state.active !== null) {
-    const updatedProject: ProjectModel = {
+    const updatedProject: Project = {
       id: store.projects.state.active.id,
       typeId: store.projects.state.active.typeId,
       title: store.projects.state.active.title,

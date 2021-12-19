@@ -3,9 +3,9 @@ import { inject, onMounted } from "vue";
 import type { Content } from "@tiptap/vue-3";
 import { useEditor, EditorContent } from "@tiptap/vue-3";
 import StarterKit from "@tiptap/starter-kit";
-import type StoreModel from "../store/interfaces/StoreModel";
+import type Store from '../store/Store';
 
-const store = inject("store") as StoreModel;
+const store = inject("store") as Store;
 
 const editor = useEditor({
   content: "<h1></h1>",

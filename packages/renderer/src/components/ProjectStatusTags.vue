@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import type { PropType } from "vue";
-import type { ProjectModel } from "interfaces";
+import type { Project } from "interfaces";
 
 const props = defineProps({
   project: {
-    type: Object as PropType<ProjectModel>,
+    type: Object as PropType<Project>,
     required: true,
   },
 });

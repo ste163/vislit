@@ -1,17 +1,16 @@
-import type { ProjectModel } from "interfaces";
-import type ProjectControllerModel from "../interfaces/ProjectControllerModel";
-import type ProjectRespositoryModel from "../interfaces/ProjectRespositoryModel";
-import type SearchControllerModel from "../interfaces/SearchControllerModel";
+import type { Project } from "interfaces";
+import type SearchController from "./searchController";
 import type FileSystemController from "./fileSystemController";
+import type ProjectRepository from "../repositories/projectRepository";
 
-export default class ProjectController implements ProjectControllerModel {
-  #projectRepository: ProjectRespositoryModel;
-  #searchController: SearchControllerModel;
+ class ProjectController {
+  #projectRepository: ProjectRepository;
+  #searchController: SearchController;
   #fileSystemController: FileSystemController;
 
   constructor(
-    projectRepository: ProjectRespositoryModel,
-    searchController: SearchControllerModel,
+    projectRepository: ProjectRepository,
+    searchController: SearchController,
     fileSystemController: FileSystemController
   ) {
     this.#projectRepository = projectRepository;
@@ -24,7 +23,7 @@ export default class ProjectController implements ProjectControllerModel {
     if (project) throw new Error("Project title already in database");
   }
 
-  getAll(): Array<ProjectModel> | Error {
+  getAll(): Array<Project> | Error {
     try {
       return this.#projectRepository.getAll();
     } catch (e: any | Error) {
@@ -33,7 +32,7 @@ export default class ProjectController implements ProjectControllerModel {
     }
   }
 
-  getById(id: string): ProjectModel | Error {
+  getById(id: string): Project | Error {
     try {
       const project = this.#projectRepository.getById(id);
 
@@ -48,7 +47,7 @@ export default class ProjectController implements ProjectControllerModel {
     }
   }
 
-  add(project: ProjectModel): ProjectModel | Error {
+  add(project: Project): Project | Error {
     try {
       this.#checkForTitleTaken(project.title);
 
@@ -67,9 +66,9 @@ export default class ProjectController implements ProjectControllerModel {
       console.error(e);
       return e;
     }
-  }
+  } 
 
-  update(project: ProjectModel): ProjectModel | Error {
+  update(project: Project): Project | Error {
     try {
       const projectToUpdate = this.getById(project.id);
       // Must get a copy of original project
@@ -95,7 +94,7 @@ export default class ProjectController implements ProjectControllerModel {
       const updatedProject = this.#projectRepository.update(projectToUpdate);
 
       this.#searchController.updateProject(
-        originalProjectForIndex as ProjectModel,
+        originalProjectForIndex as Project,
         updatedProject
       );
 
@@ -125,3 +124,5 @@ export default class ProjectController implements ProjectControllerModel {
     }
   }
 }
+
+export default ProjectController;

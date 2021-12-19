@@ -2,17 +2,29 @@ import lodash from "lodash";
 import { nanoid } from "nanoid/non-secure";
 import { JSONFileSync, LowSync, MemorySync } from "lowdb";
 import type { App } from "electron";
-import type { ProjectModel } from "interfaces";
-import type DatabaseModel from "./interfaces/DatabaseModel";
-import type VislitDatabaseModel from "./interfaces/VislitDatabaseModel";
-import type LowDbModel from "./interfaces/LowDbModel";
+import type { Project } from "interfaces";
+import type { ObjectChain } from "lodash";
 
-export default class Database implements DatabaseModel {
+interface VislitDatabase {
+  dbType: string;
+  projects: Array<Project>;
+  types: Array<unknown>;
+  progress: Array<unknown>;
+  notes: Array<unknown>;
+  projectLexicons: Array<unknown>;
+  lexicons: Array<unknown>;
+  words: Array<unknown>;
+}
+
+interface LowDbModel extends LowSync<VislitDatabase> {
+  chain: ObjectChain<VislitDatabase>; // Needed to include the chain function
+}
+
+export default class Database {
   public db: LowDbModel;
-  public generateUniqueId: (item: ProjectModel) => ProjectModel;
+  public generateUniqueId: (item: Project) => Project;
 
   #app: App;
-  #isTestEnv: string | undefined;
   #getDbPath: () => string;
 
   constructor(app: App) {
@@ -23,11 +35,11 @@ export default class Database implements DatabaseModel {
 
     const loadDatabase = (): LowDbModel => {
       const adapter =
-        this.#isTestEnv === "test"
-          ? new MemorySync<VislitDatabaseModel>() // in-memory test database
-          : new JSONFileSync<VislitDatabaseModel>(this.#getDbPath());
+      process.env.NODE_ENV === "test"
+          ? new MemorySync<VislitDatabase>() // in-memory test database
+          : new JSONFileSync<VislitDatabase>(this.#getDbPath());
 
-      const db = new LowSync<VislitDatabaseModel>(adapter) as LowDbModel;
+      const db = new LowSync<VislitDatabase>(adapter) as LowDbModel;
 
       db.read();
 
@@ -54,9 +66,8 @@ export default class Database implements DatabaseModel {
     };
 
     this.#app = app;
-    this.#isTestEnv = process.env.NODE_ENV;
     this.db = loadDatabase();
-    this.generateUniqueId = (item: ProjectModel) => {
+    this.generateUniqueId = (item: Project) => {
       item.id = nanoid(21);
       return item;
     };

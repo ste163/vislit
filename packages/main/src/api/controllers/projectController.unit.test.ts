@@ -1,14 +1,14 @@
 /**
  * @jest-environment node
  */
-import type { ProjectModel } from "interfaces";
-import type ProjectRespositoryModel from "../interfaces/ProjectRespositoryModel";
-import type SearchControllerModel from "../interfaces/SearchControllerModel";
+import type { Project } from "interfaces";
+import type ProjectRepository from "../repositories/projectRepository";
+import type SearchController from "./searchController";
 import type FileSystemController from "./fileSystemController";
 import ProjectController from "./projectController";
 // No unit tests for getAllProjects, not enough controller logic exists to check
 
-const PROJECT: ProjectModel = {
+const PROJECT: Project = {
   id: "1",
   title: "It",
   description: "A murderous clown attacks a town",
@@ -19,7 +19,7 @@ const PROJECT: ProjectModel = {
   dateModified: null,
 };
 
-const PROJECTS: ProjectModel[] = [
+const PROJECTS: Project[] = [
   {
     id: "1",
     title: "It",
@@ -49,7 +49,7 @@ describe("project-controller-unit", () => {
   });
 
   it("returns error when getting all projects", () => {
-    const mockProjectRespository = {
+    const mockProjectRepository = {
       getAll: jest.fn(() => {
         throw new Error();
       }),
@@ -58,8 +58,8 @@ describe("project-controller-unit", () => {
     const mockFileSystemController = null;
 
     const projectController = new ProjectController(
-      mockProjectRespository as unknown as ProjectRespositoryModel,
-      mockSearchController as unknown as SearchControllerModel,
+      mockProjectRepository as unknown as ProjectRepository,
+      mockSearchController as unknown as SearchController,
       mockFileSystemController as unknown as FileSystemController
     );
 
@@ -67,15 +67,15 @@ describe("project-controller-unit", () => {
   });
 
   it("returns all projects", () => {
-    const mockProjectRespository = {
+    const mockProjectRepository = {
       getAll: jest.fn(() => PROJECTS),
     };
     const mockSearchController = null;
     const mockFileSystemController = null;
 
     const projectController = new ProjectController(
-      mockProjectRespository as unknown as ProjectRespositoryModel,
-      mockSearchController as unknown as SearchControllerModel,
+      mockProjectRepository as unknown as ProjectRepository,
+      mockSearchController as unknown as SearchController,
       mockFileSystemController as unknown as FileSystemController
     );
 
@@ -83,15 +83,15 @@ describe("project-controller-unit", () => {
   });
 
   it("returns error when get by id fails", () => {
-    const mockProjectRespository = {
+    const mockProjectRepository = {
       getById: jest.fn((id: string) => undefined),
     };
     const mockSearchController = null;
     const mockFileSystemController = null;
 
     const projectController = new ProjectController(
-      mockProjectRespository as unknown as ProjectRespositoryModel,
-      mockSearchController as unknown as SearchControllerModel,
+      mockProjectRepository as unknown as ProjectRepository,
+      mockSearchController as unknown as SearchController,
       mockFileSystemController as unknown as FileSystemController
     );
 
@@ -101,15 +101,15 @@ describe("project-controller-unit", () => {
   });
 
   it("returns project by id", () => {
-    const mockProjectRespository = {
+    const mockProjectRepository = {
       getById: jest.fn(() => PROJECT),
     };
     const mockSearchController = null;
     const mockFileSystemController = null;
 
     const projectController = new ProjectController(
-      mockProjectRespository as unknown as ProjectRespositoryModel,
-      mockSearchController as unknown as SearchControllerModel,
+      mockProjectRepository as unknown as ProjectRepository,
+      mockSearchController as unknown as SearchController,
       mockFileSystemController as unknown as FileSystemController
     );
 
@@ -117,15 +117,15 @@ describe("project-controller-unit", () => {
   });
 
   it("returns duplicate title error when adding project with title already in db", () => {
-    const mockProjectRespository = {
+    const mockProjectRepository = {
       getByTitle: jest.fn(() => PROJECT),
     };
     const mockSearchController = null;
     const mockFileSystemController = null;
 
     const projectController = new ProjectController(
-      mockProjectRespository as unknown as ProjectRespositoryModel,
-      mockSearchController as unknown as SearchControllerModel,
+      mockProjectRepository as unknown as ProjectRepository,
+      mockSearchController as unknown as SearchController,
       mockFileSystemController as unknown as FileSystemController
     );
 
@@ -135,7 +135,7 @@ describe("project-controller-unit", () => {
   });
 
   it("returns error when add project fails", () => {
-    const mockProjectRespository = {
+    const mockProjectRepository = {
       getByTitle: jest.fn(() => undefined),
       add: jest.fn(() => {
         throw new Error();
@@ -145,8 +145,8 @@ describe("project-controller-unit", () => {
     const mockFileSystemController = null;
 
     const projectController = new ProjectController(
-      mockProjectRespository as unknown as ProjectRespositoryModel,
-      mockSearchController as unknown as SearchControllerModel,
+      mockProjectRepository as unknown as ProjectRepository,
+      mockSearchController as unknown as SearchController,
       mockFileSystemController as unknown as FileSystemController
     );
 
@@ -154,7 +154,7 @@ describe("project-controller-unit", () => {
   });
 
   it("adds project to database and returns the project", () => {
-    const mockProjectRespository = {
+    const mockProjectRepository = {
       getByTitle: jest.fn(() => undefined),
       add: jest.fn(() => PROJECT),
     };
@@ -166,8 +166,8 @@ describe("project-controller-unit", () => {
     };
 
     const projectController = new ProjectController(
-      mockProjectRespository as unknown as ProjectRespositoryModel,
-      mockSearchController as unknown as SearchControllerModel,
+      mockProjectRepository as unknown as ProjectRepository,
+      mockSearchController as unknown as SearchController,
       mockFileSystemController as unknown as FileSystemController
     );
 
@@ -175,7 +175,7 @@ describe("project-controller-unit", () => {
   });
 
   it("returns error if updating a project with id not in database", () => {
-    const mockProjectRespository = {
+    const mockProjectRepository = {
       getById: jest.fn((id) => {
         throw new Error(`Project with id ${id} not in database`);
       }),
@@ -184,8 +184,8 @@ describe("project-controller-unit", () => {
     const mockFileSystemController = null;
 
     const projectController = new ProjectController(
-      mockProjectRespository as unknown as ProjectRespositoryModel,
-      mockSearchController as unknown as SearchControllerModel,
+      mockProjectRepository as unknown as ProjectRepository,
+      mockSearchController as unknown as SearchController,
       mockFileSystemController as unknown as FileSystemController
     );
 
@@ -197,7 +197,7 @@ describe("project-controller-unit", () => {
   it("returns duplicate title error when attempting to update project to a title already in db", () => {
     const updatedProject = { ...PROJECT };
     updatedProject.title = "NEW TITLE";
-    const mockProjectRespository = {
+    const mockProjectRepository = {
       getById: jest.fn(() => PROJECT),
       getByTitle: jest.fn(() => PROJECT),
     };
@@ -205,8 +205,8 @@ describe("project-controller-unit", () => {
     const mockFileSystemController = null;
 
     const projectController = new ProjectController(
-      mockProjectRespository as unknown as ProjectRespositoryModel,
-      mockSearchController as unknown as SearchControllerModel,
+      mockProjectRepository as unknown as ProjectRepository,
+      mockSearchController as unknown as SearchController,
       mockFileSystemController as unknown as FileSystemController
     );
 
@@ -216,7 +216,7 @@ describe("project-controller-unit", () => {
   });
 
   it("returns error when updating project fails", () => {
-    const mockProjectRespository = {
+    const mockProjectRepository = {
       getById: jest.fn(() => PROJECT),
       getByTitle: jest.fn(() => PROJECT),
       update: jest.fn(() => {
@@ -227,8 +227,8 @@ describe("project-controller-unit", () => {
     const mockFileSystemController = null;
 
     const projectController = new ProjectController(
-      mockProjectRespository as unknown as ProjectRespositoryModel,
-      mockSearchController as unknown as SearchControllerModel,
+      mockProjectRepository as unknown as ProjectRepository,
+      mockSearchController as unknown as SearchController,
       mockFileSystemController as unknown as FileSystemController
     );
 
@@ -236,7 +236,7 @@ describe("project-controller-unit", () => {
   });
 
   it("updates project and returns updated project", () => {
-    const mockProjectRespository = {
+    const mockProjectRepository = {
       getById: jest.fn(() => PROJECT),
       getByTitle: jest.fn(() => PROJECT),
       update: jest.fn(() => PROJECT),
@@ -247,8 +247,8 @@ describe("project-controller-unit", () => {
     const mockFileSystemController = null;
 
     const projectController = new ProjectController(
-      mockProjectRespository as unknown as ProjectRespositoryModel,
-      mockSearchController as unknown as SearchControllerModel,
+      mockProjectRepository as unknown as ProjectRepository,
+      mockSearchController as unknown as SearchController,
       mockFileSystemController as unknown as FileSystemController
     );
 
@@ -256,7 +256,7 @@ describe("project-controller-unit", () => {
   });
 
   it("returns error if project to delete is not in database", () => {
-    const mockProjectRespository = {
+    const mockProjectRepository = {
       getById: jest.fn((id) => {
         throw new Error(`Project with id ${id} not in database`);
       }),
@@ -265,8 +265,8 @@ describe("project-controller-unit", () => {
     const mockFileSystemController = null;
 
     const projectController = new ProjectController(
-      mockProjectRespository as unknown as ProjectRespositoryModel,
-      mockSearchController as unknown as SearchControllerModel,
+      mockProjectRepository as unknown as ProjectRepository,
+      mockSearchController as unknown as SearchController,
       mockFileSystemController as unknown as FileSystemController
     );
 
@@ -276,7 +276,7 @@ describe("project-controller-unit", () => {
   });
 
   it("returns error if deleting project fails", () => {
-    const mockProjectRespository = {
+    const mockProjectRepository = {
       getById: jest.fn(() => PROJECT),
       delete: jest.fn(() => {
         throw new Error();
@@ -286,8 +286,8 @@ describe("project-controller-unit", () => {
     const mockFileSystemController = null;
 
     const projectController = new ProjectController(
-      mockProjectRespository as unknown as ProjectRespositoryModel,
-      mockSearchController as unknown as SearchControllerModel,
+      mockProjectRepository as unknown as ProjectRepository,
+      mockSearchController as unknown as SearchController,
       mockFileSystemController as unknown as FileSystemController
     );
 
@@ -295,7 +295,7 @@ describe("project-controller-unit", () => {
   });
 
   it("returns true if project was deleted", () => {
-    const mockProjectRespository = {
+    const mockProjectRepository = {
       getById: jest.fn(() => PROJECT),
       delete: jest.fn(() => undefined),
     };
@@ -307,8 +307,8 @@ describe("project-controller-unit", () => {
     };
 
     const projectController = new ProjectController(
-      mockProjectRespository as unknown as ProjectRespositoryModel,
-      mockSearchController as unknown as SearchControllerModel,
+      mockProjectRepository as unknown as ProjectRepository,
+      mockSearchController as unknown as SearchController,
       mockFileSystemController as unknown as FileSystemController
     );
 

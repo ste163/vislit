@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, inject, computed } from "vue";
-import type StoreModel from "../store/interfaces/StoreModel";
+import type Store from '../store/Store';
 import BaseTemplateCard from "../components/BaseTemplateCard.vue";
 import BaseCardContent from "../components/BaseCardContent.vue";
 import BaseButtonClick from "../components/BaseButtonClick.vue";
@@ -11,19 +11,19 @@ import ButtonEllipsis from "../components/ButtonEllipsis.vue";
 import ButtonEllipsisItem from "../components/ButtonEllipsisItem.vue";
 import useDateFormatFull from "../composables/useDateFormatFull";
 import ProjectStatusTags from "../components/ProjectStatusTags.vue";
-import type { ProjectModel } from "interfaces";
+import type { Project } from "interfaces";
 
 // TODO:
 // If completed or archived, no longer able to add/edit content
 
-const store = inject("store") as StoreModel;
+const store = inject("store") as Store;
 
 const isEditFormModalActive = ref<boolean>(false);
 const isDeleteModalActive = ref<boolean>(false);
 const isEllipsisMenuActive = ref<boolean>(false);
 
 const activeProject = computed(() => {
-  return store.projects.state.active as ProjectModel;
+  return store.projects.state.active as Project;
 });
 
 const formatedDate = useDateFormatFull(activeProject.value.dateModified);
@@ -45,7 +45,7 @@ function openEditGoalModal(): void {
 }
 
 function toggleProjectComplete(): void {
-  const updatedProject: ProjectModel = {
+  const updatedProject: Project = {
     id: activeProject.value.id,
     typeId: activeProject.value.typeId,
     title: activeProject.value.title,
@@ -60,7 +60,7 @@ function toggleProjectComplete(): void {
 }
 
 function toggleProjectArchived(): void {
-  const updatedProject: ProjectModel = {
+  const updatedProject: Project = {
     id: activeProject.value.id,
     typeId: activeProject.value.typeId,
     title: activeProject.value.title,

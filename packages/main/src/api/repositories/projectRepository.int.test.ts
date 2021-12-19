@@ -4,7 +4,6 @@
 import type { App } from "electron";
 import Database from "../database";
 import ProjectRepository from "./projectRepository";
-import type ProjectRespositoryModel from "../interfaces/ProjectRespositoryModel";
 // Why only projectRepo integration tests?
 // Not enough value with mocking entire database class
 // The only unit tests would be if errors were thrown, which I'm testing here
@@ -12,8 +11,8 @@ import type ProjectRespositoryModel from "../interfaces/ProjectRespositoryModel"
 // TODO:
 // Add tests for if the Db is null error
 
-describe("project-respository", () => {
-  let projectRepository: ProjectRespositoryModel;
+describe("project-repository", () => {
+  let projectRepository: ProjectRepository;
 
   const dateForIt = new Date();
   const dateForShining = new Date();

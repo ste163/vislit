@@ -1,14 +1,14 @@
-import type StoreModel from "./interfaces/StoreModel";
-import type ApplicationStoreModel from "./interfaces/ApplicationStoreModel";
-import type ProjectStoreModel from "./interfaces/ProjectStoreModel";
+import type ApplicationStore from "./modules/ApplicationStore";
+import type ProjectStore from "./modules/ProjectStore";
 
-export default class Store implements StoreModel {
-  public application: ApplicationStoreModel;
-  public projects: ProjectStoreModel;
+
+export default class Store {
+  public application: ApplicationStore;
+  public projects: ProjectStore;
 
   constructor(
-    application: ApplicationStoreModel,
-    projectStore: ProjectStoreModel
+    application: ApplicationStore,
+    projectStore: ProjectStore
   ) {
     this.application = application;
     this.projects = projectStore;

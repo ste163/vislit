@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { inject, watch } from "vue";
 import { useRouter } from "vue-router";
-import type StoreModel from "../store/interfaces/StoreModel";
+import type Store from '../store/Store';
 import { useForm } from "vee-validate";
 import { toFormValidator } from "@vee-validate/zod";
 import { z } from "zod";
@@ -9,11 +9,10 @@ import InputText from "./InputText.vue";
 import ButtonSubmit from "./ButtonSubmit.vue";
 import BaseModal from "./BaseModal.vue";
 
-const store = inject("store") as StoreModel;
+const store = inject("store") as Store;
 
 const router = useRouter();
 
-// eslint-disable-next-line no-undef
 const props = defineProps({
   isFormModalActive: {
     type: Boolean,
@@ -22,7 +21,6 @@ const props = defineProps({
   },
 });
 
-// eslint-disable-next-line no-undef
 const emit = defineEmits(["closeModal"]);
 
 function emitCloseModal(): void {

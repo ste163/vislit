@@ -1,8 +1,8 @@
 // Handles all column events and logic
-import type { ColumnModel } from "interfaces";
+import type { Column } from "interfaces";
 import type { ComputedRef, Ref } from "vue";
 import { computed, ref } from "vue";
-import type StoreModel from "../store/interfaces/StoreModel";
+import type Store from '../store/Store';
 
 // SORTING IS BROKEN AFTER IMPLEMENTING COLUMN COMPONENTS
 // Attempt to refactor it where it's based on column.position = index of where it is in the array
@@ -12,10 +12,10 @@ import type StoreModel from "../store/interfaces/StoreModel";
 // and because it's all index-based, it should always sort correctly
 
 type columnLayout = {
-  sortedColumns: ComputedRef<ColumnModel[]>;
+  sortedColumns: ComputedRef<Column[]>;
   isDraggingActive: ComputedRef<boolean>;
   activeDragColumnHeader: Ref<string>;
-  getColumnsInDropZone: (dropZone: string) => ColumnModel[];
+  getColumnsInDropZone: (dropZone: string) => Column[];
   onColumnDragStart: (
     event: DragEvent,
     header: string,
@@ -28,13 +28,13 @@ type columnLayout = {
 
 // Need to pass in HTMLDivElements because I need real references from template to get sizes
 export default function useColumns(
-  store: StoreModel,
+  store: Store,
   leftDropZoneColumns: Ref<HTMLDivElement[]>,
   rightDropZoneColumns: Ref<HTMLDivElement[]>
 ): columnLayout {
   const columns = store.application.state.columns;
 
-  const activeDragColumn = ref<ColumnModel>({
+  const activeDragColumn = ref<Column>({
     header: "blank",
     isActive: true,
     dropZone: "blank",
@@ -111,7 +111,7 @@ export default function useColumns(
   // ******
   // Helpers
   // ******
-  function getColumnsInDropZone(dropZone: string): ColumnModel[] {
+  function getColumnsInDropZone(dropZone: string): Column[] {
     return sortedColumns.value.filter((column) => column.dropZone === dropZone);
   }
 
@@ -188,13 +188,13 @@ export default function useColumns(
   }
 
   function sortColumnsOnDrag(
-    activeDragColumn: ColumnModel,
+    activeDragColumn: Column,
     closestIndex: number
   ): void {
     const columnsInDropZone = getColumnsInDropZone(
       currentHoveredDropZone.value
     );
-    const columnToRight: ColumnModel = columns[closestIndex]; // needs to be based on the full columns array to get correct column
+    const columnToRight: Column = columns[closestIndex]; // needs to be based on the full columns array to get correct column
 
     if (columnToRight !== undefined) {
       const farRightColumn = columnsInDropZone[columnsInDropZone.length - 1];
@@ -209,8 +209,8 @@ export default function useColumns(
   }
 
   function positionColumnToFarRight(
-    dropZoneColumns: ColumnModel[],
-    activeDragColumn: ColumnModel
+    dropZoneColumns: Column[],
+    activeDragColumn: Column
   ): void {
     const farthestRightColumn = dropZoneColumns[dropZoneColumns.length - 1];
 
@@ -224,8 +224,8 @@ export default function useColumns(
   }
 
   function handleColumnSort(
-    columnsInDropZone: ColumnModel[],
-    columnToRight: ColumnModel
+    columnsInDropZone: Column[],
+    columnToRight: Column
   ): void {
     const indexOfRepositionedColumn = columnsInDropZone
       .map((column) => column.header)
@@ -245,7 +245,7 @@ export default function useColumns(
     }
   }
 
-  function handleDuplicatePositions(columnsInDropZone: ColumnModel[]): void {
+  function handleDuplicatePositions(columnsInDropZone: Column[]): void {
     const duplicatePosition = findDuplicateColumnPosition(columnsInDropZone);
 
     if (duplicatePosition !== undefined) {
@@ -264,7 +264,7 @@ export default function useColumns(
   }
 
   function findDuplicateColumnPosition(
-    dropZoneColumns: Array<ColumnModel>
+    dropZoneColumns: Array<Column>
   ): number {
     const positions = dropZoneColumns.map((column) => column.position);
 
@@ -281,7 +281,7 @@ export default function useColumns(
     return duplicate[0];
   }
 
-  function findActiveColumn(): ColumnModel | undefined {
+  function findActiveColumn(): Column | undefined {
     const activeColumn = columns.find(
       (column) => column.header === activeDragColumnHeader.value
     );
@@ -315,13 +315,13 @@ export default function useColumns(
     assignPositionByIndex(rightColumns);
   }
 
-  function assignPositionByIndex(columnsToReposition: ColumnModel[]): void {
+  function assignPositionByIndex(columnsToReposition: Column[]): void {
     for (let i = 0; i < columnsToReposition.length; i++) {
       columnsToReposition[i].position = i;
     }
   }
 
-  function sortColumns(): Array<ColumnModel> {
+  function sortColumns(): Array<Column> {
     const sorted = columns.sort((a, b) => {
       if (a.position < b.position) {
         return -1;
@@ -336,8 +336,8 @@ export default function useColumns(
   }
 
   function getOnlyActiveColumns(
-    columns: Array<ColumnModel>
-  ): Array<ColumnModel> {
+    columns: Array<Column>
+  ): Array<Column> {
     return columns.filter((column) => column.isActive === true);
   }
 

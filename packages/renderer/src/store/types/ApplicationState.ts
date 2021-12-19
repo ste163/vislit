@@ -1,10 +1,10 @@
-import type { ColumnModel, DropZoneModel } from "interfaces";
+import type { Column, DropZone } from "interfaces";
 
 type ApplicationState = {
   isSidebarMinimized: boolean;
   activeView: string;
-  dropZones: Array<DropZoneModel>;
-  columns: Array<ColumnModel>;
+  dropZones: Array<DropZone>;
+  columns: Array<Column>;
 };
 
 export default ApplicationState;

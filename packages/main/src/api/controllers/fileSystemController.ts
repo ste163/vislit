@@ -7,18 +7,7 @@ import type htmlData from "../types/htmlData";
 // Delete an individual file
 // Get an individual file by name (related to returning the array as that gives the file name)
 
-interface fileSystemController {
-  getUserDataPath: () => string;
-  makeProjectDirectory: (projectId: string) => void;
-  deleteProjectDirectory: (projectId: string) => void;
-  writeHtmlFile: (htmlData: htmlData) => true | Error;
-  readMostRecentHtmlFile: (
-    id: string,
-    type: "documents" | "notes"
-  ) => string | Error;
-}
-
-class FileSystemController implements fileSystemController {
+class FileSystemController  {
   #userDataPath: string;
   constructor(userData: string) {
     this.#userDataPath = userData;
@@ -37,7 +26,7 @@ class FileSystemController implements fileSystemController {
 
   deleteProjectDirectory(projectId: string): void {
     const userData = this.getUserDataPath();
-    fs.rmdirSync(`${userData}/projects/${projectId}`, { recursive: true });
+    fs.rmSync(`${userData}/projects/${projectId}`, { recursive: true });
   }
 
   writeHtmlFile(htmlData: htmlData): true | Error {
@@ -56,13 +45,15 @@ class FileSystemController implements fileSystemController {
   readMostRecentHtmlFile(
     id: string,
     type: "documents" | "notes"
-  ): string | Error {
+  ): string | void |Error {
     try {
       const userData = `${this.getUserDataPath()}/projects/${id}/${type}`;
       const files = fs.readdirSync(userData);
+      if (files.length) {
       // for now, assuming last file in list is most recent
       const mostRecentFileName = files[files.length - 1];
       return fs.readFileSync(`${userData}/${mostRecentFileName}`, "utf-8");
+      }
     } catch (error: any | Error) {
       console.error(error);
       return error;
