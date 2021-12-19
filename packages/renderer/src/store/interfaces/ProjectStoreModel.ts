@@ -1,12 +1,12 @@
-import type { ProjectModel } from "interfaces";
+import type { Project } from "interfaces";
 import type ProjectState from "../types/ProjectState";
 
 interface ProjectStoreModel {
   state: ProjectState;
-  setActiveProject: (project: ProjectModel | null) => void;
+  setActiveProject: (project: Project | null) => void;
   getProjects: () => Promise<void | undefined>;
-  addProject: (project: ProjectModel) => Promise<ProjectModel | undefined>;
-  updateProject: (project: ProjectModel) => Promise<ProjectModel | undefined>;
+  addProject: (project: Project) => Promise<Project | undefined>;
+  updateProject: (project: Project) => Promise<Project | undefined>;
   deleteProject: (id: string) => Promise<true | undefined>;
 }
 

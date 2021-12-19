@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, inject } from "vue";
 import { useRouter } from "vue-router";
-import type { ProjectModel } from "interfaces";
+import type { Project } from "interfaces";
 import type StoreModel from "../store/interfaces/StoreModel";
 import BaseTemplateModalDelete from "./BaseTemplateModalDelete.vue";
 
@@ -22,7 +22,7 @@ const router = useRouter();
 
 function archiveProject(): void {
   if (store.projects.state.active !== null) {
-    const updatedProject: ProjectModel = {
+    const updatedProject: Project = {
       id: store.projects.state.active.id,
       typeId: store.projects.state.active.typeId,
       title: store.projects.state.active.title,

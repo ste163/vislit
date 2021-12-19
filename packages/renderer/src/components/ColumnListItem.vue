@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { inject, ref, watch } from "vue";
 import type { PropType } from "vue";
-import type { ProjectModel } from "interfaces";
+import type { Project } from "interfaces";
 import type StoreModel from "../store/interfaces/StoreModel";
 import BaseButtonToggle from "./BaseButtonToggle.vue";
 
@@ -13,7 +13,7 @@ const store = inject("store") as StoreModel;
 // eslint-disable-next-line no-undef
 const props = defineProps({
   project: {
-    type: Object as PropType<ProjectModel>,
+    type: Object as PropType<Project>,
     required: true,
   },
 });

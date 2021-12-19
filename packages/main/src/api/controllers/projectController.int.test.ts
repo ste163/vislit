@@ -5,10 +5,10 @@ import Database from "../database";
 import ProjectController from "./projectController";
 import ProjectRepository from "../repositories/projectRepository";
 import SearchController from "./searchController";
-import type { ProjectModel } from "interfaces";
+import type { Project } from "interfaces";
 import type FileSystemController from "./fileSystemController";
 
-let seedData: ProjectModel[];
+let seedData: Project[];
 let database: Database;
 let projectRepository: ProjectRepository;
 let searchController: SearchController;
@@ -62,14 +62,14 @@ describe("project-controller-integration", () => {
   });
 
   it("returns error when getting all projects", () => {
-    const mockProjectRespository = {
+    const mockProjectRepository = {
       getAll: jest.fn(() => {
         throw new Error();
       }),
     };
 
     projectController = new ProjectController(
-      mockProjectRespository as unknown as ProjectRepository,
+      mockProjectRepository as unknown as ProjectRepository,
       searchController,
       fileSystemController
     );
@@ -88,14 +88,14 @@ describe("project-controller-integration", () => {
   });
 
   it("returns error if get by id fails", () => {
-    const mockProjectRespository = {
+    const mockProjectRepository = {
       getById: jest.fn(() => {
         throw new Error();
       }),
     };
 
     projectController = new ProjectController(
-      mockProjectRespository as unknown as ProjectRepository,
+      mockProjectRepository as unknown as ProjectRepository,
       searchController,
       fileSystemController
     );
@@ -126,7 +126,7 @@ describe("project-controller-integration", () => {
   });
 
   it("returns error when adding project fails", () => {
-    const mockProjectRespository = {
+    const mockProjectRepository = {
       add: jest.fn(() => {
         throw new Error();
       }),
@@ -134,7 +134,7 @@ describe("project-controller-integration", () => {
     };
 
     projectController = new ProjectController(
-      mockProjectRespository as unknown as ProjectRepository,
+      mockProjectRepository as unknown as ProjectRepository,
       searchController,
       fileSystemController
     );
@@ -165,8 +165,8 @@ describe("project-controller-integration", () => {
     };
 
     const response = projectController.add(
-      projectToAdd as ProjectModel
-    ) as ProjectModel;
+      projectToAdd as Project
+    ) as Project;
 
     const searchResult = searchController.searchProjects("dark half");
 
@@ -220,7 +220,7 @@ describe("project-controller-integration", () => {
       dateModified: new Date(),
     };
 
-    const mockProjectRespository = {
+    const mockProjectRepository = {
       update: jest.fn(() => {
         throw new Error();
       }),
@@ -228,7 +228,7 @@ describe("project-controller-integration", () => {
     };
 
     projectController = new ProjectController(
-      mockProjectRespository as unknown as ProjectRepository,
+      mockProjectRepository as unknown as ProjectRepository,
       searchController,
       fileSystemController
     );
@@ -248,7 +248,7 @@ describe("project-controller-integration", () => {
       dateModified: new Date(),
     };
 
-    const response = projectController.update(projectToUpdate) as ProjectModel;
+    const response = projectController.update(projectToUpdate) as Project;
     const searchResult = searchController.searchProjects("revised");
 
     expect(response.title).toEqual("It - revised");
@@ -262,7 +262,7 @@ describe("project-controller-integration", () => {
   });
 
   it("returns error if project delete fails", () => {
-    const mockProjectRespository = {
+    const mockProjectRepository = {
       delete: jest.fn(() => {
         throw new Error();
       }),
@@ -270,7 +270,7 @@ describe("project-controller-integration", () => {
     };
 
     projectController = new ProjectController(
-      mockProjectRespository as unknown as ProjectRepository,
+      mockProjectRepository as unknown as ProjectRepository,
       searchController,
       fileSystemController
     );

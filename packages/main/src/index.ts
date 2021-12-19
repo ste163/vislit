@@ -2,7 +2,7 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
 import { URL } from "url";
 import { existsSync, mkdirSync } from "fs";
-import type { ProjectModel } from "interfaces";
+import type { Project } from "interfaces";
 import Database from "./api/database";
 import FileSystemController from "./api/controllers/fileSystemController";
 import ProjectRepository from "./api/repositories/projectRepository";
@@ -146,11 +146,11 @@ ipcMain.handle("projects-get-all", () => {
   return projectController.getAll();
 });
 
-ipcMain.handle("projects-add", (_e, project: ProjectModel) => {
+ipcMain.handle("projects-add", (_e, project: Project) => {
   return projectController.add(project);
 });
 
-ipcMain.handle("projects-update", (_e, project: ProjectModel) => {
+ipcMain.handle("projects-update", (_e, project: Project) => {
   return projectController.update(project);
 });
 

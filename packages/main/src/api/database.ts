@@ -2,12 +2,12 @@ import lodash from "lodash";
 import { nanoid } from "nanoid/non-secure";
 import { JSONFileSync, LowSync, MemorySync } from "lowdb";
 import type { App } from "electron";
-import type { ProjectModel } from "interfaces";
+import type { Project } from "interfaces";
 import type { ObjectChain } from "lodash";
 
 interface VislitDatabase {
   dbType: string;
-  projects: Array<ProjectModel>;
+  projects: Array<Project>;
   types: Array<unknown>;
   progress: Array<unknown>;
   notes: Array<unknown>;
@@ -22,7 +22,7 @@ interface LowDbModel extends LowSync<VislitDatabase> {
 
 export default class Database {
   public db: LowDbModel;
-  public generateUniqueId: (item: ProjectModel) => ProjectModel;
+  public generateUniqueId: (item: Project) => Project;
 
   #app: App;
   #getDbPath: () => string;
@@ -67,7 +67,7 @@ export default class Database {
 
     this.#app = app;
     this.db = loadDatabase();
-    this.generateUniqueId = (item: ProjectModel) => {
+    this.generateUniqueId = (item: Project) => {
       item.id = nanoid(21);
       return item;
     };

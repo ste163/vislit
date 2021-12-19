@@ -1,5 +1,5 @@
 import Minisearch from "minisearch";
-import type { ProjectModel } from "interfaces";
+import type { Project } from "interfaces";
 import type ProjectRepository from "../repositories/projectRepository";
 
 export default class SearchController {
@@ -28,15 +28,15 @@ export default class SearchController {
     return searchIndex;
   }
 
-  addProject(project: ProjectModel) {
+  addProject(project: Project) {
     this.#projectSearchIndex.add(project);
   }
 
-  deleteProject(project: ProjectModel) {
+  deleteProject(project: Project) {
     this.#projectSearchIndex.remove(project);
   }
 
-  updateProject(originalProject: ProjectModel, updatedProject: ProjectModel) {
+  updateProject(originalProject: Project, updatedProject: Project) {
     // Must remove the original project before adding.
     // Trying to remove project that doesn't match index corrupts index
     this.#projectSearchIndex.remove(originalProject);

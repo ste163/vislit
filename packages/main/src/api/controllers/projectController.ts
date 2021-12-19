@@ -1,4 +1,4 @@
-import type { ProjectModel } from "interfaces";
+import type { Project } from "interfaces";
 import type SearchController from "./searchController";
 import type FileSystemController from "./fileSystemController";
 import type ProjectRepository from "../repositories/projectRepository";
@@ -23,7 +23,7 @@ import type ProjectRepository from "../repositories/projectRepository";
     if (project) throw new Error("Project title already in database");
   }
 
-  getAll(): Array<ProjectModel> | Error {
+  getAll(): Array<Project> | Error {
     try {
       return this.#projectRepository.getAll();
     } catch (e: any | Error) {
@@ -32,7 +32,7 @@ import type ProjectRepository from "../repositories/projectRepository";
     }
   }
 
-  getById(id: string): ProjectModel | Error {
+  getById(id: string): Project | Error {
     try {
       const project = this.#projectRepository.getById(id);
 
@@ -47,7 +47,7 @@ import type ProjectRepository from "../repositories/projectRepository";
     }
   }
 
-  add(project: ProjectModel): ProjectModel | Error {
+  add(project: Project): Project | Error {
     try {
       this.#checkForTitleTaken(project.title);
 
@@ -68,7 +68,7 @@ import type ProjectRepository from "../repositories/projectRepository";
     }
   } 
 
-  update(project: ProjectModel): ProjectModel | Error {
+  update(project: Project): Project | Error {
     try {
       const projectToUpdate = this.getById(project.id);
       // Must get a copy of original project
@@ -94,7 +94,7 @@ import type ProjectRepository from "../repositories/projectRepository";
       const updatedProject = this.#projectRepository.update(projectToUpdate);
 
       this.#searchController.updateProject(
-        originalProjectForIndex as ProjectModel,
+        originalProjectForIndex as Project,
         updatedProject
       );
 

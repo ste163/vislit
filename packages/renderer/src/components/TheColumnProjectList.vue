@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ProjectModel } from "interfaces";
+import type { Project } from "interfaces";
 import type { ComputedRef } from "vue";
 import { computed, inject, onMounted, watch } from "vue";
 import type { RouteLocationRaw } from "vue-router";
@@ -30,25 +30,25 @@ function updateRouteId(id: string | undefined): void {
   } as RouteLocationRaw);
 }
 
-const inProgressProjects: ComputedRef<ProjectModel[]> = computed(() => {
+const inProgressProjects: ComputedRef<Project[]> = computed(() => {
   return store.projects.state.all.filter(
     (project) => project.archived === false && project.completed === false
   );
 });
 
-const completedProjects: ComputedRef<ProjectModel[]> = computed(() => {
+const completedProjects: ComputedRef<Project[]> = computed(() => {
   return store.projects.state.all.filter(
     (project) => project.archived === false && project.completed === true
   );
 });
 
-const archivedCompletedProjects: ComputedRef<ProjectModel[]> = computed(() => {
+const archivedCompletedProjects: ComputedRef<Project[]> = computed(() => {
   return store.projects.state.all.filter(
     (project) => project.archived === true && project.completed === true
   );
 });
 
-const archivedRetiredProjects: ComputedRef<ProjectModel[]> = computed(() => {
+const archivedRetiredProjects: ComputedRef<Project[]> = computed(() => {
   return store.projects.state.all.filter(
     (project) => project.archived === true && project.completed === false
   );

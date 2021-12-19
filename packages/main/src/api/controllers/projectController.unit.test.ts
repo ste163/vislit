@@ -1,14 +1,14 @@
 /**
  * @jest-environment node
  */
-import type { ProjectModel } from "interfaces";
+import type { Project } from "interfaces";
 import type ProjectRepository from "../repositories/projectRepository";
 import type SearchController from "./searchController";
 import type FileSystemController from "./fileSystemController";
 import ProjectController from "./projectController";
 // No unit tests for getAllProjects, not enough controller logic exists to check
 
-const PROJECT: ProjectModel = {
+const PROJECT: Project = {
   id: "1",
   title: "It",
   description: "A murderous clown attacks a town",
@@ -19,7 +19,7 @@ const PROJECT: ProjectModel = {
   dateModified: null,
 };
 
-const PROJECTS: ProjectModel[] = [
+const PROJECTS: Project[] = [
   {
     id: "1",
     title: "It",

@@ -1,5 +1,5 @@
 import { reactive } from "vue";
-import type { ProjectModel } from "interfaces";
+import type { Project } from "interfaces";
 import type ProjectStoreModel from "../interfaces/ProjectStoreModel";
 import type ProjectState from "../types/ProjectState";
 
@@ -8,16 +8,16 @@ export default class ProjectStore implements ProjectStoreModel {
 
   constructor() {
     this.state = reactive({
-      all: <Array<ProjectModel>>[],
+      all: <Array<Project>>[],
       active: null,
     });
   }
 
-  #setProjects(projects: Array<ProjectModel>): void {
+  #setProjects(projects: Array<Project>): void {
     this.state.all = projects;
   }
 
-  public setActiveProject(project: ProjectModel | null): void {
+  public setActiveProject(project: Project | null): void {
     this.state.active = project;
   }
 
@@ -25,9 +25,9 @@ export default class ProjectStore implements ProjectStoreModel {
     try {
       const { api } = window;
 
-      const response: Array<ProjectModel> = (await api.send(
+      const response: Array<Project> = (await api.send(
         "projects-get-all"
-      )) as Array<ProjectModel>;
+      )) as Array<Project>;
 
       if (response) {
         this.#setProjects(response);
@@ -44,15 +44,15 @@ export default class ProjectStore implements ProjectStoreModel {
   }
 
   public async addProject(
-    project: ProjectModel
-  ): Promise<ProjectModel | undefined> {
+    project: Project
+  ): Promise<Project | undefined> {
     try {
       const { api } = window;
 
       const response = (await api.send(
         "projects-add",
         project
-      )) as ProjectModel;
+      )) as Project;
 
       if (response instanceof Error === false) {
         // Display success message
@@ -70,15 +70,15 @@ export default class ProjectStore implements ProjectStoreModel {
   }
 
   public async updateProject(
-    project: ProjectModel
-  ): Promise<ProjectModel | undefined> {
+    project: Project
+  ): Promise<Project | undefined> {
     try {
       const { api } = window;
 
       const response = (await api.send(
         "projects-update",
         project
-      )) as ProjectModel;
+      )) as Project
 
       if (response instanceof Error === false) {
         // Display success message

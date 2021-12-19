@@ -1,4 +1,4 @@
-import type { ProjectModel } from "interfaces";
+import type { Project } from "interfaces";
 import type Database from "../database";
 
  class ProjectRepository {
@@ -8,12 +8,12 @@ import type Database from "../database";
     this.#database = database;
   }
 
-  getAll(): Array<ProjectModel> {
+  getAll(): Array<Project> {
     if (this.#database.db.data !== null) {
       const projects = this.#database.db.data.projects;
 
       const sortedByMostRecent = projects.sort(
-        (a: ProjectModel, b: ProjectModel): number => {
+        (a: Project, b: Project): number => {
           if (a.dateModified !== null && b.dateModified !== null) {
             const aDate = new Date(a.dateModified);
             const bDate = new Date(b.dateModified);
@@ -36,18 +36,18 @@ import type Database from "../database";
     }
   }
 
-  getById(id: string): ProjectModel {
+  getById(id: string): Project {
     // TODO:
     // get all linked data (currently just progress)
     // Only use db.chain when you need lodash methods
     return this.#database.db.chain.get("projects").find({ id }).value();
   }
 
-  getByTitle(title: string): ProjectModel {
+  getByTitle(title: string): Project {
     return this.#database.db.chain.get("projects").find({ title }).value();
   }
 
-  add(project: ProjectModel): ProjectModel {
+  add(project: Project): Project {
     if (this.#database.db.data !== null) {
       this.#database.db.data.projects.push(
         this.#database.generateUniqueId(project)
@@ -63,28 +63,24 @@ import type Database from "../database";
     }
   }
 
-  update(project: ProjectModel): ProjectModel {
+  update(project: Project): Project {
     // Some code duplication from delete & add
     // It's needed because we should only .write()
     // once we're finished updating
-    if (this.#database.db.data !== null) {
       this.#database.db.chain
         .get("projects")
         .remove({ id: project.id })
         .value();
 
-      this.#database.db.data.projects.push(project);
+      this.#database.db.data?.projects.push(project);
 
       this.#database.db.write();
 
       const updatedProject = this.getById(project.id);
 
       return updatedProject;
-    } else {
-      throw Error("Db data was null");
-    }
-  }
-
+    } 
+  
   delete(id: string): void {
     // NOTE:
     // Warning modal needs to be very specific on what will be deleted
