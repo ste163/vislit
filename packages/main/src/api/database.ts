@@ -48,7 +48,43 @@ export default class Database {
         db.data = {
           dbType: "vislit",
           projects: [],
-          types: [],
+          types: [
+            {
+              id: '1',
+              type: 'Novel',
+              dateCreated: new Date()
+            },
+            {
+              id: '2',
+              type: 'Novella',
+              dateCreated: new Date()
+            },
+            {
+              id: '3',
+              type: 'Memoir',
+              dateCreated: new Date()
+            },
+            {
+              id: '4',
+              type: 'Short Story',
+              dateCreated: new Date()
+            },
+            {
+              id: '5',
+              type: 'Short Story Collection',
+              dateCreated: new Date()
+            },
+            {
+              id: '6',
+              type: 'Poem',
+              dateCreated: new Date()
+            },
+            {
+              id: '7',
+              type: 'Poetry Collection',
+              dateCreated: new Date()
+            },
+          ],
           progress: [],
           notes: [],
           projectLexicons: [],

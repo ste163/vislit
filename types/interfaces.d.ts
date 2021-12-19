@@ -18,6 +18,12 @@ declare module "interfaces" {
     dateModified: Date | null;
   }
 
+  interface Type {
+    id: string;
+    type: string;
+    dateCreated: Date | null;
+  }
+
   interface DropZone {
     name: string;
     maxWidth: string; // in px; ie: '150px' - limits width of columns
