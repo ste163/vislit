@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { inject, ref, computed } from "vue";
 import type { Column } from "interfaces";
-import type Store from '../store/Store';
+import type Store from "../store/Store";
 import BaseButtonToggle from "./BaseButtonToggle.vue";
 import useIsSidebarDisabled from "../composables/useIsSidebarDisabled";
 

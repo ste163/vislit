@@ -1,7 +1,7 @@
 import type { Project } from "interfaces";
 import type Database from "../database";
 
- class ProjectRepository {
+class ProjectRepository {
   #database: Database;
 
   constructor(database: Database) {
@@ -11,7 +11,6 @@ import type Database from "../database";
   getAll(): Array<Project> {
     if (this.#database.db.data !== null) {
       const projects = this.#database.db.data.projects;
-
       const sortedByMostRecent = projects.sort(
         (a: Project, b: Project): number => {
           if (a.dateModified !== null && b.dateModified !== null) {
@@ -34,6 +33,9 @@ import type Database from "../database";
   getById(id: string): Project {
     // TODO:
     // get all linked data (currently just progress)
+    // - including Type
+    // - including Goal
+    // return a new object that includes all the projects linked data
     // Only use db.chain when you need lodash methods
     return this.#database.db.chain.get("projects").find({ id }).value();
   }
@@ -47,11 +49,8 @@ import type Database from "../database";
       this.#database.db.data.projects.push(
         this.#database.generateUniqueId(project)
       );
-
       this.#database.db.write();
-
       const addedProject = this.getByTitle(project.title);
-
       return addedProject;
     } else {
       throw Error("Db data was null");
@@ -62,20 +61,13 @@ import type Database from "../database";
     // Some code duplication from delete & add
     // It's needed because we should only .write()
     // once we're finished updating
-      this.#database.db.chain
-        .get("projects")
-        .remove({ id: project.id })
-        .value();
+    this.#database.db.chain.get("projects").remove({ id: project.id }).value();
+    this.#database.db.data?.projects.push(project);
+    this.#database.db.write();
+    const updatedProject = this.getById(project.id);
+    return updatedProject;
+  }
 
-      this.#database.db.data?.projects.push(project);
-
-      this.#database.db.write();
-
-      const updatedProject = this.getById(project.id);
-
-      return updatedProject;
-    } 
-  
   delete(id: string): void {
     // NOTE:
     // Warning modal needs to be very specific on what will be deleted
@@ -83,10 +75,13 @@ import type Database from "../database";
     // TODO:
     // get all related project data
     // and delete it
+    // - goal
+    // - progress
+    // - notes -> delete from controller
+    // - ProjectLexicons
     // Because this is not a legit relational #database
     // The ordering does not matter
     this.#database.db.chain.get("projects").remove({ id }).value();
-
     this.#database.db.write();
   }
 }

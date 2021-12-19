@@ -42,16 +42,11 @@ class ProjectStore {
     }
   }
 
-  public async addProject(
-    project: Project
-  ): Promise<Project | undefined> {
+  public async addProject(project: Project): Promise<Project | undefined> {
     try {
       const { api } = window;
 
-      const response = (await api.send(
-        "projects-add",
-        project
-      )) as Project;
+      const response = (await api.send("projects-add", project)) as Project;
 
       if (response instanceof Error === false) {
         // Display success message
@@ -68,16 +63,11 @@ class ProjectStore {
     }
   }
 
-  public async updateProject(
-    project: Project
-  ): Promise<Project | undefined> {
+  public async updateProject(project: Project): Promise<Project | undefined> {
     try {
       const { api } = window;
 
-      const response = (await api.send(
-        "projects-update",
-        project
-      )) as Project
+      const response = (await api.send("projects-update", project)) as Project;
 
       if (response instanceof Error === false) {
         // Display success message

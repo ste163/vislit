@@ -35,10 +35,9 @@ export default class Database {
 
     const loadDatabase = (): LowDbModel => {
       const adapter =
-      process.env.NODE_ENV === "test"
+        process.env.NODE_ENV === "test"
           ? new MemorySync<VislitDatabase>() // in-memory test database
           : new JSONFileSync<VislitDatabase>(this.#getDbPath());
-
       const db = new LowSync<VislitDatabase>(adapter) as LowDbModel;
 
       db.read();
@@ -50,39 +49,32 @@ export default class Database {
           projects: [],
           types: [
             {
-              id: '1',
-              type: 'Novel',
-              dateCreated: new Date()
+              id: "1",
+              value: "novel",
             },
             {
-              id: '2',
-              type: 'Novella',
-              dateCreated: new Date()
+              id: "2",
+              value: "novella",
             },
             {
-              id: '3',
-              type: 'Memoir',
-              dateCreated: new Date()
+              id: "3",
+              value: "memoir",
             },
             {
-              id: '4',
-              type: 'Short Story',
-              dateCreated: new Date()
+              id: "4",
+              value: "short story",
             },
             {
-              id: '5',
-              type: 'Short Story Collection',
-              dateCreated: new Date()
+              id: "5",
+              value: "short story collection",
             },
             {
-              id: '6',
-              type: 'Poem',
-              dateCreated: new Date()
+              id: "6",
+              value: "poem",
             },
             {
-              id: '7',
-              type: 'Poetry Collection',
-              dateCreated: new Date()
+              id: "7",
+              value: "poetry collection",
             },
           ],
           progress: [],
@@ -91,7 +83,6 @@ export default class Database {
           lexicons: [],
           words: [],
         };
-
         db.write();
       }
 

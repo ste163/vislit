@@ -19,9 +19,8 @@ declare module "interfaces" {
   }
 
   interface Type {
-    id: string;
-    type: string;
-    dateCreated: Date | null;
+    id?: string;
+    value: string;
   }
 
   interface DropZone {

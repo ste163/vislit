@@ -3,7 +3,7 @@ import type SearchController from "./searchController";
 import type FileSystemController from "./fileSystemController";
 import type ProjectRepository from "../repositories/projectRepository";
 
- class ProjectController {
+class ProjectController {
   #projectRepository: ProjectRepository;
   #searchController: SearchController;
   #fileSystemController: FileSystemController;
@@ -66,7 +66,7 @@ import type ProjectRepository from "../repositories/projectRepository";
       console.error(e);
       return e;
     }
-  } 
+  }
 
   update(project: Project): Project | Error {
     try {

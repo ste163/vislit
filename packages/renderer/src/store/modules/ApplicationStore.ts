@@ -1,7 +1,7 @@
 import { reactive } from "vue";
 import type ApplicationState from "../types/ApplicationState";
 
-class ApplicationStore  {
+class ApplicationStore {
   public state: ApplicationState;
 
   constructor() {

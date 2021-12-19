@@ -164,9 +164,7 @@ describe("project-controller-integration", () => {
       dateModified: null,
     };
 
-    const response = projectController.add(
-      projectToAdd as Project
-    ) as Project;
+    const response = projectController.add(projectToAdd as Project) as Project;
 
     const searchResult = searchController.searchProjects("dark half");
 

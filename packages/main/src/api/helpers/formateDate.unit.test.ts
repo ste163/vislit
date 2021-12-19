@@ -6,7 +6,7 @@ describe("format-date", () => {
   beforeEach(() => {
     jest.spyOn(console, "error").mockImplementation(() => {});
   });
-  
+
   it("returns error if non-string is passed in", () => {
     expect(formatDate(2020 as any)).toEqual(
       new Error("Can only format strings or dates")

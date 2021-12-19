@@ -2,7 +2,7 @@
 import type { Column } from "interfaces";
 import type { ComputedRef, Ref } from "vue";
 import { computed, ref } from "vue";
-import type Store from '../store/Store';
+import type Store from "../store/Store";
 
 // SORTING IS BROKEN AFTER IMPLEMENTING COLUMN COMPONENTS
 // Attempt to refactor it where it's based on column.position = index of where it is in the array
@@ -263,9 +263,7 @@ export default function useColumns(
     }
   }
 
-  function findDuplicateColumnPosition(
-    dropZoneColumns: Array<Column>
-  ): number {
+  function findDuplicateColumnPosition(dropZoneColumns: Array<Column>): number {
     const positions = dropZoneColumns.map((column) => column.position);
 
     const set = new Set(positions);
@@ -335,9 +333,7 @@ export default function useColumns(
     return getOnlyActiveColumns(sorted);
   }
 
-  function getOnlyActiveColumns(
-    columns: Array<Column>
-  ): Array<Column> {
+  function getOnlyActiveColumns(columns: Array<Column>): Array<Column> {
     return columns.filter((column) => column.isActive === true);
   }
 

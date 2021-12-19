@@ -7,7 +7,7 @@ import type htmlData from "../types/htmlData";
 // Delete an individual file
 // Get an individual file by name (related to returning the array as that gives the file name)
 
-class FileSystemController  {
+class FileSystemController {
   #userDataPath: string;
   constructor(userData: string) {
     this.#userDataPath = userData;
@@ -45,14 +45,14 @@ class FileSystemController  {
   readMostRecentHtmlFile(
     id: string,
     type: "documents" | "notes"
-  ): string | void |Error {
+  ): string | void | Error {
     try {
       const userData = `${this.getUserDataPath()}/projects/${id}/${type}`;
       const files = fs.readdirSync(userData);
       if (files.length) {
-      // for now, assuming last file in list is most recent
-      const mostRecentFileName = files[files.length - 1];
-      return fs.readFileSync(`${userData}/${mostRecentFileName}`, "utf-8");
+        // for now, assuming last file in list is most recent
+        const mostRecentFileName = files[files.length - 1];
+        return fs.readFileSync(`${userData}/${mostRecentFileName}`, "utf-8");
       }
     } catch (error: any | Error) {
       console.error(error);
