@@ -10,6 +10,6 @@ module.exports = {
   verbose: true,
   preset: "ts-jest",
   testEnvironment: "jest-environment-node",
-  moduleDirectories: ["node_modules"],
+  moduleDirectories: ["node_modules", "types"],
   transform: {},
 };
