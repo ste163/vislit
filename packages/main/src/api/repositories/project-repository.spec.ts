@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 import Database from "../database";
-import ProjectRepository from "./projectRepository";
+import ProjectRepository from "./project-repository";
 
 describe("project-repository", () => {
   let projectRepository: ProjectRepository;

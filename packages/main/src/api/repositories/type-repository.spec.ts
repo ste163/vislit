@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 import Database from "../database";
-import TypeRepository from "./typeRepository";
+import TypeRepository from "./type-repository";
 
 describe("type-repository", () => {
   let typeRepository: TypeRepository;

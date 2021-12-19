@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import formatDate from "./formatDate";
+import formatDate from "./format-date";
 describe("format-date", () => {
   beforeEach(() => {
     jest.spyOn(console, "error").mockImplementation(() => {});

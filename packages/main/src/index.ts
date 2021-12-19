@@ -4,11 +4,11 @@ import { URL } from "url";
 import { existsSync, mkdirSync } from "fs";
 import type { Project } from "interfaces";
 import Database from "./api/database";
-import FileSystemController from "./api/controllers/fileSystemController";
-import ProjectRepository from "./api/repositories/projectRepository";
-import ProjectController from "./api/controllers/projectController";
-import SearchController from "./api/controllers/searchController";
-import type htmlData from "./api/types/htmlData";
+import FileSystemController from "./api/controllers/file-system-controller";
+import ProjectRepository from "./api/repositories/project-repository";
+import ProjectController from "./api/controllers/project-controller";
+import SearchController from "./api/controllers/search-controller";
+import type htmlData from "./api/types/html-data";
 
 // declared outside of try block so it can be accessed by IPC
 let projectController: ProjectController;

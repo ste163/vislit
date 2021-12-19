@@ -3,8 +3,8 @@
  */
 import type { Type } from "interfaces";
 import Database from "../database";
-import TypeRepository from "../repositories/typeRepository";
-import TypeController from "./typeController";
+import TypeRepository from "../repositories/type-repository";
+import TypeController from "./type-controller";
 
 let seedData: Type[];
 let database: Database;

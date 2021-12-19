@@ -1,12 +1,12 @@
 /**
  * @jest-environment node
  */
-import Database from "../database";
-import ProjectController from "./projectController";
-import ProjectRepository from "../repositories/projectRepository";
-import SearchController from "./searchController";
 import type { Project } from "interfaces";
-import type FileSystemController from "./fileSystemController";
+import Database from "../database";
+import ProjectController from "./project-controller";
+import ProjectRepository from "../repositories/project-repository";
+import SearchController from "./search-controller";
+import type FileSystemController from "./file-system-controller";
 
 let seedData: Project[];
 let database: Database;
