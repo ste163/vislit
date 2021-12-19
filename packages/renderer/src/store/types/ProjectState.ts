@@ -2,7 +2,7 @@ import type { Project } from "interfaces";
 
 type ProjectState = {
   all: Array<Project>;
-  active: Projectll;
+  active: Project;
 };
 
 export default ProjectState;
