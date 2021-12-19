@@ -12,6 +12,8 @@ declare module "interfaces" {
     title: string;
     description: string;
     typeId: number;
+    type?: Type;
+    // goals: Goal[]
     completed: boolean;
     archived: boolean;
     dateCreated: Date | null;

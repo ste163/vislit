@@ -66,6 +66,17 @@ describe("type-repository", () => {
     ]);
   });
 
+  it("returns undefined if type is not in database", () => {
+    expect(typeRepository.getByValue('non-fiction')).toEqual(undefined);
+  });
+
+  it("returns type if it's in database", () => {
+    expect(typeRepository.getByValue('short story')).toEqual({
+      id: "4",
+      value: "short story",
+    });
+  });
+
   it("returns added type when successfully added", () => {
     const originalTypeCount = typeRepository.getAll().length;
     const addedType = typeRepository.add({ value: "non-fiction" });

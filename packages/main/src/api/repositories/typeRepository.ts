@@ -8,6 +8,10 @@ class TypeRepository {
     this.#database = database;
   }
 
+  getByValue(value: string): Type {
+    return this.#database.db.chain.get("types").find({value}).value();
+  }
+
   getAll(): Type[] {
     let types = this.#database.db.data?.types;
     if (types === undefined) types = [];
@@ -22,10 +26,6 @@ class TypeRepository {
   }
 
   add(type: Type): Type {
-    // check if a type by that name is in db
-    // if it is, throw error
-    // else, add type then return the added Type
-    // but do this at the controller level!
     this.#database.db.data?.types.push(this.#database.generateUniqueId(type));
     this.#database.db.write();
     return this.#database.db.chain
