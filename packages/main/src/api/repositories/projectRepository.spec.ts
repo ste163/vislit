@@ -4,10 +4,6 @@
 import type { App } from "electron";
 import Database from "../database";
 import ProjectRepository from "./projectRepository";
-// Why only projectRepo integration tests?
-// Not enough value with mocking entire database class
-// The only unit tests would be if errors were thrown, which I'm testing here
-
 // TODO:
 // Add tests for if the Db is null error
 
