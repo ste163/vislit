@@ -36,9 +36,8 @@ class TypeController {
     try {
       const types = this.#typeRepository.getAll();
       const foundType = types.find((type) => type.id === id);
-      
-      if (!foundType)
-        throw new Error('Type not in database');
+
+      if (!foundType) throw new Error("Type not in database");
 
       this.#typeRepository.delete(id);
       return true;

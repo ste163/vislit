@@ -1,7 +1,6 @@
 /**
  * @jest-environment node
  */
-import type { App } from "electron";
 import Database from "../database";
 import TypeRepository from "./typeRepository";
 
@@ -9,8 +8,8 @@ describe("type-repository", () => {
   let typeRepository: TypeRepository;
 
   beforeEach(() => {
-    const app = null;
-    const database = new Database(app as unknown as App);
+    const { app } = jest.requireMock("electron");
+    const database = new Database(app);
     typeRepository = new TypeRepository(database);
     database.db.data!.types = [
       {
@@ -67,11 +66,11 @@ describe("type-repository", () => {
   });
 
   it("returns undefined if type is not in database", () => {
-    expect(typeRepository.getByValue('non-fiction')).toEqual(undefined);
+    expect(typeRepository.getByValue("non-fiction")).toEqual(undefined);
   });
 
   it("returns type if it's in database", () => {
-    expect(typeRepository.getByValue('short story')).toEqual({
+    expect(typeRepository.getByValue("short story")).toEqual({
       id: "4",
       value: "short story",
     });

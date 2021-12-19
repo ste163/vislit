@@ -1,7 +1,6 @@
 /**
  * @jest-environment node
  */
-import type { App } from "electron";
 import Database from "../database";
 import ProjectRepository from "./projectRepository";
 
@@ -12,8 +11,8 @@ describe("project-repository", () => {
   const dateForShining = new Date();
 
   beforeEach(() => {
-    const app = null;
-    const database = new Database(app as unknown as App);
+    const { app } = jest.requireMock("electron");
+    const database = new Database(app);
     projectRepository = new ProjectRepository(database);
     // Add mock data to database
     database.db.data!.projects = [

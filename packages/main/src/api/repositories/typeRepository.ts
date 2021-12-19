@@ -9,7 +9,7 @@ class TypeRepository {
   }
 
   getByValue(value: string): Type {
-    return this.#database.db.chain.get("types").find({value}).value();
+    return this.#database.db.chain.get("types").find({ value }).value();
   }
 
   getAll(): Type[] {
