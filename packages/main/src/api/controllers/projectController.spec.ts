@@ -23,9 +23,9 @@ describe("project-controller-integration", () => {
     const seedDate = new Date();
     seedData = [
       {
-        id: "1",          
-        title: 'It',          
-        description: "A murderous clown attacks a town",  
+        id: '1',
+        title: "It",
+        description: "A murderous clown attacks a town",
         typeId: 1,
         completed: false,
         archived: false,
