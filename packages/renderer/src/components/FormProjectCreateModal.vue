@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, watch } from "vue";
+import { inject, watch, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import type Store from "../store/Store";
 import { useForm } from "vee-validate";
@@ -22,6 +22,12 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["closeModal"]);
+
+onMounted(async () => {
+  const { api } = window;
+  const types = await api.send("types-get-all");
+  console.log(types);
+});
 
 function emitCloseModal(): void {
   emit("closeModal");

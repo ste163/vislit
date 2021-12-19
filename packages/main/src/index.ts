@@ -8,23 +8,28 @@ import FileSystemController from "./api/controllers/file-system-controller";
 import ProjectRepository from "./api/repositories/project-repository";
 import ProjectController from "./api/controllers/project-controller";
 import SearchController from "./api/controllers/search-controller";
+import TypeRepository from "./api/repositories/type-repository";
+import TypeController from "./api/controllers/type-controller";
 import type htmlData from "./api/types/html-data";
 
 // declared outside of try block so it can be accessed by IPC
 let projectController: ProjectController;
 let fileSystemController: FileSystemController;
+let typeController: TypeController;
 
 // For now, instantiate db, controllers, & repos here
 try {
   const database = new Database(app);
   fileSystemController = new FileSystemController(app.getPath("userData"));
   const projectRepository = new ProjectRepository(database);
+  const typeRepository = new TypeRepository(database);
   const searchController = new SearchController(projectRepository);
   projectController = new ProjectController(
     projectRepository,
     searchController,
     fileSystemController
   );
+  typeController = new TypeController(typeRepository);
 } catch (error) {
   console.log(error);
 }
@@ -160,6 +165,11 @@ ipcMain.handle("projects-delete", (_e, projectId: string) => {
 
 // project search endpoint
 // project auto-suggestion search endpoint
+
+// Types
+ipcMain.handle("types-get-all", () => {
+  return typeController.getAll();
+});
 
 // Writer
 ipcMain.handle("writer-get-most-recent", (_e, projectId: string) => {
