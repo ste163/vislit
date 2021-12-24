@@ -84,7 +84,7 @@ describe("type-controller-integration", () => {
   });
 
   it("returns error when trying to add a type already in db", () => {
-    expect(typeController.add({ value: "novel" })).toEqual(
+    expect(typeController.add("novel")).toEqual(
       new Error("Type is already in database")
     );
   });
@@ -97,11 +97,11 @@ describe("type-controller-integration", () => {
       }),
     } as unknown as TypeRepository;
     typeController = new TypeController(mockTypeRepository);
-    expect(typeController.add({ value: "new" })).toEqual(new Error());
+    expect(typeController.add("new")).toEqual(new Error());
   });
 
   it("returns added type successfully", () => {
-    const addedType = typeController.add({ value: "new" }) as Type;
+    const addedType = typeController.add("new");
     expect(addedType.value).toEqual("new");
     expect(addedType).toHaveProperty("id");
   });

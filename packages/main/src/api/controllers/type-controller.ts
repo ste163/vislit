@@ -22,10 +22,10 @@ class TypeController {
     }
   }
 
-  add(type: Type): Type | Error {
+  add(value: string): Type | Error {
     try {
-      this.#checkForTypeInDb(type.value);
-      return this.#typeRepository.add(type);
+      this.#checkForTypeInDb(value);
+      return this.#typeRepository.add(value);
     } catch (e: any | Error) {
       console.error(e);
       return e;

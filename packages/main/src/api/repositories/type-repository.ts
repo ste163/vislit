@@ -25,13 +25,12 @@ class TypeRepository {
     return sortedAlphabetically;
   }
 
-  add(type: Type): Type {
-    this.#database.db.data?.types.push(this.#database.generateUniqueId(type));
+  add(value: string): Type {
+    this.#database.db.data?.types.push(
+      this.#database.generateUniqueId({ value })
+    );
     this.#database.db.write();
-    return this.#database.db.chain
-      .get("types")
-      .find({ value: type.value })
-      .value();
+    return this.#database.db.chain.get("types").find({ value }).value();
   }
 
   delete(id: string): void {

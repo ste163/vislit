@@ -78,7 +78,7 @@ describe("type-repository", () => {
 
   it("returns added type when successfully added", () => {
     const originalTypeCount = typeRepository.getAll().length;
-    const addedType = typeRepository.add({ value: "non-fiction" });
+    const addedType = typeRepository.add("non-fiction");
     const newTypeCount = typeRepository.getAll().length;
     expect(addedType).toHaveProperty("id");
     expect(addedType.value).toEqual("non-fiction");

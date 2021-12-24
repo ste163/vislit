@@ -10,6 +10,8 @@ const validChannels = [
   "projects-update",
   "projects-delete",
   "types-get-all",
+  "types-add",
+  "types-delete",
   "writer-get-most-recent",
   "writer-get-by-id",
   "writer-save",

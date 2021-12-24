@@ -12,6 +12,7 @@ import BaseModal from "./BaseModal.vue";
 import InputSelect from "./InputSelect.vue";
 
 const store = inject("store") as Store;
+const { api } = window;
 
 const router = useRouter();
 
@@ -28,10 +29,13 @@ const emit = defineEmits(["closeModal"]);
 const types = reactive({ values: [] as Type[] });
 
 onMounted(async () => {
-  const { api } = window;
-  const response = (await api.send("types-get-all")) as Type[];
-  if (response) {
-    types.values = response;
+  try {
+    // move to a global fetch
+    // that gets loaded to global application state
+    const response = (await api.send("types-get-all")) as Type[];
+    if (response) types.values = response;
+  } catch (error: any | Error) {
+    console.error(error);
   }
 });
 
@@ -71,24 +75,25 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
     dateModified: null,
   };
 
-  // try {
-  //   const project = await store.projects.addProject(newProject);
-  //   if (project !== undefined) {
-  //     router.push(`/summary/${project.id}`);
-  //     resetForm();
-  //   }
-  // } catch (error: any | Error) {
-  //   console.error(error.message);
-  // }
+  try {
+    const project = await store.projects.addProject(newProject);
+    if (project !== undefined) {
+      router.push(`/summary/${project.id}`);
+      resetForm();
+    }
+  } catch (error: any | Error) {
+    console.error(error.message);
+  }
 });
 
-function handleSelectAddClick(value: string): void {
+async function handleSelectAddClick(value: string): Promise<void> {
   if (value !== "") {
-    console.log("create type", value);
     try {
-      // add
-      // then if there's a good response
-      // re-fetch data
+      const response = await api.send("types-add", value);
+      if (response) {
+        const response = (await api.send("types-get-all")) as Type[];
+        if (response) types.values = response;
+      }
     } catch (error: any | Error) {
       console.error(error);
       // set toast notification
@@ -96,13 +101,14 @@ function handleSelectAddClick(value: string): void {
   }
 }
 
-function handleSelectDeleteClick(id: string): void {
+async function handleSelectDeleteClick(id: string): Promise<void> {
   if (id) {
-    console.log("delete", id);
     try {
-      // delete
-      // then if good response
-      // re-fetch data
+      const response = await api.send("types-delete", id);
+      if (response) {
+        const response = (await api.send("types-get-all")) as Type[];
+        if (response) types.values = response;
+      }
     } catch (error: any | Error) {
       console.error(error);
       // set toast notification

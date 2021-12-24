@@ -171,6 +171,14 @@ ipcMain.handle("types-get-all", () => {
   return typeController.getAll();
 });
 
+ipcMain.handle("types-add", (_e, value: string) => {
+  return typeController.add(value);
+});
+
+ipcMain.handle("types-delete", (_e, id: string) => {
+  return typeController.delete(id);
+});
+
 // Writer
 ipcMain.handle("writer-get-most-recent", (_e, projectId: string) => {
   return fileSystemController.readMostRecentHtmlFile(projectId, "documents");
