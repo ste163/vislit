@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useField } from "vee-validate";
 import type { PropType } from "vue";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 
 const props = defineProps({
   values: {
@@ -23,7 +23,8 @@ const props = defineProps({
   },
 });
 
-// computed that takes the selectedValue's id and displays correct type name
+const isOpened = ref<boolean>(false);
+
 const selectedDisplayText = computed(() => {
   const item = props.values.find((val) => val.id === selectedValue.value);
   return item?.value;
@@ -53,14 +54,22 @@ const {
     <span v-show="errorMessage" class="input-error">
       {{ errorMessage }}
     </span>
-    <!-- Clicking on this div opens the dropdown -->
     <!-- clicking outside closes it -->
     <div :id="name" :name="name" :value="selectedValue" class="capitalize">
       {{ selectedDisplayText }}
     </div>
-    <div>Chevron</div>
-    <!-- v-if isOpened, show list -->
-    <div>
+    <div
+      @click="
+        (e) => {
+          e.stopPropagation();
+          isOpened = !isOpened;
+        }
+      "
+    >
+      Chevron up or down (and animated)
+    </div>
+
+    <div v-if="isOpened">
       <option
         v-for="value in values"
         :key="value?.id"
