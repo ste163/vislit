@@ -44,7 +44,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
     id: "",
     title: values.title,
     description: values.description,
-    typeId: 1,
+    typeId: "1",
     completed: false,
     archived: false,
     dateCreated: null,
