@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useField } from "vee-validate";
 import type { PropType } from "vue";
+import { computed } from "vue";
 
 const props = defineProps({
   values: {
@@ -22,14 +23,19 @@ const props = defineProps({
   },
 });
 
+// computed that takes the selectedValue's id and displays correct type name
+const selectedDisplayText = computed(() => {
+  const item = props.values.find((val) => val.id === selectedValue.value);
+  return item?.value;
+});
+
 const {
-  value: inputValue,
+  value: selectedValue,
   meta,
   errorMessage,
-  handleBlur,
   handleChange,
 } = useField(props.name, undefined, {
-  initialValue: props.values[0]?.value,
+  initialValue: "",
 });
 </script>
 
@@ -49,22 +55,22 @@ const {
     </span>
     <!-- Clicking on this div opens the dropdown -->
     <!-- clicking outside closes it -->
-    <div
-      :id="name"
-      :name="name"
-      :value="inputValue"
-      class="capitalize"
-      @input="handleChange"
-      @blur="handleBlur"
-    >
-      Selected Value
+    <div :id="name" :name="name" :value="selectedValue" class="capitalize">
+      {{ selectedDisplayText }}
     </div>
     <div>Chevron</div>
     <!-- v-if isOpened, show list -->
     <div>
-      <div v-for="value in values" :key="value?.id" class="capitalize">
+      <option
+        v-for="value in values"
+        :key="value?.id"
+        class="capitalize"
+        :name="name"
+        :value="value.id"
+        @click="handleChange"
+      >
         {{ value?.value }}
-      </div>
+      </option>
     </div>
   </div>
 </template>
