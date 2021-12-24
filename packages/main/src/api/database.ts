@@ -2,13 +2,13 @@ import lodash from "lodash";
 import { nanoid } from "nanoid/non-secure";
 import { JSONFileSync, LowSync, MemorySync } from "lowdb";
 import type { App } from "electron";
-import type { Project } from "interfaces";
+import type { Project, Type } from "interfaces";
 import type { ObjectChain } from "lodash";
 
 interface VislitDatabase {
   dbType: string;
   projects: Array<Project>;
-  types: Array<unknown>;
+  types: Array<Type>;
   progress: Array<unknown>;
   notes: Array<unknown>;
   projectLexicons: Array<unknown>;
@@ -22,7 +22,7 @@ interface LowDbModel extends LowSync<VislitDatabase> {
 
 export default class Database {
   public db: LowDbModel;
-  public generateUniqueId: (item: Project) => Project;
+  public generateUniqueId: (item: any) => any;
 
   #app: App;
   #getDbPath: () => string;
@@ -35,10 +35,9 @@ export default class Database {
 
     const loadDatabase = (): LowDbModel => {
       const adapter =
-      process.env.NODE_ENV === "test"
+        process.env.NODE_ENV === "test"
           ? new MemorySync<VislitDatabase>() // in-memory test database
           : new JSONFileSync<VislitDatabase>(this.#getDbPath());
-
       const db = new LowSync<VislitDatabase>(adapter) as LowDbModel;
 
       db.read();
@@ -48,14 +47,42 @@ export default class Database {
         db.data = {
           dbType: "vislit",
           projects: [],
-          types: [],
+          types: [
+            {
+              id: "1",
+              value: "novel",
+            },
+            {
+              id: "2",
+              value: "novella",
+            },
+            {
+              id: "3",
+              value: "memoir",
+            },
+            {
+              id: "4",
+              value: "short story",
+            },
+            {
+              id: "5",
+              value: "short story collection",
+            },
+            {
+              id: "6",
+              value: "poem",
+            },
+            {
+              id: "7",
+              value: "poetry collection",
+            },
+          ],
           progress: [],
           notes: [],
           projectLexicons: [],
           lexicons: [],
           words: [],
         };
-
         db.write();
       }
 
@@ -67,7 +94,7 @@ export default class Database {
 
     this.#app = app;
     this.db = loadDatabase();
-    this.generateUniqueId = (item: Project) => {
+    this.generateUniqueId = (item: any) => {
       item.id = nanoid(21);
       return item;
     };

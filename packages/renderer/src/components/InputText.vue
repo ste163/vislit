@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useField } from "vee-validate";
 
-// eslint-disable-next-line no-undef
 const props = defineProps({
   type: {
     type: String,
@@ -63,6 +62,7 @@ const {
 </template>
 
 <style scoped>
+/* convert to tailwind */
 .input-container {
   display: flex;
   flex-flow: column nowrap;

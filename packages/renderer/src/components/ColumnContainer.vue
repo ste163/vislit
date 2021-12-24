@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PropType } from "vue";
 import { inject, ref, computed } from "vue";
-import type Store from '../store/Store';
+import type Store from "../store/Store";
 import type { Column } from "interfaces";
 import ButtonClose from "./ButtonClose.vue";
 import TheColumnProject from "./TheColumnProject.vue";

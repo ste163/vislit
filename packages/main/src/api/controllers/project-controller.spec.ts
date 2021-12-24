@@ -1,12 +1,12 @@
 /**
  * @jest-environment node
  */
-import Database from "../database";
-import ProjectController from "./projectController";
-import ProjectRepository from "../repositories/projectRepository";
-import SearchController from "./searchController";
 import type { Project } from "interfaces";
-import type FileSystemController from "./fileSystemController";
+import Database from "../database";
+import ProjectController from "./project-controller";
+import ProjectRepository from "../repositories/project-repository";
+import SearchController from "./search-controller";
+import type FileSystemController from "./file-system-controller";
 
 let seedData: Project[];
 let database: Database;
@@ -44,10 +44,7 @@ describe("project-controller-integration", () => {
       },
     ];
 
-    if (database.db.data !== null) {
-      database.db.data.projects = seedData;
-    }
-
+    database.db.data!.projects = seedData;
     projectRepository = new ProjectRepository(database);
     searchController = new SearchController(projectRepository);
     const mockFileSystemController = {
@@ -164,9 +161,7 @@ describe("project-controller-integration", () => {
       dateModified: null,
     };
 
-    const response = projectController.add(
-      projectToAdd as Project
-    ) as Project;
+    const response = projectController.add(projectToAdd as Project) as Project;
 
     const searchResult = searchController.searchProjects("dark half");
 

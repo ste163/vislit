@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, inject, computed } from "vue";
-import type Store from '../store/Store';
+import type Store from "../store/Store";
 import BaseTemplateCard from "../components/BaseTemplateCard.vue";
 import BaseCardContent from "../components/BaseCardContent.vue";
 import BaseButtonClick from "../components/BaseButtonClick.vue";
@@ -95,7 +95,7 @@ const ellipsisMenuArchivedText = computed(() => {
   <base-template-card
     v-if="activeProject !== null"
     :is-ellipsis-menu-active="isEllipsisMenuActive"
-    @clickOutside="isEllipsisMenuActive = false"
+    @click-outside="isEllipsisMenuActive = false"
   >
     <template #header>
       {{ activeProject.title }}

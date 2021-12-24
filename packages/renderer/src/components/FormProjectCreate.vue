@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { inject } from "vue";
 import { useRouter } from "vue-router";
-import type Store from '../store/Store';
+import type Store from "../store/Store";
 import { useForm } from "vee-validate";
 import { toFormValidator } from "@vee-validate/zod";
 import { z } from "zod";
@@ -44,7 +44,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
     id: "",
     title: values.title,
     description: values.description,
-    typeId: 1,
+    typeId: "1",
     completed: false,
     archived: false,
     dateCreated: null,

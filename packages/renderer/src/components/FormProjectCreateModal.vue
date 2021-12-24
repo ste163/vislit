@@ -1,15 +1,18 @@
 <script setup lang="ts">
-import { inject, watch } from "vue";
+import { inject, watch, onMounted, reactive } from "vue";
 import { useRouter } from "vue-router";
-import type Store from '../store/Store';
+import type Store from "../store/Store";
+import type { Type } from "interfaces";
 import { useForm } from "vee-validate";
 import { toFormValidator } from "@vee-validate/zod";
 import { z } from "zod";
 import InputText from "./InputText.vue";
 import ButtonSubmit from "./ButtonSubmit.vue";
 import BaseModal from "./BaseModal.vue";
+import InputSelect from "./InputSelect.vue";
 
 const store = inject("store") as Store;
+const { api } = window;
 
 const router = useRouter();
 
@@ -22,6 +25,19 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["closeModal"]);
+
+const types = reactive({ values: [] as Type[] });
+
+onMounted(async () => {
+  try {
+    // move to a global fetch
+    // that gets loaded to global application state
+    const response = (await api.send("types-get-all")) as Type[];
+    if (response) types.values = response;
+  } catch (error: any | Error) {
+    console.error(error);
+  }
+});
 
 function emitCloseModal(): void {
   emit("closeModal");
@@ -47,11 +63,12 @@ const { handleSubmit, meta, resetForm } = useForm({
 });
 
 const onSubmit = handleSubmit(async (values, { resetForm }) => {
+  console.log(values);
   const newProject = {
     id: "",
     title: values.title,
     description: values.description,
-    typeId: 1,
+    typeId: values.type,
     completed: false,
     archived: false,
     dateCreated: null,
@@ -60,24 +77,50 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
 
   try {
     const project = await store.projects.addProject(newProject);
-
     if (project !== undefined) {
       router.push(`/summary/${project.id}`);
       resetForm();
     }
-  } catch (error) {
-    const e = error as Error;
-    // Move to notification
-    console.error(e.message);
+  } catch (error: any | Error) {
+    console.error(error.message);
   }
 });
+
+async function handleSelectAddClick(value: string): Promise<void> {
+  if (value !== "") {
+    try {
+      const response = await api.send("types-add", value);
+      if (response) {
+        const response = (await api.send("types-get-all")) as Type[];
+        if (response) types.values = response;
+      }
+    } catch (error: any | Error) {
+      console.error(error);
+      // set toast notification
+    }
+  }
+}
+
+async function handleSelectDeleteClick(id: string): Promise<void> {
+  if (id) {
+    try {
+      const response = await api.send("types-delete", id);
+      if (response) {
+        const response = (await api.send("types-get-all")) as Type[];
+        if (response) types.values = response;
+      }
+    } catch (error: any | Error) {
+      console.error(error);
+      // set toast notification
+    }
+  }
+}
 
 // Needed otherwise the form attempts to 'submit' when opened on initial render
 watch(() => props.isFormModalActive, resetForm);
 </script>
 
 <template>
-  <!-- Used only on the Welcome page -->
   <base-modal
     :is-modal-active="isFormModalActive"
     @close-modal="emitCloseModal"
@@ -92,11 +135,13 @@ watch(() => props.isFormModalActive, resetForm);
         :background-color="'var(--lightGray)'"
       />
 
-      <input-text
-        name="type"
-        type="text"
-        label="Type"
-        :background-color="'var(--lightGray)'"
+      <input-select
+        :values="types.values"
+        :is-editable="true"
+        :name="'type'"
+        :label="'Type'"
+        @add-click="handleSelectAddClick"
+        @delete-click="handleSelectDeleteClick"
       />
 
       <input-text
@@ -116,6 +161,7 @@ watch(() => props.isFormModalActive, resetForm);
 </template>
 
 <style scoped>
+/* Convert to tailwind */
 .form {
   display: flex;
   flex-flow: column nowrap;

@@ -11,11 +11,18 @@ declare module "interfaces" {
     id: string;
     title: string;
     description: string;
-    typeId: number;
+    typeId: string;
+    type?: Type;
+    // goals: Goal[]
     completed: boolean;
     archived: boolean;
     dateCreated: Date | null;
     dateModified: Date | null;
+  }
+
+  interface Type {
+    id?: string;
+    value: string;
   }
 
   interface DropZone {

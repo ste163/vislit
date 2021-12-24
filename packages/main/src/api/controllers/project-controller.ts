@@ -1,9 +1,9 @@
 import type { Project } from "interfaces";
-import type SearchController from "./searchController";
-import type FileSystemController from "./fileSystemController";
-import type ProjectRepository from "../repositories/projectRepository";
+import type SearchController from "./search-controller";
+import type FileSystemController from "./file-system-controller";
+import type ProjectRepository from "../repositories/project-repository";
 
- class ProjectController {
+class ProjectController {
   #projectRepository: ProjectRepository;
   #searchController: SearchController;
   #fileSystemController: FileSystemController;
@@ -23,7 +23,7 @@ import type ProjectRepository from "../repositories/projectRepository";
     if (project) throw new Error("Project title already in database");
   }
 
-  getAll(): Array<Project> | Error {
+  getAll(): Project[] | Error {
     try {
       return this.#projectRepository.getAll();
     } catch (e: any | Error) {
@@ -36,9 +36,8 @@ import type ProjectRepository from "../repositories/projectRepository";
     try {
       const project = this.#projectRepository.getById(id);
 
-      if (project === undefined) {
+      if (project === undefined)
         throw new Error(`Project with id ${id} not in database`);
-      }
 
       return project;
     } catch (e: any | Error) {
@@ -52,21 +51,18 @@ import type ProjectRepository from "../repositories/projectRepository";
       this.#checkForTitleTaken(project.title);
 
       const date = new Date();
-
       project.dateCreated = date;
       project.dateModified = date; // setting here so getProjects can always return the most recent project first
 
       const response = this.#projectRepository.add(project);
-
       this.#searchController.addProject(response);
       this.#fileSystemController.makeProjectDirectory(response.id);
-
       return response;
     } catch (e: any | Error) {
       console.error(e);
       return e;
     }
-  } 
+  }
 
   update(project: Project): Project | Error {
     try {
@@ -75,13 +71,10 @@ import type ProjectRepository from "../repositories/projectRepository";
       // before its updated, so it can be removed from search index
       const originalProjectForIndex = { ...projectToUpdate };
 
-      if (projectToUpdate instanceof Error) {
-        return projectToUpdate; // returns thrown error
-      }
+      if (projectToUpdate instanceof Error) return projectToUpdate; // returns thrown error
 
-      if (project.title !== projectToUpdate.title) {
+      if (project.title !== projectToUpdate.title)
         this.#checkForTitleTaken(project.title);
-      }
 
       // Update only certain properties
       projectToUpdate.title = project.title;
@@ -92,12 +85,10 @@ import type ProjectRepository from "../repositories/projectRepository";
       projectToUpdate.dateModified = new Date();
 
       const updatedProject = this.#projectRepository.update(projectToUpdate);
-
       this.#searchController.updateProject(
         originalProjectForIndex as Project,
         updatedProject
       );
-
       return updatedProject;
     } catch (e: any | Error) {
       console.error(e);
@@ -109,9 +100,7 @@ import type ProjectRepository from "../repositories/projectRepository";
     try {
       const project = this.getById(id);
 
-      if (project instanceof Error) {
-        throw new Error("Project not in database");
-      }
+      if (project instanceof Error) throw new Error("Project not in database");
 
       this.#projectRepository.delete(id);
       this.#searchController.deleteProject(project);

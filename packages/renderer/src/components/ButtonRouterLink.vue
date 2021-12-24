@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, inject } from "vue";
 import BaseButtonToggle from "./BaseButtonToggle.vue";
-import type Store from '../store/Store';
+import type Store from "../store/Store";
 import useIsSidebarDisabled from "../composables/useIsSidebarDisabled";
 
 const store = inject("store") as Store;

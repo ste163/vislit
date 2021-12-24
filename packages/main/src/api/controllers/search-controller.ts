@@ -1,6 +1,6 @@
 import Minisearch from "minisearch";
 import type { Project } from "interfaces";
-import type ProjectRepository from "../repositories/projectRepository";
+import type ProjectRepository from "../repositories/project-repository";
 
 export default class SearchController {
   #projectRespository: ProjectRepository;
