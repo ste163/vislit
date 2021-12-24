@@ -95,7 +95,7 @@ const ellipsisMenuArchivedText = computed(() => {
   <base-template-card
     v-if="activeProject !== null"
     :is-ellipsis-menu-active="isEllipsisMenuActive"
-    @clickOutside="isEllipsisMenuActive = false"
+    @click-outside="isEllipsisMenuActive = false"
   >
     <template #header>
       {{ activeProject.title }}

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// eslint-disable-next-line no-undef
 const props = defineProps({
   isEllipsisMenuActive: {
     type: Boolean,
@@ -7,7 +6,6 @@ const props = defineProps({
   },
 });
 
-// eslint-disable-next-line no-undef
 const emit = defineEmits(["clickOutside"]);
 </script>
 

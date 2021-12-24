@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { inject, watch, onMounted } from "vue";
+import { inject, watch, onMounted, reactive } from "vue";
 import { useRouter } from "vue-router";
 import type Store from "../store/Store";
+import type { Type } from "interfaces";
 import { useForm } from "vee-validate";
 import { toFormValidator } from "@vee-validate/zod";
 import { z } from "zod";
 import InputText from "./InputText.vue";
 import ButtonSubmit from "./ButtonSubmit.vue";
 import BaseModal from "./BaseModal.vue";
+import InputSelect from "./InputSelect.vue";
 
 const store = inject("store") as Store;
 
@@ -23,10 +25,14 @@ const props = defineProps({
 
 const emit = defineEmits(["closeModal"]);
 
+const types = reactive({ values: [] as Type[] });
+
 onMounted(async () => {
   const { api } = window;
-  const types = await api.send("types-get-all");
-  console.log(types);
+  const response = (await api.send("types-get-all")) as Type[];
+  if (response) {
+    types.values = response;
+  }
 });
 
 function emitCloseModal(): void {
@@ -53,29 +59,27 @@ const { handleSubmit, meta, resetForm } = useForm({
 });
 
 const onSubmit = handleSubmit(async (values, { resetForm }) => {
+  console.log(values);
   const newProject = {
     id: "",
     title: values.title,
     description: values.description,
-    typeId: 1,
+    typeId: values.type,
     completed: false,
     archived: false,
     dateCreated: null,
     dateModified: null,
   };
 
-  try {
-    const project = await store.projects.addProject(newProject);
-
-    if (project !== undefined) {
-      router.push(`/summary/${project.id}`);
-      resetForm();
-    }
-  } catch (error) {
-    const e = error as Error;
-    // Move to notification
-    console.error(e.message);
-  }
+  // try {
+  //   const project = await store.projects.addProject(newProject);
+  //   if (project !== undefined) {
+  //     router.push(`/summary/${project.id}`);
+  //     resetForm();
+  //   }
+  // } catch (error: any | Error) {
+  //   console.error(error.message);
+  // }
 });
 
 // Needed otherwise the form attempts to 'submit' when opened on initial render
@@ -83,7 +87,6 @@ watch(() => props.isFormModalActive, resetForm);
 </script>
 
 <template>
-  <!-- Used only on the Welcome page -->
   <base-modal
     :is-modal-active="isFormModalActive"
     @close-modal="emitCloseModal"
@@ -98,12 +101,7 @@ watch(() => props.isFormModalActive, resetForm);
         :background-color="'var(--lightGray)'"
       />
 
-      <input-text
-        name="type"
-        type="text"
-        label="Type"
-        :background-color="'var(--lightGray)'"
-      />
+      <input-select :values="types.values" :name="'type'" :label="'Type'" />
 
       <input-text
         name="description"
@@ -122,6 +120,7 @@ watch(() => props.isFormModalActive, resetForm);
 </template>
 
 <style scoped>
+/* Convert to tailwind */
 .form {
   display: flex;
   flex-flow: column nowrap;

@@ -12,10 +12,11 @@
     "plugin:@typescript-eslint/recommended",
     "prettier"
   ],
-  "parser": "@typescript-eslint/parser",
   "parserOptions": {
+    "parser": "@typescript-eslint/parser",
     "ecmaVersion": 12,
-    "sourceType": "module"
+    "sourceType": "module",
+    "ecmaFeatures": { "jsx": false }
   },
   "plugins": ["@typescript-eslint"],
   "ignorePatterns": ["types/env.d.ts", "node_modules/**", "**/dist/**"],
