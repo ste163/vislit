@@ -82,6 +82,34 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
   // }
 });
 
+function handleSelectAddClick(value: string): void {
+  if (value !== "") {
+    console.log("create type", value);
+    try {
+      // add
+      // then if there's a good response
+      // re-fetch data
+    } catch (error: any | Error) {
+      console.error(error);
+      // set toast notification
+    }
+  }
+}
+
+function handleSelectDeleteClick(id: string): void {
+  if (id) {
+    console.log("delete", id);
+    try {
+      // delete
+      // then if good response
+      // re-fetch data
+    } catch (error: any | Error) {
+      console.error(error);
+      // set toast notification
+    }
+  }
+}
+
 // Needed otherwise the form attempts to 'submit' when opened on initial render
 watch(() => props.isFormModalActive, resetForm);
 </script>
@@ -101,7 +129,14 @@ watch(() => props.isFormModalActive, resetForm);
         :background-color="'var(--lightGray)'"
       />
 
-      <input-select :values="types.values" :name="'type'" :label="'Type'" />
+      <input-select
+        :values="types.values"
+        :is-editable="true"
+        :name="'type'"
+        :label="'Type'"
+        @add-click="handleSelectAddClick"
+        @delete-click="handleSelectDeleteClick"
+      />
 
       <input-text
         name="description"

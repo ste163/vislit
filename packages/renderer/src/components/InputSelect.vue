@@ -16,6 +16,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  isEditable: {
+    type: Boolean,
+    required: true,
+  },
   // backgroundColor should be Variant
   backgroundColor: {
     type: String,
@@ -23,7 +27,10 @@ const props = defineProps({
   },
 });
 
+const emit = defineEmits(["addClick", "deleteClick"]);
+
 const isOpened = ref<boolean>(false);
+const addInputValue = ref<string>("");
 
 const selectedDisplayText = computed(() => {
   const item = props.values.find((val) => val.id === selectedValue.value);
@@ -70,16 +77,34 @@ const {
     </div>
 
     <div v-if="isOpened">
-      <option
-        v-for="value in values"
-        :key="value?.id"
-        class="capitalize"
-        :name="name"
-        :value="value.id"
-        @click="handleChange"
-      >
-        {{ value?.value }}
-      </option>
+      <div v-if="isEditable">
+        <button type="button" @click="() => emit('addClick', addInputValue)">
+          +
+        </button>
+        <input
+          v-model="addInputValue"
+          type="text"
+          placeholder="Add a new Type"
+        />
+      </div>
+
+      <div v-for="value in values" :key="value?.id" class="flex">
+        <option
+          class="capitalize"
+          :name="name"
+          :value="value.id"
+          @click="handleChange"
+        >
+          {{ value?.value }}
+        </option>
+        <button
+          v-if="isEditable"
+          type="button"
+          @click="() => emit('deleteClick', value.id)"
+        >
+          X
+        </button>
+      </div>
     </div>
   </div>
 </template>
