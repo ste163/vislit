@@ -66,6 +66,8 @@ onMounted(async () => {
       router.push("/"); // sends user to Welcome screen, as they have no data
     }
   }
+
+  await store.application.getAllTypes();
 });
 
 // Needed to reset references based on vue docs

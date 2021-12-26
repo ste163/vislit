@@ -1,5 +1,13 @@
+import type { Column, DropZone, Type } from "interfaces";
 import { reactive } from "vue";
-import type ApplicationState from "../types/ApplicationState";
+
+type ApplicationState = {
+  isSidebarMinimized: boolean;
+  activeView: string;
+  dropZones: Array<DropZone>;
+  columns: Array<Column>;
+  types: Array<Type>;
+};
 
 class ApplicationStore {
   public state: ApplicationState;
@@ -53,6 +61,7 @@ class ApplicationStore {
           width: "300px",
         },
       ],
+      types: [],
     });
   }
 
@@ -66,6 +75,16 @@ class ApplicationStore {
     // if no isSidebarMinimized, set to false
     // else, set as localStorage value
     this.state.isSidebarMinimized = !this.state.isSidebarMinimized;
+  };
+
+  getAllTypes = async (): Promise<void> => {
+    try {
+      const { api } = window;
+      const response = (await api.send("types-get-all")) as Type[];
+      if (response) this.state.types = response;
+    } catch (error: any | Error) {
+      console.error(error);
+    }
   };
 }
 

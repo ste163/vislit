@@ -1,6 +1,10 @@
 import { reactive } from "vue";
 import type { Project } from "interfaces";
-import type ProjectState from "../types/ProjectState";
+
+type ProjectState = {
+  all: Array<Project>;
+  active: Project | null;
+};
 
 class ProjectStore {
   public state: ProjectState;
