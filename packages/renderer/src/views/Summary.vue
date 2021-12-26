@@ -103,7 +103,8 @@ const ellipsisMenuArchivedText = computed(() => {
 
     <template #sub-header>
       <project-status-tags :project="activeProject" />
-      {{ activeProject.typeId }} | Last updated on {{ formatedDate }}
+      <span class="capitalize">{{ activeProject.type?.value }}</span> | Last
+      updated on {{ formatedDate }}
     </template>
 
     <template #description>

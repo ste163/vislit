@@ -8,7 +8,7 @@ declare module "interfaces" {
   }
 
   interface Project {
-    id: string;
+    id?: string;
     title: string;
     description: string;
     typeId: string;
