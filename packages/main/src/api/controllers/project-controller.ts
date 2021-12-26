@@ -56,7 +56,7 @@ class ProjectController {
 
       const response = this.#projectRepository.add(project);
       this.#searchController.addProject(response);
-      this.#fileSystemController.makeProjectDirectory(response.id);
+      this.#fileSystemController.makeProjectDirectory(response.id!);
       return response;
     } catch (e: any | Error) {
       console.error(e);
@@ -66,7 +66,7 @@ class ProjectController {
 
   update(project: Project): Project | Error {
     try {
-      const projectToUpdate = this.getById(project.id);
+      const projectToUpdate = this.getById(project.id!);
       // Must get a copy of original project
       // before its updated, so it can be removed from search index
       const originalProjectForIndex = { ...projectToUpdate };

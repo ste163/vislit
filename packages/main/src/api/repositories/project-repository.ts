@@ -8,40 +8,56 @@ class ProjectRepository {
     this.#database = database;
   }
 
+  #includeProjectType(project: Project): Project {
+    const types = this.#database.db.data!.types;
+    project.type = types.find((type) => project.typeId === type.id);
+    return project;
+  }
+
   getAll(): Array<Project> {
-    if (this.#database.db.data !== null) {
-      const projects = this.#database.db.data.projects;
-      const sortedByMostRecent = projects.sort(
-        (a: Project, b: Project): number => {
-          if (a.dateModified !== null && b.dateModified !== null) {
-            const dateA = new Date(a.dateModified);
-            const dateB = new Date(b.dateModified);
-            if (dateA > dateB) return -1;
-            if (dateA < dateB) return 1;
-            return 0;
-          } else {
-            throw Error("Date modified for project was null");
-          }
+    const projects = this.#database.db.data!.projects;
+    const projectsWithTypes = projects.map((project) =>
+      this.#includeProjectType(project)
+    );
+    const sortedByMostRecent = projectsWithTypes.sort(
+      (a: Project, b: Project): number => {
+        if (a.dateModified !== null && b.dateModified !== null) {
+          const dateA = new Date(a.dateModified);
+          const dateB = new Date(b.dateModified);
+          if (dateA > dateB) return -1;
+          if (dateA < dateB) return 1;
+          return 0;
+        } else {
+          throw Error("Project date was null");
         }
-      );
-      return sortedByMostRecent;
-    } else {
-      throw Error("Db data was null");
-    }
+      }
+    );
+    return sortedByMostRecent;
   }
 
   getById(id: string): Project {
     // TODO:
-    // get all linked data (currently just progress)
-    // - including Type
-    // - including Goal
-    // return a new object that includes all the projects linked data
+    // - include Goal
     // Only use db.chain when you need lodash methods
-    return this.#database.db.chain.get("projects").find({ id }).value();
+    const project = this.#database.db.chain
+      .get("projects")
+      .find({ id })
+      .value();
+    if (project) {
+      return this.#includeProjectType(project);
+    }
+    return project; // this would be undefined;
   }
 
   getByTitle(title: string): Project {
-    return this.#database.db.chain.get("projects").find({ title }).value();
+    const project = this.#database.db.chain
+      .get("projects")
+      .find({ title })
+      .value();
+    if (project) {
+      return this.#includeProjectType(project);
+    }
+    return project; // this would be undefined
   }
 
   add(project: Project): Project {
@@ -64,7 +80,7 @@ class ProjectRepository {
     this.#database.db.chain.get("projects").remove({ id: project.id }).value();
     this.#database.db.data?.projects.push(project);
     this.#database.db.write();
-    const updatedProject = this.getById(project.id);
+    const updatedProject = this.getById(project.id!);
     return updatedProject;
   }
 
@@ -77,7 +93,7 @@ class ProjectRepository {
     // and delete it
     // - goal
     // - progress
-    // - notes -> delete from controller
+    // - notes -> delete from controller as this is HTML and not database related
     // - ProjectLexicons
     // Because this is not a legit relational #database
     // The ordering does not matter
