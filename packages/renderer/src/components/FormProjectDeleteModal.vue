@@ -44,7 +44,7 @@ function archiveProject(): void {
 async function deleteProject(): Promise<void> {
   if (store.projects.state.active !== null) {
     const response = await store.projects.deleteProject(
-      store.projects.state.active.id
+      store.projects.state.active.id!
     );
 
     if (response === true) {
