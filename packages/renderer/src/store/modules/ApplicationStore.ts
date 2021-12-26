@@ -1,5 +1,12 @@
+import type { Column, DropZone } from "interfaces";
 import { reactive } from "vue";
-import type ApplicationState from "../types/ApplicationState";
+
+type ApplicationState = {
+  isSidebarMinimized: boolean;
+  activeView: string;
+  dropZones: Array<DropZone>;
+  columns: Array<Column>;
+};
 
 class ApplicationStore {
   public state: ApplicationState;
