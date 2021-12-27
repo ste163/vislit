@@ -48,6 +48,9 @@ class ProjectController {
 
   add(project: Project): Project | Error {
     try {
+      project.title = project.title.trim();
+      project.description = project.description.trim();
+
       this.#checkForTitleTaken(project.title);
 
       const date = new Date();
@@ -77,8 +80,8 @@ class ProjectController {
         this.#checkForTitleTaken(project.title);
 
       // Update only certain properties
-      projectToUpdate.title = project.title;
-      projectToUpdate.description = project.description;
+      projectToUpdate.title = project.title.trim();
+      projectToUpdate.description = project.description.trim();
       projectToUpdate.archived = project.archived;
       projectToUpdate.completed = project.completed;
       projectToUpdate.typeId = project.typeId;

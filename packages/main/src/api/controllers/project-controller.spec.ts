@@ -150,10 +150,10 @@ describe("project-controller-integration", () => {
     ).toEqual(new Error());
   });
 
-  it("returns project and is searchable after adding", () => {
+  it("returns trimmed project and is searchable after adding", () => {
     const projectToAdd = {
-      title: "The Dark Half",
-      description: "An evil pseudonym comes to life",
+      title: "    The Dark Half  ",
+      description: "  An evil pseudonym comes to life    ",
       typeId: "2",
       completed: false,
       archived: false,
@@ -166,6 +166,7 @@ describe("project-controller-integration", () => {
     const searchResult = searchController.searchProjects("dark half");
 
     expect(response.title).toEqual("The Dark Half");
+    expect(response.description).toEqual("An evil pseudonym comes to life");
     expect(searchResult[0].title).toEqual("The Dark Half");
   });
 
@@ -231,11 +232,11 @@ describe("project-controller-integration", () => {
     expect(projectController.update(projectToUpdate)).toEqual(new Error());
   });
 
-  it("returns updated project and updated project is searchable", () => {
+  it("returns updated, trimmed project and updated project is searchable", () => {
     const projectToUpdate = {
       id: "1",
-      title: "It - revised",
-      description: "A group of kids, and later as adults, fight evil",
+      title: "    It - revised      ",
+      description: "    A group of kids, and later as adults, fight evil   ",
       typeId: "1",
       completed: false,
       archived: false,
@@ -247,6 +248,9 @@ describe("project-controller-integration", () => {
     const searchResult = searchController.searchProjects("revised");
 
     expect(response.title).toEqual("It - revised");
+    expect(response.description).toEqual(
+      "A group of kids, and later as adults, fight evil"
+    );
     expect(searchResult[0].title).toEqual("It - revised");
   });
 

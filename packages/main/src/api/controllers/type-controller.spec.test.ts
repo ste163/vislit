@@ -125,8 +125,8 @@ describe("type-controller-integration", () => {
     expect(typeController.add("new")).toEqual(new Error());
   });
 
-  it("returns added type successfully", () => {
-    const addedType = typeController.add("new");
+  it("returns added, trimmed, and normalized type successfully", () => {
+    const addedType = typeController.add("  NeW   ");
     expect((addedType as Type).value).toEqual("new");
     expect(addedType).toHaveProperty("id");
   });
