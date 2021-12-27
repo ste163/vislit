@@ -19,6 +19,7 @@ declare module "interfaces" {
 
   interface Goal {
     id?: string;
+    projectId: string;
     basedOnWordCountOrPageCount: "word" | "page";
     frequencyToRepeat: "daily" | "weekly" | "monthly";
     daysPerFrequency: number; // might be best to only do daysPerFrequency?
