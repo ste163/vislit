@@ -1,5 +1,5 @@
 import type TypeRepository from "../repositories/type-repository";
-import type { Type } from "interfaces";
+import type { Project, Type } from "interfaces";
 
 class TypeController {
   #typeRepository: TypeRepository;
@@ -11,6 +11,16 @@ class TypeController {
   #checkForTypeInDb(value: string): void {
     const type = this.#typeRepository.getByValue(value);
     if (type) throw new Error("Type is already in database");
+  }
+
+  #checkForProjectsWithTypeInDb(id: string): Project[] | void {
+    const areProjectsRelatedToThisType =
+      this.#typeRepository.checkForTypeTaken(id);
+    if (areProjectsRelatedToThisType === undefined) return; // No projects with this type
+    if (areProjectsRelatedToThisType.length > 0)
+      throw new Error(
+        "Type cannot be deleted as projects are connected to this type"
+      );
   }
 
   getAll(): Type[] | Error {
@@ -37,6 +47,7 @@ class TypeController {
       const types = this.#typeRepository.getAll();
       const foundType = types.find((type) => type.id === id);
       if (!foundType) throw new Error("Type not in database");
+      this.#checkForProjectsWithTypeInDb(id);
       this.#typeRepository.delete(id);
       return true;
     } catch (e: any | Error) {

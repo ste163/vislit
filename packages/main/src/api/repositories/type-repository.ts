@@ -1,4 +1,4 @@
-import type { Type } from "interfaces";
+import type { Project, Type } from "interfaces";
 import type Database from "../database";
 
 class TypeRepository {
@@ -36,6 +36,12 @@ class TypeRepository {
   delete(id: string): void {
     this.#database.db.chain.get("types").remove({ id }).value();
     this.#database.db.write();
+  }
+
+  checkForTypeTaken(typeId: string): Project[] | undefined {
+    return this.#database.db.data?.projects.filter((project) => {
+      if (project.typeId === typeId) return project;
+    });
   }
 }
 

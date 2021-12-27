@@ -43,10 +43,8 @@ class ProjectRepository {
       .get("projects")
       .find({ id })
       .value();
-    if (project) {
-      return this.#includeProjectType(project);
-    }
-    return project; // this would be undefined;
+    if (project) return this.#includeProjectType(project);
+    return project; // undefined at this point;
   }
 
   getByTitle(title: string): Project {
@@ -54,10 +52,8 @@ class ProjectRepository {
       .get("projects")
       .find({ title })
       .value();
-    if (project) {
-      return this.#includeProjectType(project);
-    }
-    return project; // this would be undefined
+    if (project) return this.#includeProjectType(project);
+    return project; // undefined at this point
   }
 
   add(project: Project): Project {
