@@ -1,12 +1,13 @@
 /**
  * @jest-environment node
  */
-import type { Type } from "interfaces";
+import type { Project, Type } from "interfaces";
 import Database from "../database";
 import TypeRepository from "../repositories/type-repository";
 import TypeController from "./type-controller";
 
-let seedData: Type[];
+let typeSeedData: Type[];
+let projectSeedData: Project[];
 let database: Database;
 let typeRepository: TypeRepository;
 let typeController: TypeController;
@@ -16,7 +17,7 @@ describe("type-controller-integration", () => {
     jest.spyOn(console, "error").mockImplementation(() => {});
     const { app } = jest.requireMock("electron");
     database = new Database(app);
-    seedData = [
+    typeSeedData = [
       {
         id: "1",
         value: "novel",
@@ -46,8 +47,32 @@ describe("type-controller-integration", () => {
         value: "poetry collection",
       },
     ];
+    const seedDate = new Date();
+    projectSeedData = [
+      {
+        id: "1",
+        title: "It",
+        description: "A murderous clown attacks a town",
+        typeId: "1",
+        completed: false,
+        archived: false,
+        dateCreated: seedDate,
+        dateModified: seedDate,
+      },
+      {
+        id: "2",
+        title: "The Shining",
+        description: "An evil hotel possesses a groundskeeper",
+        typeId: "2",
+        completed: false,
+        archived: false,
+        dateCreated: seedDate,
+        dateModified: seedDate,
+      },
+    ];
 
-    database.db.data!.types = seedData;
+    database.db.data!.types = typeSeedData;
+    database.db.data!.projects = projectSeedData;
     typeRepository = new TypeRepository(database);
     typeController = new TypeController(typeRepository);
   });
@@ -102,7 +127,7 @@ describe("type-controller-integration", () => {
 
   it("returns added type successfully", () => {
     const addedType = typeController.add("new");
-    expect(addedType.value).toEqual("new");
+    expect((addedType as Type).value).toEqual("new");
     expect(addedType).toHaveProperty("id");
   });
 
@@ -112,9 +137,17 @@ describe("type-controller-integration", () => {
     );
   });
 
+  it("returns error when trying to delete a type linked to a project already in database", () => {
+    const response = typeController.delete("1");
+    expect(response).toEqual(
+      new Error("Type cannot be deleted as projects are connected to this type")
+    );
+  });
+
   it("returns error when deleting type fails", () => {
     const mockTypeRepository = {
-      getAll: jest.fn(() => seedData),
+      getAll: jest.fn(() => typeSeedData),
+      checkForTypeTaken: jest.fn(() => undefined),
       delete: jest.fn(() => {
         throw new Error();
       }),
@@ -123,9 +156,9 @@ describe("type-controller-integration", () => {
     expect(typeController.delete("1")).toEqual(new Error());
   });
 
-  it("returns true when deleting is successful", () => {
+  it("returns true when deleting a type not connected to a project is successful", () => {
     const originalTypeCount = (typeController.getAll() as Type[]).length;
-    const response = typeController.delete("1");
+    const response = typeController.delete("6");
     const newTypeCount = (typeController.getAll() as Type[]).length;
     expect(response).toEqual(true);
     expect(newTypeCount).toEqual(originalTypeCount - 1);

@@ -91,4 +91,8 @@ describe("type-repository", () => {
     const newTypeCount = typeRepository.getAll().length;
     expect(newTypeCount).toEqual(originalTypeCount - 1);
   });
+
+  it("returns empty array if no projects by type", () => {
+    expect(typeRepository.checkForTypeTaken("1")).toEqual([]);
+  });
 });
