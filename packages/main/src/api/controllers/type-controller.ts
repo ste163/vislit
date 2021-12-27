@@ -35,7 +35,7 @@ class TypeController {
   add(value: string): Type | Error {
     try {
       this.#checkForTypeInDb(value);
-      return this.#typeRepository.add(value);
+      return this.#typeRepository.add(value.trim().toLowerCase());
     } catch (e: any | Error) {
       console.error(e);
       return e;
