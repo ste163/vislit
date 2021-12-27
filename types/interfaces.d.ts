@@ -5,7 +5,7 @@ declare module "interfaces" {
     description: string;
     typeId: string;
     type?: Type;
-    goals: Goal[];
+    goals?: Goal[];
     completed: boolean;
     archived: boolean;
     dateCreated: Date | null;
