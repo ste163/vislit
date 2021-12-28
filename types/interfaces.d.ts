@@ -22,10 +22,12 @@ declare module "interfaces" {
     projectId: string;
     basedOnWordCountOrPageCount: "word" | "page";
     frequencyToRepeat: "daily" | "weekly" | "monthly";
-    daysPerFrequency: number; // might be best to only do daysPerFrequency?
+    daysPerFrequency?: number; // might be best to only do daysPerFrequency?
+    // however, the daily weekly or monthly is easier to sort by -- weeks start on Monday
     proofreadCountsTowardGoal: boolean;
     editCountsTowardGoal: boolean;
     revisedCountsTowardsGoal: boolean;
+    active: boolean; // only one goal can be active at a time
     completed: boolean;
     dateCreated: Date | null;
     dateModified: Date | null;
