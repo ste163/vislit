@@ -29,4 +29,8 @@ describe("goal-repository", () => {
     expect(database.db.data?.goals.length).toEqual(1);
     expect(addedGoal.dateCreated).not.toBeNull();
   });
+
+  it("returns error if no goal found", () => {});
+
+  it("returns new goal and sets previously active goal as inactive", () => {});
 });

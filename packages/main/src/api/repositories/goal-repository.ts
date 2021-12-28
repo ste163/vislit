@@ -24,25 +24,38 @@ class GoalRepository {
     const dateCreated = new Date();
     goal.dateCreated = dateCreated;
     goal.dateModified = dateCreated;
+    // the above 3 lines should be moved to controller
+    // as it's preparing the object for saving
     this.#database.db.data?.goals.push(this.#database.generateUniqueId(goal));
     this.#database.db.write();
     return this.#database.db.chain.get("goals").find({ dateCreated }).value();
   }
 
-  update(goal: Goal): Goal {
-    // ** overview
-    // updating doesn't update
-    // it sets the current goal as inactive
-    // then creates a new goal
-    // so that there is a log that I can sort by date modified
-    // ** implementation
-    // check that only 1 goal is active only
-    // update the dateModified for that goal -> find by goal.id
-    // set its active === false
-    // .write() the db
-    // take the updated goal param
-    // then add(goal) after all its date values are updated
-    // return updated goal
+  update(newGoal: Goal): Goal {
+    // ACTUALLY
+    // most of this logic should be in the controller level
+    // so this should really be a 'setGoalAsInactive'
+    // which updates dateModified and sets active = false
+    // ** TODO **
+    // Still MUST check for active goals, then if there's more than one, set all to false except active
+    // for the current project
+    const currentlyActiveGoal = this.#database.db.data?.goals.find(
+      (goal) => goal.active
+    );
+
+    // update active goal for display in goal log
+    if (currentlyActiveGoal) {
+      currentlyActiveGoal.active = false;
+      currentlyActiveGoal.dateModified = new Date();
+      this.#database.db.chain
+        .get("goals")
+        .remove({ id: currentlyActiveGoal.id });
+      this.#database.db.data?.goals.push(currentlyActiveGoal);
+
+      newGoal.active = true;
+      return this.add(newGoal); // .write() database in here (or should at least) --> will test
+    }
+    return newGoal; // to make TS happy for now
   }
 
   delete(goalId: string): void {
