@@ -38,7 +38,6 @@ class ProjectRepository {
   getById(id: string): Project {
     // TODO:
     // - include Goal
-    // Only use db.chain when you need lodash methods
     const project = this.#database.db.chain
       .get("projects")
       .find({ id })

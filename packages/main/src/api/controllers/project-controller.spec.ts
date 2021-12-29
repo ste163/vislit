@@ -8,14 +8,14 @@ import ProjectRepository from "../repositories/project-repository";
 import SearchController from "./search-controller";
 import type FileSystemController from "./file-system-controller";
 
-let seedData: Project[];
-let database: Database;
-let projectRepository: ProjectRepository;
-let searchController: SearchController;
-let projectController: ProjectController;
-let fileSystemController: FileSystemController;
-
 describe("project-controller-integration", () => {
+  let seedData: Project[];
+  let database: Database;
+  let projectRepository: ProjectRepository;
+  let searchController: SearchController;
+  let projectController: ProjectController;
+  let fileSystemController: FileSystemController;
+
   beforeEach(() => {
     jest.spyOn(console, "error").mockImplementation(() => {});
     const { app } = jest.requireMock("electron");

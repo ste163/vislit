@@ -20,14 +20,9 @@ describe("goal-repository", () => {
       proofreadCountsTowardGoal: true,
       editCountsTowardGoal: true,
       revisedCountsTowardsGoal: true,
-      active: true,
-      completed: false,
-      dateCreated: null,
-      dateModified: null,
     };
-    const addedGoal = goalRepository.add(goalToAdd);
+    goalRepository.add(goalToAdd);
     expect(database.db.data?.goals.length).toEqual(1);
-    expect(addedGoal.dateCreated).not.toBeNull();
   });
 
   it("returns error if no goal found", () => {});

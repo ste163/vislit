@@ -14,21 +14,12 @@ class GoalRepository {
     this.#database = database;
   }
 
-  // do not need a getGoals as they are always included with the Project
+  // no getGoals as they are included with Project
 
   add(goal: Goal): Goal {
-    // move the setting dateCreated to the controller
-    // and not the repo
-    // keeping it here for now for testing
-    // need to also set active: true, completed false
-    const dateCreated = new Date();
-    goal.dateCreated = dateCreated;
-    goal.dateModified = dateCreated;
-    // the above 3 lines should be moved to controller
-    // as it's preparing the object for saving
     this.#database.db.data?.goals.push(this.#database.generateUniqueId(goal));
     this.#database.db.write();
-    return this.#database.db.chain.get("goals").find({ dateCreated }).value();
+    return this.#database.db.chain.get("goals").find({ id: goal.id }).value();
   }
 
   update(newGoal: Goal): Goal {

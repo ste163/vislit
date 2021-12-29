@@ -27,10 +27,10 @@ declare module "interfaces" {
     proofreadCountsTowardGoal: boolean;
     editCountsTowardGoal: boolean;
     revisedCountsTowardsGoal: boolean;
-    active: boolean; // only one goal can be active at a time
-    completed: boolean;
-    dateCreated: Date | null;
-    dateModified: Date | null;
+    active?: boolean; // only one goal can be active at a time
+    completed?: boolean;
+    dateCreated?: Date;
+    dateModified?: Date;
   }
 
   // Potentially move out of interfaces because API may never need to know about these
