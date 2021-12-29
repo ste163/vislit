@@ -1,8 +1,9 @@
-import type { Goal } from "interfaces";
+import type { Goal, Project } from "interfaces";
 import Database from "../database";
 import GoalRepository from "./goal-repository";
 
 describe("goal-repository", () => {
+  let seedProjects: Project[];
   let seedGoal: Goal;
   let database: Database;
   let goalRepository: GoalRepository;
@@ -10,6 +11,28 @@ describe("goal-repository", () => {
   beforeEach(() => {
     jest.spyOn(console, "error").mockImplementation(() => {});
     const { app } = jest.requireMock("electron");
+    seedProjects = [
+      {
+        id: "1",
+        title: "It",
+        description: "A murderous clown attacks a town",
+        typeId: "1",
+        completed: false,
+        archived: false,
+        dateCreated: new Date(),
+        dateModified: new Date(),
+      },
+      {
+        id: "2",
+        title: "The Shining",
+        description: "An evil hotel possesses a groundskeeper",
+        typeId: "2",
+        completed: false,
+        archived: false,
+        dateCreated: new Date(),
+        dateModified: new Date(),
+      },
+    ];
     seedGoal = {
       id: "1",
       projectId: "2",
@@ -18,8 +41,11 @@ describe("goal-repository", () => {
       proofreadCountsTowardGoal: true,
       editCountsTowardGoal: true,
       revisedCountsTowardsGoal: true,
+      active: true,
+      completed: false,
     };
     database = new Database(app);
+    database.db.data!.projects = seedProjects;
     database.db.data?.goals.push(seedGoal);
     goalRepository = new GoalRepository(database);
   });
@@ -37,7 +63,34 @@ describe("goal-repository", () => {
       proofreadCountsTowardGoal: true,
       editCountsTowardGoal: true,
       revisedCountsTowardsGoal: true,
+      active: true,
+      completed: false,
     });
+  });
+
+  it("returns empty array if no goals with that projectId", () => {
+    expect(goalRepository.getActiveGoal("999")).toEqual([]);
+  });
+
+  it("returns empty array if projectId in database but no active goals", () => {
+    expect(goalRepository.getActiveGoal("1")).toEqual([]);
+  });
+
+  it("returns active goals by projectId", () => {
+    const goal = goalRepository.getActiveGoal("2");
+    expect(goal).toEqual([
+      {
+        id: "1",
+        projectId: "2",
+        basedOnWordCountOrPageCount: "word",
+        frequencyToRepeat: "daily",
+        proofreadCountsTowardGoal: true,
+        editCountsTowardGoal: true,
+        revisedCountsTowardsGoal: true,
+        active: true,
+        completed: false,
+      },
+    ]);
   });
 
   it("returns goal after added to database", () => {
