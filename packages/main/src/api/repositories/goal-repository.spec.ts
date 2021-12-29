@@ -8,6 +8,7 @@ describe("goal-repository", () => {
   let goalRepository: GoalRepository;
 
   beforeEach(() => {
+    jest.spyOn(console, "error").mockImplementation(() => {});
     const { app } = jest.requireMock("electron");
     seedGoal = {
       id: "1",
@@ -52,7 +53,10 @@ describe("goal-repository", () => {
     expect(database.db.data?.goals.length).toEqual(2);
   });
 
-  //   it("returns error if goal to delete not found", () => {});
-
-  //   it("returns void if goal deleted", () => {});
+  it("returns void if goal deleted", () => {
+    const initialGoalCount = database.db.data?.goals.length as number;
+    goalRepository.delete("1");
+    const postDeleteGoalCount = database.db.data?.goals.length;
+    expect(postDeleteGoalCount).toEqual(initialGoalCount - 1);
+  });
 });

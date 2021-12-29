@@ -24,6 +24,14 @@ class GoalRepository {
     return this.#database.db.chain.get("goals").find({ id: goal.id }).value();
   }
 
+  delete(id: string): void {
+    this.#database.db.chain.get("goals").remove({ id }).value();
+    this.#database.db.write();
+  }
+
+  // doesn't appear to ever use the passed in goal
+  // but may need to update code to use the passed in goal
+  // probably would be best
   setGoalAsInactive(goal: Goal): void {
     const currentlyActiveGoal = this.#database.db.data?.goals.find(
       (goal) => goal.active
@@ -36,10 +44,6 @@ class GoalRepository {
         .remove({ id: currentlyActiveGoal.id });
       this.#database.db.data?.goals.push(currentlyActiveGoal);
     }
-  }
-
-  delete(goalId: string): void {
-    // deletes a goal by id
   }
 }
 
