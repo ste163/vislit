@@ -90,9 +90,9 @@ describe("goal-controller", () => {
       editCountsTowardGoal: true,
       revisedCountsTowardsGoal: true,
     };
-    const addedProject = goalController.add(goal);
+    const addedGoal = goalController.add(goal);
 
-    expect((addedProject as Goal).projectId).toEqual("1");
-    expect(addedProject).toHaveProperty("id");
+    expect((addedGoal as Goal).projectId).toEqual("1");
+    expect(addedGoal).toHaveProperty("id");
   });
 });
