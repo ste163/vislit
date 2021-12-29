@@ -107,7 +107,17 @@ describe("goal-controller", () => {
     expect(addedGoal).toHaveProperty("id");
   });
 
-  // update tests
+  //   it("returns error if exsiting goal is undefined", () => {});
+
+  //   it("returns error if activeGoal is undefined", () => {});
+
+  //   it("returns error if first active goal is undefined", () => {});
+
+  //   it("returns error if there is more than one active goal", () => {});
+
+  //   it("returns error if the existing goal does not equal the first (and only) active goal", () => {});
+
+  //   it("returns the updated active goal and sets the previous goal as inactive", () => {});
 
   it("returns error if deleting goal by id not in database", () => {
     expect(goalController.delete("999")).toEqual(
