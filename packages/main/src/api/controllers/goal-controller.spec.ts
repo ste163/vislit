@@ -9,6 +9,7 @@ import type FileSystemController from "./file-system-controller";
 
 describe("goal-controller", () => {
   let seedProject: Project;
+  let seedGoal: Goal;
   let database: Database;
   let projectRepository: ProjectRepository;
   let projectController: ProjectController;
@@ -29,7 +30,17 @@ describe("goal-controller", () => {
       dateCreated: new Date(),
       dateModified: new Date(),
     };
+    seedGoal = {
+      id: "1",
+      projectId: "1",
+      basedOnWordCountOrPageCount: "word",
+      frequencyToRepeat: "daily",
+      proofreadCountsTowardGoal: true,
+      editCountsTowardGoal: true,
+      revisedCountsTowardsGoal: true,
+    };
     database.db.data?.projects.push(seedProject);
+    database.db.data?.goals.push(seedGoal);
     projectRepository = new ProjectRepository(database);
     const mockSearchController = jest.fn() as unknown as SearchController;
     const mockFileSystemController =
@@ -94,5 +105,17 @@ describe("goal-controller", () => {
 
     expect((addedGoal as Goal).projectId).toEqual("1");
     expect(addedGoal).toHaveProperty("id");
+  });
+
+  // update tests
+
+  it("returns error if deleting goal by id not in database", () => {
+    expect(goalController.delete("999")).toEqual(
+      new Error("Goal with id 999 does not exist in database")
+    );
+  });
+
+  it("returns true if goal successfully deleted", () => {
+    expect(goalController.delete("1")).toEqual(true);
   });
 });

@@ -51,12 +51,13 @@ class GoalController {
     }
   }
 
-  delete(goal: Goal): Goal | Error {
-    // TODO:
-    // ENSURE delete modal makes it very clear you should probably not delete goals
-    // because you will lose out on historical data
+  delete(id: string): true | Error {
     try {
-      // biz logic
+      const existingGoal = this.#goalRepository.getGoalById(id);
+      if (existingGoal === undefined)
+        throw new Error(`Goal with id ${id} does not exist in database`);
+      this.#goalRepository.delete(id);
+      return true;
     } catch (error: any | Error) {
       console.log(error);
       return error;
