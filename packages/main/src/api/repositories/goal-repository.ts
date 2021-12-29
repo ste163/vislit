@@ -25,6 +25,11 @@ class GoalRepository {
     return this.#database.db.chain.get("goals").find({ id: goal.id }).value();
   }
 
+  // have a basic update
+  // that deletes the goal by id (like normal)
+  // then re-adds it and returns it
+  // w/o doing anyting related to generatingUniqueId
+
   delete(id: string): void {
     this.#database.db.chain.get("goals").remove({ id }).value();
     this.#database.db.write();
