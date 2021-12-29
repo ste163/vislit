@@ -31,6 +31,37 @@ class GoalController {
       return error;
     }
   }
+
+  update(goal: Goal): Goal | Error {
+    try {
+      const existingGoal = this.#goalRepository.getGoalById(goal.id!);
+      if (existingGoal === undefined)
+        throw new Error(`Goal with id ${goal.id} does not exist in database`);
+      // because the goal exists in database
+      // update the existingGoal.dateModified
+      // and the existingGoal.active = false
+      // then remove the existingGoal from db (goalRepo.delete(goalId))
+      // then db.write() (which happens in delete)
+      // then push existingGoal to db
+      // then add the param goal to db
+      // then return the goal from add (so just do a return on the add)
+    } catch (error: any | Error) {
+      console.log(error);
+      return error;
+    }
+  }
+
+  delete(goal: Goal): Goal | Error {
+    // TODO:
+    // ENSURE delete modal makes it very clear you should probably not delete goals
+    // because you will lose out on historical data
+    try {
+      // biz logic
+    } catch (error: any | Error) {
+      console.log(error);
+      return error;
+    }
+  }
 }
 
 export default GoalController;

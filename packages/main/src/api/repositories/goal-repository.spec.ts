@@ -12,6 +12,10 @@ describe("goal-repository", () => {
     goalRepository = new GoalRepository(database);
   });
 
+  //   it("returns undefined if no goal by id founds", () => {});
+
+  //   it("returns goal by id", () => {});
+
   it("returns goal after added to database", () => {
     const goalToAdd: Goal = {
       projectId: "1",
@@ -25,7 +29,7 @@ describe("goal-repository", () => {
     expect(database.db.data?.goals.length).toEqual(1);
   });
 
-  it("returns error if no goal found", () => {});
+  //   it("returns error if goal to delete not found", () => {});
 
-  it("returns new goal and sets previously active goal as inactive", () => {});
+  //   it("returns void if goal deleted", () => {});
 });

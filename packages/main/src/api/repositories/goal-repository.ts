@@ -14,7 +14,9 @@ class GoalRepository {
     this.#database = database;
   }
 
-  // no getGoals as they are included with Project
+  getGoalById(id: string): Goal | undefined {
+    return this.#database.db.data?.goals.find((goal) => goal.id === id);
+  }
 
   add(goal: Goal): Goal {
     this.#database.db.data?.goals.push(this.#database.generateUniqueId(goal));
@@ -22,19 +24,10 @@ class GoalRepository {
     return this.#database.db.chain.get("goals").find({ id: goal.id }).value();
   }
 
-  update(newGoal: Goal): Goal {
-    // ACTUALLY
-    // most of this logic should be in the controller level
-    // so this should really be a 'setGoalAsInactive'
-    // which updates dateModified and sets active = false
-    // ** TODO **
-    // Still MUST check for active goals, then if there's more than one, set all to false except active
-    // for the current project
+  setGoalAsInactive(goal: Goal): void {
     const currentlyActiveGoal = this.#database.db.data?.goals.find(
       (goal) => goal.active
     );
-
-    // update active goal for display in goal log
     if (currentlyActiveGoal) {
       currentlyActiveGoal.active = false;
       currentlyActiveGoal.dateModified = new Date();
@@ -42,17 +35,11 @@ class GoalRepository {
         .get("goals")
         .remove({ id: currentlyActiveGoal.id });
       this.#database.db.data?.goals.push(currentlyActiveGoal);
-
-      newGoal.active = true;
-      return this.add(newGoal); // .write() database in here (or should at least) --> will test
     }
-    return newGoal; // to make TS happy for now
   }
 
   delete(goalId: string): void {
     // deletes a goal by id
-    // this is not recommended on the UI side
-    // but having the option to delete is still important
   }
 }
 
