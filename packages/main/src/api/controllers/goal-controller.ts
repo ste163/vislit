@@ -37,6 +37,7 @@ class GoalController {
       const existingGoal = this.#goalRepository.getGoalById(goal.id!);
       if (existingGoal === undefined)
         throw new Error(`Goal with id ${goal.id} does not exist in database`);
+      
       const activeGoal = this.#goalRepository.getActiveGoal(goal.projectId);
       if (activeGoal === undefined || activeGoal[0] === undefined)
         throw new Error(
@@ -46,6 +47,7 @@ class GoalController {
         throw new Error(
           `Project id ${goal.projectId} has more than one active goal`
         );
+
       if (existingGoal !== activeGoal[0])
         // REALLY need to check if this is legit!!!
         // may need to do the loose checking

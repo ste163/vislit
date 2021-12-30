@@ -37,6 +37,7 @@ describe("goal-repository", () => {
       id: "1",
       projectId: "2",
       basedOnWordCountOrPageCount: "word",
+      wordOrPageCount: 500,
       frequencyToRepeat: "daily",
       proofreadCountsTowardGoal: true,
       editCountsTowardGoal: true,
@@ -59,6 +60,7 @@ describe("goal-repository", () => {
       id: "1",
       projectId: "2",
       basedOnWordCountOrPageCount: "word",
+      wordOrPageCount: 500,
       frequencyToRepeat: "daily",
       proofreadCountsTowardGoal: true,
       editCountsTowardGoal: true,
@@ -83,6 +85,7 @@ describe("goal-repository", () => {
         id: "1",
         projectId: "2",
         basedOnWordCountOrPageCount: "word",
+        wordOrPageCount: 500,
         frequencyToRepeat: "daily",
         proofreadCountsTowardGoal: true,
         editCountsTowardGoal: true,
@@ -93,10 +96,11 @@ describe("goal-repository", () => {
     ]);
   });
 
-  it("returns goal after added to database", () => {
+  it("returns goal after successful add", () => {
     const goalToAdd: Goal = {
       projectId: "1",
       basedOnWordCountOrPageCount: "word",
+      wordOrPageCount: 250,
       frequencyToRepeat: "daily",
       proofreadCountsTowardGoal: true,
       editCountsTowardGoal: true,
@@ -104,6 +108,18 @@ describe("goal-repository", () => {
     };
     goalRepository.add(goalToAdd);
     expect(database.db.data?.goals.length).toEqual(2);
+  });
+
+  it("returns updated goal after successful update", () => {
+    const goal = goalRepository.getGoalById("1");
+    if (goal) {
+      goal.basedOnWordCountOrPageCount = "page";
+      goal.wordOrPageCount = 5;
+      const updatedGoal = goalRepository.update(goal);
+      expect(updatedGoal.basedOnWordCountOrPageCount).toBe("page");
+      expect(updatedGoal.wordOrPageCount).toBe(5);
+      expect(updatedGoal.id).toEqual(goal.id);
+    }
   });
 
   it("returns void if goal deleted", () => {
