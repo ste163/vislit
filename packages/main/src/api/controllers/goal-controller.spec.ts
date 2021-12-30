@@ -34,6 +34,7 @@ describe("goal-controller", () => {
       id: "1",
       projectId: "1",
       basedOnWordCountOrPageCount: "word",
+      wordOrPageCount: 500,
       frequencyToRepeat: "daily",
       proofreadCountsTowardGoal: true,
       editCountsTowardGoal: true,
@@ -58,6 +59,7 @@ describe("goal-controller", () => {
     const goal: Goal = {
       projectId: "999",
       basedOnWordCountOrPageCount: "word",
+      wordOrPageCount: 500,
       frequencyToRepeat: "daily",
       proofreadCountsTowardGoal: true,
       editCountsTowardGoal: true,
@@ -73,6 +75,7 @@ describe("goal-controller", () => {
     const goal: Goal = {
       projectId: "1",
       basedOnWordCountOrPageCount: "word",
+      wordOrPageCount: 500,
       frequencyToRepeat: "daily",
       proofreadCountsTowardGoal: true,
       editCountsTowardGoal: true,
@@ -96,6 +99,7 @@ describe("goal-controller", () => {
     const goal: Goal = {
       projectId: "1",
       basedOnWordCountOrPageCount: "word",
+      wordOrPageCount: 500,
       frequencyToRepeat: "daily",
       proofreadCountsTowardGoal: true,
       editCountsTowardGoal: true,
@@ -107,7 +111,7 @@ describe("goal-controller", () => {
     expect(addedGoal).toHaveProperty("id");
   });
 
-  //   it("returns error if exsiting goal is undefined", () => {});
+  //   it("returns error if existing goal is undefined", () => {});
 
   //   it("returns error if activeGoal is undefined", () => {});
 

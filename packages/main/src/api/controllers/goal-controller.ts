@@ -43,11 +43,12 @@ class GoalController {
         throw new Error(
           `No active goal for project id ${goal.projectId} exists in database`
         );
+
       if (activeGoal.length > 1)
         throw new Error(
           `Project id ${goal.projectId} has more than one active goal`
         );
-
+        
       if (existingGoal !== activeGoal[0])
         // REALLY need to check if this is legit!!!
         // may need to do the loose checking
