@@ -32,12 +32,14 @@ class GoalController {
     }
   }
 
+  // will need a 'setAsCompletedById' because update does not allow for that
+
   update(goal: Goal): Goal | Error {
     try {
       const existingGoal = this.#goalRepository.getGoalById(goal.id!);
       if (existingGoal === undefined)
         throw new Error(`Goal with id ${goal.id} does not exist in database`);
-      
+
       const activeGoal = this.#goalRepository.getActiveGoal(goal.projectId);
       if (activeGoal === undefined || activeGoal[0] === undefined)
         throw new Error(
@@ -45,10 +47,13 @@ class GoalController {
         );
 
       if (activeGoal.length > 1)
+        // the user has no way of changing this, or fixing this. So it's a bug on my end
+        // do not check for this. Would need a different check, like, if more than one active goal, then you need to force all to be inactive
+        // then update the database
         throw new Error(
           `Project id ${goal.projectId} has more than one active goal`
         );
-        
+
       if (existingGoal !== activeGoal[0])
         // REALLY need to check if this is legit!!!
         // may need to do the loose checking
@@ -58,12 +63,14 @@ class GoalController {
 
       existingGoal.dateModified = new Date();
       existingGoal.active = false;
-      this.#goalRepository.delete(goal.id!);
-      // use the goalRespo.update() to update the existingGoal
-      // and re-adds it to db
-      // THEN
-      // add the param goal to db with the this.add(goal)
-      // then return the goal from add (so just do a return on the add)
+      this.#goalRepository.update(existingGoal);
+
+      const newGoalDate = new Date();
+      goal.completed = false;
+      goal.active = true;
+      goal.dateCreated = newGoalDate;
+      goal.dateModified = newGoalDate;
+      return this.#goalRepository.add(goal);
     } catch (error: any | Error) {
       console.log(error);
       return error;
