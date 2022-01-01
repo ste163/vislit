@@ -80,20 +80,18 @@ describe("goal-repository", () => {
 
   it("returns active goals by projectId", () => {
     const goal = goalRepository.getActiveGoal("2");
-    expect(goal).toEqual(
-      {
-        id: "1",
-        projectId: "2",
-        basedOnWordCountOrPageCount: "word",
-        wordOrPageCount: 500,
-        frequencyToRepeat: "daily",
-        proofreadCountsTowardGoal: true,
-        editCountsTowardGoal: true,
-        revisedCountsTowardsGoal: true,
-        active: true,
-        completed: false,
-      },
-    );
+    expect(goal).toEqual({
+      id: "1",
+      projectId: "2",
+      basedOnWordCountOrPageCount: "word",
+      wordOrPageCount: 500,
+      frequencyToRepeat: "daily",
+      proofreadCountsTowardGoal: true,
+      editCountsTowardGoal: true,
+      revisedCountsTowardsGoal: true,
+      active: true,
+      completed: false,
+    });
   });
 
   it("returns goal after successful add", () => {
