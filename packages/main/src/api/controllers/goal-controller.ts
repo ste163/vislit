@@ -41,24 +41,14 @@ class GoalController {
         throw new Error(`Goal with id ${goal.id} does not exist in database`);
 
       const activeGoal = this.#goalRepository.getActiveGoal(goal.projectId);
-      if (activeGoal === undefined || activeGoal[0] === undefined)
+      if (activeGoal === undefined)
         throw new Error(
           `No active goal for project id ${goal.projectId} exists in database`
         );
 
-      if (activeGoal.length > 1)
-        // the user has no way of changing this, or fixing this. So it's a bug on my end
-        // do not check for this. Would need a different check, like, if more than one active goal, then you need to force all to be inactive
-        // then update the database
+      if (existingGoal.id !== activeGoal.id)
         throw new Error(
-          `Project id ${goal.projectId} has more than one active goal`
-        );
-
-      if (existingGoal !== activeGoal[0])
-        // REALLY need to check if this is legit!!!
-        // may need to do the loose checking
-        throw new Error(
-          `The goal you are trying to update with id ${existingGoal.id} does not match the active goal with id ${activeGoal[0].id}`
+          `The goal you are trying to update with id ${existingGoal.id} does not match the active goal with id ${activeGoal.id}`
         );
 
       existingGoal.dateModified = new Date();

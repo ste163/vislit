@@ -39,6 +39,8 @@ describe("goal-controller", () => {
       proofreadCountsTowardGoal: true,
       editCountsTowardGoal: true,
       revisedCountsTowardsGoal: true,
+      active: true,
+      completed: false,
     };
     database.db.data?.projects.push(seedProject);
     database.db.data?.goals.push(seedGoal);
@@ -111,17 +113,98 @@ describe("goal-controller", () => {
     expect(addedGoal).toHaveProperty("id");
   });
 
-  //   it("returns error if existing goal is undefined", () => {});
+    it("returns error if existing goal is not in database ", () => {
+      expect(goalController.update({
+        id: "2",
+        projectId: "1",
+        basedOnWordCountOrPageCount: "page",
+        wordOrPageCount: 2,
+        frequencyToRepeat: "daily",
+        proofreadCountsTowardGoal: true,
+        editCountsTowardGoal: true,
+        revisedCountsTowardsGoal: true,
+      })).toEqual(new Error('Goal with id 2 does not exist in database'));
+    });
 
-  //   it("returns error if activeGoal is undefined", () => {});
+    it("returns error if activeGoal does not exist in database", () => {
+      const goal: Goal = {
+        projectId: "1",
+        basedOnWordCountOrPageCount: "word",
+        wordOrPageCount: 500,
+        frequencyToRepeat: "daily",
+        proofreadCountsTowardGoal: true,
+        editCountsTowardGoal: true,
+        revisedCountsTowardsGoal: true,
+      };
 
-  //   it("returns error if first active goal is undefined", () => {});
+      const mockGoalRepository = {
+       getGoalById: jest.fn(() => goal),
+       getActiveGoal: jest.fn(() => undefined)
+      } as unknown as GoalRepository;
+  
+      const goalController = new GoalController(
+        mockGoalRepository,
+        projectController
+      );
 
-  //   it("returns error if there is more than one active goal", () => {});
+      expect(goalController.update(goal)).toEqual(new Error('No active goal for project id 1 exists in database'));
+    });
 
-  //   it("returns error if the existing goal does not equal the first (and only) active goal", () => {});
+    it("returns error if the existing goal id does not equal project's active goal id", () => {
+      const goal: Goal = {
+        id: '1',
+        projectId: "1",
+        basedOnWordCountOrPageCount: "word",
+        wordOrPageCount: 500,
+        frequencyToRepeat: "daily",
+        proofreadCountsTowardGoal: true,
+        editCountsTowardGoal: true,
+        revisedCountsTowardsGoal: true,
+      };
 
-  //   it("returns the updated active goal and sets the previous goal as inactive", () => {});
+      const mockActiveGoal = {
+        id: '999'
+      };
+
+      const mockGoalRepository = {
+       getGoalById: jest.fn(() => goal),
+       getActiveGoal: jest.fn(() => mockActiveGoal),
+      } as unknown as GoalRepository;
+  
+      const goalController = new GoalController(
+        mockGoalRepository,
+        projectController
+      );
+
+      expect(goalController.update(goal)).toEqual(new Error('The goal you are trying to update with id 1 does not match the active goal with id 999'));
+    });
+
+    it("returns the updated active goal and sets the previous goal as inactive", () => {
+      const goal: Goal = {
+        id: "1",
+        projectId: "1",
+        basedOnWordCountOrPageCount: "page",
+        wordOrPageCount: 2,
+        frequencyToRepeat: "daily",
+        proofreadCountsTowardGoal: true,
+        editCountsTowardGoal: true,
+        revisedCountsTowardsGoal: true,
+      };
+
+      const response = goalController.update(goal) as Goal;
+      expect(response.active).toBe(true);
+      expect(response.basedOnWordCountOrPageCount).toBe('page');
+
+      const goalsAfterFirstUpdate = [...database.db.data!.goals];
+      expect(goalsAfterFirstUpdate.length).toBe(2);
+
+      const originalGoal = goalsAfterFirstUpdate[0];
+      const updatedGoal = goalsAfterFirstUpdate[1]; // updated goal is always last because it's pushed to end of array
+      expect(originalGoal.active).toBe(false);
+      expect(originalGoal.basedOnWordCountOrPageCount).toBe('word');
+      expect(updatedGoal.active).toBe(true);
+      expect(updatedGoal.basedOnWordCountOrPageCount).toBe('page');
+    });
 
   it("returns error if deleting goal by id not in database", () => {
     expect(goalController.delete("999")).toEqual(

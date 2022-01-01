@@ -12,11 +12,10 @@ class GoalRepository {
     return this.#database.db.data?.goals.find((goal) => goal.id === id);
   }
 
-  getActiveGoal(projectId: string): Goal[] | undefined {
-    // should only ever be 1 active goal
+  getActiveGoal(projectId: string): Goal | undefined {
     return this.#database.db.data?.goals.filter((goal) => {
       if (goal.projectId === projectId && goal.active === true) return goal;
-    });
+    })[0]; // will only ever be one active goal, so get the first
   }
 
   add(goal: Goal): Goal {

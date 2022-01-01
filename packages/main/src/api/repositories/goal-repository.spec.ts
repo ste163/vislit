@@ -71,16 +71,16 @@ describe("goal-repository", () => {
   });
 
   it("returns empty array if no goals with that projectId", () => {
-    expect(goalRepository.getActiveGoal("999")).toEqual([]);
+    expect(goalRepository.getActiveGoal("999")).toEqual(undefined);
   });
 
   it("returns empty array if projectId in database but no active goals", () => {
-    expect(goalRepository.getActiveGoal("1")).toEqual([]);
+    expect(goalRepository.getActiveGoal("1")).toEqual(undefined);
   });
 
   it("returns active goals by projectId", () => {
     const goal = goalRepository.getActiveGoal("2");
-    expect(goal).toEqual([
+    expect(goal).toEqual(
       {
         id: "1",
         projectId: "2",
@@ -93,7 +93,7 @@ describe("goal-repository", () => {
         active: true,
         completed: false,
       },
-    ]);
+    );
   });
 
   it("returns goal after successful add", () => {
