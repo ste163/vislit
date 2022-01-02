@@ -47,13 +47,6 @@ class ApplicationStore {
           width: "300px",
         },
         {
-          header: "Lexicons",
-          isActive: false,
-          dropZone: "left",
-          position: 2,
-          width: "300px",
-        },
-        {
           header: "Settings",
           isActive: false,
           dropZone: "left",

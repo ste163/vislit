@@ -6,7 +6,6 @@ import type { Column } from "interfaces";
 import ButtonClose from "./ButtonClose.vue";
 import TheColumnProject from "./TheColumnProject.vue";
 import TheColumnNote from "./TheColumnNote.vue";
-import TheColumnLexicon from "./TheColumnLexicon.vue";
 import TheColumnSetting from "./TheColumnSetting.vue";
 
 const store = inject("store") as Store;
@@ -111,7 +110,6 @@ const resizeHandleLocation = computed(() =>
       <div class="column-content">
         <the-column-project v-if="column.header === 'Projects'" />
         <the-column-note v-if="column.header === 'Notes'" />
-        <the-column-lexicon v-if="column.header === 'Lexicons'" />
         <the-column-setting v-if="column.header === 'Settings'" />
       </div>
     </div>

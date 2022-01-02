@@ -7,11 +7,9 @@ import AppIconSummary from "./AppIconSummary.vue";
 import AppIconWriter from "./AppIconWriter.vue";
 import AppIconProgress from "./AppIconProgress.vue";
 import AppIconVisualization from "./AppIconVisualization.vue";
-import AppIconThesaurus from "./AppIconThesaurus.vue";
 import ButtonColumn from "./ButtonColumn.vue";
 import AppIconProject from "./AppIconProject.vue";
 import AppIconNote from "./AppIconNote.vue";
-import AppIconLexicon from "./AppIconLexicon.vue";
 import AppIconSetting from "./AppIconSetting.vue";
 
 const store = inject("store") as Store;
@@ -87,15 +85,6 @@ const isSidebarDisabled = useIsSidebarDisabled();
         </span>
       </button-router-link>
 
-      <button-router-link :route="'/thesaurus'" class="sidebar-button">
-        <template #icon>
-          <app-icon-thesaurus class="button-icon" />
-        </template>
-        <span v-if="!store.application.state.isSidebarMinimized">
-          Thesaurus
-        </span>
-      </button-router-link>
-
       <div
         class="sidebar-header mt-7"
         :class="{ 'sidebar-header-disabled': isSidebarDisabled }"
@@ -119,15 +108,6 @@ const isSidebarDisabled = useIsSidebarDisabled();
           <app-icon-note class="button-icon" />
         </template>
         <span v-if="!store.application.state.isSidebarMinimized"> Notes </span>
-      </button-column>
-
-      <button-column class="sidebar-button">
-        <template #icon>
-          <app-icon-lexicon class="button-icon" />
-        </template>
-        <span v-if="!store.application.state.isSidebarMinimized">
-          Lexicons
-        </span>
       </button-column>
     </div>
 

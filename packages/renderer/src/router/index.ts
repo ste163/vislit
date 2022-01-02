@@ -27,11 +27,6 @@ const routes = [
     name: "Visualization",
     component: () => import("/@/views/Visualization.vue"),
   },
-  {
-    path: "/thesaurus",
-    name: "Thesaurus",
-    component: () => import("/@/views/Thesaurus.vue"),
-  },
 ];
 
 const router = createRouter({
