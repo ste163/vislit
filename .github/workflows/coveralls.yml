@@ -1,25 +1,27 @@
-on: ["push", "pull_request"]
-
 name: Test Coveralls
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
 
   build:
-    name: Build
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
+
     steps:
-
     - uses: actions/checkout@v2
-
-    - name: Use Node.js 16.x
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2
       with:
         node-version: 16.x
+        cache: "npm"
 
-    - name: npm install, make test-coverage
+    - name: npm install, test
       run: |
-        npm install
-        npm run test
+        npm ci
+        npm run test:coveralls
 
     - name: Coveralls
       uses: coverallsapp/github-action@master

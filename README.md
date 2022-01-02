@@ -1,11 +1,11 @@
 # Vislit
 
 [![Node.js CI Build](https://github.com/ste163/vislit/actions/workflows/tests.yml/badge.svg)](https://github.com/ste163/vislit/actions/workflows/tests.yml)
+[![Coverage Status](https://coveralls.io/repos/github/ste163/vislit/badge.svg?branch=main)](https://coveralls.io/github/ste163/vislit?branch=main)
 
 > Linux, Mac, Windows app for tracking, visualizing, and analyzing writing projects
 
-Vislit is currently in development, shooting for a late 2021 release date for the earliest version. For more information:
-[vislit.app](https://vislit.app/#/)
+Vislit is currently in development. For more information: [vislit.app](https://vislit.app/#/)
 
 ## Features
 
