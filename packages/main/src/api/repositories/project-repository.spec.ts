@@ -46,6 +46,20 @@ describe("project-repository", () => {
         dateModified: dateForShining,
       },
     ];
+    database.db.data!.goals = [
+      {
+        id: "1",
+        projectId: "1",
+        basedOnWordCountOrPageCount: "word",
+        wordOrPageCount: 500,
+        frequencyToRepeat: "daily",
+        proofreadCountsTowardGoal: true,
+        editCountsTowardGoal: true,
+        revisedCountsTowardsGoal: true,
+        active: true,
+        completed: false,
+      },
+    ];
   });
 
   it("throws error if project date is null", () => {
@@ -90,6 +104,20 @@ describe("project-repository", () => {
           id: "1",
           value: "novel",
         },
+        goals: [
+          {
+            id: "1",
+            projectId: "1",
+            basedOnWordCountOrPageCount: "word",
+            wordOrPageCount: 500,
+            frequencyToRepeat: "daily",
+            proofreadCountsTowardGoal: true,
+            editCountsTowardGoal: true,
+            revisedCountsTowardsGoal: true,
+            active: true,
+            completed: false,
+          },
+        ],
         completed: false,
         archived: false,
         dateCreated: dateForIt,
@@ -104,6 +132,7 @@ describe("project-repository", () => {
           id: "2",
           value: "short story",
         },
+        goals: [],
         completed: false,
         archived: false,
         dateCreated: dateForShining,
@@ -123,6 +152,7 @@ describe("project-repository", () => {
         id: "2",
         value: "short story",
       },
+      goals: [],
       completed: false,
       archived: false,
       dateCreated: dateForShining,
@@ -146,6 +176,7 @@ describe("project-repository", () => {
         id: "2",
         value: "short story",
       },
+      goals: [],
       completed: false,
       archived: false,
       dateCreated: dateForShining,
@@ -198,6 +229,20 @@ describe("project-repository", () => {
         id: "1",
         value: "novel",
       },
+      goals: [
+        {
+          id: "1",
+          projectId: "1",
+          basedOnWordCountOrPageCount: "word",
+          wordOrPageCount: 500,
+          frequencyToRepeat: "daily",
+          proofreadCountsTowardGoal: true,
+          editCountsTowardGoal: true,
+          revisedCountsTowardsGoal: true,
+          active: true,
+          completed: false,
+        },
+      ],
       completed: false,
       archived: false,
       dateCreated: dateForIt,
