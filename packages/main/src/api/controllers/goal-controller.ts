@@ -19,6 +19,12 @@ class GoalController {
       const existingProject = this.#projectController.getById(goal.projectId);
       if (existingProject instanceof Error) return existingProject;
 
+      const activeGoal = this.#goalRepository.getActiveGoal(goal.projectId);
+      if (activeGoal)
+        throw new Error(
+          `Active goal already exists for project with id ${goal.projectId}`
+        );
+
       const date = new Date();
       goal.dateCreated = date;
       goal.dateModified = date;
@@ -34,25 +40,28 @@ class GoalController {
 
   // Needed as separate from update controller method because
   // update adds new goal to log, which is not needed here
-  setAsCompletedById(id: string): Goal | Error {
+  toggleCompletedById(id: string): Goal | Error {
     try {
       const goal = this.#goalRepository.getGoalById(id);
       if (goal === undefined)
         throw new Error(`Goal with id ${id} does not exist in database`);
 
-      // PROBLEM:
-      // After setting complete to true
-      // what should the active state become?
-      // Probably false and then frontend would check for any active goals.
-      // If known, display info for the most recent.
-      // This should not do the toggle but be very explicit on the true/false
-      // so that active state never doubles up
-      // should probably also ensure that you're only toggling the active goal
-      // Because you can not edit goals in the log, only delete them
+      const activeGoal = this.#goalRepository.getActiveGoal(goal.projectId);
+      if (activeGoal === undefined)
+        throw new Error(
+          `No active goal for project id ${goal.projectId} exists in database`
+        );
 
-      goal.completed = true;
-      goal.active = false;
+      if (goal.id !== activeGoal.id)
+        // Only allows for updating the active goal
+        throw new Error(
+          `The goal you are trying to update with id ${goal.id} does not match the active goal with id ${activeGoal.id}`
+        );
 
+      // not updating the active state. If wanting to create a new goal
+      // UI will hit the update method (potentially?)
+      // but if that doesn't work, make a new method for toggleActive
+      goal.completed = !goal.completed;
       goal.dateModified = new Date();
 
       return this.#goalRepository.update(goal);

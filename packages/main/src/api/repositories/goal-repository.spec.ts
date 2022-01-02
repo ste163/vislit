@@ -70,15 +70,15 @@ describe("goal-repository", () => {
     });
   });
 
-  it("returns empty array if no goals with that projectId", () => {
+  it("returns empty undefined if no goals with that projectId", () => {
     expect(goalRepository.getActiveGoal("999")).toEqual(undefined);
   });
 
-  it("returns empty array if projectId in database but no active goals", () => {
+  it("returns empty undefined if projectId in database but no active goals", () => {
     expect(goalRepository.getActiveGoal("1")).toEqual(undefined);
   });
 
-  it("returns active goals by projectId", () => {
+  it("returns active goal by projectId", () => {
     const goal = goalRepository.getActiveGoal("2");
     expect(goal).toEqual({
       id: "1",

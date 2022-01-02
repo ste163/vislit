@@ -6,9 +6,10 @@ import GoalRepository from "../repositories/goal-repository";
 import GoalController from "./goal-controller";
 import type SearchController from "./search-controller";
 import type FileSystemController from "./file-system-controller";
+import _ from "lodash";
 
 describe("goal-controller", () => {
-  let seedProject: Project;
+  let seedProjects: Project[];
   let seedGoal: Goal;
   let database: Database;
   let projectRepository: ProjectRepository;
@@ -20,16 +21,28 @@ describe("goal-controller", () => {
     jest.spyOn(console, "error").mockImplementation(() => {});
     const { app } = jest.requireMock("electron");
     database = new Database(app);
-    seedProject = {
-      id: "1",
-      title: "It",
-      description: "A murderous clown attacks a town",
-      typeId: "1",
-      completed: false,
-      archived: false,
-      dateCreated: new Date(),
-      dateModified: new Date(),
-    };
+    seedProjects = [
+      {
+        id: "1",
+        title: "It",
+        description: "A murderous clown attacks a town",
+        typeId: "1",
+        completed: false,
+        archived: false,
+        dateCreated: new Date(),
+        dateModified: new Date(),
+      },
+      {
+        id: "2",
+        title: "The Shining",
+        description: "A murderous clown attacks a town",
+        typeId: "1",
+        completed: false,
+        archived: false,
+        dateCreated: new Date(),
+        dateModified: new Date(),
+      },
+    ];
     seedGoal = {
       id: "1",
       projectId: "1",
@@ -42,7 +55,7 @@ describe("goal-controller", () => {
       active: true,
       completed: false,
     };
-    database.db.data?.projects.push(seedProject);
+    database.db.data!.projects = seedProjects;
     database.db.data?.goals.push(seedGoal);
     projectRepository = new ProjectRepository(database);
     const mockSearchController = jest.fn() as unknown as SearchController;
@@ -73,6 +86,21 @@ describe("goal-controller", () => {
     );
   });
 
+  it("returns error if adding a goal to a project with an already active goal", () => {
+    const goal: Goal = {
+      projectId: "1",
+      basedOnWordCountOrPageCount: "word",
+      wordOrPageCount: 500,
+      frequencyToRepeat: "daily",
+      proofreadCountsTowardGoal: true,
+      editCountsTowardGoal: true,
+      revisedCountsTowardsGoal: true,
+    };
+    expect(goalController.add(goal)).toEqual(
+      new Error("Active goal already exists for project with id 1")
+    );
+  });
+
   it("returns error if adding goal fails", () => {
     const goal: Goal = {
       projectId: "1",
@@ -84,6 +112,7 @@ describe("goal-controller", () => {
       revisedCountsTowardsGoal: true,
     };
     const mockGoalRepository = {
+      getActiveGoal: jest.fn(() => undefined),
       add: jest.fn(() => {
         throw new Error();
       }),
@@ -99,7 +128,7 @@ describe("goal-controller", () => {
 
   it("returns added project", () => {
     const goal: Goal = {
-      projectId: "1",
+      projectId: "2",
       basedOnWordCountOrPageCount: "word",
       wordOrPageCount: 500,
       frequencyToRepeat: "daily",
@@ -109,11 +138,19 @@ describe("goal-controller", () => {
     };
     const addedGoal = goalController.add(goal);
 
-    expect((addedGoal as Goal).projectId).toEqual("1");
+    expect((addedGoal as Goal).projectId).toEqual("2");
     expect(addedGoal).toHaveProperty("id");
   });
 
-  it("returns error if existing goal is not in database ", () => {
+  it("returns error when toggling complete for a goal by id not in database", () => {});
+
+  it("returns error when toggling complete for a project without an active goal", () => {});
+
+  it("returns error when toggling complete when the goal does not match the active goal", () => {});
+
+  it("returns the updated goal with the toggled complete and updated dateModified", () => {});
+
+  it("returns error if updating existing goal is not in database ", () => {
     expect(
       goalController.update({
         id: "2",
@@ -128,7 +165,7 @@ describe("goal-controller", () => {
     ).toEqual(new Error("Goal with id 2 does not exist in database"));
   });
 
-  it("returns error if activeGoal does not exist in database", () => {
+  it("returns error if updating activeGoal does not exist in database", () => {
     const goal: Goal = {
       projectId: "1",
       basedOnWordCountOrPageCount: "word",
@@ -154,7 +191,7 @@ describe("goal-controller", () => {
     );
   });
 
-  it("returns error if the existing goal id does not equal project's active goal id", () => {
+  it("returns error if updating the existing goal id does not equal project's active goal id", () => {
     const goal: Goal = {
       id: "1",
       projectId: "1",
