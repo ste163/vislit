@@ -102,7 +102,6 @@ class ProjectRepository {
     // - goal
     // - progress
     // - notes -> delete from controller as this is HTML and not database related
-    // - ProjectLexicons
     // -> not deleting Types as those can exist on other projects
     // Because this is not a legit relational #database
     // The ordering does not matter

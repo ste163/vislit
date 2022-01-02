@@ -43,7 +43,7 @@ export default class Database {
       if (db.data === null) {
         // Set default database structure
         db.data = {
-          dbType: "vislit",
+          dbType: "vislit-v1.0", // will check version number to decide if database needs to be updated
           projects: [],
           types: [
             {
