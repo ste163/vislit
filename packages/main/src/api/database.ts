@@ -2,18 +2,16 @@ import lodash from "lodash";
 import { nanoid } from "nanoid/non-secure";
 import { JSONFileSync, LowSync, MemorySync } from "lowdb";
 import type { App } from "electron";
-import type { Project, Type } from "interfaces";
+import type { Goal, Project, Type } from "interfaces";
 import type { ObjectChain } from "lodash";
 
 interface VislitDatabase {
   dbType: string;
   projects: Array<Project>;
   types: Array<Type>;
+  goals: Array<Goal>;
   progress: Array<unknown>;
   notes: Array<unknown>;
-  projectLexicons: Array<unknown>;
-  lexicons: Array<unknown>;
-  words: Array<unknown>;
 }
 
 interface LowDbModel extends LowSync<VislitDatabase> {
@@ -77,11 +75,9 @@ export default class Database {
               value: "poetry collection",
             },
           ],
+          goals: [],
           progress: [],
           notes: [],
-          projectLexicons: [],
-          lexicons: [],
-          words: [],
         };
         db.write();
       }

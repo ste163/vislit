@@ -8,9 +8,29 @@ class ProjectRepository {
     this.#database = database;
   }
 
+  #sortByMostRecentlyModified(array: any[]): any[] {
+    const copy = [...array];
+    return copy.sort((a: any, b: any): number => {
+      const dateA = new Date(a.dateModified);
+      const dateB = new Date(b.dateModified);
+      if (dateA > dateB) return -1;
+      if (dateA < dateB) return 1;
+      return 0;
+    });
+  }
+
   #includeProjectType(project: Project): Project {
     const types = this.#database.db.data!.types;
     project.type = types.find((type) => project.typeId === type.id);
+    return project;
+  }
+
+  #includeGoals(project: Project): Project {
+    const goals = this.#database.db.data!.goals.filter(
+      (goal) => goal.projectId === project.id
+    );
+    const sortedGoals = this.#sortByMostRecentlyModified(goals);
+    project.goals = sortedGoals;
     return project;
   }
 
@@ -19,31 +39,21 @@ class ProjectRepository {
     const projectsWithTypes = projects.map((project) =>
       this.#includeProjectType(project)
     );
-    const sortedByMostRecent = projectsWithTypes.sort(
-      (a: Project, b: Project): number => {
-        if (a.dateModified !== null && b.dateModified !== null) {
-          const dateA = new Date(a.dateModified);
-          const dateB = new Date(b.dateModified);
-          if (dateA > dateB) return -1;
-          if (dateA < dateB) return 1;
-          return 0;
-        } else {
-          throw Error("Project date was null");
-        }
-      }
+    const projectsWithGoals = projectsWithTypes.map((project) =>
+      this.#includeGoals(project)
     );
-    return sortedByMostRecent;
+    return this.#sortByMostRecentlyModified(projectsWithGoals);
   }
 
   getById(id: string): Project {
-    // TODO:
-    // - include Goal
-    // Only use db.chain when you need lodash methods
     const project = this.#database.db.chain
       .get("projects")
       .find({ id })
       .value();
-    if (project) return this.#includeProjectType(project);
+    if (project) {
+      const projectWithTypes = this.#includeProjectType(project);
+      return this.#includeGoals(projectWithTypes);
+    }
     return project; // undefined at this point;
   }
 
@@ -52,7 +62,10 @@ class ProjectRepository {
       .get("projects")
       .find({ title })
       .value();
-    if (project) return this.#includeProjectType(project);
+    if (project) {
+      const projectWithTypes = this.#includeProjectType(project);
+      return this.#includeGoals(projectWithTypes);
+    }
     return project; // undefined at this point
   }
 
@@ -76,8 +89,7 @@ class ProjectRepository {
     this.#database.db.chain.get("projects").remove({ id: project.id }).value();
     this.#database.db.data?.projects.push(project);
     this.#database.db.write();
-    const updatedProject = this.getById(project.id!);
-    return updatedProject;
+    return this.getById(project.id!);
   }
 
   delete(id: string): void {
@@ -91,6 +103,7 @@ class ProjectRepository {
     // - progress
     // - notes -> delete from controller as this is HTML and not database related
     // - ProjectLexicons
+    // -> not deleting Types as those can exist on other projects
     // Because this is not a legit relational #database
     // The ordering does not matter
     this.#database.db.chain.get("projects").remove({ id }).value();
