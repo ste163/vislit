@@ -1,4 +1,4 @@
-name: Test Node.js CI Build
+name: Tests for UI & API - CI Build
 
 on:
   push:
