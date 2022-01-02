@@ -1,6 +1,7 @@
 # Vislit
 
 [![Node.js CI Build](https://github.com/ste163/vislit/actions/workflows/tests.yml/badge.svg)](https://github.com/ste163/vislit/actions/workflows/tests.yml)
+[![Coverage Status](https://coveralls.io/repos/github/ste163/vislit/badge.svg?branch=main)](https://coveralls.io/github/ste163/vislit?branch=main)
 
 > Linux, Mac, Windows app for tracking, visualizing, and analyzing writing projects
 
