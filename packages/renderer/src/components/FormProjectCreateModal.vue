@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { inject, watch, reactive } from "vue";
+import { inject, watch } from "vue";
 import { useRouter } from "vue-router";
-import type Store from "../store/Store";
-import type { Type } from "interfaces";
+import type { Store } from "../store";
 import { useForm } from "vee-validate";
 import { toFormValidator } from "@vee-validate/zod";
 import { z } from "zod";

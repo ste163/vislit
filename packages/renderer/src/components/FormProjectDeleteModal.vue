@@ -2,7 +2,7 @@
 import { computed, inject } from "vue";
 import { useRouter } from "vue-router";
 import type { Project } from "interfaces";
-import type Store from "../store/Store";
+import type { Store } from "../store";
 import BaseTemplateModalDelete from "./BaseTemplateModalDelete.vue";
 
 const store = inject("store") as Store;

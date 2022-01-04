@@ -37,7 +37,7 @@ try {
 // For now, check for projects & notes directories here
 try {
   const userDataPath = app.getPath("userData");
-  console.log(userDataPath);
+  console.log("DATA PATH:", userDataPath);
   // linux & windows use different slashes -> is this a problem?
   if (!existsSync(`${userDataPath}/projects`))
     mkdirSync(`${userDataPath}/projects`);

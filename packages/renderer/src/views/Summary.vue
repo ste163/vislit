@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, inject, computed } from "vue";
-import type Store from "../store/Store";
+import type { Store } from "../store";
 import BaseTemplateCard from "../components/BaseTemplateCard.vue";
 import BaseCardContent from "../components/BaseCardContent.vue";
 import BaseButtonClick from "../components/BaseButtonClick.vue";
@@ -9,7 +9,7 @@ import FormProjectDeleteModal from "../components/FormProjectDeleteModal.vue";
 import NotificationDot from "../components/NotificationDot.vue";
 import ButtonEllipsis from "../components/ButtonEllipsis.vue";
 import ButtonEllipsisItem from "../components/ButtonEllipsisItem.vue";
-import useDateFormatFull from "../composables/useDateFormatFull";
+import useDateFormatFull from "../composables/use-date-format-full";
 import ProjectStatusTags from "../components/ProjectStatusTags.vue";
 import type { Project } from "interfaces";
 

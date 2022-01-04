@@ -2,7 +2,7 @@
 import type { Column } from "interfaces";
 import type { ComputedRef, Ref } from "vue";
 import { computed, ref } from "vue";
-import type Store from "../store/Store";
+import type Store from "../store/store";
 
 // SORTING IS BROKEN AFTER IMPLEMENTING COLUMN COMPONENTS
 // Attempt to refactor it where it's based on column.position = index of where it is in the array
