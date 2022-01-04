@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { inject } from "vue";
-import type Store from "../store/Store";
-import useIsSidebarDisabled from "../composables/useIsSidebarDisabled";
+import type { Store } from "../store";
+import useIsSidebarDisabled from "../composables/use-is-sidebar-disabled";
 import ButtonRouterLink from "./ButtonRouterLink.vue";
 import AppIconSummary from "./AppIconSummary.vue";
 import AppIconWriter from "./AppIconWriter.vue";

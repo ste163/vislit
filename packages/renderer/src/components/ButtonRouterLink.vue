@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { computed, inject } from "vue";
 import BaseButtonToggle from "./BaseButtonToggle.vue";
-import type Store from "../store/Store";
-import useIsSidebarDisabled from "../composables/useIsSidebarDisabled";
+import type { Store } from "../store";
+import useIsSidebarDisabled from "../composables/use-is-sidebar-disabled";
 
 const store = inject("store") as Store;
 
-// eslint-disable-next-line no-undef
 const props = defineProps({
   route: {
     type: String,

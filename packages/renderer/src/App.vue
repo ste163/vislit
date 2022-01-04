@@ -5,7 +5,7 @@ import store from "./store/index";
 import TheSidebar from "./components/TheSidebar.vue";
 import ColumnDropZone from "./components/ColumnDropZone.vue";
 import ColumnContainer from "./components/ColumnContainer.vue";
-import useColumns from "./composables/useColumns";
+import useColumns from "./composables/use-columns";
 
 provide("store", store); // Makes store available to every child component
 

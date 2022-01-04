@@ -2,7 +2,7 @@
 import { inject, ref, watch } from "vue";
 import type { PropType } from "vue";
 import type { Project } from "interfaces";
-import type Store from "../store/Store";
+import type { Store } from "../store";
 import BaseButtonToggle from "./BaseButtonToggle.vue";
 
 const store = inject("store") as Store;

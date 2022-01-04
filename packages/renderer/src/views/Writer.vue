@@ -3,7 +3,7 @@ import { inject, onMounted } from "vue";
 import type { Content } from "@tiptap/vue-3";
 import { useEditor, EditorContent } from "@tiptap/vue-3";
 import StarterKit from "@tiptap/starter-kit";
-import type Store from "../store/Store";
+import type { Store } from "../store";
 
 const store = inject("store") as Store;
 

@@ -4,7 +4,7 @@ import type { ComputedRef } from "vue";
 import { computed, inject, onMounted, watch } from "vue";
 import type { RouteLocationRaw } from "vue-router";
 import { useRouter } from "vue-router";
-import type Store from "../store/Store";
+import type { Store } from "../store";
 import BaseButtonClick from "./BaseButtonClick.vue";
 import ColumnListHeader from "./ColumnListHeader.vue";
 import ColumnListItem from "./ColumnListItem.vue";
