@@ -1,9 +1,6 @@
 import ProjectStore from "./store-project";
 import ApplicationStore from "./store-application";
 
-const applicationStore = new ApplicationStore();
-const projectStore = new ProjectStore();
-
 export class Store {
   public application: ApplicationStore;
   public projects: ProjectStore;
@@ -14,6 +11,8 @@ export class Store {
   }
 }
 
+const applicationStore = new ApplicationStore();
+const projectStore = new ProjectStore();
 const store = new Store(applicationStore, projectStore);
 
 export default store;
