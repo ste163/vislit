@@ -12,6 +12,7 @@ import ButtonEllipsisItem from "../components/ButtonEllipsisItem.vue";
 import useDateFormatFull from "../composables/use-date-format-full";
 import ProjectStatusTags from "../components/ProjectStatusTags.vue";
 import type { Project } from "interfaces";
+import FormGoalCreateModal from "../components/FormGoalCreateModal.vue";
 
 // TODO:
 // If completed or archived, no longer able to add/edit content
@@ -19,6 +20,7 @@ import type { Project } from "interfaces";
 const store = inject("store") as Store;
 
 const isEditFormModalActive = ref<boolean>(false);
+const isCreateGoalFormModalActive = ref<boolean>(false);
 const isDeleteModalActive = ref<boolean>(false);
 const isEllipsisMenuActive = ref<boolean>(false);
 
@@ -151,7 +153,7 @@ const ellipsisMenuArchivedText = computed(() => {
       <template #buttons>
         <base-button-click
           :background-color="'var(--notification)'"
-          @click="isEditFormModalActive = !isEditFormModalActive"
+          @click="isCreateGoalFormModalActive = !isCreateGoalFormModalActive"
         >
           Create Goal
         </base-button-click>
@@ -190,6 +192,11 @@ const ellipsisMenuArchivedText = computed(() => {
   <form-project-create-modal
     :is-form-modal-active="isEditFormModalActive"
     @close-modal="isEditFormModalActive = false"
+  />
+
+  <form-goal-create-modal
+    :is-form-modal-active="isCreateGoalFormModalActive"
+    @close-modal="isCreateGoalFormModalActive = false"
   />
 </template>
 
