@@ -73,7 +73,7 @@ const {
         }
       "
     >
-      Chevron up or down (and animated)
+      Chevron
     </div>
 
     <div v-if="isOpened">

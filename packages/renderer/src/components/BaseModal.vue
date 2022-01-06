@@ -54,7 +54,7 @@ function emitCloseModal(): void {
 
 .modal-card {
   position: absolute;
-  top: 30vh;
+  top: 20vh;
   left: 40vw;
   background-color: var(--white);
   padding: 1em;

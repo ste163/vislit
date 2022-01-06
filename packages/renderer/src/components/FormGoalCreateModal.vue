@@ -8,6 +8,7 @@ import InputText from "./InputText.vue";
 import ButtonSubmit from "./ButtonSubmit.vue";
 import BaseModal from "./BaseModal.vue";
 import InputSelect from "./InputSelect.vue";
+import InputCheckBox from "./InputCheckBox.vue";
 
 const store = inject("store") as Store;
 
@@ -26,6 +27,7 @@ function emitCloseModal(): void {
 }
 
 const validationSchema = toFormValidator(
+  // look into how to use zod to validate dropdowns/selects
   z.object({
     basedOnWordCountOrPageCount: z.string().nonempty("Title is required."),
     frequencyToRepeat: z.string().nonempty("Type is required."),
@@ -38,9 +40,9 @@ const validationSchema = toFormValidator(
 );
 
 const initialFormValues = {
-  title: "",
-  type: "",
-  description: "",
+  basedOnWordCountOrPageCount: "",
+  frequencyToRepeat: "",
+  daysPerFrequency: "",
 };
 
 const { handleSubmit, meta, resetForm } = useForm({
@@ -50,28 +52,19 @@ const { handleSubmit, meta, resetForm } = useForm({
 
 const onSubmit = handleSubmit(async (values, { resetForm }) => {
   console.log(values);
-  const newGoal = {
-    id: "",
-    title: values.title,
-    description: values.description,
-    typeId: values.type,
-    completed: false,
-    archived: false,
-    dateCreated: null,
-    dateModified: null,
-  };
+  const newGoal = {};
 
-  try {
-    // hits the addGoal endpoint
-    // do not use a store for this as that's over-kill
-    // this will be the only place we ever add a goal
-    const project = await store.projects.addProject(newGoal);
-    if (project !== undefined) {
-      resetForm();
-    }
-  } catch (error: any | Error) {
-    console.error(error.message);
-  }
+  // try {
+  //   // hits the addGoal endpoint
+  //   // do not use a store for this as that's over-kill
+  //   // this will be the only place we ever add a goal
+  //   const project = await store.projects.addProject(newGoal);
+  //   if (project !== undefined) {
+  //     resetForm();
+  //   }
+  // } catch (error: any | Error) {
+  //   console.error(error.message);
+  // }
 });
 
 // Needed otherwise the form attempts to 'submit' when opened on initial render
@@ -119,9 +112,11 @@ watch(() => props.isFormModalActive, resetForm);
         :background-color="'var(--lightGray)'"
       />
 
-      <!-- Need those freakin' check boxes now :(  -->
-      <!-- input-checkbox
-      but this is a custom component so pass value in? -->
+      <input-check-box name="proofRead" label="Proofread" :value="false" />
+
+      <input-check-box name="editted" label="Editted" :value="false" />
+
+      <input-check-box name="revised" label="Revised" :value="false" />
 
       <!-- Need to pass in an isSubmitting for loading spinner -->
       <button-submit
