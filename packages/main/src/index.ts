@@ -2,7 +2,7 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
 import { URL } from "url";
 import { existsSync, mkdirSync } from "fs";
-import type { Project } from "interfaces";
+import type { Goal, Project } from "interfaces";
 import Database from "./api/database";
 import FileSystemController from "./api/controllers/file-system-controller";
 import ProjectRepository from "./api/repositories/project-repository";
@@ -177,6 +177,11 @@ ipcMain.handle("types-add", (_e, value: string) => {
 
 ipcMain.handle("types-delete", (_e, id: string) => {
   return typeController.delete(id);
+});
+
+// Goals
+ipcMain.handle("goals-add", (_e, goal: Goal) => {
+  console.log(goal);
 });
 
 // Writer

@@ -12,6 +12,7 @@ const validChannels = [
   "types-get-all",
   "types-add",
   "types-delete",
+  "goals-add",
   "writer-get-most-recent",
   "writer-get-by-id",
   "writer-save",

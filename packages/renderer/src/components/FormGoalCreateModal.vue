@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { inject, watch, computed } from "vue";
 import type { Store } from "../store";
+import type { Goal } from "interfaces";
 import { useForm } from "vee-validate";
 import { toFormValidator } from "@vee-validate/zod";
 import { z } from "zod";
@@ -60,24 +61,41 @@ const { handleSubmit, meta, resetForm, values } = useForm({
 });
 
 const onSubmit = handleSubmit(async (values, { resetForm }) => {
-  console.log(values);
+  const newGoal: Goal = {
+    projectId: store.projects.state.active!.id!,
+    basedOnWordCountOrPageCount: values.basedOnWordCountOrPageCount as
+      | "word"
+      | "page",
+    wordOrPageCount: parseInt(values.wordOrPageCount),
+    frequencyToRepeat: values.frequencyToRepeat as
+      | "daily"
+      | "weekly"
+      | "monthly",
+    proofreadCountsTowardGoal: values.proofread,
+    editCountsTowardGoal: values.edited,
+    revisedCountsTowardsGoal: values.revised,
+  };
 
-  // parse daysPerFrequency
-  // parse wordOrPageCount
+  // daysPerFrequency only exists for non-daily goals
+  // must use any type as daysPerFrequency can't have an initial form value
+  if ((values as any)?.daysPerFrequency) {
+    newGoal.daysPerFrequency = parseInt((values as any).daysPerFrequency);
+  }
 
-  const newGoal = {};
+  console.log("GOAL TO ADD", newGoal);
 
-  // try {
-  //   // hits the addGoal endpoint
-  //   // do not use a store for this as that's over-kill
-  //   // this will be the only place we ever add a goal
-  //   const project = await store.projects.addProject(newGoal);
-  //   if (project !== undefined) {
-  //     resetForm();
-  //   }
-  // } catch (error: any | Error) {
-  //   console.error(error.message);
-  // }
+  try {
+    const { api } = window;
+    const response = await api.send("goals-add", newGoal);
+    if (response !== undefined) {
+      resetForm();
+      // then re-fetch projects as they've updated
+      // and because we'll have the active project pulled up
+      // we'll see that (or at least should as state updated)
+    }
+  } catch (error: any | Error) {
+    console.error(error.message);
+  }
 });
 
 const frequencyLabel = computed(() =>
