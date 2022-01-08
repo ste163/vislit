@@ -2,10 +2,6 @@
 import { useField } from "vee-validate";
 
 const props = defineProps({
-  value: {
-    type: Boolean,
-    required: true,
-  },
   name: {
     type: String,
     required: true,
@@ -35,7 +31,7 @@ const { meta, checked, handleChange } = useField(props.name, undefined, {
       :class="meta.dirty ? 'label-active' : ''"
       >{{ label }}</label
     >
-    <button type="button" @click="handleChange(value ? false : true)">
+    <button type="button" @click="handleChange(checked ? false : true)">
       {{ checked ? "X" : "Not Checked" }}
     </button>
   </div>

@@ -18,6 +18,14 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  max: {
+    type: String,
+    default: "0",
+  },
+  min: {
+    type: String,
+    default: "0",
+  },
   backgroundColor: {
     type: String,
     default: "var(--white)",
@@ -51,10 +59,12 @@ const {
     </p>
     <input
       :id="name"
-      class="input"
       :name="name"
       :type="type"
       :value="inputValue"
+      :max="max"
+      :min="min"
+      class="input"
       @input="handleChange"
       @blur="handleBlur"
     />

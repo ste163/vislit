@@ -48,20 +48,12 @@ const {
 </script>
 
 <template>
-  <div
-    class="select-container"
-    :class="{ error: !!errorMessage, success: meta.valid && meta.dirty }"
-  >
-    <label
-      :for="name"
-      class="label"
-      :class="meta.dirty ? 'label-active' : ''"
-      >{{ label }}</label
-    >
-    <span v-show="errorMessage" class="input-error">
+  <div>
+    <label :for="name">{{ label }}</label>
+    <span v-show="errorMessage">
       {{ errorMessage }}
     </span>
-    <!-- clicking outside closes it -->
+    <!-- TODO: clicking outside closes it -->
     <div :id="name" :name="name" :value="selectedValue" class="capitalize">
       {{ selectedDisplayText }}
     </div>
