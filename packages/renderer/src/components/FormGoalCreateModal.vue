@@ -33,7 +33,7 @@ const validationSchema = toFormValidator(
     daysPerFrequency: z
       .string()
       .regex(/^([^-])[0-9]*$/)
-      .optional(), // need max and min length based on weekly or monthly
+      .optional(),
     wordOrPageCount: z
       .string({
         required_error: "Required",
@@ -131,8 +131,6 @@ watch(() => props.isFormModalActive, resetForm);
         :label="'Time frame'"
       />
 
-      <!-- computed property for label -->
-      <!-- max for week is 6, month is 31 -->
       <input-text
         v-if="
           values.frequencyToRepeat !== 'daily' &&
@@ -146,7 +144,6 @@ watch(() => props.isFormModalActive, resetForm);
         :background-color="'var(--lightGray)'"
       />
 
-      <!-- This label needs to be computed to show Word or Page count per day -->
       <input-text
         v-if="
           values.basedOnWordCountOrPageCount !== '' &&
