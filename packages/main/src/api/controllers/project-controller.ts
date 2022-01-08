@@ -35,10 +35,8 @@ class ProjectController {
   getById(id: string): Project | Error {
     try {
       const project = this.#projectRepository.getById(id);
-
       if (project === undefined)
         throw new Error(`Project with id ${id} not in database`);
-
       return project;
     } catch (e: any | Error) {
       console.error(e);

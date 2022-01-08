@@ -28,7 +28,7 @@ const activeProject = computed(() => {
   return store.projects.state.active as Project;
 });
 
-const formatedDate = useDateFormatFull(activeProject.value.dateModified);
+const formatedDate = useDateFormatFull(activeProject.value?.dateModified);
 
 function openNotesColumn(): void {
   store.application.state.columns.forEach((column) => {
@@ -95,7 +95,7 @@ const ellipsisMenuArchivedText = computed(() => {
 
 <template>
   <base-template-card
-    v-if="activeProject !== null"
+    v-if="activeProject"
     :is-ellipsis-menu-active="isEllipsisMenuActive"
     @click-outside="isEllipsisMenuActive = false"
   >
@@ -110,7 +110,7 @@ const ellipsisMenuArchivedText = computed(() => {
     </template>
 
     <template #description>
-      {{ activeProject.description }}
+      {{ activeProject?.description }}
     </template>
 
     <template #ellipsis-button>
@@ -125,8 +125,11 @@ const ellipsisMenuArchivedText = computed(() => {
         Edit Project
       </button-ellipsis-item>
       <!-- ONLY SHOW EDIT GOAL IF GOAL HASN'T BEEN CREATED; OTHERWISE, OPEN GOAL MODAL -->
-      <button-ellipsis-item @click="openEditGoalModal">
-        Edit Goal
+      <button-ellipsis-item
+        v-if="activeProject.goals?.length! > 0"
+        @click="openEditGoalModal"
+      >
+        Manage Goals
       </button-ellipsis-item>
       <button-ellipsis-item @click="toggleProjectComplete">
         {{ ellipsisMenuCompletedText }}
@@ -139,7 +142,12 @@ const ellipsisMenuArchivedText = computed(() => {
       </button-ellipsis-item>
     </template>
 
-    <base-card-content>
+    <!-- Need 3 modal states
+    - In Progress -> currently doing this
+    - Completed
+    - Archived -->
+
+    <base-card-content v-if="activeProject.goals?.length! === 0">
       <template #notification-dot>
         <notification-dot
           :dot-color="'var(--notification)'"
@@ -156,6 +164,19 @@ const ellipsisMenuArchivedText = computed(() => {
           @click="isCreateGoalFormModalActive = !isCreateGoalFormModalActive"
         >
           Create Goal
+        </base-button-click>
+      </template>
+    </base-card-content>
+
+    <base-card-content v-else-if="activeProject.goals?.length! > 0">
+      <template #header> Goal </template>
+      Your goal is --- make a computed property of the activeGoal that searches
+      through goal array and grabs it
+      <template #buttons>
+        <base-button-click
+          @click="isCreateGoalFormModalActive = !isCreateGoalFormModalActive"
+        >
+          Manage Goals
         </base-button-click>
       </template>
     </base-card-content>

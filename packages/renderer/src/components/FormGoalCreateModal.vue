@@ -82,16 +82,13 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
     newGoal.daysPerFrequency = parseInt((values as any).daysPerFrequency);
   }
 
-  console.log("GOAL TO ADD", newGoal);
-
   try {
     const { api } = window;
     const response = await api.send("goals-add", newGoal);
     if (response !== undefined) {
       resetForm();
-      // then re-fetch projects as they've updated
-      // and because we'll have the active project pulled up
-      // we'll see that (or at least should as state updated)
+      await store.projects.getProjects();
+      emitCloseModal();
     }
   } catch (error: any | Error) {
     console.error(error.message);

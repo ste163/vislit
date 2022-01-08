@@ -89,7 +89,7 @@ const archiveWarningText = computed(() => {
     @handle-delete-click="deleteProject"
   >
     Deleting this project will irrecoverably delete all progress, goals, notes,
-    and writing.
+    and documents.
     {{ archiveWarningText }}
   </base-template-modal-delete>
 </template>

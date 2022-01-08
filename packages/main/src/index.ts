@@ -10,12 +10,15 @@ import ProjectController from "./api/controllers/project-controller";
 import SearchController from "./api/controllers/search-controller";
 import TypeRepository from "./api/repositories/type-repository";
 import TypeController from "./api/controllers/type-controller";
+import GoalRepository from "./api/repositories/goal-repository";
+import GoalController from "./api/controllers/goal-controller";
 import type htmlData from "./api/types/html-data";
 
 // declared outside of try block so it can be accessed by IPC
 let projectController: ProjectController;
 let fileSystemController: FileSystemController;
 let typeController: TypeController;
+let goalController: GoalController;
 
 // For now, instantiate db, controllers, & repos here
 try {
@@ -23,6 +26,7 @@ try {
   fileSystemController = new FileSystemController(app.getPath("userData"));
   const projectRepository = new ProjectRepository(database);
   const typeRepository = new TypeRepository(database);
+  const goalRepository = new GoalRepository(database);
   const searchController = new SearchController(projectRepository);
   projectController = new ProjectController(
     projectRepository,
@@ -30,6 +34,7 @@ try {
     fileSystemController
   );
   typeController = new TypeController(typeRepository);
+  goalController = new GoalController(goalRepository, projectController);
 } catch (error) {
   console.log(error);
 }
@@ -181,7 +186,7 @@ ipcMain.handle("types-delete", (_e, id: string) => {
 
 // Goals
 ipcMain.handle("goals-add", (_e, goal: Goal) => {
-  console.log(goal);
+  return goalController.add(goal);
 });
 
 // Writer
