@@ -126,10 +126,10 @@ const ellipsisMenuArchivedText = computed(() => {
       <button-ellipsis-item @click="openEditProjectModal">
         Edit Project
       </button-ellipsis-item>
-      <!-- ONLY SHOW EDIT GOAL IF GOAL HASN'T BEEN CREATED; OTHERWISE, OPEN GOAL MODAL -->
+
       <button-ellipsis-item
         v-if="activeProject.goals?.length! > 0"
-        @click="openEditGoalModal"
+        @click="isManageGoalModalActive = !isManageGoalModalActive"
       >
         Manage Goals
       </button-ellipsis-item>

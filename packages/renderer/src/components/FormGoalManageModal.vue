@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, watch, computed } from "vue";
+import { inject, computed } from "vue";
 import type { Store } from "../store";
 import BaseModal from "./BaseModal.vue";
 
@@ -13,9 +13,14 @@ const props = defineProps({
   },
 });
 
-// computed of the active goal
-
 const emit = defineEmits(["closeModal"]);
+
+const activeGoal = computed(() =>
+  store.projects.state.active?.goals?.find((goal) => goal.active)
+);
+const previousGoals = computed(() =>
+  store.projects.state.active?.goals?.filter((goal) => !goal.active)
+);
 
 function emitCloseModal(): void {
   emit("closeModal");
@@ -24,21 +29,18 @@ function emitCloseModal(): void {
 
 <template>
   <base-modal :is-modal-active="isModalActive" @close-modal="emitCloseModal">
+    <template #header>Manage Goals</template>
     <!-- clicking this opens the active goal edit form -->
-    Active goal
-
+    <h2>Active goal</h2>
+    {{ activeGoal?.wordOrPageCount }}
+    {{ activeGoal?.basedOnWordCountOrPageCount }},
+    {{ activeGoal?.daysPerFrequency }} days per
+    {{ activeGoal?.frequencyToRepeat }}.
+    <!-- Checkbox for toggling as completed -->
+    <!-- Button for opening edit form (opens the edit form on this same modal so all previous goals are visible)  -->
     <hr />
     <!-- Option to delete goal, but that's it, no edit or detail view -->
-    All other goals sorted by most recently updated (how they come from db)
+    <h2>Old Goals</h2>
+    Count of old goals: {{ previousGoals?.length }}
   </base-modal>
 </template>
-
-<style scoped>
-/* Convert to tailwind */
-.form {
-  display: flex;
-  flex-flow: column nowrap;
-  margin-top: 1em;
-  width: 20em;
-}
-</style>
