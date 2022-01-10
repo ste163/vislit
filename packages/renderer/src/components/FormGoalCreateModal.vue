@@ -85,7 +85,8 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
   try {
     const { api } = window;
     const response = await api.send("goals-add", newGoal);
-    if (response !== undefined) {
+    if (response instanceof Error) throw response;
+    if (response) {
       resetForm();
       await store.projects.getProjects();
       emitCloseModal();
