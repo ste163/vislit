@@ -29,13 +29,17 @@ const props = defineProps({
   },
 });
 
+console.log(props.activeGoal);
+
 const emit = defineEmits(["goalSaved"]);
 
 function emitGoalSaved(): void {
   emit("goalSaved");
 }
 
-const computedActiveGoal = computed(() => props.activeGoal);
+const computedActiveGoal = computed(() =>
+  props.activeGoal.id ? props.activeGoal : null
+);
 
 const validationSchema = toFormValidator(
   z.object({
@@ -69,7 +73,7 @@ const initialFormValues = {
 };
 
 // if there's an activeGoal && if the activeGoal has the optional property (daysPerFrequency), add it
-if (props.activeGoal && "daysPerFrequency" in props.activeGoal) {
+if (computedActiveGoal.value && "daysPerFrequency" in props.activeGoal) {
   (initialFormValues as any).daysPerFrequency =
     computedActiveGoal.value.daysPerFrequency;
 }
@@ -101,7 +105,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
   if ((values as any).daysPerFrequency)
     newGoal.daysPerFrequency = parseInt((values as any).daysPerFrequency);
 
-  if (props.activeGoal) {
+  if (computedActiveGoal.value) {
     newGoal.id = computedActiveGoal.value.id;
     newGoal.projectId = computedActiveGoal.value.projectId;
     newGoal.active = computedActiveGoal.value.active;
@@ -112,7 +116,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
 
   try {
     const { api } = window;
-    const response = props.activeGoal
+    const response = computedActiveGoal.value
       ? await api.send("goals-update", newGoal)
       : await api.send("goals-add", newGoal);
     if (response instanceof Error) throw response;

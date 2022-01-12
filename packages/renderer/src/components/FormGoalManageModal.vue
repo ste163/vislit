@@ -30,10 +30,20 @@ function emitCloseModal(): void {
 }
 
 async function onDeleteClick(goalId: string): Promise<void> {
-  console.log("deleteGoalWithId", goalId);
   try {
     const { api } = window;
     const response = await api.send("goals-delete", goalId);
+    if (response instanceof Error) throw response;
+    if (response) await store.projects.getProjects();
+  } catch (error: any | Error) {
+    console.error(error.message);
+  }
+}
+
+async function onCompleteClick(goalId: string): Promise<void> {
+  try {
+    const { api } = window;
+    const response = await api.send("goals-completed", goalId);
     if (response instanceof Error) throw response;
     if (response) await store.projects.getProjects();
   } catch (error: any | Error) {
@@ -45,17 +55,24 @@ async function onDeleteClick(goalId: string): Promise<void> {
 <template>
   <base-modal :is-modal-active="isModalActive" @close-modal="emitCloseModal">
     <template #header>Manage Goals</template>
-    <!-- clicking this opens the active goal edit form -->
-    <h2>Active goal</h2>
-    {{ activeGoal?.wordOrPageCount }}
-    {{ activeGoal?.basedOnWordCountOrPageCount }},
-    {{ activeGoal?.daysPerFrequency }} days per
-    {{ activeGoal?.frequencyToRepeat }}.
-    <!-- Checkbox for toggling as completed -->
-    <button @click="isFormActive = !isFormActive">Edit Active Goal</button>
+    <div v-if="activeGoal">
+      <h2>Active goal</h2>
+      {{ activeGoal.wordOrPageCount }}
+      {{ activeGoal.basedOnWordCountOrPageCount }},
+      {{ activeGoal.daysPerFrequency }} days per
+      {{ activeGoal.frequencyToRepeat }}.
+      <button @click="isFormActive = !isFormActive">Edit Active Goal</button>
+      <button @click="onCompleteClick(activeGoal?.id as string)">
+        Set Goal as Completed
+      </button>
+    </div>
+    <div v-else-if="!activeGoal">
+      <h2>Create New Goal</h2>
+      <button @click="isFormActive = !isFormActive">Create</button>
+    </div>
 
     <div v-if="isFormActive">
-      <h2>Edit Goal</h2>
+      <h2>Edit/Create Goal</h2>
       <hr />
       <form-goal :active-goal="activeGoal" @goal-saved="isFormActive = false" />
     </div>

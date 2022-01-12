@@ -223,7 +223,7 @@ const ellipsisMenuArchivedText = computed(() => {
     @close-modal="isCreateGoalFormModalActive = false"
   >
     <template #header> Create Goal </template>
-    <form-goal />
+    <form-goal @goal-saved="isCreateGoalFormModalActive = false" />
   </base-modal>
 
   <form-goal-manage-modal

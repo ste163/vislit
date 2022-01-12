@@ -198,6 +198,10 @@ ipcMain.handle("goals-delete", (_e, goalId: string) => {
   return goalController.delete(goalId);
 });
 
+ipcMain.handle("goals-completed", (_e, goalId: string) => {
+  return goalController.setCompletedById(goalId);
+});
+
 // Writer
 ipcMain.handle("writer-get-most-recent", (_e, projectId: string) => {
   return fileSystemController.readMostRecentHtmlFile(projectId, "documents");

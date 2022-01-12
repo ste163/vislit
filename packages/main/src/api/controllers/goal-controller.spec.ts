@@ -142,13 +142,13 @@ describe("goal-controller", () => {
     expect(addedGoal).toHaveProperty("id");
   });
 
-  it("returns error when toggling complete for a goal by id not in database", () => {
-    expect(goalController.toggleCompletedById("999")).toEqual(
+  it("returns error when setting complete for a goal by id not in database", () => {
+    expect(goalController.setCompletedById("999")).toEqual(
       new Error("Goal with id 999 does not exist in database")
     );
   });
 
-  it("returns error when toggling complete for a project without an active goal", () => {
+  it("returns error when setting complete for a project without an active goal", () => {
     const mockGoalRepository = {
       getGoalById: jest.fn(() => seedGoal),
       getActiveGoal: jest.fn(() => undefined),
@@ -159,12 +159,12 @@ describe("goal-controller", () => {
       projectController
     );
 
-    expect(goalController.toggleCompletedById("1")).toEqual(
+    expect(goalController.setCompletedById("1")).toEqual(
       new Error("No active goal for project id 1 exists in database")
     );
   });
 
-  it("returns error when toggling complete when the goal does not match the active goal", () => {
+  it("returns error when setting complete when the goal does not match the active goal", () => {
     const mockActiveGoal = {
       id: "999",
     };
@@ -179,15 +179,15 @@ describe("goal-controller", () => {
       projectController
     );
 
-    expect(goalController.toggleCompletedById("1")).toEqual(
+    expect(goalController.setCompletedById("1")).toEqual(
       new Error(
         "The goal you are trying to update with id 1 does not match the active goal with id 999"
       )
     );
   });
 
-  it("returns the updated goal with the toggled complete", () => {
-    const updatedGoal = goalController.toggleCompletedById("1");
+  it("returns the updated goal with the set complete", () => {
+    const updatedGoal = goalController.setCompletedById("1");
     expect(updatedGoal.completed).toEqual(true);
   });
 
