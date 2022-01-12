@@ -60,7 +60,6 @@ const validationSchema = toFormValidator(
   })
 );
 
-// this would be checked against if there's an activeGoal prop
 const initialFormValues = {
   basedOnWordCountOrPageCount: props.activeGoal.basedOnWordCountOrPageCount,
   frequencyToRepeat: props.activeGoal.frequencyToRepeat,
@@ -70,13 +69,11 @@ const initialFormValues = {
   revised: props.activeGoal.revisedCountsTowardsGoal,
 };
 
-// if there's an activeGoal && if the activeGoal has the optional property (daysPerFrequency), add it
 if (computedActiveGoal.value && "daysPerFrequency" in props.activeGoal) {
   (initialFormValues as any).daysPerFrequency =
     computedActiveGoal.value.daysPerFrequency;
 }
 
-// need to trigger form validation if there's an active goal
 const { handleSubmit, meta, values } = useForm({
   validationSchema,
   initialValues: initialFormValues,
