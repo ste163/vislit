@@ -48,6 +48,10 @@ function emitCloseModal(): void {
       <!--
       Edit Form Component? Probably a good idea here
       and it would have the activeGoal passed in from state as it will be visible with the other pieces
+      OR
+      would it be possible to use the other form, and move it outside the modal. That would be best
+      So having an activeGoal would be an optional prop.
+      If there is one, then do the update() and set defaultValues
       -->
     </div>
     <hr />

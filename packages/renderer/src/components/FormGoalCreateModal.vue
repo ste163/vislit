@@ -11,6 +11,10 @@ import BaseModal from "./BaseModal.vue";
 import InputSelect from "./InputSelect.vue";
 import InputCheckBox from "./InputCheckBox.vue";
 
+// TODO
+// move this outside of modal
+// and have the modal live on the Summary page
+// with the form component passed in
 const store = inject("store") as Store;
 
 const props = defineProps({
@@ -46,6 +50,7 @@ const validationSchema = toFormValidator(
   })
 );
 
+// this would be checked against if there's an activeGoal prop
 const initialFormValues = {
   basedOnWordCountOrPageCount: "",
   frequencyToRepeat: "",
@@ -183,8 +188,6 @@ watch(() => props.isFormModalActive, resetForm);
         :background-color-disabled="'var(--lightGray)'"
       />
     </form>
-
-    <!-- Also show the goal log on the right side -->
   </base-modal>
 </template>
 
