@@ -190,6 +190,14 @@ ipcMain.handle("goals-add", (_e, goal: Goal) => {
   return goalController.add(goal);
 });
 
+ipcMain.handle("goals-update", (_e, goal: Goal) => {
+  return goalController.update(goal);
+});
+
+ipcMain.handle("goals-delete", (_e, goalId: string) => {
+  return goalController.delete(goalId);
+});
+
 // Writer
 ipcMain.handle("writer-get-most-recent", (_e, projectId: string) => {
   return fileSystemController.readMostRecentHtmlFile(projectId, "documents");

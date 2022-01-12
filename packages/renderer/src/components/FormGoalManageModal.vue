@@ -2,6 +2,7 @@
 import { inject, computed, ref } from "vue";
 import type { Store } from "../store";
 import BaseModal from "./BaseModal.vue";
+import FormGoal from "./FormGoal.vue";
 
 const store = inject("store") as Store;
 
@@ -27,6 +28,18 @@ const previousGoals = computed(() =>
 function emitCloseModal(): void {
   emit("closeModal");
 }
+
+async function onDeleteClick(goalId: string): Promise<void> {
+  console.log("deleteGoalWithId", goalId);
+  try {
+    const { api } = window;
+    const response = await api.send("goals-delete", goalId);
+    if (response instanceof Error) throw response;
+    if (response) await store.projects.getProjects();
+  } catch (error: any | Error) {
+    console.error(error.message);
+  }
+}
 </script>
 
 <template>
@@ -39,24 +52,23 @@ function emitCloseModal(): void {
     {{ activeGoal?.daysPerFrequency }} days per
     {{ activeGoal?.frequencyToRepeat }}.
     <!-- Checkbox for toggling as completed -->
-    <!-- Button for opening edit form (opens the edit form on this same modal so all previous goals are visible)  -->
     <button @click="isFormActive = !isFormActive">Edit Active Goal</button>
 
     <div v-if="isFormActive">
       <h2>Edit Goal</h2>
-
-      <!--
-      Edit Form Component? Probably a good idea here
-      and it would have the activeGoal passed in from state as it will be visible with the other pieces
-      OR
-      would it be possible to use the other form, and move it outside the modal. That would be best
-      So having an activeGoal would be an optional prop.
-      If there is one, then do the update() and set defaultValues
-      -->
+      <hr />
+      <form-goal :active-goal="activeGoal" @goal-saved="isFormActive = false" />
     </div>
     <hr />
     <!-- Option to delete goal, but that's it, no edit or detail view -->
     <h2>Old Goals</h2>
     Count of old goals: {{ previousGoals?.length }}
+    <div v-for="goal in previousGoals" :key="goal.id">
+      {{ goal?.dateModified }}
+      {{ goal?.wordOrPageCount }}
+      {{ goal?.basedOnWordCountOrPageCount }}, {{ goal?.daysPerFrequency }} days
+      per {{ goal?.frequencyToRepeat }}.
+      <button @click="onDeleteClick(goal.id as string)">Delete Goal</button>
+    </div>
   </base-modal>
 </template>

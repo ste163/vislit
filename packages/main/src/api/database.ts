@@ -7,6 +7,7 @@ import type { ObjectChain } from "lodash";
 
 interface VislitDatabase {
   dbType: string;
+  dbVersion: string;
   projects: Array<Project>;
   types: Array<Type>;
   goals: Array<Goal>;
@@ -43,7 +44,8 @@ export default class Database {
       if (db.data === null) {
         // Set default database structure
         db.data = {
-          dbType: "vislit-v1.0", // will check version number to decide if database needs to be updated
+          dbType: "vislit",
+          dbVersion: "0.1", // check version number to decide if database needs to be updated
           projects: [],
           types: [
             {
@@ -81,10 +83,8 @@ export default class Database {
         };
         db.write();
       }
-
       // db.data must be initialized before lodash.chain is called
       db.chain = lodash.chain(db.data);
-
       return db;
     };
 

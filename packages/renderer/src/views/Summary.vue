@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, inject, computed } from "vue";
 import type { Store } from "../store";
+import type { Project } from "interfaces";
 import BaseTemplateCard from "../components/BaseTemplateCard.vue";
 import BaseCardContent from "../components/BaseCardContent.vue";
 import BaseButtonClick from "../components/BaseButtonClick.vue";
+import BaseModal from "../components/BaseModal.vue";
 import FormProjectCreateModal from "../components/FormProjectCreateModal.vue";
 import FormProjectDeleteModal from "../components/FormProjectDeleteModal.vue";
 import NotificationDot from "../components/NotificationDot.vue";
@@ -11,8 +13,7 @@ import ButtonEllipsis from "../components/ButtonEllipsis.vue";
 import ButtonEllipsisItem from "../components/ButtonEllipsisItem.vue";
 import useDateFormatFull from "../composables/use-date-format-full";
 import ProjectStatusTags from "../components/ProjectStatusTags.vue";
-import type { Project } from "interfaces";
-import FormGoalCreateModal from "../components/FormGoalCreateModal.vue";
+import FormGoal from "../components/FormGoal.vue";
 import FormGoalManageModal from "../components/FormGoalManageModal.vue";
 
 // TODO:
@@ -217,10 +218,13 @@ const ellipsisMenuArchivedText = computed(() => {
     @close-modal="isEditFormModalActive = false"
   />
 
-  <form-goal-create-modal
-    :is-form-modal-active="isCreateGoalFormModalActive"
+  <base-modal
+    :is-modal-active="isCreateGoalFormModalActive"
     @close-modal="isCreateGoalFormModalActive = false"
-  />
+  >
+    <template #header> Create Goal </template>
+    <form-goal />
+  </base-modal>
 
   <form-goal-manage-modal
     :is-modal-active="isManageGoalModalActive"

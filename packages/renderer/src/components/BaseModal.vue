@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ButtonClose from "./ButtonClose.vue";
-// eslint-disable-next-line no-undef
+
 const props = defineProps({
   isModalActive: {
     type: Boolean,
@@ -9,7 +9,6 @@ const props = defineProps({
   },
 });
 
-// eslint-disable-next-line no-undef
 const emit = defineEmits(["closeModal"]);
 
 function emitCloseModal(): void {

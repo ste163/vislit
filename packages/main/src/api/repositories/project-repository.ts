@@ -93,18 +93,15 @@ class ProjectRepository {
   }
 
   delete(id: string): void {
-    // NOTE:
-    // Warning modal needs to be very specific on what will be deleted
-
     // TODO:
     // get all related project data
     // and delete it
-    // - goal
     // - progress
     // - notes -> delete from controller as this is HTML and not database related
     // -> not deleting Types as those can exist on other projects
     // Because this is not a legit relational #database
     // The ordering does not matter
+    this.#database.db.chain.get("goals").remove({ projectId: id }).value();
     this.#database.db.chain.get("projects").remove({ id }).value();
     this.#database.db.write();
   }
