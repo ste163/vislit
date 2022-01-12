@@ -29,8 +29,6 @@ const props = defineProps({
   },
 });
 
-console.log(props.activeGoal);
-
 const emit = defineEmits(["goalSaved"]);
 
 function emitGoalSaved(): void {
