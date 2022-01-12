@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, computed } from "vue";
+import { inject, computed, ref } from "vue";
 import type { Store } from "../store";
 import BaseModal from "./BaseModal.vue";
 
@@ -14,6 +14,8 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["closeModal"]);
+
+const isFormActive = ref<boolean>(false);
 
 const activeGoal = computed(() =>
   store.projects.state.active?.goals?.find((goal) => goal.active)
@@ -38,6 +40,16 @@ function emitCloseModal(): void {
     {{ activeGoal?.frequencyToRepeat }}.
     <!-- Checkbox for toggling as completed -->
     <!-- Button for opening edit form (opens the edit form on this same modal so all previous goals are visible)  -->
+    <button @click="isFormActive = !isFormActive">Edit Active Goal</button>
+
+    <div v-if="isFormActive">
+      <h2>Edit Goal</h2>
+
+      <!--
+      Edit Form Component? Probably a good idea here
+      and it would have the activeGoal passed in from state as it will be visible with the other pieces
+      -->
+    </div>
     <hr />
     <!-- Option to delete goal, but that's it, no edit or detail view -->
     <h2>Old Goals</h2>

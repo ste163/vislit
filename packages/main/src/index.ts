@@ -88,6 +88,7 @@ const createWindow = async () => {
       nativeWindowOpen: true,
       nodeIntegration: false,
       contextIsolation: true,
+      sandbox: true,
       preload: join(__dirname, "../../preload/dist/index.cjs"),
     },
   });
