@@ -1,10 +1,10 @@
 import { createApp } from "vue";
-import app from "./app.vue";
+import App from "./app.vue";
 import router from "/@/router/index";
 import clickOutside from "./directives/click-outside";
 import "./index.css";
 
-createApp(app)
+createApp(App)
   .directive("click-outside", clickOutside)
   .use(router)
   .mount("#app");
