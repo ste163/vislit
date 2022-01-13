@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import AppIconClose from "./AppIconClose.vue";
+import AppIconBack from "./app-icon-back.vue";
 
 // TODO:
 // When needed:
 // Add prop for iconColor then bind the color to the stroke
 
-// eslint-disable-next-line no-undef
 const emit = defineEmits(["click"]);
 
 function emitClick(): void {
@@ -14,21 +13,21 @@ function emitClick(): void {
 </script>
 
 <template>
-  <button class="button-close" @click="emitClick">
-    <app-icon-close />
+  <button class="button-back" @click="emitClick">
+    <app-icon-back />
   </button>
 </template>
 
 <style scoped>
-.button-close {
+.button-back {
   background-color: transparent;
   padding: 0;
-  margin: 0;
 
   stroke: var(--gray) !important;
+  fill: var(--gray) !important;
 }
 
-.button-close > svg {
-  width: 0.7em;
+.button-back > svg {
+  width: 1em;
 }
 </style>

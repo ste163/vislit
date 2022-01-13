@@ -5,9 +5,9 @@ import { computed, inject, onMounted, watch } from "vue";
 import type { RouteLocationRaw } from "vue-router";
 import { useRouter } from "vue-router";
 import type { Store } from "../store";
-import BaseButtonClick from "./BaseButtonClick.vue";
-import ColumnListHeader from "./ColumnListHeader.vue";
-import ColumnListItem from "./ColumnListItem.vue";
+import BaseButtonClick from "./base-button-click.vue";
+import ColumnListHeader from "./column-list-header.vue";
+import ColumnListItem from "./column-list-item.vue";
 
 const store = inject("store") as Store;
 

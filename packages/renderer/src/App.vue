@@ -2,9 +2,9 @@
 import { provide, ref, computed, watch, onBeforeUpdate, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import store from "./store/index";
-import TheSidebar from "./components/TheSidebar.vue";
-import ColumnDropZone from "./components/ColumnDropZone.vue";
-import ColumnContainer from "./components/ColumnContainer.vue";
+import TheSidebar from "./components/the-sidebar.vue";
+import ColumnDropZone from "./components/column-drop-zone.vue";
+import ColumnContainer from "./components/column-container.vue";
 import useColumns from "./composables/use-columns";
 
 provide("store", store); // Makes store available to every child component

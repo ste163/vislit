@@ -1,8 +1,8 @@
 import type { Goal, Project } from "interfaces";
 import Database from "../database";
-import ProjectRepository from "../repositories/project-repository";
+import ProjectRepository from "./project-repository";
 import ProjectController from "./project-controller";
-import GoalRepository from "../repositories/goal-repository";
+import GoalRepository from "./goal-repository";
 import GoalController from "./goal-controller";
 import type SearchController from "./search-controller";
 import type FileSystemController from "./file-system-controller";

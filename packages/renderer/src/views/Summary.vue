@@ -2,19 +2,19 @@
 import { ref, inject, computed } from "vue";
 import type { Store } from "../store";
 import type { Project } from "interfaces";
-import BaseTemplateCard from "../components/BaseTemplateCard.vue";
-import BaseCardContent from "../components/BaseCardContent.vue";
-import BaseButtonClick from "../components/BaseButtonClick.vue";
-import BaseModal from "../components/BaseModal.vue";
-import FormProjectCreateModal from "../components/FormProjectCreateModal.vue";
-import FormProjectDeleteModal from "../components/FormProjectDeleteModal.vue";
-import NotificationDot from "../components/NotificationDot.vue";
-import ButtonEllipsis from "../components/ButtonEllipsis.vue";
-import ButtonEllipsisItem from "../components/ButtonEllipsisItem.vue";
+import BaseTemplateCard from "../components/base-template-card.vue";
+import BaseCardContent from "../components/base-card-content.vue";
+import BaseButtonClick from "../components/base-button-click.vue";
+import BaseModal from "../components/base-modal.vue";
+import FormProjectCreateModal from "../components/form-project-create-modal.vue";
+import FormProjectDeleteModal from "../components/form-project-delete-modal.vue";
+import NotificationDot from "../components/notification-dot.vue";
+import ButtonEllipsis from "../components/button-ellipsis.vue";
+import ButtonEllipsisItem from "../components/button-ellipsis-item.vue";
 import useDateFormatFull from "../composables/use-date-format-full";
-import ProjectStatusTags from "../components/ProjectStatusTags.vue";
-import FormGoal from "../components/FormGoal.vue";
-import FormGoalManageModal from "../components/FormGoalManageModal.vue";
+import ProjectStatusTags from "../components/project-status-tags.vue";
+import FormGoal from "../components/form-goal.vue";
+import FormGoalManageModal from "../components/form-goal-manage-modal.vue";
 
 // TODO:
 // If completed or archived, no longer able to add/edit content

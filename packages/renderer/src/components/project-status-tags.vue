@@ -1,3 +1,4 @@
+<!-- Should not be a component as it's only used in summary page -->
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import type { PropType } from "vue";

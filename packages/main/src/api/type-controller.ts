@@ -1,4 +1,4 @@
-import type TypeRepository from "../repositories/type-repository";
+import type TypeRepository from "./type-repository";
 import type { Project, Type } from "interfaces";
 
 class TypeController {

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { inject, computed, ref } from "vue";
 import type { Store } from "../store";
-import BaseModal from "./BaseModal.vue";
-import FormGoal from "./FormGoal.vue";
+import BaseModal from "./base-modal.vue";
+import FormGoal from "./form-goal.vue";
 
 const store = inject("store") as Store;
 

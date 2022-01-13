@@ -1,6 +1,6 @@
 import fs from "fs";
-import formatDate from "../helpers/format-date";
-import type htmlData from "../types/html-data";
+import formatDate from "./helpers/format-date";
+import type htmlData from "./types/html-data";
 
 // TODO:
 // Return array of all files in a directory

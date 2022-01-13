@@ -3,10 +3,10 @@ import type { PropType } from "vue";
 import { inject, ref, computed } from "vue";
 import type { Store } from "../store";
 import type { Column } from "interfaces";
-import ButtonClose from "./ButtonClose.vue";
-import TheColumnProject from "./TheColumnProject.vue";
-import TheColumnNote from "./TheColumnNote.vue";
-import TheColumnSetting from "./TheColumnSetting.vue";
+import ButtonClose from "./button-close.vue";
+import TheColumnProject from "./the-column-project.vue";
+import TheColumnNote from "./the-column-note.vue";
+import TheColumnSetting from "./the-column-setting.vue";
 
 const store = inject("store") as Store;
 

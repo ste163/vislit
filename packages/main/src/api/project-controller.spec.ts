@@ -4,7 +4,7 @@
 import type { Project } from "interfaces";
 import Database from "../database";
 import ProjectController from "./project-controller";
-import ProjectRepository from "../repositories/project-repository";
+import ProjectRepository from "./project-repository";
 import SearchController from "./search-controller";
 import type FileSystemController from "./file-system-controller";
 

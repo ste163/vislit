@@ -1,5 +1,5 @@
 import type { Goal } from "interfaces";
-import type GoalRepository from "../repositories/goal-repository";
+import type GoalRepository from "./goal-repository";
 import type ProjectController from "./project-controller";
 
 class GoalController {

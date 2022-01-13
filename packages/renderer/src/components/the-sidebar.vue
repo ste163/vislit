@@ -2,15 +2,15 @@
 import { inject } from "vue";
 import type { Store } from "../store";
 import useIsSidebarDisabled from "../composables/use-is-sidebar-disabled";
-import ButtonRouterLink from "./ButtonRouterLink.vue";
-import AppIconSummary from "./AppIconSummary.vue";
-import AppIconWriter from "./AppIconWriter.vue";
-import AppIconProgress from "./AppIconProgress.vue";
-import AppIconVisualization from "./AppIconVisualization.vue";
-import ButtonColumn from "./ButtonColumn.vue";
-import AppIconProject from "./AppIconProject.vue";
-import AppIconNote from "./AppIconNote.vue";
-import AppIconSetting from "./AppIconSetting.vue";
+import ButtonRouterLink from "./button-router-link.vue";
+import AppIconSummary from "./app-icon-summary.vue";
+import AppIconWriter from "./app-icon-writer.vue";
+import AppIconProgress from "./app-icon-progress.vue";
+import AppIconVisualization from "./app-icon-visualization.vue";
+import ButtonColumn from "./button-column.vue";
+import AppIconProject from "./app-icon-project.vue";
+import AppIconNote from "./app-icon-note.vue";
+import AppIconSetting from "./app-icon-setting.vue";
 
 const store = inject("store") as Store;
 

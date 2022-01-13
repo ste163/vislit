@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, inject } from "vue";
-import BaseButtonToggle from "./BaseButtonToggle.vue";
+import BaseButtonToggle from "./base-button-toggle.vue";
 import type { Store } from "../store";
 import useIsSidebarDisabled from "../composables/use-is-sidebar-disabled";
 

@@ -1,7 +1,7 @@
 import type { Project } from "interfaces";
 import type SearchController from "./search-controller";
 import type FileSystemController from "./file-system-controller";
-import type ProjectRepository from "../repositories/project-repository";
+import type ProjectRepository from "./project-repository";
 
 class ProjectController {
   #projectRepository: ProjectRepository;

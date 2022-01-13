@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import BaseModal from "./BaseModal.vue";
-import BaseButtonClick from "./BaseButtonClick.vue";
+import BaseModal from "./base-modal.vue";
+import BaseButtonClick from "./base-button-click.vue";
 
 // eslint-disable-next-line no-undef
 const props = defineProps({

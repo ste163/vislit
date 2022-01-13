@@ -1,3 +1,4 @@
+<!-- Convert to tailwind & not component -->
 <template>
   <h2 class="column-list-header">
     <slot />
