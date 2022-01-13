@@ -3,15 +3,15 @@ import { join } from "path";
 import { URL } from "url";
 import { existsSync, mkdirSync } from "fs";
 import type { Goal, Project } from "interfaces";
-import Database from "./api/database";
-import FileSystemController from "./api/controllers/file-system-controller";
-import ProjectRepository from "./api/repositories/project-repository";
-import ProjectController from "./api/controllers/project-controller";
-import SearchController from "./api/controllers/search-controller";
-import TypeRepository from "./api/repositories/type-repository";
-import TypeController from "./api/controllers/type-controller";
-import GoalRepository from "./api/repositories/goal-repository";
-import GoalController from "./api/controllers/goal-controller";
+import Database from "./database";
+import FileSystemController from "./api/file-system-controller";
+import ProjectRepository from "./api/project-repository";
+import ProjectController from "./api/project-controller";
+import SearchController from "./api/search-controller";
+import TypeRepository from "./api/type-repository";
+import TypeController from "./api/type-controller";
+import GoalRepository from "./api/goal-repository";
+import GoalController from "./api/goal-controller";
 import type htmlData from "./api/types/html-data";
 
 // declared outside of try block so it can be accessed by IPC
