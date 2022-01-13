@@ -5,7 +5,6 @@ import BaseButtonClick from "./BaseButtonClick.vue";
 // TODO:
 // isSubmtting prop & loading spinner
 
-// eslint-disable-next-line no-undef
 const props = defineProps({
   isDisabled: {
     type: Boolean,
@@ -21,7 +20,6 @@ const buttonType = {
   type: "submit",
 } as ButtonHTMLAttributes;
 
-// eslint-disable-next-line no-undef
 const emit = defineEmits(["submitClick"]);
 
 function emitSubmit(): void {

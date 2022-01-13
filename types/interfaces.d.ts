@@ -21,10 +21,9 @@ declare module "interfaces" {
     id?: string;
     projectId: string;
     basedOnWordCountOrPageCount: "word" | "page";
-    wordOrPageCount: number,
+    wordOrPageCount: number;
     frequencyToRepeat: "daily" | "weekly" | "monthly";
-    daysPerFrequency?: number; // might be best to only do daysPerFrequency?
-    // however, the daily weekly or monthly is easier to sort by -- weeks start on Monday
+    daysPerFrequency?: number;
     proofreadCountsTowardGoal: boolean;
     editCountsTowardGoal: boolean;
     revisedCountsTowardsGoal: boolean;

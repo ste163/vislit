@@ -40,7 +40,7 @@ class GoalController {
 
   // Needed as separate from update controller method because
   // update adds new goal to log, which is not needed here
-  toggleCompletedById(id: string): Goal | Error {
+  setCompletedById(id: string): Goal | Error {
     try {
       const goal = this.#goalRepository.getGoalById(id);
       if (goal === undefined)
@@ -58,10 +58,8 @@ class GoalController {
           `The goal you are trying to update with id ${goal.id} does not match the active goal with id ${activeGoal.id}`
         );
 
-      // not updating the active state. If wanting to create a new goal
-      // UI will hit the update method (potentially?)
-      // but if that doesn't work, make a new method for toggleActive
-      goal.completed = !goal.completed;
+      goal.active = false;
+      goal.completed = true;
       goal.dateModified = new Date();
 
       return this.#goalRepository.update(goal);

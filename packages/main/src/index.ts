@@ -2,7 +2,7 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
 import { URL } from "url";
 import { existsSync, mkdirSync } from "fs";
-import type { Project } from "interfaces";
+import type { Goal, Project } from "interfaces";
 import Database from "./api/database";
 import FileSystemController from "./api/controllers/file-system-controller";
 import ProjectRepository from "./api/repositories/project-repository";
@@ -10,12 +10,15 @@ import ProjectController from "./api/controllers/project-controller";
 import SearchController from "./api/controllers/search-controller";
 import TypeRepository from "./api/repositories/type-repository";
 import TypeController from "./api/controllers/type-controller";
+import GoalRepository from "./api/repositories/goal-repository";
+import GoalController from "./api/controllers/goal-controller";
 import type htmlData from "./api/types/html-data";
 
 // declared outside of try block so it can be accessed by IPC
 let projectController: ProjectController;
 let fileSystemController: FileSystemController;
 let typeController: TypeController;
+let goalController: GoalController;
 
 // For now, instantiate db, controllers, & repos here
 try {
@@ -23,6 +26,7 @@ try {
   fileSystemController = new FileSystemController(app.getPath("userData"));
   const projectRepository = new ProjectRepository(database);
   const typeRepository = new TypeRepository(database);
+  const goalRepository = new GoalRepository(database);
   const searchController = new SearchController(projectRepository);
   projectController = new ProjectController(
     projectRepository,
@@ -30,6 +34,7 @@ try {
     fileSystemController
   );
   typeController = new TypeController(typeRepository);
+  goalController = new GoalController(goalRepository, projectController);
 } catch (error) {
   console.log(error);
 }
@@ -83,6 +88,7 @@ const createWindow = async () => {
       nativeWindowOpen: true,
       nodeIntegration: false,
       contextIsolation: true,
+      sandbox: true,
       preload: join(__dirname, "../../preload/dist/index.cjs"),
     },
   });
@@ -177,6 +183,23 @@ ipcMain.handle("types-add", (_e, value: string) => {
 
 ipcMain.handle("types-delete", (_e, id: string) => {
   return typeController.delete(id);
+});
+
+// Goals
+ipcMain.handle("goals-add", (_e, goal: Goal) => {
+  return goalController.add(goal);
+});
+
+ipcMain.handle("goals-update", (_e, goal: Goal) => {
+  return goalController.update(goal);
+});
+
+ipcMain.handle("goals-delete", (_e, goalId: string) => {
+  return goalController.delete(goalId);
+});
+
+ipcMain.handle("goals-completed", (_e, goalId: string) => {
+  return goalController.setCompletedById(goalId);
 });
 
 // Writer

@@ -27,13 +27,22 @@ class ProjectStore {
   public async getProjects(): Promise<void | undefined> {
     try {
       const { api } = window;
-
       const response: Array<Project> = (await api.send(
         "projects-get-all"
       )) as Array<Project>;
 
-      if (response) {
+      if (response && response instanceof Error === false) {
         this.#setProjects(response);
+        if (this.state.active) {
+          const latestActiveProject: Project = this.state.all.find(
+            (project) => project.id === this.state.active!.id
+          ) as Project;
+          this.setActiveProject(latestActiveProject);
+        } else if (response.length === 1) {
+          this.setActiveProject(response[0]);
+        } else {
+          this.setActiveProject(null);
+        }
       } else {
         // Display error message
       }
@@ -49,12 +58,10 @@ class ProjectStore {
   public async addProject(project: Project): Promise<Project | undefined> {
     try {
       const { api } = window;
-
       const response = (await api.send("projects-add", project)) as Project;
 
-      if (response instanceof Error === false) {
+      if (response && response instanceof Error === false) {
         // Display success message
-        this.setActiveProject(response);
         await this.getProjects();
         return response;
       } else {
@@ -70,12 +77,10 @@ class ProjectStore {
   public async updateProject(project: Project): Promise<Project | undefined> {
     try {
       const { api } = window;
-
       const response = (await api.send("projects-update", project)) as Project;
 
-      if (response instanceof Error === false) {
+      if (response && response instanceof Error === false) {
         // Display success message
-        this.setActiveProject(response);
         await this.getProjects();
         return response;
       } else {
@@ -91,10 +96,9 @@ class ProjectStore {
   public async deleteProject(id: string): Promise<true | undefined> {
     try {
       const { api } = window;
-
       const response = await api.send("projects-delete", id);
 
-      if (response instanceof Error === false) {
+      if (response && response instanceof Error === false) {
         // Display success message
         await this.getProjects();
         return true;

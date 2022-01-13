@@ -35,10 +35,8 @@ class ProjectController {
   getById(id: string): Project | Error {
     try {
       const project = this.#projectRepository.getById(id);
-
       if (project === undefined)
         throw new Error(`Project with id ${id} not in database`);
-
       return project;
     } catch (e: any | Error) {
       console.error(e);
@@ -109,7 +107,7 @@ class ProjectController {
       this.#searchController.deleteProject(project);
       this.#fileSystemController.deleteProjectDirectory(id);
 
-      return true;
+      return true; // don't return true, just check if the repsonse is not an instance of an error
     } catch (e: any | Error) {
       console.error(e);
       return e;
