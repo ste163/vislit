@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { inject, onMounted, ref } from "vue";
-import BaseTemplateCard from "../components/BaseTemplateCard.vue";
-import BaseCardContent from "../components/BaseCardContent.vue";
-import BaseButtonClick from "../components/BaseButtonClick.vue";
-import FormProjectCreateModal from "../components/FormProjectCreateModal.vue";
-import NotificationDot from "../components/NotificationDot.vue";
+import BaseTemplateCard from "../components/base-template-card.vue";
+import BaseCardContent from "../components/base-card-content.vue";
+import BaseButtonClick from "../components/base-button-click.vue";
+import FormProjectCreateModal from "../components/form-project-create-modal.vue";
+import NotificationDot from "../components/notification-dot.vue";
 import type { Store } from "../store";
 
 const store = inject("store") as Store;

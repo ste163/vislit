@@ -1,31 +1,31 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import Welcome from "../views/Welcome.vue";
+import welcome from "../views/welcome.vue";
 
 const routes = [
   {
     path: "/",
     name: "Welcome",
-    component: Welcome,
+    component: welcome,
   },
   {
     path: "/summary/:id",
     name: "Summary",
-    component: () => import("/@/views/Summary.vue"),
+    component: () => import("../views/summary.vue"),
   },
   {
     path: "/writer/:id",
     name: "Writer",
-    component: () => import("/@/views/Writer.vue"),
+    component: () => import("../views/writer.vue"),
   },
   {
     path: "/progress/:id",
     name: "Progress",
-    component: () => import("/@/views/Progress.vue"),
+    component: () => import("../views/progress.vue"),
   },
   {
     path: "/visualization/:id",
     name: "Visualization",
-    component: () => import("/@/views/Visualization.vue"),
+    component: () => import("../views/visualization.vue"),
   },
 ];
 

@@ -1,3 +1,4 @@
+<!-- Convert to tailwind; doesn't need to be a component -->
 <script setup lang="ts"></script>
 
 <!-- Does not use any special button components because it ellipsis menu automatically closes -->

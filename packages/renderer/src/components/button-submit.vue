@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ButtonHTMLAttributes } from "vue";
-import BaseButtonClick from "./BaseButtonClick.vue";
+import BaseButtonClick from "./base-button-click.vue";
 
 // TODO:
 // isSubmtting prop & loading spinner

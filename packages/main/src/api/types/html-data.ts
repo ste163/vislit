@@ -4,4 +4,5 @@ type htmlData = {
   type: "documents" | "notes";
   createdAt: Date;
 };
+
 export default htmlData;

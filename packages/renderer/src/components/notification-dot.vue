@@ -1,5 +1,5 @@
+<!-- Replace with tailwind -->
 <script setup lang="ts">
-// eslint-disable-next-line no-undef
 const props = defineProps({
   dotColor: {
     type: String,

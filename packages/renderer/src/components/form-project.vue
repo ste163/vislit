@@ -5,10 +5,10 @@ import type { Store } from "../store";
 import { useForm } from "vee-validate";
 import { toFormValidator } from "@vee-validate/zod";
 import { z } from "zod";
-import ColumnSubHeading from "./ColumnSubHeading.vue";
-import InputText from "./InputText.vue";
-import ButtonSubmit from "./ButtonSubmit.vue";
-import ButtonBack from "./ButtonBack.vue";
+import ColumnSubHeading from "./column-sub-heading.vue";
+import InputText from "./inpute-text.vue";
+import ButtonSubmit from "./button-submit.vue";
+import ButtonBack from "./button-back.vue";
 
 const store = inject("store") as Store;
 

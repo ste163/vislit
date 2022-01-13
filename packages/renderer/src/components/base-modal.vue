@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ButtonClose from "./ButtonClose.vue";
+import ButtonClose from "./button-close.vue";
 
 const props = defineProps({
   isModalActive: {

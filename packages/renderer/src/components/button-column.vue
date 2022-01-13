@@ -2,7 +2,7 @@
 import { inject, ref, computed } from "vue";
 import type { Column } from "interfaces";
 import type { Store } from "../store";
-import BaseButtonToggle from "./BaseButtonToggle.vue";
+import BaseButtonToggle from "./base-button-toggle.vue";
 import useIsSidebarDisabled from "../composables/use-is-sidebar-disabled";
 
 const store = inject("store") as Store;
