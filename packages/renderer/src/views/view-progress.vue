@@ -81,6 +81,8 @@ async function handleSubmitClick(date: Date): Promise<void> {
 </script>
 
 <template>
+<!-- IF NO GOAL, DO NOT ALL FOR PROGRESS! -->
+<!-- show card that says you need to create a goal to start keeping progress -->
   <h1>Progress</h1>
   <div>
     <h2>{{ monthHeading }}</h2>
