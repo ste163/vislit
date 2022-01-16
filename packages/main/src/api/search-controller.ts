@@ -3,13 +3,13 @@ import type { Project } from "interfaces";
 import type ProjectRepository from "./project-repository";
 
 export default class SearchController {
-  #projectRespository: ProjectRepository;
+  #projectRepository: ProjectRepository;
   #projectSearchIndex: Minisearch<any>;
 
   constructor(projectRepository: ProjectRepository) {
-    this.#projectRespository = projectRepository;
+    this.#projectRepository = projectRepository;
     this.#projectSearchIndex = this.createProjectSearchIndex(
-      this.#projectRespository
+      this.#projectRepository
     );
   }
 
