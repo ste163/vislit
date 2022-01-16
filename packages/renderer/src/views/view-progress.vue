@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, inject } from "vue";
+import type { Store } from "../store";
+import type { Progress } from "interfaces";
+
+const store = inject("store") as Store;
 
 const today = new Date();
 
@@ -60,11 +64,11 @@ function handleNextMonthClick(): void {
 async function handleSubmitClick(date: Date): Promise<void> {
   try {
     const { api } = window;
-    // todo: Progress interface
-    const progress = {
+    const progress: Progress = {
       date,
-      projectId: 'activeProjId',
-      count: 123,
+      projectId: store.projects.state.active?.id as string,
+      goalId: 'test', // how's this coming back from project?
+      count: 123, // rest are based on inputs, which will need validation. Each will be a separate form
       edited: false,
       proofread: false,
       revised: false

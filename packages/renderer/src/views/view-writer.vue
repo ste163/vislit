@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { ShallowRef } from "vue";
 import { inject, onMounted } from "vue";
-import type { Content, Editor } from "@tiptap/vue-3";
 import { useEditor, EditorContent } from "@tiptap/vue-3";
 import StarterKit from "@tiptap/starter-kit";
+import type { ShallowRef } from "vue";
 import type { Store } from "../store";
+import type { Content, Editor } from "@tiptap/vue-3";
 
 const store = inject("store") as Store;
 

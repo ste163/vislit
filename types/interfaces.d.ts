@@ -33,8 +33,19 @@ declare module "interfaces" {
     dateModified?: Date;
   }
 
-  // Potentially move out of interfaces because API may never need to know about these
-  // their info will live in localStorage
+  interface Progress {
+    date: Date // created date + id
+    projectId: string,
+    goalId: string,
+    count: number,
+    edited: boolean,
+    proofread: boolean,
+    revised: boolean,
+    completed?: boolean, // this should be dynamically checked against the goal instead of saved into db on Get, otherwise it could become outdated
+    dateModified?: Date
+  }
+
+  // Potentially move out of interfaces because only Renderer process needs to know about these
   interface DropZone {
     name: string;
     maxWidth: string; // in px; ie: '150px' - limits width of columns
