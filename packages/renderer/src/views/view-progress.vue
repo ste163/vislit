@@ -7,6 +7,7 @@ const selectedMonth = ref<number>(today.getUTCMonth());
 const selectedYear = ref<number>(today.getUTCFullYear());
 
 const daysInMonth = computed(() => {
+  // https://stackoverflow.com/questions/13146418/find-all-the-days-in-a-month-with-date-object#13146828
   function getDaysInMonthUTC(month: number, year: number) {
     const date = new Date(year, month, 1);
     const days = [];
