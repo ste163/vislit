@@ -28,7 +28,7 @@ async function onSubmit(): Promise<void> {
     // or true
     // display success or error banner
     console.log(response);
-  } catch (error: any) {
+  } catch (error: any | Error) {
     console.error(error);
   }
 }

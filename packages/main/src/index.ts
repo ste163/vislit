@@ -202,6 +202,13 @@ ipcMain.handle("goals-completed", (_e, goalId: string) => {
   return goalController.setCompletedById(goalId);
 });
 
+// Progress
+ipcMain.handle('progress-add', (_e, progress: {date: Date}) => {
+  // try using the date as the id will always be unique
+  // if there already is a date, then overwrite
+  console.log("SUBMIT PROGRESS FOR", progress);
+});
+
 // Writer
 ipcMain.handle("writer-get-most-recent", (_e, projectId: string) => {
   return fileSystemController.readMostRecentHtmlFile(projectId, "documents");
