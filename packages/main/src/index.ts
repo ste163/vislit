@@ -203,7 +203,7 @@ ipcMain.handle("goals-completed", (_e, goalId: string) => {
 });
 
 // Progress
-ipcMain.handle('progress-add', (_e, progress: {date: Date}) => {
+ipcMain.handle("progress-add", (_e, progress: { date: Date }) => {
   // try using the date as the id will always be unique
   // if there already is a date, then overwrite
   console.log("SUBMIT PROGRESS FOR", progress);
