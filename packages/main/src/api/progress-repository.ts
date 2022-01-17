@@ -8,9 +8,15 @@ class ProgressRepository {
     this.#database = database;
   }
 
-  getProgressByDate(date: Date): Date | undefined {
-    
+  getByDate(date: Date): Progress | undefined {
+    return this.#database.db.chain.get("progress").find({ date }).value();
   }
+
+  add(progess: Progress): Progress {}
+
+  update(progress: Progress): Progress {}
+
+  delete(date: Date): void {}
 }
 
 export default ProgressRepository;
