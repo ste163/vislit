@@ -7,6 +7,10 @@ class ProgressRepository {
   constructor(database: Database) {
     this.#database = database;
   }
+
+  getProgressByDate(date: Date): Date | undefined {
+    
+  }
 }
 
 export default ProgressRepository;

@@ -8,11 +8,11 @@ class GoalRepository {
     this.#database = database;
   }
 
-  getGoalById(id: string): Goal | undefined {
+  getById(id: string): Goal | undefined {
     return this.#database.db.data?.goals.find((goal) => goal.id === id);
   }
 
-  getActiveGoal(projectId: string): Goal | undefined {
+  getActive(projectId: string): Goal | undefined {
     return this.#database.db.data?.goals.filter((goal) => {
       if (goal.projectId === projectId && goal.active === true) return goal;
     })[0]; // will only ever be one active goal, so get the first
@@ -28,7 +28,7 @@ class GoalRepository {
     this.#database.db.chain.get("goals").remove({ id: goal.id }).value();
     this.#database.db.data?.goals.push(goal);
     this.#database.db.write();
-    return this.getGoalById(goal.id!)!; // double !s because this items will always be in db by this point
+    return this.getById(goal.id!)!; // double !s because this items will always be in db by this point
   }
 
   delete(id: string): void {

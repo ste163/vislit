@@ -2,7 +2,7 @@ import lodash from "lodash";
 import { nanoid } from "nanoid/non-secure";
 import { JSONFileSync, LowSync, MemorySync } from "lowdb";
 import type { App } from "electron";
-import type { Goal, Project, Type } from "interfaces";
+import type { Goal, Progress, Project, Type } from "interfaces";
 import type { ObjectChain } from "lodash";
 
 interface VislitDatabase {
@@ -11,7 +11,7 @@ interface VislitDatabase {
   projects: Array<Project>;
   types: Array<Type>;
   goals: Array<Goal>;
-  progress: Array<unknown>;
+  progress: Array<Progress>;
   notes: Array<unknown>;
 }
 
