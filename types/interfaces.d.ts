@@ -8,8 +8,8 @@ declare module "interfaces" {
     goals?: Goal[];
     completed: boolean;
     archived: boolean;
-    dateCreated: Date | null;
-    dateModified: Date | null;
+    dateCreated: Date | string | null; // TODO: Make optional
+    dateModified: Date | string | null;
   }
 
   interface Type {
@@ -29,20 +29,20 @@ declare module "interfaces" {
     revisedCountsTowardsGoal: boolean;
     active?: boolean; // only one goal can be active at a time
     completed?: boolean;
-    dateCreated?: Date;
-    dateModified?: Date;
+    dateCreated?: Date | string;
+    dateModified?: Date | string;
   }
 
   interface Progress {
-    date: Date // created date + id
-    projectId: string,
-    goalId: string,
-    count: number,
-    edited: boolean,
-    proofread: boolean,
-    revised: boolean,
-    completed?: boolean, // this should be dynamically checked against the goal instead of saved into db on Get, otherwise it could become outdated
-    dateModified?: Date
+    date: Date | string; // created date + id
+    projectId: string;
+    goalId: string;
+    count: number;
+    edited: boolean;
+    proofread: boolean;
+    revised: boolean;
+    completed?: boolean; // this should be dynamically checked against the goal instead of saved into db on Get, otherwise it could become outdated
+    dateModified?: Date | string;
   }
 
   // Potentially move out of interfaces because only Renderer process needs to know about these
