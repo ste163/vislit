@@ -65,22 +65,12 @@ describe("progress-repository", () => {
     });
   });
 
-  it("returns empty array if no get all progress by projectId exists", () => {
-    expect(
-      progressRepository.getAllByYearMonth("0", "2020", "01")
-    ).toHaveLength(0);
-  });
-
   it("returns empty array if no progress by year or month exists", () => {
-    expect(
-      progressRepository.getAllByYearMonth("1", "1995", "01")
-    ).toHaveLength(0);
+    expect(progressRepository.getAllByYearMonth("1995", "01")).toHaveLength(0);
   });
 
   it("returns all progress by year and month", () => {
-    expect(
-      progressRepository.getAllByYearMonth("1", "2020", "01")
-    ).toHaveLength(2);
+    expect(progressRepository.getAllByYearMonth("2020", "01")).toHaveLength(2);
   });
 
   it("returns added progress", () => {});

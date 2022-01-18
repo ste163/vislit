@@ -18,6 +18,19 @@ class ProgressController {
     this.#goalController = goalController;
   }
 
+  getByDate(projectId: string, date: string): Progress | undefined | Error {
+    // don't need to check for goalId because there can only be 1 unique date per project
+    // check if project exists
+    // if it does, run getByDate(date)
+    // if no error return progress or undefined
+  }
+
+  getAll(projectId: string, year: string, month: string): Progress | Error {
+    // check if project exists
+    // if it does, run getAllbyYearMonth
+    // if no error, return array
+  }
+
   // adds or updates
   add(progress: Progress): Progress | Error {
     // check if the project exists
