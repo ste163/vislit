@@ -11,7 +11,7 @@ class ProgressRepository {
 
   #filterOutByDate(date: string): Progress[] {
     return this.#database.db.data!.progress.filter((progress) => {
-      // Check against the YYYY-MM-DD without the timezone
+      // Check against the YYYY-MM-DD without timezone
       const [progressFromDatabaseDate, _] = progress.date.toString().split("T");
       const [dateToDelete, _time] = date.split("T");
       if (progressFromDatabaseDate !== dateToDelete) return progress;
