@@ -9,7 +9,9 @@ class ProgressRepository {
   }
 
   getByDate(date: Date | string): Progress | undefined {
-    return this.#database.db.chain.get("progress").find({ date }).value();
+    return this.#database.db.data!.progress.filter(
+      (progress) => progress.date === date
+    )[0];
   }
 
   getAllByYearMonth(year: string, month: string): Progress[] {
@@ -20,11 +22,25 @@ class ProgressRepository {
     });
   }
 
-  add(progess: Progress): Progress {}
+  add(progress: Progress): Progress {
+    this.#database.db.data!.progress.push(progress);
+    this.#database.db.write();
+    return this.getByDate(progress.date) as Progress;
+  }
 
-  update(progress: Progress): Progress {}
+  update(progress: Progress): Progress {
+    //  do the remove here
+    // then do this.add()
+    // we only want to run db.write() once
+  }
 
-  delete(date: Date): void {}
+  delete(date: Date): void {
+    // a non-lodash way would be to:
+    // filter out all progress that does not === the provided date
+    // (again, timezones would f' this up, so we need to be REALLY sure we're doing this right)
+    // then re-set all the progress to the new array without that included progress
+    // then write to the database
+  }
 }
 
 export default ProgressRepository;

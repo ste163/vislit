@@ -20,6 +20,13 @@ const selectedYear = ref<number>(today.getUTCFullYear());
 
 const daysInMonth = computed(() => {
   // https://stackoverflow.com/questions/13146418/find-all-the-days-in-a-month-with-date-object#13146828
+  // because these are created using local time.
+  // If someone leaves the original timezone saved in db
+  // then the dates won't match up. UNLESS matching is done based on
+  // year, month, day. But that could still become out-of-whack :( -> but it would at least
+  // still show dates regardless of timezone. They'd just be in THAT current timezone.
+  // Which is annoying, but not deal-breaker
+  // Maybe UTC is the answer? Or a date library?
   function getDaysInMonthUTC(month: number, year: number) {
     const date = new Date(year, month, 1);
     const days = [];

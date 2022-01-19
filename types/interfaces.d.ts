@@ -42,7 +42,6 @@ declare module "interfaces" {
     proofread: boolean;
     revised: boolean;
     completed?: boolean; // this should be dynamically checked against the goal instead of saved into db on Get, otherwise it could become outdated
-    dateModified?: Date | string;
   }
 
   // Potentially move out of interfaces because only Renderer process needs to know about these
