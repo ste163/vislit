@@ -8,6 +8,15 @@ class ProgressRepository {
     this.#database = database;
   }
 
+  #filterOutByDate(date: string): Progress[] {
+    return this.#database.db.data!.progress.filter((progress) => {
+      // Check against the YYYY-MM-DD without the timezone
+      const [progressFromDatabaseDate, _] = progress.date.toString().split("T");
+      const [dateToDelete, _time] = date.split("T");
+      if (progressFromDatabaseDate !== dateToDelete) return progress;
+    });
+  }
+
   // all dates passed in as ISO strings
   getByDate(date: string): Progress | undefined {
     return this.#database.db.data!.progress.filter(
@@ -30,23 +39,12 @@ class ProgressRepository {
   }
 
   update(progress: Progress): Progress {
-    // do the remove here
-    // then do this.add()
-    // we only want to run db.write() once
+    this.#database.db.data.progress = this.#filterOutByDate(progress.date);
+    return this.add(progress);
   }
 
   delete(date: string): void {
-    const filteredProgress = this.#database.db.data!.progress.filter(
-      (progress) => {
-        // Check against the YYYY-MM-DD without the timezone
-        const [progressFromDatabaseDate, _] = progress.date
-          .toString()
-          .split("T");
-        const [dateToDelete, _time] = date.split("T");
-        if (progressFromDatabaseDate !== dateToDelete) return progress;
-      }
-    );
-    this.#database.db.data.progress = filteredProgress;
+    this.#database.db.data.progress = this.#filterOutByDate(date);
     this.#database.db.write();
   }
 }

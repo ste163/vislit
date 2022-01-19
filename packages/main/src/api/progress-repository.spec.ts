@@ -75,9 +75,21 @@ describe("progress-repository", () => {
     expect(progressRepository.getAllByYearMonth("2020", "01")).toHaveLength(2);
   });
 
-  it("returns added progress", () => {});
+  it("returns added progress", () => {
+    // create new object to add
+    // get original count
+    // add object
+    // check the count
+    // check that the created item was returned
+  });
 
-  it("returns updated progress", () => {});
+  it("returns updated progress", () => {
+    // get original  count
+    // set data to update
+    // update
+    // check post count is same as original
+    // check that info was updated
+  });
 
   it("returns void after deleting progress", () => {
     const originalCount = database.db.data.progress.length;
