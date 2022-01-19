@@ -94,11 +94,20 @@ describe("progress-repository", () => {
   });
 
   it("returns updated progress", () => {
-    // get original  count
-    // set data to update
-    // update
-    // check post count is same as original
-    // check that info was updated
+    const progressToUpdate: Progress = {
+      date: seedDate2,
+      projectId: "1",
+      goalId: "2",
+      count: 100,
+      edited: true,
+      proofread: true,
+      revised: true,
+    };
+    const originalCount = database.db.data.progress.length;
+    const updatedProgress = progressRepository.update(progressToUpdate);
+    const postCount = database.db.data.progress.length;
+    expect(originalCount).toEqual(postCount);
+    expect(updatedProgress).toEqual(progressToUpdate);
   });
 
   it("returns void after deleting progress", () => {
