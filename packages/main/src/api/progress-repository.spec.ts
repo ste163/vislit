@@ -50,7 +50,9 @@ describe("progress-repository", () => {
   });
 
   it("returns undefined if date not found", () => {
-    expect(progressRepository.getByDate(new Date())).toBeUndefined();
+    expect(
+      progressRepository.getByDate(new Date().toISOString())
+    ).toBeUndefined();
   });
 
   it("returns progress if date found", () => {
@@ -77,5 +79,13 @@ describe("progress-repository", () => {
 
   it("returns updated progress", () => {});
 
-  it("returns void after deleting progress", () => {});
+  it("returns void after deleting progress", () => {
+    const originalCount = database.db.data.progress.length;
+    progressRepository.delete(seedDate3);
+    const postCount = database.db.data.progress.length;
+    expect(originalCount - 1).toBe(postCount);
+    database.db.data.progress.forEach((progress) => {
+      expect(progress.date).not.toBe(seedDate3);
+    });
+  });
 });

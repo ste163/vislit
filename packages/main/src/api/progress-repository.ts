@@ -8,7 +8,8 @@ class ProgressRepository {
     this.#database = database;
   }
 
-  getByDate(date: Date | string): Progress | undefined {
+  // all dates passed in as ISO strings
+  getByDate(date: string): Progress | undefined {
     return this.#database.db.data!.progress.filter(
       (progress) => progress.date === date
     )[0];
@@ -29,17 +30,24 @@ class ProgressRepository {
   }
 
   update(progress: Progress): Progress {
-    //  do the remove here
+    // do the remove here
     // then do this.add()
     // we only want to run db.write() once
   }
 
-  delete(date: Date): void {
-    // a non-lodash way would be to:
-    // filter out all progress that does not === the provided date
-    // (again, timezones would f' this up, so we need to be REALLY sure we're doing this right)
-    // then re-set all the progress to the new array without that included progress
-    // then write to the database
+  delete(date: string): void {
+    const filteredProgress = this.#database.db.data!.progress.filter(
+      (progress) => {
+        // Check against the YYYY-MM-DD without the timezone
+        const [progressFromDatabaseDate, _] = progress.date
+          .toString()
+          .split("T");
+        const [dateToDelete, _time] = date.split("T");
+        if (progressFromDatabaseDate !== dateToDelete) return progress;
+      }
+    );
+    this.#database.db.data.progress = filteredProgress;
+    this.#database.db.write();
   }
 }
 
