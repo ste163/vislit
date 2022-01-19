@@ -1,6 +1,7 @@
 import type { Progress } from "interfaces";
 import type Database from "../database";
 
+// all dates passed into repo are ISO strings
 class ProgressRepository {
   #database: Database;
 
@@ -17,7 +18,6 @@ class ProgressRepository {
     });
   }
 
-  // all dates passed in as ISO strings
   getByDate(date: string): Progress | undefined {
     return this.#database.db.data!.progress.filter(
       (progress) => progress.date === date

@@ -76,11 +76,21 @@ describe("progress-repository", () => {
   });
 
   it("returns added progress", () => {
-    // create new object to add
-    // get original count
-    // add object
-    // check the count
-    // check that the created item was returned
+    const seedDate4 = new Date("2020-01-16").toISOString();
+    const newProgress: Progress = {
+      date: seedDate4,
+      projectId: "1",
+      goalId: "4",
+      count: 500,
+      edited: false,
+      proofread: false,
+      revised: false,
+    };
+    const originalCount = database.db.data.progress.length;
+    const addedProgress = progressRepository.add(newProgress);
+    const postCount = database.db.data.progress.length;
+    expect(originalCount + 1).toEqual(postCount);
+    expect(addedProgress).toEqual(newProgress);
   });
 
   it("returns updated progress", () => {
@@ -95,9 +105,9 @@ describe("progress-repository", () => {
     const originalCount = database.db.data.progress.length;
     progressRepository.delete(seedDate3);
     const postCount = database.db.data.progress.length;
-    expect(originalCount - 1).toBe(postCount);
+    expect(originalCount - 1).toEqual(postCount);
     database.db.data.progress.forEach((progress) => {
-      expect(progress.date).not.toBe(seedDate3);
+      expect(progress.date).not.toEqual(seedDate3);
     });
   });
 });
