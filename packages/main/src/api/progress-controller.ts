@@ -19,33 +19,46 @@ class ProgressController {
   }
 
   getByDate(projectId: string, date: string): Progress | undefined | Error {
-    // don't need to check for goalId because there can only be 1 unique date per project
-    // check if project exists
-    // if it does, run getByDate(date)
-    // if no error return progress or undefined
+    try {
+      // don't need to check for goalId because there can only be 1 unique date per project
+      // check if project exists
+      // if it does, run getByDate(date)
+      // if no error return progress or undefined
+    } catch (e: any | Error) {
+      console.error(e);
+      return e;
+    }
   }
 
   getAll(projectId: string, year: string, month: string): Progress | Error {
-    // check if project exists
-    // if it does, run getAllbyYearMonth
-    // if no error, return array
+    try {
+      // check if project exists
+      // if it does, run getAllbyYearMonth
+      // if no error, return array
+    } catch (e: any | Error) {
+      console.error(e);
+      return e;
+    }
   }
 
-  // adds or updates
-  add(progress: Progress): Progress | Error {
-    // check if the project exists
-    // check if the goal exists
-    // if there is no date in the database already
-    // create the progress in the database
-    // if there is a date already in the database
-    // update
-  }
-
-  delete(date: string): true | Error {
-    // check if project exists
-    // check if goal exists
-    // check if there is a date for this progress in db
-    // delete
+  // add, update, or delete based on changes to progress
+  modify(progress: Progress): Progress | Error {
+    // could potentially handle add, update, and delete based on what is passed in.
+    // if they remove all word/page count, and set everything to false, we should delete.
+    // at which point, add becomes 'modify'
+    // then the auto-save could just check the modify route
+    try {
+      // check if the project exists
+      this.#projectController.getById(progress.projectId); // throws error if undefined
+      // check if the goal exists
+      // if there is no date in the database already
+      // create the progress in the database
+      // if there is a date already in the database
+      // update
+    } catch (e: any | Error) {
+      console.error(e);
+      return e;
+    }
   }
 }
 

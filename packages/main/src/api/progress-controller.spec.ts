@@ -1,7 +1,6 @@
 /**
  * @jest-environment node
  */
-
 import type { Project, Goal } from "interfaces";
 import type Database from "../database";
 
@@ -10,13 +9,17 @@ describe("progress-controller-integration", () => {
   let seedGoals: Goal[];
   let database: Database;
 
-  // adding - error if no project exists
-  // adding - error if no goal exists
-  // adding - success - if no date in db, add
-  // adding - success - if date already in db, update
+  // getByDate - error if no project exists
+  // getByDate - return undefined if no date found
+  // getByDate - return progress if date found
 
-  // delete - error if no project exists
-  // delete - error if no goal exists
-  // delete - error if no date exists
-  // delete - success
+  // getAll - error if no project exists
+  // getAll - returns empty array if no dates found
+  // getAll - returns dates by year and month if found
+
+  // modify - error if no project exists
+  // modify - error if no goal exists
+  // modify - success - if no date in db, add
+  // modify - success - if date already in db, update
+  // modify - success - if date is already in db, but all information has been removed, delete from db
 });

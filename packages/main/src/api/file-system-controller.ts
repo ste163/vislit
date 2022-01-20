@@ -1,11 +1,17 @@
 import fs from "fs";
 import formatDate from "./helpers/format-date";
-import type htmlData from "./types/html-data";
 
 // TODO:
 // Return array of all files in a directory
 // Delete an individual file
 // Get an individual file by name (related to returning the array as that gives the file name)
+
+export type htmlData = {
+  id: string;
+  html: string;
+  type: "documents" | "notes";
+  createdAt: Date;
+};
 
 class FileSystemController {
   #userDataPath: string;
