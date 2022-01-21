@@ -1,29 +1,26 @@
 import type Progress from "interfaces";
-import type GoalController from "./goal-controller";
 import type ProgressRepository from "./progress-repository";
 import type ProjectController from "./project-controller";
 
 class ProgressController {
   #progressRepository: ProgressRepository;
   #projectController: ProjectController;
-  #goalController: GoalController;
 
   constructor(
     progressRepository: ProgressRepository,
-    projectController: ProjectController,
-    goalController: GoalController
+    projectController: ProjectController
   ) {
     this.#progressRepository = progressRepository;
     this.#projectController = projectController;
-    this.#goalController = goalController;
   }
 
   getByDate(projectId: string, date: string): Progress | undefined | Error {
     try {
-      // don't need to check for goalId because there can only be 1 unique date per project
-      // check if project exists
-      // if it does, run getByDate(date)
-      // if no error return progress or undefined
+      // Not checking for goalId because dates can only exists on a single goal
+      // getById throws error if not found; otherwise continues
+      const response = this.#projectController.getById(projectId);
+      if (response instanceof Error) throw response;
+      return this.#progressRepository.getByDate(date);
     } catch (e: any | Error) {
       console.error(e);
       return e;
