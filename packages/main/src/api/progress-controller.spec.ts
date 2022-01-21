@@ -104,19 +104,19 @@ describe("progress-controller-integration", () => {
     );
   });
 
-  it("returns error if no project exists", () => {
+  it("getByDate - returns error if no project exists", () => {
     expect(progressController.getByDate("3", new Date().toISOString())).toEqual(
       new Error("Project with id 3 not in database")
     );
   });
 
-  it("returns undefined if no date found", () => {
+  it("getByDate - returns undefined if no date found", () => {
     expect(
       progressController.getByDate("1", new Date().toISOString())
     ).toBeUndefined();
   });
 
-  it("returns progress if date found", () => {
+  it("getByDate - returns progress if date found", () => {
     expect(progressController.getByDate("1", progressSeedDate1)).toEqual({
       date: progressSeedDate1,
       projectId: "1",
@@ -128,9 +128,21 @@ describe("progress-controller-integration", () => {
     });
   });
 
-  // getAll - error if no project exists
   // getAll - returns empty array if no dates found
   // getAll - returns dates by year and month if found
+  it("getAll - returns error if no project exists", () => {
+    expect(progressController.getAll("3", "2020", "03")).toEqual(
+      new Error("Project with id 3 not in database")
+    );
+  });
+
+  it("getAll - returns empty array if no progress by year-month found", () => {
+    expect(progressController.getAll("1", "1999", "01")).toEqual([]);
+  });
+
+  it("getAll - returns all progress by year-month", () => {
+    expect(progressController.getAll("1", "2020", "01")).toEqual(seedProgress);
+  });
 
   // modify - error if no project exists
   // modify - error if no goal exists

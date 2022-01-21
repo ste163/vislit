@@ -17,7 +17,6 @@ class ProgressController {
   getByDate(projectId: string, date: string): Progress | undefined | Error {
     try {
       // Not checking for goalId because dates can only exists on a single goal
-      // getById throws error if not found; otherwise continues
       const response = this.#projectController.getById(projectId);
       if (response instanceof Error) throw response;
       return this.#progressRepository.getByDate(date);
@@ -29,9 +28,9 @@ class ProgressController {
 
   getAll(projectId: string, year: string, month: string): Progress | Error {
     try {
-      // check if project exists
-      // if it does, run getAllbyYearMonth
-      // if no error, return array
+      const response = this.#projectController.getById(projectId);
+      if (response instanceof Error) throw response;
+      return this.#progressRepository.getAllByYearMonth(year, month);
     } catch (e: any | Error) {
       console.error(e);
       return e;
