@@ -112,7 +112,7 @@ describe("goal-controller", () => {
       revisedCountsTowardsGoal: true,
     };
     const mockGoalRepository = {
-      getActiveGoal: jest.fn(() => undefined),
+      getActive: jest.fn(() => undefined),
       add: jest.fn(() => {
         throw new Error();
       }),
@@ -150,8 +150,8 @@ describe("goal-controller", () => {
 
   it("returns error when setting complete for a project without an active goal", () => {
     const mockGoalRepository = {
-      getGoalById: jest.fn(() => seedGoal),
-      getActiveGoal: jest.fn(() => undefined),
+      getById: jest.fn(() => seedGoal),
+      getActive: jest.fn(() => undefined),
     } as unknown as GoalRepository;
 
     const goalController = new GoalController(
@@ -170,8 +170,8 @@ describe("goal-controller", () => {
     };
 
     const mockGoalRepository = {
-      getGoalById: jest.fn(() => seedGoal),
-      getActiveGoal: jest.fn(() => mockActiveGoal),
+      getById: jest.fn(() => seedGoal),
+      getActive: jest.fn(() => mockActiveGoal),
     } as unknown as GoalRepository;
 
     const goalController = new GoalController(
@@ -218,8 +218,8 @@ describe("goal-controller", () => {
     };
 
     const mockGoalRepository = {
-      getGoalById: jest.fn(() => goal),
-      getActiveGoal: jest.fn(() => undefined),
+      getById: jest.fn(() => goal),
+      getActive: jest.fn(() => undefined),
     } as unknown as GoalRepository;
 
     const goalController = new GoalController(
@@ -249,8 +249,8 @@ describe("goal-controller", () => {
     };
 
     const mockGoalRepository = {
-      getGoalById: jest.fn(() => goal),
-      getActiveGoal: jest.fn(() => mockActiveGoal),
+      getById: jest.fn(() => goal),
+      getActive: jest.fn(() => mockActiveGoal),
     } as unknown as GoalRepository;
 
     const goalController = new GoalController(

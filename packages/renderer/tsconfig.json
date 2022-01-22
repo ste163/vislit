@@ -11,8 +11,8 @@
     "src/**/*.vue",
     "src/**/*.ts",
     "src/**/*.tsx",
-    "types/**/*.d.ts",
+    "shims-vue.d.ts",
     "../../types/**/*.d.ts",
-    "../preload/types/electron-api.d.ts"
+    "../preload/electron-api.d.ts"
   ]
 }

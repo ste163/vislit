@@ -16,6 +16,7 @@ const validChannels = [
   "goals-update",
   "goals-delete",
   "goals-completed",
+  "progress-add",
   "writer-get-most-recent",
   "writer-get-by-id",
   "writer-save",

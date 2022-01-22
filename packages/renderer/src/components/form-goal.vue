@@ -22,9 +22,6 @@ const props = defineProps({
       basedOnWordCountOrPageCount: "",
       wordOrPageCount: "",
       frequencyToRepeat: "",
-      edited: false,
-      proofread: false,
-      revised: false,
     } as unknown as Goal,
   },
 });
@@ -54,9 +51,9 @@ const validationSchema = toFormValidator(
       })
       .regex(/^([^-])[0-9]*$/)
       .or(z.number()),
-    proofread: z.boolean(),
-    edited: z.boolean(),
-    revised: z.boolean(),
+    proofread: z.boolean().optional(),
+    edited: z.boolean().optional(),
+    revised: z.boolean().optional(),
   })
 );
 

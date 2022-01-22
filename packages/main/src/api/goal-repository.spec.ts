@@ -52,11 +52,11 @@ describe("goal-repository", () => {
   });
 
   it("returns undefined if no goal by id founds", () => {
-    expect(goalRepository.getGoalById("999")).toBeUndefined();
+    expect(goalRepository.getById("999")).toBeUndefined();
   });
 
   it("returns goal by id", () => {
-    expect(goalRepository.getGoalById("1")).toEqual({
+    expect(goalRepository.getById("1")).toEqual({
       id: "1",
       projectId: "2",
       basedOnWordCountOrPageCount: "word",
@@ -71,15 +71,15 @@ describe("goal-repository", () => {
   });
 
   it("returns empty undefined if no goals with that projectId", () => {
-    expect(goalRepository.getActiveGoal("999")).toEqual(undefined);
+    expect(goalRepository.getActive("999")).toEqual(undefined);
   });
 
   it("returns empty undefined if projectId in database but no active goals", () => {
-    expect(goalRepository.getActiveGoal("1")).toEqual(undefined);
+    expect(goalRepository.getActive("1")).toEqual(undefined);
   });
 
   it("returns active goal by projectId", () => {
-    const goal = goalRepository.getActiveGoal("2");
+    const goal = goalRepository.getActive("2");
     expect(goal).toEqual({
       id: "1",
       projectId: "2",
@@ -109,7 +109,7 @@ describe("goal-repository", () => {
   });
 
   it("returns updated goal after successful update", () => {
-    const goal = goalRepository.getGoalById("1");
+    const goal = goalRepository.getById("1");
     if (goal) {
       goal.basedOnWordCountOrPageCount = "page";
       goal.wordOrPageCount = 5;

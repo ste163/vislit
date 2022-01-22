@@ -8,8 +8,8 @@ declare module "interfaces" {
     goals?: Goal[];
     completed: boolean;
     archived: boolean;
-    dateCreated: Date | null;
-    dateModified: Date | null;
+    dateCreated: Date | string | null; // TODO: Make optional
+    dateModified: Date | string | null;
   }
 
   interface Type {
@@ -29,12 +29,22 @@ declare module "interfaces" {
     revisedCountsTowardsGoal: boolean;
     active?: boolean; // only one goal can be active at a time
     completed?: boolean;
-    dateCreated?: Date;
-    dateModified?: Date;
+    dateCreated?: Date | string;
+    dateModified?: Date | string;
   }
 
-  // Potentially move out of interfaces because API may never need to know about these
-  // their info will live in localStorage
+  interface Progress {
+    date: Date | string; // created date + id
+    projectId: string;
+    goalId: string;
+    count: number;
+    edited: boolean;
+    proofread: boolean;
+    revised: boolean;
+    completed?: boolean; // this should be dynamically checked against the goal instead of saved into db on Get, otherwise it could become outdated
+  }
+
+  // Potentially move out of interfaces because only Renderer process needs to know about these
   interface DropZone {
     name: string;
     maxWidth: string; // in px; ie: '150px' - limits width of columns

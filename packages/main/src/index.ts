@@ -2,7 +2,8 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
 import { URL } from "url";
 import { existsSync, mkdirSync } from "fs";
-import type { Goal, Project } from "interfaces";
+import type { Goal, Progress, Project } from "interfaces";
+import type { htmlData } from "./api/file-system-controller";
 import Database from "./database";
 import FileSystemController from "./api/file-system-controller";
 import ProjectRepository from "./api/project-repository";
@@ -12,7 +13,6 @@ import TypeRepository from "./api/type-repository";
 import TypeController from "./api/type-controller";
 import GoalRepository from "./api/goal-repository";
 import GoalController from "./api/goal-controller";
-import type htmlData from "./api/types/html-data";
 
 // declared outside of try block so it can be accessed by IPC
 let projectController: ProjectController;
@@ -200,6 +200,21 @@ ipcMain.handle("goals-delete", (_e, goalId: string) => {
 
 ipcMain.handle("goals-completed", (_e, goalId: string) => {
   return goalController.setCompletedById(goalId);
+});
+
+// Progress
+ipcMain.handle("progress-get-all", (_e, dates: any) => {
+  // update type
+  console.log("GET ALL PROGRESS FOR", dates);
+});
+
+ipcMain.handle("progress-get-by-date", (_e, date: any) => {
+  // update type
+  console.log("SUBMIT PROGRESS FOR", date);
+});
+
+ipcMain.handle("progress-modify", (_e, progress: Progress) => {
+  console.log("SUBMIT PROGRESS FOR", progress);
 });
 
 // Writer

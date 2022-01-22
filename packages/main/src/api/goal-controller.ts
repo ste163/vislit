@@ -19,7 +19,7 @@ class GoalController {
       const existingProject = this.#projectController.getById(goal.projectId);
       if (existingProject instanceof Error) return existingProject;
 
-      const activeGoal = this.#goalRepository.getActiveGoal(goal.projectId);
+      const activeGoal = this.#goalRepository.getActive(goal.projectId);
       if (activeGoal)
         throw new Error(
           `Active goal already exists for project with id ${goal.projectId}`
@@ -42,11 +42,11 @@ class GoalController {
   // update adds new goal to log, which is not needed here
   setCompletedById(id: string): Goal | Error {
     try {
-      const goal = this.#goalRepository.getGoalById(id);
+      const goal = this.#goalRepository.getById(id);
       if (goal === undefined)
         throw new Error(`Goal with id ${id} does not exist in database`);
 
-      const activeGoal = this.#goalRepository.getActiveGoal(goal.projectId);
+      const activeGoal = this.#goalRepository.getActive(goal.projectId);
       if (activeGoal === undefined)
         throw new Error(
           `No active goal for project id ${goal.projectId} exists in database`
@@ -71,11 +71,11 @@ class GoalController {
 
   update(goal: Goal): Goal | Error {
     try {
-      const existingGoal = this.#goalRepository.getGoalById(goal.id!);
+      const existingGoal = this.#goalRepository.getById(goal.id!);
       if (existingGoal === undefined)
         throw new Error(`Goal with id ${goal.id} does not exist in database`);
 
-      const activeGoal = this.#goalRepository.getActiveGoal(goal.projectId);
+      const activeGoal = this.#goalRepository.getActive(goal.projectId);
       if (activeGoal === undefined)
         throw new Error(
           `No active goal for project id ${goal.projectId} exists in database`
@@ -105,7 +105,7 @@ class GoalController {
 
   delete(id: string): true | Error {
     try {
-      const existingGoal = this.#goalRepository.getGoalById(id);
+      const existingGoal = this.#goalRepository.getById(id);
       if (existingGoal === undefined)
         throw new Error(`Goal with id ${id} does not exist in database`);
       this.#goalRepository.delete(id);
