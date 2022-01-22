@@ -12,9 +12,9 @@ class ProgressRepository {
   #filterOutByDate(date: string): Progress[] {
     return this.#database.db.data!.progress.filter((progress) => {
       // Check against the YYYY-MM-DD without timezone
-      const [progressFromDatabaseDate, _] = progress.date.toString().split("T");
-      const [dateToDelete, _time] = date.split("T");
-      if (progressFromDatabaseDate !== dateToDelete) return progress;
+      const progressFromDb = progress.date.toString().split("T")[0];
+      const dateToDelete = date.split("T")[0];
+      if (progressFromDb !== dateToDelete) return progress;
     });
   }
 
@@ -26,7 +26,7 @@ class ProgressRepository {
 
   getAllByYearMonth(year: string, month: string): Progress[] {
     return this.#database.db.data!.progress.filter((progress) => {
-      const [date, _] = progress.date.toString().split("T");
+      const date = progress.date.toString().split("T")[0];
       const [splitYear, splitMonth] = date.split("-");
       if (year === splitYear && month == splitMonth) return progress;
     });

@@ -5,29 +5,13 @@ import type { Progress } from "interfaces";
 
 const store = inject("store") as Store;
 
-const activeGoal = computed(() => {
-  const goals = store.projects.state.active?.goals?.filter(
-    (goal) => goal.active
-  );
-  if (goals) return goals[0];
-  return undefined;
-});
-
 const today = new Date();
 
 const selectedMonth = ref<number>(today.getUTCMonth());
 const selectedYear = ref<number>(today.getUTCFullYear());
 
 const daysInMonth = computed(() => {
-  // https://stackoverflow.com/questions/13146418/find-all-the-days-in-a-month-with-date-object#13146828
-  // because these are created using local time.
-  // If someone leaves the original timezone saved in db
-  // then the dates won't match up. UNLESS matching is done based on
-  // year, month, day. But that could still become out-of-whack :( -> but it would at least
-  // still show dates regardless of timezone. They'd just be in THAT current timezone.
-  // Which is annoying, but not deal-breaker
-  // Maybe UTC is the answer? Or a date library?
-  function getDaysInMonthUTC(month: number, year: number) {
+  function getDaysInMonth(month: number, year: number) {
     const date = new Date(year, month, 1);
     const days = [];
     while (date.getMonth() === month) {
@@ -37,7 +21,7 @@ const daysInMonth = computed(() => {
     return days;
   }
 
-  return getDaysInMonthUTC(selectedMonth.value, selectedYear.value);
+  return getDaysInMonth(selectedMonth.value, selectedYear.value);
 });
 
 const monthHeading = computed(() => {
@@ -56,6 +40,14 @@ const monthHeading = computed(() => {
     "December",
   ];
   return months[selectedMonth.value];
+});
+
+const activeGoal = computed(() => {
+  const goals = store.projects.state.active?.goals?.filter(
+    (goal) => goal.active
+  );
+  if (goals) return goals[0];
+  return undefined;
 });
 
 function handlePreviousMonthClick(): void {
@@ -109,13 +101,32 @@ async function handleSubmitClick(date: Date): Promise<void> {
     <button @click="handlePreviousMonthClick">Previous</button>
     <button @click="handleNextMonthClick">Next</button>
 
-    <!-- To make it easy, have a save button on every line -->
-    <!-- Todo will be have auto-saving changes when you click the edit button -->
-    <div v-for="day in daysInMonth" :key="day.getUTCMilliseconds()">
-      {{ day }}
-      <button type="button" @click="handleSubmitClick(day)">
-        Submit to API
-      </button>
-    </div>
+    <!-- Todo: auto-saving changes when you click the edit button -->
+    <table class="text-sm">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Word/Page Count</th>
+          <th>Proofread</th>
+          <th>Edited</th>
+          <th>Revised</th>
+          <th>Save</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- One form with dynamically changing inputs. Saves all rows at once on save click -->
+        <!-- with regex for only a positive number going in -->
+        <tr v-for="day in daysInMonth" :key="day.toISOString()">
+          <td>{{ day.toISOString().split("T")[0] }}</td>
+          <td><input type="number" /></td>
+          <td><input type="checkbox" /></td>
+          <td><input type="checkbox" /></td>
+          <td><input type="checkbox" /></td>
+          <td>
+            <button type="button" @click="handleSubmitClick(day)">Save</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>

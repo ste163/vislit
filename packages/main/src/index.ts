@@ -203,18 +203,18 @@ ipcMain.handle("goals-completed", (_e, goalId: string) => {
 });
 
 // Progress
-ipcMain.handle("progress-get-all", (_e, dates: any) => {
+ipcMain.handle("progress-get-all-by-year-month", (_e, dates: any) => {
   // update parameter & type
   console.log("GET ALL PROGRESS FOR", dates);
 });
 
 ipcMain.handle("progress-get-by-date", (_e, date: any) => {
   // update parameter & type
-  console.log("SUBMIT PROGRESS FOR", date);
+  console.log("GET PROGRESS BY DATE", date);
 });
 
 ipcMain.handle("progress-modify", (_e, progress: Progress) => {
-  console.log("SUBMIT PROGRESS FOR", progress);
+  console.log("MODIFY PROGRESS FOR", progress);
 });
 
 // Writer
