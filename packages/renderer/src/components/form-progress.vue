@@ -69,7 +69,7 @@ const { handleSubmit, meta } = useForm({
 
 const onSubmit = handleSubmit(async (values) => {
   const newProgress: Progress = {
-    date: props.date,
+    date: props.date.toISOString(),
     projectId: props.projectId,
     goalId: props.goalId,
     count: parseInt(values.count as unknown as string), // casting because Progress has number but form forces it to a string

@@ -13,7 +13,7 @@ class ProgressRepository {
     return this.#database.db.data!.progress.filter((progress) => {
       // Check against the YYYY-MM-DD without timezone
       const progressFromDb = progress.date.toString().split("T")[0];
-      const dateToDelete = date.toISOString().split("T")[0];
+      const dateToDelete = date.split("T")[0];
       if (progressFromDb !== dateToDelete) return progress;
     });
   }
@@ -22,7 +22,7 @@ class ProgressRepository {
     return this.#database.db.data!.progress.filter((dbProgress) => {
       // Check against the YYYY-MM-DD without timezone
       const dbDate = dbProgress.date.toString().split("T")[0];
-      const incomingDate = date.toISOString().split("T")[0];
+      const incomingDate = date.split("T")[0];
       if (dbDate === incomingDate) return dbProgress;
     })[0];
   }

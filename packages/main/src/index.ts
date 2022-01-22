@@ -222,6 +222,7 @@ ipcMain.handle("progress-get-by-date", (_e, date: any) => {
 });
 
 ipcMain.handle("progress-modify", (_e, progress: Progress) => {
+  // zod schema MUST ensure the date is an ISOstring otherwise, everything breaks
   return progressController.modify(progress);
 });
 
