@@ -1,4 +1,4 @@
-import type { Progress, Project, Goal } from "interfaces";
+import type { Progress, Goal } from "interfaces";
 import type ProgressRepository from "./progress-repository";
 import type ProjectController from "./project-controller";
 
@@ -26,7 +26,7 @@ class ProgressController {
     }
   }
 
-  getAll(projectId: string, year: string, month: string): Progress | Error {
+  getAll(projectId: string, year: string, month: string): Progress[] | Error {
     try {
       const response = this.#projectController.getById(projectId);
       if (response instanceof Error) throw response;
@@ -38,7 +38,7 @@ class ProgressController {
   }
 
   // add, update, or delete based on changes to progress
-  modify(progress: Progress): Progress | Error {
+  modify(progress: Progress): Progress[] | true | Error {
     try {
       const project = this.#projectController.getById(progress.projectId);
       if (project instanceof Error) throw project;
