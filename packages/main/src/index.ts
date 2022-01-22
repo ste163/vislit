@@ -13,12 +13,15 @@ import TypeRepository from "./api/type-repository";
 import TypeController from "./api/type-controller";
 import GoalRepository from "./api/goal-repository";
 import GoalController from "./api/goal-controller";
+import ProgressRepository from "./api/progress-repository";
+import ProgressController from "./api/progress-controller";
 
 // declared outside of try block so it can be accessed by IPC
 let projectController: ProjectController;
 let fileSystemController: FileSystemController;
 let typeController: TypeController;
 let goalController: GoalController;
+let progressController: ProgressController;
 
 // For now, instantiate db, controllers, & repos here
 try {
@@ -27,6 +30,7 @@ try {
   const projectRepository = new ProjectRepository(database);
   const typeRepository = new TypeRepository(database);
   const goalRepository = new GoalRepository(database);
+  const progressRepository = new ProgressRepository(database);
   const searchController = new SearchController(projectRepository);
   projectController = new ProjectController(
     projectRepository,
@@ -35,6 +39,10 @@ try {
   );
   typeController = new TypeController(typeRepository);
   goalController = new GoalController(goalRepository, projectController);
+  progressController = new ProgressController(
+    progressRepository,
+    projectController
+  );
 } catch (error) {
   console.log(error);
 }
@@ -214,7 +222,7 @@ ipcMain.handle("progress-get-by-date", (_e, date: any) => {
 });
 
 ipcMain.handle("progress-modify", (_e, progress: Progress) => {
-  console.log("MODIFY PROGRESS FOR", progress);
+  return progressController.modify(progress);
 });
 
 // Writer

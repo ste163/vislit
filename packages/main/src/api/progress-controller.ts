@@ -43,7 +43,7 @@ class ProgressController {
       const project = this.#projectController.getById(progress.projectId);
       if (project instanceof Error) throw project;
 
-      const goal = project.goals.find(
+      const goal = project!.goals.find(
         (goal: Goal) => goal.id === progress.goalId
       );
 
@@ -52,9 +52,14 @@ class ProgressController {
           `Goal with id ${progress.goalId} does not exist on Project with id ${progress.projectId}`
         );
 
+      console.log("REACHED");
+
       const existingProgress = this.#progressRepository.getByDate(
         progress.date
       );
+
+      // Existing progress isn't working. Need to convert the progress.Date to an ISO string at step 1
+      console.log("EXISTING PRGRESS", existingProgress);
 
       if (!existingProgress) return this.#progressRepository.add(progress);
 

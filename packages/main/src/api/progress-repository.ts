@@ -13,15 +13,18 @@ class ProgressRepository {
     return this.#database.db.data!.progress.filter((progress) => {
       // Check against the YYYY-MM-DD without timezone
       const progressFromDb = progress.date.toString().split("T")[0];
-      const dateToDelete = date.split("T")[0];
+      const dateToDelete = date.toISOString().split("T")[0];
       if (progressFromDb !== dateToDelete) return progress;
     });
   }
 
   getByDate(date: string): Progress | undefined {
-    return this.#database.db.data!.progress.filter(
-      (progress) => progress.date === date
-    )[0];
+    return this.#database.db.data!.progress.filter((dbProgress) => {
+      // Check against the YYYY-MM-DD without timezone
+      const dbDate = dbProgress.date.toString().split("T")[0];
+      const incomingDate = date.toISOString().split("T")[0];
+      if (dbDate === incomingDate) return dbProgress;
+    })[0];
   }
 
   getAllByYearMonth(year: string, month: string): Progress[] {
@@ -39,12 +42,12 @@ class ProgressRepository {
   }
 
   update(progress: Progress): Progress {
-    this.#database.db.data.progress = this.#filterOutByDate(progress.date);
+    this.#database.db.data!.progress = this.#filterOutByDate(progress.date);
     return this.add(progress);
   }
 
   delete(date: string): true {
-    this.#database.db.data.progress = this.#filterOutByDate(date);
+    this.#database.db.data!.progress = this.#filterOutByDate(date);
     this.#database.db.write();
     return true; // otherwise returns undefined, which could mean too many other things
   }

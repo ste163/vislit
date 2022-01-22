@@ -8,7 +8,8 @@ const props = defineProps({
   },
   label: {
     type: String,
-    required: true,
+    required: false,
+    default: "",
   },
   backgroundColor: {
     type: String,
@@ -26,6 +27,7 @@ const { meta, checked, handleChange } = useField(props.name, undefined, {
 <template>
   <div>
     <label
+      v-if="props.label !== ''"
       :for="name"
       class="label"
       :class="meta.dirty ? 'label-active' : ''"

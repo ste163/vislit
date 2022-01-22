@@ -5,7 +5,7 @@ import type { Store } from "../store";
 import { useForm } from "vee-validate";
 import { toFormValidator } from "@vee-validate/zod";
 import { z } from "zod";
-import InputText from "./inpute-text.vue";
+import InputText from "./input-text.vue";
 import ButtonSubmit from "./button-submit.vue";
 import BaseModal from "./base-modal.vue";
 import InputSelect from "./input-select.vue";

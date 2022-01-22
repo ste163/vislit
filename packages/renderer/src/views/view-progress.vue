@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, inject } from "vue";
 import type { Store } from "../store";
-import type { Progress } from "interfaces";
+import type { Goal } from "interfaces";
+import FormProgress from "../components/form-progress.vue";
 
 const store = inject("store") as Store;
 
@@ -20,7 +21,6 @@ const daysInMonth = computed(() => {
     }
     return days;
   }
-
   return getDaysInMonth(selectedMonth.value, selectedYear.value);
 });
 
@@ -67,33 +67,16 @@ function handleNextMonthClick(): void {
     selectedMonth.value = ++selectedMonth.value;
   }
 }
-
-async function handleSubmitClick(date: Date): Promise<void> {
-  try {
-    const { api } = window;
-    const progress: Progress = {
-      date,
-      projectId: store.projects.state.active?.id as string,
-      goalId: activeGoal.value?.id as string,
-      count: 123, // rest are based on inputs, which will need validation. Each will be a separate form
-      edited: false,
-      proofread: false,
-      revised: false,
-    };
-    await api.send("progress-add", progress);
-  } catch (error: any | Error) {
-    console.error(error);
-  }
-}
 </script>
 
 <template>
+  <!-- TODO: wrap in v-if for needing to have an activeproject -->
   <!-- How do you handle displaying progress for old goals? Are they no longer completed? Should there be a dilineating line showing progress changes in the table? -->
   <!-- Probably should do it so:
 1. You can only add progress for dates starting from the active goal. Ie, you can't change old progress. it gets locked down. If you have -->
   <!-- So if the goalId doesn't match the activeGoalId, don't allow for editing or deleting that progress -->
   <h1>Progress</h1>
-  <div v-if="store.projects.state.active!.goals!.length === 0">
+  <div v-if="store.projects.state.active?.goals?.length === 0">
     <h2>Create a Goal to track writing progress</h2>
   </div>
   <div v-else>
@@ -102,7 +85,7 @@ async function handleSubmitClick(date: Date): Promise<void> {
     <button @click="handleNextMonthClick">Next</button>
 
     <!-- Todo: auto-saving changes when you click the edit button -->
-    <table class="text-sm">
+    <table class="table-auto text-sm">
       <thead>
         <tr>
           <th>Date</th>
@@ -110,22 +93,25 @@ async function handleSubmitClick(date: Date): Promise<void> {
           <th>Proofread</th>
           <th>Edited</th>
           <th>Revised</th>
+          <th>Completed</th>
           <th>Save</th>
         </tr>
       </thead>
       <tbody>
-        <!-- One form with dynamically changing inputs. Saves all rows at once on save click -->
-        <!-- with regex for only a positive number going in -->
-        <tr v-for="day in daysInMonth" :key="day.toISOString()">
-          <td>{{ day.toISOString().split("T")[0] }}</td>
-          <td><input type="number" /></td>
-          <td><input type="checkbox" /></td>
-          <td><input type="checkbox" /></td>
-          <td><input type="checkbox" /></td>
-          <td>
-            <button type="button" @click="handleSubmitClick(day)">Save</button>
-          </td>
-        </tr>
+        <!-- Instead, make the form-progress a <tr /> and have the rows exist there -->
+        <!-- FOR TESTING, GOAL ID ISN'T LEGIT -->
+        <!-- ALSO, WE WON'T BE LOOPING OVER DAYS IN MONTH -->
+        <!-- WILL BE LOOPING OVER PROGRESS IN MONTH OR SOME COMBO OF THE TWO -->
+        <!--  -->
+        <!-- Also, listen for the progressSaved event and then re-fetch data -->
+        <!-- Also, only allow for progress entering if there is an active goal -->
+        <form-progress
+          v-for="(day, index) in daysInMonth"
+          :key="index"
+          :date="day"
+          :project-id="(store.projects.state.active?.id as string)"
+          :goal-id="(activeGoal?.id as string)"
+        />
       </tbody>
     </table>
   </div>

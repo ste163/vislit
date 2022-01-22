@@ -51,7 +51,7 @@ describe("progress-repository", () => {
 
   it("returns undefined if date not found", () => {
     expect(
-      progressRepository.getByDate(new Date().toISOString())
+      progressRepository.getByDate(new Date("1999-01-01").toISOString())
     ).toBeUndefined();
   });
 

@@ -16,7 +16,8 @@ const props = defineProps({
   },
   label: {
     type: String,
-    required: true,
+    required: false,
+    default: "",
   },
   max: {
     type: String,
@@ -49,6 +50,7 @@ const {
     :class="{ error: !!errorMessage, success: meta.valid && meta.dirty }"
   >
     <label
+      v-if="props.label !== ''"
       :for="name"
       class="label"
       :class="meta.dirty ? 'label-active' : ''"
