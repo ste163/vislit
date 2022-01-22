@@ -1,4 +1,4 @@
-import type Progress from "interfaces";
+import type { Progress, Project, Goal } from "interfaces";
 import type ProgressRepository from "./progress-repository";
 import type ProjectController from "./project-controller";
 
@@ -39,18 +39,32 @@ class ProgressController {
 
   // add, update, or delete based on changes to progress
   modify(progress: Progress): Progress | Error {
-    // could potentially handle add, update, and delete based on what is passed in.
-    // if they remove all word/page count, and set everything to false, we should delete.
-    // at which point, add becomes 'modify'
-    // then the auto-save could just check the modify route
     try {
-      // check if the project exists
-      this.#projectController.getById(progress.projectId); // throws error if undefined
-      // check if the goal exists
-      // if there is no date in the database already
-      // create the progress in the database
-      // if there is a date already in the database
-      // update
+      const project = this.#projectController.getById(progress.projectId);
+      if (project instanceof Error) throw project;
+
+      const goal = project.goals.find(
+        (goal: Goal) => goal.id === progress.goalId
+      );
+
+      if (!goal)
+        throw new Error(
+          `Goal with id ${progress.goalId} does not exist on Project with id ${progress.projectId}`
+        );
+
+      const existingProgress = this.#progressRepository.getByDate(
+        progress.date
+      );
+
+      if (!existingProgress) return this.#progressRepository.add(progress);
+
+      // If user reset all data/unchecked, delete progress
+      return progress.count === 0 &&
+        progress.edited === false &&
+        progress.proofread === false &&
+        progress.revised === false
+        ? this.#progressRepository.delete(existingProgress.date)
+        : this.#progressRepository.update(progress);
     } catch (e: any | Error) {
       console.error(e);
       return e;

@@ -77,7 +77,7 @@ describe("progress-controller-integration", () => {
       {
         date: progressSeedDate2,
         projectId: "1",
-        goalId: "2",
+        goalId: "1",
         count: 500,
         edited: false,
         proofread: true,
@@ -128,8 +128,6 @@ describe("progress-controller-integration", () => {
     });
   });
 
-  // getAll - returns empty array if no dates found
-  // getAll - returns dates by year and month if found
   it("getAll - returns error if no project exists", () => {
     expect(progressController.getAll("3", "2020", "03")).toEqual(
       new Error("Project with id 3 not in database")
@@ -144,9 +142,75 @@ describe("progress-controller-integration", () => {
     expect(progressController.getAll("1", "2020", "01")).toEqual(seedProgress);
   });
 
-  // modify - error if no project exists
-  // modify - error if no goal exists
-  // modify - success - if no date in db, add
-  // modify - success - if date already in db, update
-  // modify - success - if date is already in db, but all information has been removed, delete from db
+  it("modify - returns error if no project exists", () => {
+    const progressDate = new Date("2020-01-20");
+    const progress: Progress = {
+      date: progressDate,
+      projectId: "3",
+      goalId: "1",
+      count: 700,
+      edited: false,
+      proofread: false,
+      revised: false,
+    };
+    expect(progressController.modify(progress)).toEqual(
+      new Error("Project with id 3 not in database")
+    );
+  });
+
+  it("modify - returns error if no goal for project exists", () => {
+    const progressDate = new Date("2020-01-20");
+    const progress: Progress = {
+      date: progressDate,
+      projectId: "1",
+      goalId: "999",
+      count: 700,
+      edited: false,
+      proofread: false,
+      revised: false,
+    };
+    expect(progressController.modify(progress)).toEqual(
+      new Error("Goal with id 999 does not exist on Project with id 1")
+    );
+  });
+
+  it("modify - returns added progress if date does not exist", () => {
+    const progressDate = new Date("2020-01-20").toISOString();
+    const progress: Progress = {
+      date: progressDate,
+      projectId: "1",
+      goalId: "1",
+      count: 700,
+      edited: false,
+      proofread: false,
+      revised: false,
+    };
+    expect(progressController.modify(progress)).toEqual(progress);
+  });
+
+  it("modify - returns true after deleting if date exists but incoming progress count is 0 and all info is false", () => {
+    const progress: Progress = {
+      date: progressSeedDate1,
+      projectId: "1",
+      goalId: "1",
+      count: 0,
+      edited: false,
+      proofread: false,
+      revised: false,
+    };
+    expect(progressController.modify(progress)).toEqual(true);
+  });
+
+  it("modify - returns updated progress if date exists", () => {
+    const progress: Progress = {
+      date: progressSeedDate1,
+      projectId: "1",
+      goalId: "1",
+      count: 20,
+      edited: true,
+      proofread: true,
+      revised: false,
+    };
+    expect(progressController.modify(progress)).toEqual(progress);
+  });
 });

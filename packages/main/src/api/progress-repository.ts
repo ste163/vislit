@@ -43,9 +43,10 @@ class ProgressRepository {
     return this.add(progress);
   }
 
-  delete(date: string): void {
+  delete(date: string): true {
     this.#database.db.data.progress = this.#filterOutByDate(date);
     this.#database.db.write();
+    return true; // otherwise returns undefined, which could mean too many other things
   }
 }
 
