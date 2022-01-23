@@ -11,7 +11,7 @@ const today = new Date();
 const isLoading = ref<boolean>(true);
 const selectedMonth = ref<number>(today.getMonth());
 const selectedYear = ref<number>(today.getFullYear());
-const currentProgress = ref<Progress[]>([]);
+const progressForDateRange = ref<Progress[]>([]);
 
 const daysInMonth = computed(() => {
   function getDaysInMonth(month: number, year: number) {
@@ -57,6 +57,17 @@ const activeGoal = computed(() => {
   if (goals) return goals[0];
   return undefined;
 });
+
+const combinedProgressAndDates = computed(() =>
+  daysInMonth.value.map((day) => {
+    return {
+      date: day.toISOString(),
+      progress: progressForDateRange.value.find(
+        (progress) => day.toISOString() === progress.date
+      ),
+    };
+  })
+);
 
 function convertMonthToDoubleDigit(month: number): string {
   const months = [
@@ -104,8 +115,7 @@ async function fetchProgress(year: string, month: string): Promise<void> {
     };
     const response = await api.send("progress-get-all-by-year-month", dates);
     if (response instanceof Error) throw response;
-    currentProgress.value = response as Progress[];
-    console.log(response);
+    progressForDateRange.value = response as Progress[];
   } catch (e: any | Error) {
     console.error(e);
   } finally {
@@ -125,7 +135,10 @@ watch(
     // Currently loading unmounts the table then re-renders after fetching data
     // which is lagging the progress view. Figure out a better loading solution so it
     // doesn't unmount (show spinner over table/something)
-    // isLoading.value = true;
+    // MUST reset loading state, because form inputs need to re-mount to get their state reset
+    // otherwise their input state gets out of sync as vee-validate is using its own state management
+    // that is firing differently than my changes
+    isLoading.value = true;
     await fetchProgress(yearString.value, monthDoubleDigit.value);
   }
 );
@@ -139,6 +152,7 @@ watch(
   <!-- So if the goalId doesn't match the activeGoalId, don't allow for editing or deleting that progress -->
   <h1>Progress</h1>
   <div>
+    <!-- TODO: Improve loading so it doesn't unmount table (causes major lag) -->
     <div v-if="isLoading">LOADING...</div>
     <div v-else>
       <div v-if="store.projects.state.active?.goals?.length === 0">
@@ -171,9 +185,10 @@ watch(
             <!-- Also, listen for the progressSaved event and then re-fetch data -->
             <!-- Also, only allow for progress entering if there is an active goal -->
             <form-progress
-              v-for="(day, index) in daysInMonth"
+              v-for="({ date, progress }, index) in combinedProgressAndDates"
               :key="index"
-              :date="day"
+              :date="date"
+              :current-progress="progress"
               :project-id="(store.projects.state.active?.id as string)"
               :goal-id="(activeGoal?.id as string)"
             />

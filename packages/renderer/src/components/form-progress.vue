@@ -10,7 +10,7 @@ import InputCheckBox from "./input-check-box.vue";
 
 const props = defineProps({
   date: {
-    type: Date,
+    type: String,
     required: true,
   },
   projectId: {
@@ -56,20 +56,20 @@ const validationSchema = toFormValidator(
 );
 
 const initialFormValues = {
-  count: props.currentProgress.count,
-  edited: props.currentProgress.edited,
-  proofread: props.currentProgress.proofread,
-  revised: props.currentProgress.revised,
+  count: props.currentProgress?.count.toString(),
+  edited: props.currentProgress?.edited,
+  proofread: props.currentProgress?.proofread,
+  revised: props.currentProgress?.revised,
 };
 
-const { handleSubmit, meta } = useForm({
+const { handleSubmit, meta, resetForm, values } = useForm({
   validationSchema,
   initialValues: initialFormValues,
 });
 
 const onSubmit = handleSubmit(async (values) => {
   const newProgress: Progress = {
-    date: props.date.toISOString(),
+    date: props.date,
     projectId: props.projectId,
     goalId: props.goalId,
     count: parseInt(values.count as unknown as string), // casting because Progress has number but form forces it to a string
@@ -83,7 +83,6 @@ const onSubmit = handleSubmit(async (values) => {
     const response = await api.send("progress-modify", newProgress);
     if (response instanceof Error) throw response;
     if (response) emitProgressSaved();
-    console.log(response);
   } catch (error: any | Error) {
     console.error(error.message);
   }
@@ -93,9 +92,8 @@ const onSubmit = handleSubmit(async (values) => {
 <template>
   <tr>
     <td>
-      {{ date.toISOString().split("T")[0] }}
+      {{ date.split("T")[0] }}
     </td>
-
     <td>
       <input-text
         name="count"
