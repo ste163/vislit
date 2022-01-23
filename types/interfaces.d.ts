@@ -34,7 +34,7 @@ declare module "interfaces" {
   }
 
   interface Progress {
-    date: Date | string; // created date + id
+    date: string; // always use .toISOString() otherwise backend can't process between Date and string
     projectId: string;
     goalId: string;
     count: number;

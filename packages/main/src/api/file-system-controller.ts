@@ -1,5 +1,4 @@
 import fs from "fs";
-import formatDate from "./helpers/format-date";
 
 // TODO:
 // Return array of all files in a directory
@@ -39,7 +38,9 @@ class FileSystemController {
     try {
       const userData = `${this.getUserDataPath()}/projects/${htmlData.id}/${
         htmlData.type
-      }/${formatDate(htmlData.createdAt)}-${htmlData.id}.html`;
+      }/${new Date(htmlData.createdAt).toISOString().split("T")[0]}-${
+        htmlData.id
+      }.html`;
       fs.writeFileSync(userData, htmlData.html);
       return true;
     } catch (error: any | Error) {

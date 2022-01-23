@@ -38,12 +38,12 @@ class ProgressController {
   }
 
   // add, update, or delete based on changes to progress
-  modify(progress: Progress): Progress[] | true | Error {
+  modify(progress: Progress): Progress[] | Progress | true | Error {
     try {
       const project = this.#projectController.getById(progress.projectId);
       if (project instanceof Error) throw project;
 
-      const goal = project.goals.find(
+      const goal = project!.goals!.find(
         (goal: Goal) => goal.id === progress.goalId
       );
 

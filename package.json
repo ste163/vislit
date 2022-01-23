@@ -68,13 +68,13 @@
   "dependencies": {
     "@tiptap/starter-kit": "^2.0.0-beta.153",
     "@tiptap/vue-3": "^2.0.0-beta.81",
-    "@vee-validate/zod": "^4.5.6",
+    "@vee-validate/zod": "^4.5.7",
     "electron-updater": "4.6.5",
     "lodash": "^4.17.21",
     "lowdb": "github:dankreiger/lowdb#chore/esm-cjs-hybrid-WITH-LIB",
     "minisearch": "^3.2.0",
     "nanoid": "^3.1.28",
-    "vee-validate": "^4.5.6",
+    "vee-validate": "^4.5.7",
     "vue": "^3.2.26",
     "vue-router": ">=4.0.12",
     "zod": "^3.11.6"
