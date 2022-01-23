@@ -211,10 +211,12 @@ ipcMain.handle("goals-completed", (_e, goalId: string) => {
 });
 
 // Progress
-ipcMain.handle("progress-get-all-by-year-month", (_e, dates: any) => {
-  // update parameter & type
-  console.log("GET ALL PROGRESS FOR", dates);
-});
+ipcMain.handle(
+  "progress-get-all-by-year-month",
+  (_e, dates: { projectId: string; year: string; month: string }) => {
+    return progressController.getAll(dates.projectId, dates.year, dates.month);
+  }
+);
 
 ipcMain.handle("progress-get-by-date", (_e, date: any) => {
   // update parameter & type
