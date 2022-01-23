@@ -14,6 +14,16 @@ class ProgressController {
     this.#projectController = projectController;
   }
 
+  // All Goals are being returned to frontend based on Project: {goals: Goals[]}, process all completed status on backend
+  // #calculateCompletedStatus(Progress[] | Progress): Progress[] | Progress {
+  // create an array of all the goalIds
+  // fetch all the goals from the goalRepository (may need a new method)
+  // then loop over all progress
+  // compare it against the Goal[] to see which ids match
+  // then calculate based on the criteria
+  // return the updated Progress
+  // }
+
   getByDate(projectId: string, date: string): Progress | undefined | Error {
     try {
       // Not checking for goalId because dates can only exists on a single goal
