@@ -12,6 +12,14 @@ class GoalRepository {
     return this.#database.db.data?.goals.find((goal) => goal.id === id);
   }
 
+  getManyById(ids: string[]): Goal[] {
+    return this.#database.db?.data?.goals.filter((goal) =>
+      ids.find((id) => {
+        if (goal.id === id) return goal;
+      })
+    ) as Goal[]; // is always at least returning an empty array instead of undefined;
+  }
+
   getActive(projectId: string): Goal | undefined {
     return this.#database.db.data?.goals.filter((goal) => {
       if (goal.projectId === projectId && goal.active === true) return goal;

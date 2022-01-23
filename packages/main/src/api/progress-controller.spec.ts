@@ -104,6 +104,14 @@ describe("progress-controller-integration", () => {
     );
   });
 
+  // test
+  // if goal doesn't exist in db, throw error
+  // if count is not met and all false, return progress not completed
+  // if word count is met and all false, set as completed
+  // if word count not met, but proofread true, completed
+  // if word count not met, but edit true, completed
+  // if word count not met, but revised true, completed
+
   it("getByDate - returns error if no project exists", () => {
     expect(progressController.getByDate("3", new Date().toISOString())).toEqual(
       new Error("Project with id 3 not in database")

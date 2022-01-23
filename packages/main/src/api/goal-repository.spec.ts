@@ -4,7 +4,7 @@ import GoalRepository from "./goal-repository";
 
 describe("goal-repository", () => {
   let seedProjects: Project[];
-  let seedGoal: Goal;
+  let seedGoals: Goal[];
   let database: Database;
   let goalRepository: GoalRepository;
 
@@ -33,25 +33,39 @@ describe("goal-repository", () => {
         dateModified: new Date(),
       },
     ];
-    seedGoal = {
-      id: "1",
-      projectId: "2",
-      basedOnWordCountOrPageCount: "word",
-      wordOrPageCount: 500,
-      frequencyToRepeat: "daily",
-      proofreadCountsTowardGoal: true,
-      editCountsTowardGoal: true,
-      revisedCountsTowardsGoal: true,
-      active: true,
-      completed: false,
-    };
+    seedGoals = [
+      {
+        id: "1",
+        projectId: "2",
+        basedOnWordCountOrPageCount: "word",
+        wordOrPageCount: 500,
+        frequencyToRepeat: "daily",
+        proofreadCountsTowardGoal: true,
+        editCountsTowardGoal: true,
+        revisedCountsTowardsGoal: true,
+        active: false,
+        completed: false,
+      },
+      {
+        id: "2",
+        projectId: "2",
+        basedOnWordCountOrPageCount: "page",
+        wordOrPageCount: 1,
+        frequencyToRepeat: "daily",
+        proofreadCountsTowardGoal: false,
+        editCountsTowardGoal: true,
+        revisedCountsTowardsGoal: true,
+        active: true,
+        completed: false,
+      },
+    ];
     database = new Database(app);
     database.db.data!.projects = seedProjects;
-    database.db.data?.goals.push(seedGoal);
+    database.db.data!.goals = seedGoals;
     goalRepository = new GoalRepository(database);
   });
 
-  it("returns undefined if no goal by id founds", () => {
+  it("returns undefined if no goal by id found", () => {
     expect(goalRepository.getById("999")).toBeUndefined();
   });
 
@@ -65,28 +79,36 @@ describe("goal-repository", () => {
       proofreadCountsTowardGoal: true,
       editCountsTowardGoal: true,
       revisedCountsTowardsGoal: true,
-      active: true,
+      active: false,
       completed: false,
     });
   });
 
-  it("returns empty undefined if no goals with that projectId", () => {
+  it("returns empty array if no goals by id found", () => {
+    expect(goalRepository.getManyById(["998", "999"])).toStrictEqual([]);
+  });
+
+  it("returns all goals found with those ids", () => {
+    expect(goalRepository.getManyById(["1", "2"])).toEqual(seedGoals);
+  });
+
+  it("returns undefined if no goals with that projectId", () => {
     expect(goalRepository.getActive("999")).toEqual(undefined);
   });
 
-  it("returns empty undefined if projectId in database but no active goals", () => {
+  it("returns undefined if projectId in database but no active goals", () => {
     expect(goalRepository.getActive("1")).toEqual(undefined);
   });
 
   it("returns active goal by projectId", () => {
     const goal = goalRepository.getActive("2");
     expect(goal).toEqual({
-      id: "1",
+      id: "2",
       projectId: "2",
-      basedOnWordCountOrPageCount: "word",
-      wordOrPageCount: 500,
+      basedOnWordCountOrPageCount: "page",
+      wordOrPageCount: 1,
       frequencyToRepeat: "daily",
-      proofreadCountsTowardGoal: true,
+      proofreadCountsTowardGoal: false,
       editCountsTowardGoal: true,
       revisedCountsTowardsGoal: true,
       active: true,
@@ -105,7 +127,7 @@ describe("goal-repository", () => {
       revisedCountsTowardsGoal: true,
     };
     goalRepository.add(goalToAdd);
-    expect(database.db.data?.goals.length).toEqual(2);
+    expect(database.db.data?.goals.length).toEqual(3);
   });
 
   it("returns updated goal after successful update", () => {

@@ -1,28 +1,53 @@
 import type { Progress, Goal } from "interfaces";
+import type GoalRepository from "./goal-repository";
 import type ProgressRepository from "./progress-repository";
 import type ProjectController from "./project-controller";
 
 class ProgressController {
   #progressRepository: ProgressRepository;
+  #goalRepository: GoalRepository;
   #projectController: ProjectController;
 
   constructor(
     progressRepository: ProgressRepository,
+    goalRepository: GoalRepository,
     projectController: ProjectController
   ) {
     this.#progressRepository = progressRepository;
+    this.#goalRepository = goalRepository;
     this.#projectController = projectController;
   }
 
-  // All Goals are being returned to frontend based on Project: {goals: Goals[]}, process all completed status on backend
-  // #calculateCompletedStatus(Progress[] | Progress): Progress[] | Progress {
-  // create an array of all the goalIds
-  // fetch all the goals from the goalRepository (may need a new method)
-  // then loop over all progress
-  // compare it against the Goal[] to see which ids match
-  // then calculate based on the criteria
-  // return the updated Progress
-  // }
+  // All Goals are being returned to frontend based on Project: {goals: Goals[]},
+  // process all completed status on backend
+  #calculateCompletedStatus(progress: Progress[]): Progress[] {
+    const goalIds: string[] = progress?.map(({ goalId }) => goalId);
+    const goals: Goal[] = this.#goalRepository.getManyById(goalIds);
+    return progress.map((progress) => {
+      const goal = goals.find(({ id }) => id === progress.goalId);
+      if (!goal) throw new Error(`No goal by id ${progress.goalId} found`);
+      if (goal.wordOrPageCount < progress.count) {
+        progress.completed = true;
+        return progress;
+      }
+      if (
+        goal.proofreadCountsTowardGoal === true &&
+        progress.proofread === true
+      ) {
+        progress.completed = true;
+        return progress;
+      }
+      if (goal.editCountsTowardGoal === true && progress.edited === true) {
+        progress.completed = true;
+        return progress;
+      }
+      if (goal.revisedCountsTowardsGoal === true && progress.revised === true) {
+        progress.completed = true;
+        return progress;
+      }
+      return progress;
+    });
+  }
 
   getByDate(projectId: string, date: string): Progress | undefined | Error {
     try {
