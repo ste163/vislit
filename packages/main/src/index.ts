@@ -41,6 +41,7 @@ try {
   goalController = new GoalController(goalRepository, projectController);
   progressController = new ProgressController(
     progressRepository,
+    goalRepository,
     projectController
   );
 } catch (error) {
