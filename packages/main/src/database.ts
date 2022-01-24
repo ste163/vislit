@@ -91,7 +91,7 @@ export default class Database {
     this.#app = app;
     this.db = loadDatabase();
     this.generateUniqueId = (item: any) => {
-      item.id = nanoid(21);
+      item.id = nanoid(13);
       return item;
     };
   }
