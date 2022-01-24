@@ -191,6 +191,9 @@ watch(
               :current-progress="progress"
               :project-id="(store.projects.state.active?.id as string)"
               :goal-id="(activeGoal?.id as string)"
+              @progress-saved="
+                async () => await fetchProgress(yearString, monthDoubleDigit)
+              "
             />
           </tbody>
         </table>
