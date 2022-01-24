@@ -62,7 +62,7 @@ const initialFormValues = {
   revised: props.currentProgress?.revised,
 };
 
-const { handleSubmit, meta, resetForm, values } = useForm({
+const { handleSubmit, meta } = useForm({
   validationSchema,
   initialValues: initialFormValues,
 });
@@ -112,7 +112,9 @@ const onSubmit = handleSubmit(async (values) => {
     <td>
       <input-check-box name="revised" />
     </td>
-    <td>Completed ?</td>
+    <td>
+      <span v-if="currentProgress.completed">Yes</span><span v-else>No</span>
+    </td>
 
     <!-- Need to pass in an isSubmitting for loading spinner -->
     <button-submit
