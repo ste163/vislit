@@ -26,25 +26,17 @@ class ProgressController {
     return progress.map((progress) => {
       const goal = goals.find(({ id }) => id === progress.goalId);
       if (!goal) throw new Error(`No goal by id ${progress.goalId} found`);
-      if (goal.wordOrPageCount < progress.count) {
-        progress.completed = true;
-        return progress;
-      }
       if (
-        goal.proofreadCountsTowardGoal === true &&
-        progress.proofread === true
+        goal.wordOrPageCount <= progress.count ||
+        (goal.proofreadCountsTowardGoal === true &&
+          progress.proofread === true) ||
+        (goal.editCountsTowardGoal === true && progress.edited === true) ||
+        (goal.revisedCountsTowardsGoal === true && progress.revised === true)
       ) {
         progress.completed = true;
         return progress;
       }
-      if (goal.editCountsTowardGoal === true && progress.edited === true) {
-        progress.completed = true;
-        return progress;
-      }
-      if (goal.revisedCountsTowardsGoal === true && progress.revised === true) {
-        progress.completed = true;
-        return progress;
-      }
+      progress.completed = false;
       return progress;
     });
   }
@@ -54,18 +46,24 @@ class ProgressController {
       // Not checking for goalId because dates can only exists on a single goal
       const response = this.#projectController.getById(projectId);
       if (response instanceof Error) throw response;
-      return this.#progressRepository.getByDate(date);
+      const progress = this.#progressRepository.getByDate(date);
+      if (progress) return this.#calculateCompletedStatus([progress])[0];
     } catch (e: any | Error) {
       console.error(e);
       return e;
     }
   }
 
-  getAll(projectId: string, year: string, month: string): Progress[] | Error {
+  getAll(
+    projectId: string,
+    year: string,
+    month: string
+  ): Progress[] | undefined | Error {
     try {
       const response = this.#projectController.getById(projectId);
       if (response instanceof Error) throw response;
-      return this.#progressRepository.getAllByYearMonth(year, month);
+      const progress = this.#progressRepository.getAllByYearMonth(year, month);
+      if (progress) return this.#calculateCompletedStatus(progress);
     } catch (e: any | Error) {
       console.error(e);
       return e;
@@ -73,6 +71,7 @@ class ProgressController {
   }
 
   // add, update, or delete based on changes to progress
+  // not checking for completed status as frontend re-fetching status after completed modification
   modify(progress: Progress): Progress[] | Progress | true | Error {
     try {
       const project = this.#projectController.getById(progress.projectId);
