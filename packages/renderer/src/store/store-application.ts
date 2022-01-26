@@ -14,11 +14,10 @@ class ApplicationStore {
 
   constructor() {
     // TODO:
-    // Read last activeView state from localStorage; If none, set to "/"
     // Columns needs to be pulled/saved in localStorage
     this.state = reactive({
       isSidebarMinimized: false, // read and save to localStorage
-      activeView: "/",
+      activeView: "/", // read and save to localStorage
       dropZones: [
         {
           name: "left",
@@ -74,6 +73,7 @@ class ApplicationStore {
     try {
       const { api } = window;
       const response = (await api.send("types-get-all")) as Type[];
+      // Check for is instance of error first
       if (response) this.state.types = response;
     } catch (error: any | Error) {
       console.error(error);

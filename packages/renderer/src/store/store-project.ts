@@ -1,10 +1,17 @@
 import { reactive } from "vue";
 import type { Project } from "interfaces";
 
+// First:
+// 1. Move project store functions into components (ie, remove abstractions)
+// 2. Move remaining needed state into store-applications
+// 3. Move store-applications into index.ts
+// 4. Potentially move out of store/index.ts into state-store.ts at root
+
 type ProjectState = {
   all: Array<Project>;
   active: Project | null;
   // NEED ACTIVE GOAL STATE
+  // whenever setting activeProject, run #checkForActiveGoal
 };
 
 class ProjectStore {
