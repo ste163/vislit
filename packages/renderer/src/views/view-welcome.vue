@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { inject, onMounted, ref } from "vue";
+import BaseModal from "../components/base-modal.vue";
 import BaseTemplateCard from "../components/base-template-card.vue";
 import BaseCardContent from "../components/base-card-content.vue";
 import BaseButtonClick from "../components/base-button-click.vue";
-import FormProjectCreateModal from "../components/form-project-create-modal.vue";
+import FormProject from "../components/form-project.vue";
 import NotificationDot from "../components/notification-dot.vue";
 import type { Store } from "../store";
 
@@ -80,8 +81,11 @@ onMounted(() => {
     </base-card-content>
   </base-template-card>
 
-  <form-project-create-modal
-    :is-form-modal-active="isModalActive"
+  <base-modal
+    :is-modal-active="isModalActive"
     @close-modal="isModalActive = false"
-  />
+  >
+    <template #header> Create Project </template>
+    <form-project />
+  </base-modal>
 </template>

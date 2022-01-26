@@ -150,6 +150,7 @@ watch(
   <!-- Probably should do it so:
 1. You can only add progress for dates starting from the active goal. Ie, you can't change old progress. it gets locked down. If you have -->
   <!-- So if the goalId doesn't match the activeGoalId, don't allow for editing or deleting that progress -->
+  <!-- TODO: Can only add progress ON or AFTER the Project's date created -->
   <h1>Progress</h1>
   <div>
     <!-- TODO: Improve loading so it doesn't unmount table (causes major lag) -->

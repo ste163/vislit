@@ -4,6 +4,7 @@ import type { Project } from "interfaces";
 type ProjectState = {
   all: Array<Project>;
   active: Project | null;
+  // NEED ACTIVE GOAL STATE
 };
 
 class ProjectStore {

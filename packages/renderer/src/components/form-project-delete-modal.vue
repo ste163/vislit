@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject } from "vue";
+import { inject } from "vue";
 import { useRouter } from "vue-router";
 import type { Project } from "interfaces";
 import type { Store } from "../store";
@@ -67,17 +67,6 @@ async function deleteProject(): Promise<void> {
     console.error("Active project is null, cannot delete");
   }
 }
-
-const archiveWarningText = computed(() => {
-  if (store.projects.state.active?.archived === true) {
-    return "";
-  } else {
-    return `
-			If you think you may want to reference this project in the future, 
-			it is highly recommended to archive this project instead.
-		`;
-  }
-});
 </script>
 
 <template>
@@ -90,6 +79,9 @@ const archiveWarningText = computed(() => {
   >
     Deleting this project will irrecoverably delete all progress, goals, notes,
     and documents.
-    {{ archiveWarningText }}
+    <span v-if="store.projects.state.active?.archived === false">
+      If you think you may want to reference this project in the future, it is
+      highly recommended to archive this project instead.</span
+    >
   </base-template-modal-delete>
 </template>

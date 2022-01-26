@@ -1,18 +1,35 @@
 <script setup lang="ts">
-import { inject } from "vue";
+import { inject, watch } from "vue";
 import { useRouter } from "vue-router";
+import type { PropType } from "vue";
+import type { Project } from "interfaces";
 import type { Store } from "../store";
 import { useForm } from "vee-validate";
 import { toFormValidator } from "@vee-validate/zod";
 import { z } from "zod";
-import ColumnSubHeading from "./column-sub-heading.vue";
 import InputText from "./input-text.vue";
 import ButtonSubmit from "./button-submit.vue";
-import ButtonBack from "./button-back.vue";
+import InputSelect from "./input-select.vue";
+
+const props = defineProps({
+  currentProject: {
+    type: Object as PropType<Project>,
+    required: false,
+    default: {
+      title: "",
+      type: "",
+      description: "",
+    } as unknown as Project,
+  },
+});
+
+const emit = defineEmits(["projectSaved"]);
 
 const store = inject("store") as Store;
 
 const router = useRouter();
+
+const { api } = window;
 
 const validationSchema = toFormValidator(
   z.object({
@@ -23,97 +40,122 @@ const validationSchema = toFormValidator(
 );
 
 const initialFormValues = {
-  title: "",
-  type: "",
-  description: "",
+  title: props.currentProject.title,
+  type: props.currentProject.typeId, // might need to be mapped to the Type
+  description: props.currentProject.description,
 };
 
-const { handleSubmit, meta } = useForm({
+const { handleSubmit, meta, resetForm } = useForm({
   validationSchema,
   initialValues: initialFormValues,
 });
 
-const emit = defineEmits(["goBack"]);
-
-function emitGoBack(): void {
-  emit("goBack");
-}
-
 const onSubmit = handleSubmit(async (values, { resetForm }) => {
-  const newProject = {
-    id: "",
-    title: values.title,
-    description: values.description,
-    typeId: "1",
-    completed: false,
-    archived: false,
-    dateCreated: null,
-    dateModified: null,
-  };
-
   try {
-    const project = await store.projects.addProject(newProject);
-
-    if (project !== undefined) {
-      router.push(`/summary/${project.id}`);
-      resetForm();
-      emitGoBack();
+    if (props.currentProject.id) {
+      const updatedProject = {
+        id: props.currentProject.id,
+        title: values.title,
+        description: values.description,
+        typeId: values.type,
+        completed: false,
+        archived: false,
+      } as Project;
+      const project = await store.projects.updateProject(updatedProject);
+      if (project !== undefined) {
+        emit("projectSaved");
+        resetForm();
+      }
+    } else {
+      const newProject = {
+        id: "",
+        title: values.title,
+        description: values.description,
+        typeId: values.type,
+        completed: false,
+        archived: false,
+        dateCreated: null,
+        dateModified: null,
+      };
+      const project = await store.projects.addProject(newProject);
+      if (project !== undefined) {
+        emit("projectSaved");
+        router.push(`/summary/${project.id}`);
+        resetForm();
+      }
     }
-  } catch (error) {
-    const e = error as Error;
-    // Move to notification
-    console.error(e.message);
+  } catch (error: any | Error) {
+    console.error(error.message);
   }
 });
+
+async function handleSelectAddClick(value: string): Promise<void> {
+  if (value !== "") {
+    try {
+      const response = await api.send("types-add", value);
+      if (response) await store.application.getAllTypes();
+    } catch (error: any | Error) {
+      console.error(error);
+      // set toast notification
+    }
+  }
+}
+
+async function handleSelectDeleteClick(id: string): Promise<void> {
+  if (id) {
+    try {
+      const response = await api.send("types-delete", id);
+      if (response) await store.application.getAllTypes();
+    } catch (error: any | Error) {
+      console.error(error);
+      // set toast notification
+    }
+  }
+}
+
+// Needed otherwise the form attempts to 'submit' when opened on initial render
+// watch(() => props.isFormModalActive, resetForm);
 </script>
 
 <template>
-  <div class="form-container">
-    <!-- Must have a single root node to animate with <transition-group /> -->
+  <form class="form" @submit.prevent="onSubmit">
+    <input-text
+      name="title"
+      type="text"
+      label="Title"
+      :background-color="'var(--lightGray)'"
+    />
 
-    <div class="form-container-header">
-      <button-back class="back-button" @click="emitGoBack" />
+    <input-select
+      :values="store.application.state.types"
+      :is-editable="true"
+      :name="'type'"
+      :label="'Type'"
+      @add-click="handleSelectAddClick"
+      @delete-click="handleSelectDeleteClick"
+    />
 
-      <column-sub-heading class="form-title">
-        Create New Project
-      </column-sub-heading>
-    </div>
+    <input-text
+      name="description"
+      type="text"
+      label="Description"
+      :background-color="'var(--lightGray)'"
+    />
 
-    <form class="form" @submit.prevent="onSubmit">
-      <input-text name="title" type="text" label="Title" />
-
-      <input-text name="type" type="text" label="Type" />
-
-      <input-text name="description" type="text" label="Description" />
-
-      <!-- Need to pass in an isSubmitting for loading spinner -->
-      <button-submit :is-disabled="!meta.dirty" />
-    </form>
-  </div>
+    <!-- Need to pass in an isSubmitting for loading spinner -->
+    <button-submit
+      :is-disabled="!meta.dirty"
+      :background-color-disabled="'var(--lightGray)'"
+    />
+  </form>
 </template>
 
 <style scoped>
-.form-container {
-  width: clamp(180px, 90%, 300px);
-}
-
-.form-container-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.5em;
-}
-
-.back-button {
-  margin: 0.5em 0em 0.5em 0.5em;
-  padding-top: 0.22em;
-}
-
-.form-title {
-  margin-left: 1em;
-}
-
+/* Convert to tailwind */
 .form {
   display: flex;
   flex-flow: column nowrap;
+  margin-top: 1em;
+  width: 15em;
 }
 </style>
