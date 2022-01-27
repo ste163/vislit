@@ -61,10 +61,21 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
         completed: false,
         archived: false,
       } as Project;
-      const project = await store.projects.updateProject(updatedProject);
-      if (project !== undefined) {
+
+      const { api } = window;
+      const response = (await api.send(
+        "projects-update",
+        updatedProject
+      )) as Project;
+      if (response && response instanceof Error === false) {
+        // Display success message
+        await store.projects.getProjects();
         emit("projectSaved");
         resetForm();
+      } else {
+        // toast error
+        // because we got an error response but nothing UI-wise broke
+        console.error(response);
       }
     } else {
       const newProject = {
@@ -77,14 +88,24 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
         dateCreated: null,
         dateModified: null,
       };
-      const project = await store.projects.addProject(newProject);
-      if (project !== undefined) {
+
+      const { api } = window;
+      const response = (await api.send("projects-add", newProject)) as Project;
+
+      if (response && response instanceof Error === false) {
+        // Display success message
+        await store.projects.getProjects();
         emit("projectSaved");
-        router.push(`/summary/${project.id}`);
+        router.push(`/summary/${response.id}`);
         resetForm();
+      } else {
+        // toast error
+        // because we got an error response but nothing UI-wise broke
+        console.error(response);
       }
     }
   } catch (error: any | Error) {
+    // Something failed major failed
     console.error(error.message);
   }
 });

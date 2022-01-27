@@ -41,7 +41,19 @@ function openNotesColumn(): void {
   });
 }
 
-function toggleProjectComplete(): void {
+async function updateProject(project: Project): Promise<void> {
+  const { api } = window;
+  const response = (await api.send("projects-update", project)) as Project;
+  if (response && response instanceof Error === false) {
+    // Display success message
+    await store.projects.getProjects();
+  } else {
+    // toast error
+    console.error(response);
+  }
+}
+
+async function toggleProjectComplete(): Promise<void> {
   const updatedProject: Project = {
     id: activeProject.value.id,
     typeId: activeProject.value.typeId,
@@ -53,7 +65,7 @@ function toggleProjectComplete(): void {
     dateCreated: activeProject.value.dateCreated,
   };
 
-  store.projects.updateProject(updatedProject);
+  await updateProject(updatedProject);
 }
 
 function toggleProjectArchived(): void {
@@ -68,7 +80,7 @@ function toggleProjectArchived(): void {
     dateCreated: activeProject.value.dateCreated,
   };
 
-  store.projects.updateProject(updatedProject);
+  updateProject(updatedProject);
 }
 
 // const ellipsisMenuGoalText = computed(() => {

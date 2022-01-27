@@ -1,12 +1,18 @@
 import type { Column, DropZone, Type } from "interfaces";
 import { reactive } from "vue";
-
+// 1. DONE - Move project store functions into components (ie, remove abstractions)
+// 2. Move remaining project state & functions into store-applications
+// 3. Move store-applications into index.ts
+// 4. Potentially move out of store/index.ts into global-store.ts at root
 type ApplicationState = {
-  isSidebarMinimized: boolean;
+  // projects
+  // activeProject
+  // activeGoal
+  types: Array<Type>;
   activeView: string;
+  isSidebarMinimized: boolean;
   dropZones: Array<DropZone>;
   columns: Array<Column>;
-  types: Array<Type>;
 };
 
 class ApplicationStore {
