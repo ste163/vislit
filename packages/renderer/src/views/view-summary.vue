@@ -210,7 +210,10 @@ const ellipsisMenuArchivedText = computed(() => {
     @close-modal="isEditProjectModalActive = false"
   >
     <template #header> Edit Project </template>
-    <form-project :current-project="{ ...activeProject }" />
+    <form-project
+      :current-project="{ ...activeProject }"
+      @project-saved="isEditProjectModalActive = false"
+    />
   </base-modal>
 
   <base-modal

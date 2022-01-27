@@ -100,25 +100,6 @@ class ProjectStore {
       console.log(e.message);
     }
   }
-
-  public async deleteProject(id: string): Promise<true | undefined> {
-    try {
-      const { api } = window;
-      const response = await api.send("projects-delete", id);
-
-      if (response && response instanceof Error === false) {
-        // Display success message
-        await this.getProjects();
-        return true;
-      } else {
-        console.log("Display error message");
-        return undefined;
-      }
-    } catch (error) {
-      const e = error as Error;
-      console.log(e.message);
-    }
-  }
 }
 
 export default ProjectStore;

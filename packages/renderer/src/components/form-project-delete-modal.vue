@@ -42,12 +42,17 @@ function archiveProject(): void {
 }
 
 async function deleteProject(): Promise<void> {
-  if (store.projects.state.active !== null) {
-    const response = await store.projects.deleteProject(
-      store.projects.state.active.id!
+  try {
+    const { api } = window;
+    const response = await api.send(
+      "projects-delete",
+      store.projects.state.active!.id!
     );
 
-    if (response === true) {
+    if (response && response instanceof Error === false) {
+      // Display success message
+      await store.projects.getProjects();
+
       emit("handleDeleteModalClose");
 
       // Route to most recent project if there is more than 1 (1 is the one about to be deleted)
@@ -62,9 +67,13 @@ async function deleteProject(): Promise<void> {
         );
         router.replace(`/`);
       }
+    } else {
+      // toast error
+      console.error(response);
     }
-  } else {
-    console.error("Active project is null, cannot delete");
+  } catch (error: any | Error) {
+    // also toast error
+    console.error(error);
   }
 }
 </script>

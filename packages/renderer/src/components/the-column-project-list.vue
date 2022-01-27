@@ -1,3 +1,6 @@
+<!-- KNOWN BUG:
+Trying to delete active progress while column is open causes error:
+Missing required param "id" -->
 <script setup lang="ts">
 import type { Project } from "interfaces";
 import type { ComputedRef } from "vue";
