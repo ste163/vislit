@@ -114,7 +114,7 @@ async function handleSelectAddClick(value: string): Promise<void> {
   if (value !== "") {
     try {
       const response = await api.send("types-add", value);
-      if (response) await store.application.getAllTypes();
+      if (response) await store.application.getTypes();
     } catch (error: any | Error) {
       console.error(error);
       // set toast notification
@@ -126,7 +126,7 @@ async function handleSelectDeleteClick(id: string): Promise<void> {
   if (id) {
     try {
       const response = await api.send("types-delete", id);
-      if (response) await store.application.getAllTypes();
+      if (response) await store.application.getTypes();
     } catch (error: any | Error) {
       console.error(error);
       // set toast notification
