@@ -1,9 +1,9 @@
 import type { Column, DropZone, Goal, Project, Type } from "interfaces";
 import { reactive } from "vue";
-// 1. DONE - Move project store functions into components (ie, remove abstractions)
-// 2. Move remaining project state & functions into store-applications
-// 3. Move store-applications into index.ts
-// 4. Potentially move out of store/index.ts into global-store.ts at root
+// 1. Move updateProject here as it's used in 3 places
+// 2. Ensure setActiveGoal works (and that all other activeGoal's are using this state)
+// 2. Move store-applications into index.ts
+// 3. Potentially move out of store/index.ts into global-store.ts at root
 type ApplicationState = {
   projects: Project[];
   activeProject: Project | null;
