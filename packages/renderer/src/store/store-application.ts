@@ -124,6 +124,12 @@ class ApplicationStore {
     }
   };
 
+  // move updateProject here
+  // because it's used in 3 places:
+  // view-summary
+  // form-project-delete-modal
+  // form-project
+
   public getTypes = async (): Promise<void> => {
     try {
       const { api } = window;

@@ -19,7 +19,7 @@ const emit = defineEmits(["handleDeleteModalClose"]);
 
 const router = useRouter();
 
-function archiveProject(): void {
+async function archiveProject(): Promise<void> {
   if (store.application.state.activeProject !== null) {
     const updatedProject: Project = {
       id: store.application.state.activeProject.id,
@@ -31,13 +31,19 @@ function archiveProject(): void {
       dateModified: store.application.state.activeProject.dateModified,
       dateCreated: store.application.state.activeProject.dateCreated,
     };
-    const response = store.application.updateProject(updatedProject);
-
-    if (response !== undefined) {
+    const { api } = window;
+    const response = (await api.send(
+      "projects-update",
+      updatedProject
+    )) as Project;
+    if (response && response instanceof Error === false) {
+      // Display success message
+      await store.application.getProjects();
       emit("handleDeleteModalClose");
+    } else {
+      // toast error
+      console.error(response);
     }
-  } else {
-    console.error("Active project is null, cannot archive");
   }
 }
 
@@ -81,14 +87,14 @@ async function deleteProject(): Promise<void> {
 <template>
   <base-template-modal-delete
     :is-modal-active="isModalActive"
-    :has-archive-button="!store.application.state.active?.archived"
+    :has-archive-button="!store.application.state.activeProject?.archived"
     @close-modal="$emit('handleDeleteModalClose')"
     @handle-archive-click="archiveProject"
     @handle-delete-click="deleteProject"
   >
     Deleting this project will irrecoverably delete all progress, goals, notes,
     and documents.
-    <span v-if="store.application.state.active?.archived === false">
+    <span v-if="store.application.state.activeProject?.archived === false">
       If you think you may want to reference this project in the future, it is
       highly recommended to archive this project instead.</span
     >
