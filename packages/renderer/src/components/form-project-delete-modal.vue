@@ -20,18 +20,18 @@ const emit = defineEmits(["handleDeleteModalClose"]);
 const router = useRouter();
 
 function archiveProject(): void {
-  if (store.projects.state.active !== null) {
+  if (store.application.state.activeProject !== null) {
     const updatedProject: Project = {
-      id: store.projects.state.active.id,
-      typeId: store.projects.state.active.typeId,
-      title: store.projects.state.active.title,
-      description: store.projects.state.active.description,
-      completed: store.projects.state.active.completed,
-      archived: !store.projects.state.active.archived,
-      dateModified: store.projects.state.active.dateModified,
-      dateCreated: store.projects.state.active.dateCreated,
+      id: store.application.state.activeProject.id,
+      typeId: store.application.state.activeProject.typeId,
+      title: store.application.state.activeProject.title,
+      description: store.application.state.activeProject.description,
+      completed: store.application.state.activeProject.completed,
+      archived: !store.application.state.activeProject.archived,
+      dateModified: store.application.state.activeProject.dateModified,
+      dateCreated: store.application.state.activeProject.dateCreated,
     };
-    const response = store.projects.updateProject(updatedProject);
+    const response = store.application.updateProject(updatedProject);
 
     if (response !== undefined) {
       emit("handleDeleteModalClose");
@@ -46,19 +46,19 @@ async function deleteProject(): Promise<void> {
     const { api } = window;
     const response = await api.send(
       "projects-delete",
-      store.projects.state.active!.id!
+      store.application.state.activeProject!.id!
     );
 
     if (response && response instanceof Error === false) {
       // Display success message
-      await store.projects.getProjects();
+      await store.application.getProjects();
 
       emit("handleDeleteModalClose");
 
       // Route to most recent project if there is more than 1 (1 is the one about to be deleted)
-      if (store.projects.state.all.length > 0) {
-        store.projects.setActiveProject(store.projects.state.all[0]);
-        router.push(`/summary/${store.projects.state.all[0].id}`);
+      if (store.application.state.projects.length > 0) {
+        store.application.setActiveProject(store.application.state.projects[0]);
+        router.push(`/summary/${store.application.state.projects[0].id}`);
       } else {
         // All Projects have been deleted
         // Need to close all open columns as they rely on projects state
@@ -81,14 +81,14 @@ async function deleteProject(): Promise<void> {
 <template>
   <base-template-modal-delete
     :is-modal-active="isModalActive"
-    :has-archive-button="!store.projects.state.active?.archived"
+    :has-archive-button="!store.application.state.active?.archived"
     @close-modal="$emit('handleDeleteModalClose')"
     @handle-archive-click="archiveProject"
     @handle-delete-click="deleteProject"
   >
     Deleting this project will irrecoverably delete all progress, goals, notes,
     and documents.
-    <span v-if="store.projects.state.active?.archived === false">
+    <span v-if="store.application.state.active?.archived === false">
       If you think you may want to reference this project in the future, it is
       highly recommended to archive this project instead.</span
     >

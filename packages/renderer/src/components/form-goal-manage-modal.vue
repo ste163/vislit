@@ -19,10 +19,10 @@ const emit = defineEmits(["closeModal"]);
 const isFormActive = ref<boolean>(false);
 
 const activeGoal = computed(() =>
-  store.projects.state.active?.goals?.find((goal) => goal.active)
+  store.application.state.activeProject?.goals?.find((goal) => goal.active)
 );
 const previousGoals = computed(() =>
-  store.projects.state.active?.goals?.filter((goal) => !goal.active)
+  store.application.state.activeProject?.goals?.filter((goal) => !goal.active)
 );
 
 function emitCloseModal(): void {
@@ -34,7 +34,7 @@ async function onDeleteClick(goalId: string): Promise<void> {
     const { api } = window;
     const response = await api.send("goals-delete", goalId);
     if (response instanceof Error) throw response;
-    if (response) await store.projects.getProjects();
+    if (response) await store.application.getProjects();
   } catch (error: any | Error) {
     console.error(error.message);
   }
@@ -45,7 +45,7 @@ async function onCompleteClick(goalId: string): Promise<void> {
     const { api } = window;
     const response = await api.send("goals-completed", goalId);
     if (response instanceof Error) throw response;
-    if (response) await store.projects.getProjects();
+    if (response) await store.application.getProjects();
   } catch (error: any | Error) {
     console.error(error.message);
   }

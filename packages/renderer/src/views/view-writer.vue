@@ -18,7 +18,7 @@ async function onSubmit(): Promise<void> {
     const html = editor.value.getHTML();
     const { api } = window;
     const data = {
-      id: store.projects.state.active?.id,
+      id: store.application.state.activeProject?.id,
       html,
       type: "documents",
       createdAt: new Date(),
@@ -42,7 +42,7 @@ onMounted(async () => {
     const { api } = window;
     const mostRecentDocument = (await api.send(
       "writer-get-most-recent",
-      store.projects.state.active?.id
+      store.application.state.activeProject?.id
     )) as Content;
     editor.value.commands.setContent(mostRecentDocument);
   } catch (error: any | Error) {

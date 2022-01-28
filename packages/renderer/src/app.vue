@@ -53,21 +53,21 @@ function updateStateOnRouteChange(route: string): void {
 watch(() => route.path, updateStateOnRouteChange);
 
 onMounted(async () => {
-  if (store.projects !== null) {
-    await store.projects.getProjects(); // doesn't need to be wrapped in try/catch because getProjects will trigger an error if there is one
+  if (store.application !== null) {
+    await store.application.getProjects(); // doesn't need to be wrapped in try/catch because getProjects will trigger an error if there is one
 
-    if (store.projects.state.all.length > 0) {
+    if (store.application.state.projects.length > 0) {
       // check local storage for last selected project
       // OR set most recent as active -> need to add that step
-      store.projects.setActiveProject(store.projects.state.all[0]);
+      store.application.setActiveProject(store.application.state.projects[0]);
       // check local storage for last visited route
-      router.push(`/summary/${store.projects.state.all[0].id}`);
+      router.push(`/summary/${store.application.state.projects[0].id}`);
     } else {
       router.push("/"); // sends user to Welcome screen, as they have no data
     }
   }
 
-  await store.application.getAllTypes();
+  await store.application.getTypes();
 });
 
 // Needed to reset references based on vue docs

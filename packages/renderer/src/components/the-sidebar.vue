@@ -38,7 +38,7 @@ const isSidebarDisabled = useIsSidebarDisabled();
         <span v-if="!store.application.state.isSidebarMinimized"> Views </span>
       </div>
       <button-router-link
-        :route="`/summary/${store.projects.state.active?.id}`"
+        :route="`/summary/${store.application.state.activeProject?.id}`"
         class="sidebar-button"
       >
         <template #icon>
@@ -50,7 +50,7 @@ const isSidebarDisabled = useIsSidebarDisabled();
       </button-router-link>
 
       <button-router-link
-        :route="`/writer/${store.projects.state.active?.id}`"
+        :route="`/writer/${store.application.state.activeProject?.id}`"
         class="sidebar-button"
       >
         <template #icon>
@@ -62,7 +62,7 @@ const isSidebarDisabled = useIsSidebarDisabled();
       </button-router-link>
 
       <button-router-link
-        :route="`/progress/${store.projects.state.active?.id}`"
+        :route="`/progress/${store.application.state.activeProject?.id}`"
         class="sidebar-button"
       >
         <template #icon>
@@ -74,7 +74,7 @@ const isSidebarDisabled = useIsSidebarDisabled();
       </button-router-link>
 
       <button-router-link
-        :route="`/visualization/${store.projects.state.active?.id}`"
+        :route="`/visualization/${store.application.state.activeProject?.id}`"
         class="sidebar-button"
       >
         <template #icon>

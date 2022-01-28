@@ -51,7 +51,7 @@ const monthDoubleDigit = computed(() =>
 const yearString = computed(() => selectedYear.value.toString());
 
 const activeGoal = computed(() => {
-  const goals = store.projects.state.active?.goals?.filter(
+  const goals = store.application.state.activeProject?.goals?.filter(
     (goal) => goal.active
   );
   if (goals) return goals[0];
@@ -109,7 +109,7 @@ async function fetchProgress(year: string, month: string): Promise<void> {
   try {
     const { api } = window;
     const dates = {
-      projectId: store.projects.state.active?.id,
+      projectId: store.application.state.activeProject?.id,
       year: year,
       month: month,
     };
@@ -156,7 +156,7 @@ watch(
     <!-- TODO: Improve loading so it doesn't unmount table (causes major lag) -->
     <div v-if="isLoading">LOADING...</div>
     <div v-else>
-      <div v-if="store.projects.state.active?.goals?.length === 0">
+      <div v-if="store.application.state.activeProject?.goals?.length === 0">
         <h2>Create a Goal to track writing progress</h2>
       </div>
       <div v-else>
@@ -190,7 +190,7 @@ watch(
               :key="index"
               :date="date"
               :current-progress="progress"
-              :project-id="(store.projects.state.active?.id as string)"
+              :project-id="(store.application.state.activeProject?.id as string)"
               :goal-id="(activeGoal?.id as string)"
               @progress-saved="
                 async () => await fetchProgress(yearString, monthDoubleDigit)

@@ -28,7 +28,7 @@ const isDeleteModalActive = ref<boolean>(false);
 const isEllipsisMenuActive = ref<boolean>(false);
 
 const activeProject = computed(() => {
-  return store.projects.state.active as Project;
+  return store.application.state.activeProject as Project;
 });
 
 const formatedDate = useDateFormatFull(activeProject.value?.dateModified);
@@ -46,7 +46,7 @@ async function updateProject(project: Project): Promise<void> {
   const response = (await api.send("projects-update", project)) as Project;
   if (response && response instanceof Error === false) {
     // Display success message
-    await store.projects.getProjects();
+    await store.application.getProjects();
   } else {
     // toast error
     console.error(response);

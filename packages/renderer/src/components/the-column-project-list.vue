@@ -34,40 +34,43 @@ function updateRouteId(id: string | undefined): void {
 }
 
 const inProgressProjects: ComputedRef<Project[]> = computed(() => {
-  return store.projects.state.all.filter(
+  return store.application.state.projects.filter(
     (project) => project.archived === false && project.completed === false
   );
 });
 
 const completedProjects: ComputedRef<Project[]> = computed(() => {
-  return store.projects.state.all.filter(
+  return store.application.state.projects.filter(
     (project) => project.archived === false && project.completed === true
   );
 });
 
 const archivedCompletedProjects: ComputedRef<Project[]> = computed(() => {
-  return store.projects.state.all.filter(
+  return store.application.state.projects.filter(
     (project) => project.archived === true && project.completed === true
   );
 });
 
 const archivedRetiredProjects: ComputedRef<Project[]> = computed(() => {
-  return store.projects.state.all.filter(
+  return store.application.state.projects.filter(
     (project) => project.archived === true && project.completed === false
   );
 });
 
-// Must pass anonymous function into watch before calling updateRouteId
+// Must pass anonymous function into watch before all updateRouteId
 // Otherwise there's an overload error in TS (even though it works correctly)
 watch(
-  () => store.projects.state.active?.id,
-  () => updateRouteId(store.projects.state.active?.id)
+  () => store.application.state.activeProject?.id,
+  () => updateRouteId(store.application.state.activeProject?.id)
 );
 
 onMounted(async () => {
   // Always get the most up-to-date list of projects when column opens
-  if (store.projects !== null && store.projects.state.active !== null) {
-    await store.projects.getProjects();
+  if (
+    store.application !== null &&
+    store.application.state.activeProject !== null
+  ) {
+    await store.application.getProjects();
   }
 });
 </script>
@@ -93,7 +96,7 @@ onMounted(async () => {
           v-for="project in inProgressProjects"
           :key="project.id"
           :project="project"
-          @click="store.projects.setActiveProject(project)"
+          @click="store.application.setActiveProject(project)"
         />
       </div>
     </div>
@@ -106,7 +109,7 @@ onMounted(async () => {
           v-for="project in completedProjects"
           :key="project.id"
           :project="project"
-          @click="store.projects.setActiveProject(project)"
+          @click="store.application.setActiveProject(project)"
         />
       </div>
     </div>
@@ -119,7 +122,7 @@ onMounted(async () => {
           v-for="project in archivedCompletedProjects"
           :key="project.id"
           :project="project"
-          @click="store.projects.setActiveProject(project)"
+          @click="store.application.setActiveProject(project)"
         />
       </div>
     </div>
@@ -132,7 +135,7 @@ onMounted(async () => {
           v-for="project in archivedRetiredProjects"
           :key="project.id"
           :project="project"
-          @click="store.projects.setActiveProject(project)"
+          @click="store.application.setActiveProject(project)"
         />
       </div>
     </div>

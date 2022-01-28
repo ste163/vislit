@@ -69,7 +69,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
       )) as Project;
       if (response && response instanceof Error === false) {
         // Display success message
-        await store.projects.getProjects();
+        await store.application.getProjects();
         emit("projectSaved");
         resetForm();
       } else {
@@ -94,7 +94,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
 
       if (response && response instanceof Error === false) {
         // Display success message
-        await store.projects.getProjects();
+        await store.application.getProjects();
         emit("projectSaved");
         router.push(`/summary/${response.id}`);
         resetForm();
