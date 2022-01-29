@@ -58,9 +58,7 @@ async function deleteProject(): Promise<void> {
       } else {
         // All Projects have been deleted
         // Need to close all open columns as they rely on projects state
-        store.state.columns.forEach(
-          (column) => (column.isActive = false)
-        );
+        store.state.columns.forEach((column) => (column.isActive = false));
         router.replace(`/`);
       }
     } else {

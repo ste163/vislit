@@ -60,9 +60,7 @@ async function onCompleteClick(goalId: string): Promise<void> {
       {{ store.state.activeGoal.daysPerFrequency }} days per
       {{ store.state.activeGoal.frequencyToRepeat }}.
       <button @click="isFormActive = !isFormActive">Edit Active Goal</button>
-      <button
-        @click="onCompleteClick(store.state.activeGoal?.id as string)"
-      >
+      <button @click="onCompleteClick(store.state.activeGoal?.id as string)">
         Set Goal as Completed
       </button>
     </div>

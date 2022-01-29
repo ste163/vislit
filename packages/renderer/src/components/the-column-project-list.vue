@@ -66,10 +66,7 @@ watch(
 
 onMounted(async () => {
   // Always get the most up-to-date list of projects when column opens
-  if (
-    store !== null &&
-    store.state.activeProject !== null
-  ) {
+  if (store !== null && store.state.activeProject !== null) {
     await store.getProjects();
   }
 });
