@@ -86,6 +86,7 @@ function convertMonthToDoubleDigit(month: number): string {
 }
 
 function handlePreviousMonthClick(): void {
+  if (isLoading.value) return;
   if (selectedMonth.value === 0) {
     selectedYear.value = selectedYear.value - 1;
     selectedMonth.value = 11;
@@ -95,6 +96,7 @@ function handlePreviousMonthClick(): void {
 }
 
 function handleNextMonthClick(): void {
+  if (isLoading.value) return;
   if (selectedMonth.value === 11) {
     selectedYear.value = ++selectedYear.value;
     selectedMonth.value = 0;
