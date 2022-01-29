@@ -12,7 +12,7 @@ type state = {
   columns: Column[];
 };
 
-export class Store {
+class Store {
   public state: state;
 
   constructor() {
@@ -150,6 +150,4 @@ export class Store {
   };
 }
 
-const store = new Store();
-
-export default store;
+export default Store;

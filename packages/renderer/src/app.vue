@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { provide, ref, computed, watch, onBeforeUpdate, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import store from "./store";
+import Store from "./store";
 import TheSidebar from "./components/the-sidebar.vue";
 import ColumnDropZone from "./components/column-drop-zone.vue";
 import ColumnContainer from "./components/column-container.vue";
 import useColumns from "./composables/use-columns";
 
+const store = new Store();
 provide("store", store); // Makes store available to every child component
 
 const router = useRouter();
