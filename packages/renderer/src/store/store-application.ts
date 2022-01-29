@@ -1,13 +1,11 @@
 import type { Column, DropZone, Goal, Project, Type } from "interfaces";
 import { reactive } from "vue";
-// 1. Move updateProject here as it's used in 3 places
-// 2. Ensure setActiveGoal works (and that all other activeGoal's are using this state)
-// 2. Move store-applications into index.ts
-// 3. Potentially move out of store/index.ts into global-store.ts at root
+// 1. Move store-applications into index.ts
+// 2. Move index.ts to store.ts in root
 type ApplicationState = {
   projects: Project[];
   activeProject: Project | null;
-  activeGoal: Goal | null;
+  activeGoal: Goal | undefined;
   types: Type[];
   activeView: string;
   isSidebarMinimized: boolean;
@@ -21,10 +19,12 @@ class ApplicationStore {
   constructor() {
     // TODO:
     // Columns needs to be pulled/saved in localStorage
+    // - Look into having this state be private
+    // - then have a getter for getting computed values of projects, activeProject, etc
     this.state = reactive({
       projects: [] as Project[],
       activeProject: null,
-      activeGoal: null,
+      activeGoal: undefined, // needs to be undefined instead of null so forms can work w/ default values (null is value)
       types: [],
       activeView: "/", // read and save to localStorage
       isSidebarMinimized: false, // read and save to localStorage
@@ -76,11 +76,10 @@ class ApplicationStore {
   };
 
   #setActiveGoal = (project: Project): void => {
-    // see if any goals for this project
-    // if there are, set active goal
+    this.state.activeGoal = project.goals?.find((goal) => goal.active)
   };
 
-  // Needs to be an arrow function to run the correct class instance
+  // Need to be an arrow functions to run the correct class instance
   public setActiveView = (view: string): void => {
     this.state.activeView = view;
   };
@@ -144,8 +143,8 @@ class ApplicationStore {
     try {
       const { api } = window;
       const response = (await api.send("types-get-all")) as Type[];
-      // Check for is instance of error first
-      if (response) this.state.types = response;
+      if (response && response instanceof Error === false)
+        this.state.types = response;
     } catch (error: any | Error) {
       console.error(error);
     }

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { inject, computed, ref } from "vue";
+import type { Goal } from "interfaces";
 import type { Store } from "../store";
 import BaseModal from "./base-modal.vue";
 import GoalForm from "./goal-form.vue";
@@ -18,9 +19,6 @@ const emit = defineEmits(["closeModal"]);
 
 const isFormActive = ref<boolean>(false);
 
-const activeGoal = computed(() =>
-  store.application.state.activeProject?.goals?.find((goal) => goal.active)
-);
 const previousGoals = computed(() =>
   store.application.state.activeProject?.goals?.filter((goal) => !goal.active)
 );
@@ -55,18 +53,18 @@ async function onCompleteClick(goalId: string): Promise<void> {
 <template>
   <base-modal :is-modal-active="isModalActive" @close-modal="emitCloseModal">
     <template #header>Manage Goals</template>
-    <div v-if="activeGoal">
+    <div v-if="store.application.state.activeGoal">
       <h2>Active goal</h2>
-      {{ activeGoal.wordOrPageCount }}
-      {{ activeGoal.basedOnWordCountOrPageCount }},
-      {{ activeGoal.daysPerFrequency }} days per
-      {{ activeGoal.frequencyToRepeat }}.
+      {{ store.application.state.activeGoal.wordOrPageCount }}
+      {{ store.application.state.activeGoal.basedOnWordCountOrPageCount }},
+      {{ store.application.state.activeGoal.daysPerFrequency }} days per
+      {{ store.application.state.activeGoal.frequencyToRepeat }}.
       <button @click="isFormActive = !isFormActive">Edit Active Goal</button>
-      <button @click="onCompleteClick(activeGoal?.id as string)">
+      <button @click="onCompleteClick(store.application.state.activeGoal?.id as string)">
         Set Goal as Completed
       </button>
     </div>
-    <div v-else-if="!activeGoal">
+    <div v-else-if="!store.application.state.activeGoal">
       <h2>Create New Goal</h2>
       <button @click="isFormActive = !isFormActive">Create</button>
     </div>
@@ -74,7 +72,7 @@ async function onCompleteClick(goalId: string): Promise<void> {
     <div v-if="isFormActive">
       <h2>Edit/Create Goal</h2>
       <hr />
-      <goal-form :active-goal="activeGoal" @goal-saved="isFormActive = false" />
+      <goal-form :active-goal="(store.application.state.activeGoal as Goal)" @goal-saved="isFormActive = false" />
     </div>
     <hr />
     <!-- Option to delete goal, but that's it, no edit or detail view -->
