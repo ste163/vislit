@@ -31,19 +31,9 @@ async function archiveProject(): Promise<void> {
       dateModified: store.application.state.activeProject.dateModified,
       dateCreated: store.application.state.activeProject.dateCreated,
     };
-    const { api } = window;
-    const response = (await api.send(
-      "projects-update",
-      updatedProject
-    )) as Project;
-    if (response && response instanceof Error === false) {
-      // Display success message
-      await store.application.getProjects();
-      emit("handleDeleteModalClose");
-    } else {
-      // toast error
-      console.error(response);
-    }
+
+    await store.application.updateProject(updatedProject);
+    emit("handleDeleteModalClose");
   }
 }
 

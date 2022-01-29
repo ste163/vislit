@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, watch } from "vue";
+import { inject } from "vue";
 import { useRouter } from "vue-router";
 import type { PropType } from "vue";
 import type { Project } from "interfaces";
@@ -45,7 +45,7 @@ const initialFormValues = {
   description: props.currentProject.description,
 };
 
-const { handleSubmit, meta, resetForm } = useForm({
+const { handleSubmit, meta } = useForm({
   validationSchema,
   initialValues: initialFormValues,
 });
@@ -62,21 +62,9 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
         archived: false,
       } as Project;
 
-      const { api } = window;
-      const response = (await api.send(
-        "projects-update",
-        updatedProject
-      )) as Project;
-      if (response && response instanceof Error === false) {
-        // Display success message
-        await store.application.getProjects();
-        emit("projectSaved");
-        resetForm();
-      } else {
-        // toast error
-        // because we got an error response but nothing UI-wise broke
-        console.error(response);
-      }
+      await store.application.updateProject(updatedProject);
+      emit("projectSaved");
+      resetForm();
     } else {
       const newProject = {
         id: "",
@@ -89,7 +77,6 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
         dateModified: null,
       };
 
-      const { api } = window;
       const response = (await api.send("projects-add", newProject)) as Project;
 
       if (response && response instanceof Error === false) {

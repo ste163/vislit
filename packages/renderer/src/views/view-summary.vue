@@ -31,7 +31,7 @@ const activeProject = computed(() => {
   return store.application.state.activeProject as Project;
 });
 
-const formatedDate = useDateFormatFull(activeProject.value?.dateModified);
+const formattedDate = useDateFormatFull(activeProject.value?.dateModified);
 
 function openNotesColumn(): void {
   store.application.state.columns.forEach((column) => {
@@ -39,18 +39,6 @@ function openNotesColumn(): void {
       column.isActive = !column.isActive;
     }
   });
-}
-
-async function updateProject(project: Project): Promise<void> {
-  const { api } = window;
-  const response = (await api.send("projects-update", project)) as Project;
-  if (response && response instanceof Error === false) {
-    // Display success message
-    await store.application.getProjects();
-  } else {
-    // toast error
-    console.error(response);
-  }
 }
 
 async function toggleProjectComplete(): Promise<void> {
@@ -64,11 +52,10 @@ async function toggleProjectComplete(): Promise<void> {
     dateModified: activeProject.value.dateModified,
     dateCreated: activeProject.value.dateCreated,
   };
-
-  await updateProject(updatedProject);
+  await store.application.updateProject(updatedProject);
 }
 
-function toggleProjectArchived(): void {
+async function toggleProjectArchived(): Promise<void> {
   const updatedProject: Project = {
     id: activeProject.value.id,
     typeId: activeProject.value.typeId,
@@ -79,8 +66,7 @@ function toggleProjectArchived(): void {
     dateModified: activeProject.value.dateModified,
     dateCreated: activeProject.value.dateCreated,
   };
-
-  updateProject(updatedProject);
+  await store.application.updateProject(updatedProject);
 }
 
 // const ellipsisMenuGoalText = computed(() => {
@@ -113,7 +99,7 @@ const ellipsisMenuArchivedText = computed(() => {
     <template #sub-header>
       <project-status-tags :project="activeProject" />
       <span class="capitalize">{{ activeProject.type?.value }}</span> | Last
-      updated on {{ formatedDate }}
+      updated on {{ formattedDate }}
     </template>
 
     <template #description>

@@ -124,11 +124,21 @@ class ApplicationStore {
     }
   };
 
-  // move updateProject here
-  // because it's used in 3 places:
-  // view-summary
-  // form-project-delete-modal
-  // form-project
+  public updateProject = async (project: Project): Promise<void> => {
+    try {
+      const { api } = window;
+      const response = (await api.send("projects-update", project)) as Project;
+      if (response && response instanceof Error === false) {
+        // Display success message
+        await this.getProjects();
+      } else {
+        // toast error
+        console.error(response);
+      }
+    } catch (error: any | Error) {
+      console.error(error);
+    }
+  };
 
   public getTypes = async (): Promise<void> => {
     try {
