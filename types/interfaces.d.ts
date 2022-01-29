@@ -8,13 +8,14 @@ declare module "interfaces" {
     goals?: Goal[];
     completed: boolean;
     archived: boolean;
-    dateCreated: Date | string | null; // TODO: Make optional
-    dateModified: Date | string | null;
+    dateCreated: Date | string | null; // TODO: Make optional instead of null
+    dateModified: Date | string | null; // TODO: Make optional instead of null
   }
 
   interface Type {
     id?: string;
     value: string;
+    dateCreated?: Date | string;
   }
 
   interface Goal {

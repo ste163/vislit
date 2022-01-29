@@ -27,7 +27,7 @@ class TypeRepository {
 
   add(value: string): Type {
     this.#database.db.data?.types.push(
-      this.#database.generateUniqueId({ value })
+      this.#database.generateUniqueId({ value, dateCreated: new Date() })
     );
     this.#database.db.write();
     return this.#database.db.chain.get("types").find({ value }).value();

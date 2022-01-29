@@ -13,6 +13,7 @@ let typeRepository: TypeRepository;
 let typeController: TypeController;
 
 describe("type-controller-integration", () => {
+  const typeSeedDate = new Date();
   beforeEach(() => {
     jest.spyOn(console, "error").mockImplementation(() => {});
     const { app } = jest.requireMock("electron");
@@ -21,33 +22,40 @@ describe("type-controller-integration", () => {
       {
         id: "1",
         value: "novel",
+        dateCreated: typeSeedDate,
       },
       {
         id: "2",
         value: "novella",
+        dateCreated: typeSeedDate,
       },
       {
         id: "3",
         value: "memoir",
+        dateCreated: typeSeedDate,
       },
       {
         id: "4",
         value: "short story",
+        dateCreated: typeSeedDate,
       },
       {
         id: "5",
         value: "short story collection",
+        dateCreated: typeSeedDate,
       },
       {
         id: "6",
         value: "poem",
+        dateCreated: typeSeedDate,
       },
       {
         id: "7",
         value: "poetry collection",
+        dateCreated: typeSeedDate,
       },
     ];
-    const seedDate = new Date();
+    const seedDate = typeSeedDate;
     projectSeedData = [
       {
         id: "1",
@@ -89,21 +97,40 @@ describe("type-controller-integration", () => {
 
   it("returns all types sorted alphabetically", () => {
     expect(typeController.getAll()).toEqual([
-      { id: "3", value: "memoir" },
-      { id: "1", value: "novel" },
-      { id: "2", value: "novella" },
-      { id: "6", value: "poem" },
+      {
+        id: "3",
+        value: "memoir",
+        dateCreated: typeSeedDate,
+      },
+      {
+        id: "1",
+        value: "novel",
+        dateCreated: typeSeedDate,
+      },
+      {
+        id: "2",
+        value: "novella",
+        dateCreated: typeSeedDate,
+      },
+      {
+        id: "6",
+        value: "poem",
+        dateCreated: typeSeedDate,
+      },
       {
         id: "7",
         value: "poetry collection",
+        dateCreated: typeSeedDate,
       },
       {
         id: "4",
         value: "short story",
+        dateCreated: typeSeedDate,
       },
       {
         id: "5",
         value: "short story collection",
+        dateCreated: typeSeedDate,
       },
     ]);
   });
@@ -129,6 +156,7 @@ describe("type-controller-integration", () => {
     const addedType = typeController.add("  NeW   ");
     expect((addedType as Type).value).toEqual("new");
     expect(addedType).toHaveProperty("id");
+    expect(addedType).toHaveProperty("dateCreated");
   });
 
   it("returns error when trying to delete type by id not in database", () => {
