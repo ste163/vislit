@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { provide, ref, computed, watch, onBeforeUpdate, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import store from "./store/index";
+import store from "./store";
 import TheSidebar from "./components/the-sidebar.vue";
 import ColumnDropZone from "./components/column-drop-zone.vue";
 import ColumnContainer from "./components/column-container.vue";

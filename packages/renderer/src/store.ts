@@ -1,7 +1,5 @@
 import type { Column, DropZone, Goal, Project, Type } from "interfaces";
 import { reactive } from "vue";
-// 1. Move store-applications into index.ts
-// 2. Move index.ts to store.ts in root
 
 type state = {
   projects: Project[];
