@@ -51,9 +51,7 @@ const monthDoubleDigit = computed(() =>
 const yearString = computed(() => selectedYear.value.toString());
 
 const activeGoal = computed(() => {
-  const goals = store.state.activeProject?.goals?.filter(
-    (goal) => goal.active
-  );
+  const goals = store.state.activeProject?.goals?.filter((goal) => goal.active);
   if (goals) return goals[0];
   return undefined;
 });

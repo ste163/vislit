@@ -22,8 +22,7 @@ const isActive = ref<boolean>(
 );
 
 function setActive(): void {
-  isActive.value =
-    store.state.activeProject?.id === props.project?.id;
+  isActive.value = store.state.activeProject?.id === props.project?.id;
 }
 
 watch(() => store.state.activeProject?.id, setActive);
