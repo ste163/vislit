@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, inject, computed } from "vue";
+import { ref, inject, computed, watch, onMounted } from "vue";
 import type { Store } from "../store";
-import type { Project } from "interfaces";
+import type { Goal, Project } from "interfaces";
 import BaseTemplateCard from "../components/base-template-card.vue";
 import BaseCardContent from "../components/base-card-content.vue";
 import BaseButtonClick from "../components/base-button-click.vue";
@@ -27,6 +27,8 @@ const isManageGoalModalActive = ref<boolean>(false);
 const isDeleteModalActive = ref<boolean>(false);
 const isEllipsisMenuActive = ref<boolean>(false);
 
+// Dislike this. Move it to the store. We should only be reading
+// the computed
 const activeProject = computed(() => {
   return store.state.activeProject as Project;
 });
@@ -84,6 +86,34 @@ const ellipsisMenuArchivedText = computed(() => {
     ? "Un-archive Project"
     : "Archive Project";
 });
+
+async function fetchTodaysProgress(): Promise<void> {
+  console.log("MOUNTED");
+  if (store.state.activeGoal && store.state.activeProject?.id) {
+    try {
+      const { api } = window;
+      const request = {
+        projectId: store.state.activeProject.id,
+        date: new Date().toISOString(),
+      };
+      const response: Goal = (await api.send(
+        "progress-get-by-date",
+        request
+      )) as Goal;
+      console.log("GOAL FROM DB", response);
+      if (!response || response instanceof Error) {
+        // display toast
+        console.error(response);
+      }
+    } catch (error: any | Error) {
+      // toast
+      console.error(error);
+    }
+  }
+}
+
+onMounted(fetchTodaysProgress);
+watch(() => store.state.activeGoal, fetchTodaysProgress);
 </script>
 
 <template>
@@ -163,8 +193,15 @@ const ellipsisMenuArchivedText = computed(() => {
 
     <base-card-content v-else-if="activeProject.goals?.length! > 0">
       <template #header> Goal </template>
-      Your goal is --- make a computed property of the activeGoal that searches
-      through goal array and grabs it
+      <p v-if="store.state.activeGoal">
+        Currently active goal: write
+        {{ store.state.activeGoal.wordOrPageCount }}
+        {{ store.state.activeGoal.basedOnWordCountOrPageCount }}
+        {{ store.state.activeGoal.frequencyToRepeat }}
+      </p>
+      <p v-else>
+        No active goal. Add a new goal to continue tracking progress.
+      </p>
       <template #buttons>
         <base-button-click
           @click="isManageGoalModalActive = !isManageGoalModalActive"
@@ -172,6 +209,11 @@ const ellipsisMenuArchivedText = computed(() => {
           Manage Goals
         </base-button-click>
       </template>
+    </base-card-content>
+
+    <!-- Can only add progress if there's an active goal -->
+    <base-card-content v-if="store.state.activeGoal">
+      <template #header> Progress </template>
     </base-card-content>
 
     <base-card-content>
