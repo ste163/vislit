@@ -78,7 +78,7 @@ const { handleSubmit, meta, values } = useForm({
 
 const onSubmit = handleSubmit(async (values, { resetForm }) => {
   const newGoal: Goal = {
-    projectId: store.application.state.activeProject!.id!,
+    projectId: store.state.activeProject!.id!,
     basedOnWordCountOrPageCount: values.basedOnWordCountOrPageCount as
       | "word"
       | "page",
@@ -114,7 +114,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
     if (response instanceof Error) throw response;
     if (response) {
       resetForm();
-      await store.application.getProjects();
+      await store.getProjects();
       emitGoalSaved();
     }
   } catch (error: any | Error) {

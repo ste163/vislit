@@ -32,7 +32,7 @@ export default function useColumns(
   leftDropZoneColumns: Ref<HTMLDivElement[]>,
   rightDropZoneColumns: Ref<HTMLDivElement[]>
 ): columnLayout {
-  const columns = store.application.state.columns;
+  const columns = store.state.columns;
 
   const activeDragColumn = ref<Column>({
     header: "blank",

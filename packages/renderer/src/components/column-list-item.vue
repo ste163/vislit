@@ -18,15 +18,15 @@ const props = defineProps({
 });
 
 const isActive = ref<boolean>(
-  store.application.state.activeProject?.id === props.project?.id
+  store.state.activeProject?.id === props.project?.id
 );
 
 function setActive(): void {
   isActive.value =
-    store.application.state.activeProject?.id === props.project?.id;
+    store.state.activeProject?.id === props.project?.id;
 }
 
-watch(() => store.application.state.activeProject?.id, setActive);
+watch(() => store.state.activeProject?.id, setActive);
 </script>
 
 <!-- The baseButtonToggle doesn't work correctly.

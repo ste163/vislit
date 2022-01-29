@@ -28,7 +28,7 @@ const columnWidth = ref<string>("300px");
 const columnElement = ref<HTMLDivElement | null>(null);
 
 function handleColumnClose(): void {
-  const activeCol = store.application.state.columns.find(
+  const activeCol = store.state.columns.find(
     (col) => col.header === props.column.header
   );
   if (activeCol !== undefined) {

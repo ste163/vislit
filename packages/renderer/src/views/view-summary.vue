@@ -28,13 +28,13 @@ const isDeleteModalActive = ref<boolean>(false);
 const isEllipsisMenuActive = ref<boolean>(false);
 
 const activeProject = computed(() => {
-  return store.application.state.activeProject as Project;
+  return store.state.activeProject as Project;
 });
 
 const formattedDate = useDateFormatFull(activeProject.value?.dateModified);
 
 function openNotesColumn(): void {
-  store.application.state.columns.forEach((column) => {
+  store.state.columns.forEach((column) => {
     if (column.header === "Notes") {
       column.isActive = !column.isActive;
     }
@@ -52,7 +52,7 @@ async function toggleProjectComplete(): Promise<void> {
     dateModified: activeProject.value.dateModified,
     dateCreated: activeProject.value.dateCreated,
   };
-  await store.application.updateProject(updatedProject);
+  await store.updateProject(updatedProject);
 }
 
 async function toggleProjectArchived(): Promise<void> {
@@ -66,7 +66,7 @@ async function toggleProjectArchived(): Promise<void> {
     dateModified: activeProject.value.dateModified,
     dateCreated: activeProject.value.dateCreated,
   };
-  await store.application.updateProject(updatedProject);
+  await store.updateProject(updatedProject);
 }
 
 // const ellipsisMenuGoalText = computed(() => {

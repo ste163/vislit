@@ -62,7 +62,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
         archived: false,
       } as Project;
 
-      await store.application.updateProject(updatedProject);
+      await store.updateProject(updatedProject);
       emit("projectSaved");
       resetForm();
     } else {
@@ -81,7 +81,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
 
       if (response && response instanceof Error === false) {
         // Display success message
-        await store.application.getProjects();
+        await store.getProjects();
         emit("projectSaved");
         router.push(`/summary/${response.id}`);
         resetForm();
@@ -101,7 +101,7 @@ async function handleSelectAddClick(value: string): Promise<void> {
   if (value !== "") {
     try {
       const response = await api.send("types-add", value);
-      if (response) await store.application.getTypes();
+      if (response) await store.getTypes();
     } catch (error: any | Error) {
       console.error(error);
       // set toast notification
@@ -113,7 +113,7 @@ async function handleSelectDeleteClick(id: string): Promise<void> {
   if (id) {
     try {
       const response = await api.send("types-delete", id);
-      if (response) await store.application.getTypes();
+      if (response) await store.getTypes();
     } catch (error: any | Error) {
       console.error(error);
       // set toast notification
@@ -135,7 +135,7 @@ async function handleSelectDeleteClick(id: string): Promise<void> {
     />
 
     <input-select
-      :values="store.application.state.types"
+      :values="store.state.types"
       :is-editable="true"
       :name="'type'"
       :label="'Type'"

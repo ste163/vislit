@@ -46,28 +46,28 @@ const isLeftColumnDivEmpty = computed(() => checkIsDropZoneEmpty("left"));
 const isRightColumnDivEmpty = computed(() => checkIsDropZoneEmpty("right"));
 
 function updateStateOnRouteChange(route: string): void {
-  store.application.setActiveView(route);
+  store.setActiveView(route);
   ++dashTransitionKey.value; // needed to force re-rendering of component to ensure animation is always triggered
 }
 
 watch(() => route.path, updateStateOnRouteChange);
 
 onMounted(async () => {
-  if (store.application !== null) {
-    await store.application.getProjects(); // doesn't need to be wrapped in try/catch because getProjects will trigger an error if there is one
+  if (store !== null) {
+    await store.getProjects(); // doesn't need to be wrapped in try/catch because getProjects will trigger an error if there is one
 
-    if (store.application.state.projects.length > 0) {
+    if (store.state.projects.length > 0) {
       // check local storage for last selected project
       // OR set most recent as active -> need to add that step
-      store.application.setActiveProject(store.application.state.projects[0]);
+      store.setActiveProject(store.state.projects[0]);
       // check local storage for last visited route
-      router.push(`/summary/${store.application.state.projects[0].id}`);
+      router.push(`/summary/${store.state.projects[0].id}`);
     } else {
       router.push("/"); // sends user to Welcome screen, as they have no data
     }
   }
 
-  await store.application.getTypes();
+  await store.getTypes();
 });
 
 // Needed to reset references based on vue docs

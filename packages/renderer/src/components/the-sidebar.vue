@@ -24,7 +24,7 @@ const isSidebarDisabled = useIsSidebarDisabled();
   <nav
     class="sidebar-container"
     :class="
-      store.application.state.isSidebarMinimized
+      store.state.isSidebarMinimized
         ? 'sidebar-minimized'
         : 'sidebar-open'
     "
@@ -35,52 +35,52 @@ const isSidebarDisabled = useIsSidebarDisabled();
         draggable="false"
         :class="{ 'sidebar-header-disabled': isSidebarDisabled }"
       >
-        <span v-if="!store.application.state.isSidebarMinimized"> Views </span>
+        <span v-if="!store.state.isSidebarMinimized"> Views </span>
       </div>
       <button-router-link
-        :route="`/summary/${store.application.state.activeProject?.id}`"
+        :route="`/summary/${store.state.activeProject?.id}`"
         class="sidebar-button"
       >
         <template #icon>
           <app-icon-summary class="button-icon" />
         </template>
-        <span v-if="!store.application.state.isSidebarMinimized">
+        <span v-if="!store.state.isSidebarMinimized">
           Summary
         </span>
       </button-router-link>
 
       <button-router-link
-        :route="`/writer/${store.application.state.activeProject?.id}`"
+        :route="`/writer/${store.state.activeProject?.id}`"
         class="sidebar-button"
       >
         <template #icon>
           <app-icon-writer class="button-icon" />
         </template>
-        <span v-if="!store.application.state.isSidebarMinimized">
+        <span v-if="!store.state.isSidebarMinimized">
           Document Writer
         </span>
       </button-router-link>
 
       <button-router-link
-        :route="`/progress/${store.application.state.activeProject?.id}`"
+        :route="`/progress/${store.state.activeProject?.id}`"
         class="sidebar-button"
       >
         <template #icon>
           <app-icon-progress class="button-icon" />
         </template>
-        <span v-if="!store.application.state.isSidebarMinimized">
+        <span v-if="!store.state.isSidebarMinimized">
           Progress
         </span>
       </button-router-link>
 
       <button-router-link
-        :route="`/visualization/${store.application.state.activeProject?.id}`"
+        :route="`/visualization/${store.state.activeProject?.id}`"
         class="sidebar-button"
       >
         <template #icon>
           <app-icon-visualization class="button-icon" />
         </template>
-        <span v-if="!store.application.state.isSidebarMinimized">
+        <span v-if="!store.state.isSidebarMinimized">
           Visualizations
         </span>
       </button-router-link>
@@ -90,7 +90,7 @@ const isSidebarDisabled = useIsSidebarDisabled();
         :class="{ 'sidebar-header-disabled': isSidebarDisabled }"
         draggable="false"
       >
-        <span v-if="!store.application.state.isSidebarMinimized">
+        <span v-if="!store.state.isSidebarMinimized">
           Columns
         </span>
       </div>
@@ -98,7 +98,7 @@ const isSidebarDisabled = useIsSidebarDisabled();
         <template #icon>
           <app-icon-project class="button-icon" />
         </template>
-        <span v-if="!store.application.state.isSidebarMinimized">
+        <span v-if="!store.state.isSidebarMinimized">
           Projects
         </span>
       </button-column>
@@ -107,7 +107,7 @@ const isSidebarDisabled = useIsSidebarDisabled();
         <template #icon>
           <app-icon-note class="button-icon" />
         </template>
-        <span v-if="!store.application.state.isSidebarMinimized"> Notes </span>
+        <span v-if="!store.state.isSidebarMinimized"> Notes </span>
       </button-column>
     </div>
 
@@ -116,20 +116,20 @@ const isSidebarDisabled = useIsSidebarDisabled();
         <template #icon>
           <app-icon-setting class="button-icon" />
         </template>
-        <span v-if="!store.application.state.isSidebarMinimized">
+        <span v-if="!store.state.isSidebarMinimized">
           Settings
         </span>
       </button-column>
 
       <button
         class="btn-none arrow__container--sidebar"
-        @click="store.application.setIsSidebarMinimized"
+        @click="store.setIsSidebarMinimized"
       >
         <div
           :class="{
             'arrow--sidebar': true,
             'arrow--sidebar--active':
-              !store.application.state.isSidebarMinimized,
+              !store.state.isSidebarMinimized,
           }"
         />
       </button>
