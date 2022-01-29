@@ -2,7 +2,7 @@
 import { computed, ref, inject, onMounted, watch } from "vue";
 import type { Store } from "../store";
 import type { Goal, Progress } from "interfaces";
-import FormProgress from "../components/form-progress.vue";
+import ProgressForm from "../components/progress-form.vue";
 
 const store = inject("store") as Store;
 
@@ -185,7 +185,7 @@ watch(
             <!--  -->
             <!-- Also, listen for the progressSaved event and then re-fetch data -->
             <!-- Also, only allow for progress entering if there is an active goal -->
-            <form-progress
+            <progress-form
               v-for="({ date, progress }, index) in combinedProgressAndDates"
               :key="index"
               :date="date"

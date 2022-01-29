@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import TheColumnProjectList from "./the-column-project-list.vue";
-import FormProject from "./form-project.vue"; // maybe rename to TheColumnProjectForm
+import ProjectForm from "./project-form.vue"; // maybe rename to TheColumnProjectForm
 
 // Need to inject the store so we can track global project state
 
@@ -20,7 +20,7 @@ function setActiveColumnView(): void {
       :key="1"
       @create-click="setActiveColumnView"
     />
-    <form-project v-if="isFormActive" :key="2" @go-back="setActiveColumnView" />
+    <project-form v-if="isFormActive" :key="2" @go-back="setActiveColumnView" />
   </transition-group>
 </template>
 

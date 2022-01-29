@@ -6,15 +6,15 @@ import BaseTemplateCard from "../components/base-template-card.vue";
 import BaseCardContent from "../components/base-card-content.vue";
 import BaseButtonClick from "../components/base-button-click.vue";
 import BaseModal from "../components/base-modal.vue";
-import FormProject from "../components/form-project.vue";
-import FormProjectDeleteModal from "../components/form-project-delete-modal.vue";
+import ProjectForm from "../components/project-form.vue";
+import ProjectDeleteModal from "../components/project-delete-modal.vue";
 import NotificationDot from "../components/notification-dot.vue";
 import ButtonEllipsis from "../components/button-ellipsis.vue";
 import ButtonEllipsisItem from "../components/button-ellipsis-item.vue";
 import useDateFormatFull from "../composables/use-date-format-full";
 import ProjectStatusTags from "../components/project-status-tags.vue";
-import FormGoal from "../components/form-goal.vue";
-import FormGoalManageModal from "../components/form-goal-manage-modal.vue";
+import GoalForm from "../components/goal-form.vue";
+import GoalManageModal from "../components/goal-manage-modal.vue";
 
 // TODO:
 // If completed or archived, no longer able to add/edit content or Project details
@@ -198,7 +198,7 @@ const ellipsisMenuArchivedText = computed(() => {
     </base-card-content>
   </base-template-card>
 
-  <form-project-delete-modal
+  <project-delete-modal
     :is-modal-active="isDeleteModalActive"
     @handle-delete-modal-close="isDeleteModalActive = false"
   />
@@ -208,7 +208,7 @@ const ellipsisMenuArchivedText = computed(() => {
     @close-modal="isEditProjectModalActive = false"
   >
     <template #header> Edit Project </template>
-    <form-project
+    <project-form
       :current-project="{ ...activeProject }"
       @project-saved="isEditProjectModalActive = false"
     />
@@ -219,10 +219,10 @@ const ellipsisMenuArchivedText = computed(() => {
     @close-modal="isCreateGoalFormModalActive = false"
   >
     <template #header> Create Goal </template>
-    <form-goal @goal-saved="isCreateGoalFormModalActive = false" />
+    <goal-form @goal-saved="isCreateGoalFormModalActive = false" />
   </base-modal>
 
-  <form-goal-manage-modal
+  <goal-manage-modal
     :is-modal-active="isManageGoalModalActive"
     @close-modal="isManageGoalModalActive = false"
   />

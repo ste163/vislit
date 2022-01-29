@@ -2,7 +2,7 @@
 import { inject, computed, ref } from "vue";
 import type { Store } from "../store";
 import BaseModal from "./base-modal.vue";
-import FormGoal from "./form-goal.vue";
+import GoalForm from "./goal-form.vue";
 
 const store = inject("store") as Store;
 
@@ -74,7 +74,7 @@ async function onCompleteClick(goalId: string): Promise<void> {
     <div v-if="isFormActive">
       <h2>Edit/Create Goal</h2>
       <hr />
-      <form-goal :active-goal="activeGoal" @goal-saved="isFormActive = false" />
+      <goal-form :active-goal="activeGoal" @goal-saved="isFormActive = false" />
     </div>
     <hr />
     <!-- Option to delete goal, but that's it, no edit or detail view -->

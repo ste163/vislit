@@ -4,7 +4,7 @@ import BaseModal from "../components/base-modal.vue";
 import BaseTemplateCard from "../components/base-template-card.vue";
 import BaseCardContent from "../components/base-card-content.vue";
 import BaseButtonClick from "../components/base-button-click.vue";
-import FormProject from "../components/form-project.vue";
+import ProjectForm from "../components/project-form.vue";
 import NotificationDot from "../components/notification-dot.vue";
 import type { Store } from "../store";
 
@@ -86,6 +86,6 @@ onMounted(() => {
     @close-modal="isModalActive = false"
   >
     <template #header> Create Project </template>
-    <form-project />
+    <project-form />
   </base-modal>
 </template>
