@@ -6,6 +6,7 @@ import TypeRepository from "./type-repository";
 
 describe("type-repository", () => {
   let typeRepository: TypeRepository;
+  const typeSeedDate = new Date();
 
   beforeEach(() => {
     const { app } = jest.requireMock("electron");
@@ -15,30 +16,37 @@ describe("type-repository", () => {
       {
         id: "1",
         value: "novel",
+        dateCreated: typeSeedDate,
       },
       {
         id: "2",
         value: "novella",
+        dateCreated: typeSeedDate,
       },
       {
         id: "3",
         value: "memoir",
+        dateCreated: typeSeedDate,
       },
       {
         id: "4",
         value: "short story",
+        dateCreated: typeSeedDate,
       },
       {
         id: "5",
         value: "short story collection",
+        dateCreated: typeSeedDate,
       },
       {
         id: "6",
         value: "poem",
+        dateCreated: typeSeedDate,
       },
       {
         id: "7",
         value: "poetry collection",
+        dateCreated: typeSeedDate,
       },
     ];
   });
@@ -46,21 +54,40 @@ describe("type-repository", () => {
   it("returns all types sorted alphabetically", () => {
     const types = typeRepository.getAll();
     expect(types).toEqual([
-      { id: "3", value: "memoir" },
-      { id: "1", value: "novel" },
-      { id: "2", value: "novella" },
-      { id: "6", value: "poem" },
+      {
+        id: "3",
+        value: "memoir",
+        dateCreated: typeSeedDate,
+      },
+      {
+        id: "1",
+        value: "novel",
+        dateCreated: typeSeedDate,
+      },
+      {
+        id: "2",
+        value: "novella",
+        dateCreated: typeSeedDate,
+      },
+      {
+        id: "6",
+        value: "poem",
+        dateCreated: typeSeedDate,
+      },
       {
         id: "7",
         value: "poetry collection",
+        dateCreated: typeSeedDate,
       },
       {
         id: "4",
         value: "short story",
+        dateCreated: typeSeedDate,
       },
       {
         id: "5",
         value: "short story collection",
+        dateCreated: typeSeedDate,
       },
     ]);
   });
@@ -73,6 +100,7 @@ describe("type-repository", () => {
     expect(typeRepository.getByValue("short story")).toEqual({
       id: "4",
       value: "short story",
+      dateCreated: typeSeedDate,
     });
   });
 
@@ -81,6 +109,7 @@ describe("type-repository", () => {
     const addedType = typeRepository.add("non-fiction");
     const newTypeCount = typeRepository.getAll().length;
     expect(addedType).toHaveProperty("id");
+    expect(addedType).toHaveProperty("dateCreated");
     expect(addedType.value).toEqual("non-fiction");
     expect(newTypeCount).toEqual(originalTypeCount + 1);
   });
