@@ -6,50 +6,42 @@ import BaseTemplateCard from "../components/base-template-card.vue";
 import BaseCardContent from "../components/base-card-content.vue";
 import BaseButtonClick from "../components/base-button-click.vue";
 import BaseModal from "../components/base-modal.vue";
-import FormProjectCreateModal from "../components/form-project-create-modal.vue";
-import FormProjectDeleteModal from "../components/form-project-delete-modal.vue";
+import ProjectForm from "../components/project-form.vue";
+import ProjectDeleteModal from "../components/project-delete-modal.vue";
 import NotificationDot from "../components/notification-dot.vue";
 import ButtonEllipsis from "../components/button-ellipsis.vue";
 import ButtonEllipsisItem from "../components/button-ellipsis-item.vue";
 import useDateFormatFull from "../composables/use-date-format-full";
 import ProjectStatusTags from "../components/project-status-tags.vue";
-import FormGoal from "../components/form-goal.vue";
-import FormGoalManageModal from "../components/form-goal-manage-modal.vue";
+import GoalForm from "../components/goal-form.vue";
+import GoalManageModal from "../components/goal-manage-modal.vue";
 
 // TODO:
-// If completed or archived, no longer able to add/edit content
+// If completed or archived, no longer able to add/edit content or Project details
 
 const store = inject("store") as Store;
 
-const isEditFormModalActive = ref<boolean>(false);
+const isEditProjectModalActive = ref<boolean>(false);
 const isCreateGoalFormModalActive = ref<boolean>(false);
 const isManageGoalModalActive = ref<boolean>(false);
 const isDeleteModalActive = ref<boolean>(false);
 const isEllipsisMenuActive = ref<boolean>(false);
 
 const activeProject = computed(() => {
-  return store.projects.state.active as Project;
+  return store.state.activeProject as Project;
 });
 
-const formatedDate = useDateFormatFull(activeProject.value?.dateModified);
+const formattedDate = useDateFormatFull(activeProject.value?.dateModified);
 
 function openNotesColumn(): void {
-  store.application.state.columns.forEach((column) => {
+  store.state.columns.forEach((column) => {
     if (column.header === "Notes") {
       column.isActive = !column.isActive;
     }
   });
 }
 
-function openEditProjectModal(): void {
-  console.log("OPEN EDIT PROJECT MODAL");
-}
-
-function openEditGoalModal(): void {
-  console.log("OPEN EDIT GOAL MODAL");
-}
-
-function toggleProjectComplete(): void {
+async function toggleProjectComplete(): Promise<void> {
   const updatedProject: Project = {
     id: activeProject.value.id,
     typeId: activeProject.value.typeId,
@@ -60,11 +52,10 @@ function toggleProjectComplete(): void {
     dateModified: activeProject.value.dateModified,
     dateCreated: activeProject.value.dateCreated,
   };
-
-  store.projects.updateProject(updatedProject);
+  await store.updateProject(updatedProject);
 }
 
-function toggleProjectArchived(): void {
+async function toggleProjectArchived(): Promise<void> {
   const updatedProject: Project = {
     id: activeProject.value.id,
     typeId: activeProject.value.typeId,
@@ -75,8 +66,7 @@ function toggleProjectArchived(): void {
     dateModified: activeProject.value.dateModified,
     dateCreated: activeProject.value.dateCreated,
   };
-
-  store.projects.updateProject(updatedProject);
+  await store.updateProject(updatedProject);
 }
 
 // const ellipsisMenuGoalText = computed(() => {
@@ -109,7 +99,7 @@ const ellipsisMenuArchivedText = computed(() => {
     <template #sub-header>
       <project-status-tags :project="activeProject" />
       <span class="capitalize">{{ activeProject.type?.value }}</span> | Last
-      updated on {{ formatedDate }}
+      updated on {{ formattedDate }}
     </template>
 
     <template #description>
@@ -124,7 +114,7 @@ const ellipsisMenuArchivedText = computed(() => {
     </template>
 
     <template #ellipsis-menu>
-      <button-ellipsis-item @click="openEditProjectModal">
+      <button-ellipsis-item @click="isEditProjectModalActive = true">
         Edit Project
       </button-ellipsis-item>
 
@@ -208,25 +198,31 @@ const ellipsisMenuArchivedText = computed(() => {
     </base-card-content>
   </base-template-card>
 
-  <form-project-delete-modal
+  <project-delete-modal
     :is-modal-active="isDeleteModalActive"
     @handle-delete-modal-close="isDeleteModalActive = false"
   />
 
-  <form-project-create-modal
-    :is-form-modal-active="isEditFormModalActive"
-    @close-modal="isEditFormModalActive = false"
-  />
+  <base-modal
+    :is-modal-active="isEditProjectModalActive"
+    @close-modal="isEditProjectModalActive = false"
+  >
+    <template #header> Edit Project </template>
+    <project-form
+      :current-project="{ ...activeProject }"
+      @project-saved="isEditProjectModalActive = false"
+    />
+  </base-modal>
 
   <base-modal
     :is-modal-active="isCreateGoalFormModalActive"
     @close-modal="isCreateGoalFormModalActive = false"
   >
     <template #header> Create Goal </template>
-    <form-goal @goal-saved="isCreateGoalFormModalActive = false" />
+    <goal-form @goal-saved="isCreateGoalFormModalActive = false" />
   </base-modal>
 
-  <form-goal-manage-modal
+  <goal-manage-modal
     :is-modal-active="isManageGoalModalActive"
     @close-modal="isManageGoalModalActive = false"
   />

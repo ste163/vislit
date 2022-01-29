@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { provide, ref, computed, watch, onBeforeUpdate, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import store from "./store/index";
+import Store from "./store";
 import TheSidebar from "./components/the-sidebar.vue";
 import ColumnDropZone from "./components/column-drop-zone.vue";
 import ColumnContainer from "./components/column-container.vue";
 import useColumns from "./composables/use-columns";
 
+const store = new Store();
 provide("store", store); // Makes store available to every child component
 
 const router = useRouter();
@@ -46,28 +47,28 @@ const isLeftColumnDivEmpty = computed(() => checkIsDropZoneEmpty("left"));
 const isRightColumnDivEmpty = computed(() => checkIsDropZoneEmpty("right"));
 
 function updateStateOnRouteChange(route: string): void {
-  store.application.setActiveView(route);
+  store.setActiveView(route);
   ++dashTransitionKey.value; // needed to force re-rendering of component to ensure animation is always triggered
 }
 
 watch(() => route.path, updateStateOnRouteChange);
 
 onMounted(async () => {
-  if (store.projects !== null) {
-    await store.projects.getProjects(); // doesn't need to be wrapped in try/catch because getProjects will trigger an error if there is one
+  if (store !== null) {
+    await store.getProjects(); // doesn't need to be wrapped in try/catch because getProjects will trigger an error if there is one
 
-    if (store.projects.state.all.length > 0) {
+    if (store.state.projects.length > 0) {
       // check local storage for last selected project
       // OR set most recent as active -> need to add that step
-      store.projects.setActiveProject(store.projects.state.all[0]);
+      store.setActiveProject(store.state.projects[0]);
       // check local storage for last visited route
-      router.push(`/summary/${store.projects.state.all[0].id}`);
+      router.push(`/summary/${store.state.projects[0].id}`);
     } else {
       router.push("/"); // sends user to Welcome screen, as they have no data
     }
   }
 
-  await store.application.getAllTypes();
+  await store.getTypes();
 });
 
 // Needed to reset references based on vue docs

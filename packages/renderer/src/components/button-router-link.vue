@@ -17,7 +17,7 @@ const props = defineProps({
 const isDisabled = useIsSidebarDisabled();
 
 const isActiveRoute = computed(() =>
-  store.application.state.activeView === props.route ? true : false
+  store.state.activeView === props.route ? true : false
 );
 </script>
 

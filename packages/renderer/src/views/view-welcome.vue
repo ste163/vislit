@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { inject, onMounted, ref } from "vue";
+import BaseModal from "../components/base-modal.vue";
 import BaseTemplateCard from "../components/base-template-card.vue";
 import BaseCardContent from "../components/base-card-content.vue";
 import BaseButtonClick from "../components/base-button-click.vue";
-import FormProjectCreateModal from "../components/form-project-create-modal.vue";
+import ProjectForm from "../components/project-form.vue";
 import NotificationDot from "../components/notification-dot.vue";
 import type { Store } from "../store";
 
@@ -17,7 +18,7 @@ function openWindow(): void {
 // Needed to ensure that if the user deletes all projects
 // The activeProject will be reset at the correct point in time
 onMounted(() => {
-  store.projects.setActiveProject(null);
+  store.setActiveProject(null);
 });
 </script>
 
@@ -80,8 +81,11 @@ onMounted(() => {
     </base-card-content>
   </base-template-card>
 
-  <form-project-create-modal
-    :is-form-modal-active="isModalActive"
+  <base-modal
+    :is-modal-active="isModalActive"
     @close-modal="isModalActive = false"
-  />
+  >
+    <template #header> Create Project </template>
+    <project-form />
+  </base-modal>
 </template>

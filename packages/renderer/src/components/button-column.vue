@@ -19,7 +19,7 @@ function toggleColumnActive(): void {
   const header = columnTitle.value?.textContent?.trim();
 
   if (header !== undefined) {
-    column.value = store.application.state.columns.find(
+    column.value = store.state.columns.find(
       (column) => column.header === header
     );
 

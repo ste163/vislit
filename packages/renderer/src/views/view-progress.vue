@@ -2,7 +2,7 @@
 import { computed, ref, inject, onMounted, watch } from "vue";
 import type { Store } from "../store";
 import type { Goal, Progress } from "interfaces";
-import FormProgress from "../components/form-progress.vue";
+import ProgressForm from "../components/progress-form.vue";
 
 const store = inject("store") as Store;
 
@@ -51,7 +51,7 @@ const monthDoubleDigit = computed(() =>
 const yearString = computed(() => selectedYear.value.toString());
 
 const activeGoal = computed(() => {
-  const goals = store.projects.state.active?.goals?.filter(
+  const goals = store.state.activeProject?.goals?.filter(
     (goal) => goal.active
   );
   if (goals) return goals[0];
@@ -109,7 +109,7 @@ async function fetchProgress(year: string, month: string): Promise<void> {
   try {
     const { api } = window;
     const dates = {
-      projectId: store.projects.state.active?.id,
+      projectId: store.state.activeProject?.id,
       year: year,
       month: month,
     };
@@ -150,12 +150,13 @@ watch(
   <!-- Probably should do it so:
 1. You can only add progress for dates starting from the active goal. Ie, you can't change old progress. it gets locked down. If you have -->
   <!-- So if the goalId doesn't match the activeGoalId, don't allow for editing or deleting that progress -->
+  <!-- TODO: Can only add progress ON or AFTER the Project's date created -->
   <h1>Progress</h1>
   <div>
     <!-- TODO: Improve loading so it doesn't unmount table (causes major lag) -->
     <div v-if="isLoading">LOADING...</div>
     <div v-else>
-      <div v-if="store.projects.state.active?.goals?.length === 0">
+      <div v-if="store.state.activeProject?.goals?.length === 0">
         <h2>Create a Goal to track writing progress</h2>
       </div>
       <div v-else>
@@ -184,12 +185,12 @@ watch(
             <!--  -->
             <!-- Also, listen for the progressSaved event and then re-fetch data -->
             <!-- Also, only allow for progress entering if there is an active goal -->
-            <form-progress
+            <progress-form
               v-for="({ date, progress }, index) in combinedProgressAndDates"
               :key="index"
               :date="date"
               :current-progress="progress"
-              :project-id="(store.projects.state.active?.id as string)"
+              :project-id="(store.state.activeProject?.id as string)"
               :goal-id="(activeGoal?.id as string)"
               @progress-saved="
                 async () => await fetchProgress(yearString, monthDoubleDigit)
