@@ -121,6 +121,9 @@ async function fetchTodaysProgress(): Promise<void> {
   }
 }
 
+// Must do both onMounted and Watch because the projectId & activeGoal
+// aren't set on the initial mount if the app loads to this page.
+// Subsequent mounts for this page will run because global state has been set
 onMounted(fetchTodaysProgress);
 watch(() => store.state.activeGoal, fetchTodaysProgress);
 </script>
