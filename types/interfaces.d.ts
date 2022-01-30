@@ -45,6 +45,14 @@ declare module "interfaces" {
     completed?: boolean; // this should be dynamically checked against the goal instead of saved into db on Get, otherwise it could become outdated
   }
 
+  interface Note {
+    id?: string;
+    projectId: string;
+    title: string;
+    dateCreated?: Date | string;
+    dateModified?: Date | string;
+  }
+
   // Potentially move out of interfaces because only Renderer process needs to know about these
   interface DropZone {
     name: string;

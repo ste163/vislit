@@ -34,7 +34,7 @@ class ProjectRepository {
     return project;
   }
 
-  getAll(): Array<Project> {
+  getAll(): Project[] {
     const projects = this.#database.db.data!.projects;
     const projectsWithTypes = projects.map((project) =>
       this.#includeProjectType(project)

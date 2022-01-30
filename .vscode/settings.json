@@ -2,8 +2,10 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "css.validate": false,
   "eslint.format.enable": true,
+  "prettier.enable": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "[typescript]": {
+    "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "eslint.validate": ["vue", "javascript", "typescript"],
