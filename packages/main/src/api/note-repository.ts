@@ -8,8 +8,6 @@ class NoteRepository {
     this.#database = database;
   }
 
-  // getByTitle - possibly, to check for duplicate titles
-  // add(note)
   // update(note)
   // delete(note)
 
@@ -22,6 +20,16 @@ class NoteRepository {
 
   getById(id: string): Note | undefined {
     return this.#database.db.data!.notes.find((note) => note?.id === id);
+  }
+
+  getByTitle(title: string): Note | undefined {
+    return this.#database.db.data!.notes.find((note) => note.title === title);
+  }
+
+  add(note: Note): Note {
+    this.#database.db.data!.notes.push(this.#database.generateUniqueId(note));
+    this.#database.db.write();
+    return this.getByTitle(note.title) as Note; // will always be a Note or the app would crash by now
   }
 }
 

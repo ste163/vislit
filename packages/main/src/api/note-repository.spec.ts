@@ -1,6 +1,7 @@
 /**
  * @jest-environment node
  */
+import type { Note } from "interfaces";
 import Database from "../database";
 import NoteRepository from "./note-repository";
 
@@ -101,5 +102,34 @@ describe("note-repository", () => {
       dateCreated: noteDate1,
       dateModified: noteDate1,
     });
+  });
+
+  it("returns undefined if no note by title found", () => {
+    expect(noteRepository.getByTitle("Something Note")).toBeUndefined();
+  });
+
+  it("returns note by title", () => {
+    expect(noteRepository.getByTitle("First Note")).toEqual({
+      id: "1",
+      projectId: "1",
+      title: "First Note",
+      dateCreated: noteDate1,
+      dateModified: noteDate1,
+    });
+  });
+
+  it("returns added note", () => {
+    const note: Note = {
+      title: "Characters",
+      projectId: "1",
+    };
+
+    const originalCount = database.db.data!.notes.length;
+    const addedNote = noteRepository.add(note);
+    const newCount = database.db.data!.notes.length;
+
+    expect(addedNote).toHaveProperty("id");
+    expect(addedNote.title).toBe("Characters");
+    expect(originalCount + 1).toBe(newCount);
   });
 });
