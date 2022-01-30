@@ -77,6 +77,7 @@ class ProgressController {
       const project = this.#projectController.getById(progress.projectId);
       if (project instanceof Error) throw project;
 
+      // ensure there's a goal
       const goal = project!.goals!.find(
         (goal: Goal) => goal.id === progress.goalId
       );
@@ -91,7 +92,6 @@ class ProgressController {
       );
 
       if (!existingProgress) return this.#progressRepository.add(progress);
-
       // If user reset all data/unchecked, delete progress
       return progress.count === 0 &&
         progress.edited === false &&

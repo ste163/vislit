@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { ref, inject, computed, watch, onMounted } from "vue";
 import type { Store } from "../store";
-import type { Goal, Project } from "interfaces";
+import type { Goal, Progress, Project } from "interfaces";
 import BaseTemplateCard from "../components/base-template-card.vue";
 import BaseCardContent from "../components/base-card-content.vue";
 import BaseButtonClick from "../components/base-button-click.vue";
 import BaseModal from "../components/base-modal.vue";
 import ProjectForm from "../components/project-form.vue";
 import ProjectDeleteModal from "../components/project-delete-modal.vue";
+import ProgressForm from "../components/progress-form.vue";
 import NotificationDot from "../components/notification-dot.vue";
 import ButtonEllipsis from "../components/button-ellipsis.vue";
 import ButtonEllipsisItem from "../components/button-ellipsis-item.vue";
@@ -26,11 +27,19 @@ const isCreateGoalFormModalActive = ref<boolean>(false);
 const isManageGoalModalActive = ref<boolean>(false);
 const isDeleteModalActive = ref<boolean>(false);
 const isEllipsisMenuActive = ref<boolean>(false);
+const todaysProgress = ref<Progress | undefined>(undefined);
 
 // Dislike this. Move it to the store. We should only be reading
 // the computed
 const activeProject = computed(() => {
   return store.state.activeProject as Project;
+});
+
+const todaysDate = computed(() => {
+  // progress form requires 0 for all times & ISOstring
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return today.toISOString();
 });
 
 const formattedDate = useDateFormatFull(activeProject.value?.dateModified);
@@ -88,7 +97,6 @@ const ellipsisMenuArchivedText = computed(() => {
 });
 
 async function fetchTodaysProgress(): Promise<void> {
-  console.log("MOUNTED");
   if (store.state.activeGoal && store.state.activeProject?.id) {
     try {
       const { api } = window;
@@ -96,15 +104,16 @@ async function fetchTodaysProgress(): Promise<void> {
         projectId: store.state.activeProject.id,
         date: new Date().toISOString(),
       };
-      const response: Goal = (await api.send(
+      const response: Progress = (await api.send(
         "progress-get-by-date",
         request
-      )) as Goal;
-      console.log("GOAL FROM DB", response);
-      if (!response || response instanceof Error) {
+      )) as Progress;
+      if (response instanceof Error) {
         // display toast
         console.error(response);
+        return;
       }
+      todaysProgress.value = response;
     } catch (error: any | Error) {
       // toast
       console.error(error);
@@ -212,8 +221,31 @@ watch(() => store.state.activeGoal, fetchTodaysProgress);
     </base-card-content>
 
     <!-- Can only add progress if there's an active goal -->
-    <base-card-content v-if="store.state.activeGoal">
+    <base-card-content v-if="store.state.activeGoal?.id && activeProject.id">
       <template #header> Progress </template>
+      <table class="table-auto text-sm">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Word/Page Count</th>
+            <th>Proofread</th>
+            <th>Edited</th>
+            <th>Revised</th>
+            <th>Completed</th>
+            <th>Save</th>
+          </tr>
+        </thead>
+        <tbody>
+          <progress-form
+            :key="todaysProgress?.count"
+            :date="todaysDate"
+            :project-id="activeProject.id"
+            :goal-id="store.state.activeGoal.id"
+            :current-progress="todaysProgress"
+            @progress-saved="fetchTodaysProgress"
+          />
+        </tbody>
+      </table>
     </base-card-content>
 
     <base-card-content>
