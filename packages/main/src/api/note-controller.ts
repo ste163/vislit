@@ -65,7 +65,29 @@ class NoteController {
     }
   }
 
-  // update(note)
+  update(note: Note): Note | Error {
+    try {
+      const noteToUpdate = this.getById(note.id);
+      if (noteToUpdate instanceof Error) return noteToUpdate;
+
+      const originalNoteForIndex = { ...noteToUpdate };
+
+      if (note.title.trim() !== noteToUpdate.title)
+        this.#checkForTitleTaken(note.title, note.projectId);
+
+      // update only certain properties
+      noteToUpdate.title = note.title.trim();
+      noteToUpdate.dateModified = new Date();
+
+      const updatedNote = this.#noteRepository.update(noteToUpdate);
+      this.#searchController.updateNote(originalNoteForIndex, updatedNote);
+      return updatedNote;
+    } catch (e: any | Error) {
+      console.error(e);
+      return e;
+    }
+  }
+
   // delete(note)
 }
 

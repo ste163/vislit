@@ -133,4 +133,45 @@ describe("project-controller-integration", () => {
     expect(response.title).toEqual("Newest Note");
     expect(searchResult[0].title).toBe("Newest Note");
   });
+
+  it("returns error if trying to update note by id not in db", () => {
+    const note: Note = {
+      id: "999",
+      projectId: "1",
+      title: "First Note",
+    };
+
+    expect(noteController.update(note)).toEqual(
+      new Error("Note with id 999 not in database")
+    );
+  });
+
+  it("returns error if trying to update note with title already in db", () => {
+    const note: Note = {
+      id: "2",
+      projectId: "1",
+      title: "First Note",
+    };
+
+    expect(noteController.update(note)).toEqual(
+      new Error("Note title already in database")
+    );
+  });
+
+  it("returns updated searchable note after update", () => {
+    const note: Note = {
+      id: "2",
+      projectId: "1",
+      title: "Updated Second Note",
+    };
+
+    const originalCount = database.db.data!.notes.length;
+    const response = noteController.update(note);
+    const newCount = database.db.data!.notes.length;
+    const searchResult = searchController.searchNotes(response.title);
+
+    expect(originalCount).toEqual(newCount);
+    expect(response.title).toEqual("Updated Second Note");
+    expect(searchResult[0].title).toEqual("Updated Second Note");
+  });
 });
