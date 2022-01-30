@@ -8,9 +8,6 @@ class NoteRepository {
     this.#database = database;
   }
 
-  // update(note)
-  // delete(note)
-
   getAll(projectId: string): Note[] {
     // for now, only returning notes in alphabetical order
     return this.#database.db.data!.notes.filter(
@@ -30,6 +27,24 @@ class NoteRepository {
     this.#database.db.data!.notes.push(this.#database.generateUniqueId(note));
     this.#database.db.write();
     return this.getByTitle(note.title) as Note; // will always be a Note or the app would crash by now
+  }
+
+  update(note: Note): Note {
+    const filteredNotes = this.#database.db.data!.notes.filter(
+      (n) => n.id !== note.id
+    );
+    filteredNotes.push(note);
+    this.#database.db.data!.notes = filteredNotes;
+    this.#database.db.write();
+    return this.getById(note.id as string) as Note;
+  }
+
+  delete(id: string): void {
+    const filteredNotes = this.#database.db.data!.notes.filter(
+      (n) => n.id !== id
+    );
+    this.#database.db.data!.notes = filteredNotes;
+    this.#database.db.write();
   }
 }
 

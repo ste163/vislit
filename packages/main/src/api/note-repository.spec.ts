@@ -119,6 +119,8 @@ describe("note-repository", () => {
   });
 
   it("returns added note", () => {
+    // A real note by this point would have dateCreated & modified
+    // but those will be set in controller
     const note: Note = {
       title: "Characters",
       projectId: "1",
@@ -131,5 +133,30 @@ describe("note-repository", () => {
     expect(addedNote).toHaveProperty("id");
     expect(addedNote.title).toBe("Characters");
     expect(originalCount + 1).toBe(newCount);
+  });
+
+  it("returns updated note", () => {
+    const note: Note = {
+      id: "1",
+      projectId: "1",
+      title: "First Note that's Updated",
+      dateCreated: noteDate1,
+      dateModified: noteDate1,
+    };
+
+    const originalCount = database.db.data!.notes.length;
+    const updatedNote = noteRepository.update(note);
+    const newCount = database.db.data!.notes.length;
+
+    expect(originalCount).toEqual(newCount);
+    expect(updatedNote.title).toEqual("First Note that's Updated");
+  });
+
+  it("returns void after deleting", () => {
+    const originalCount = database.db.data!.notes.length;
+    noteRepository.delete("2");
+    const newCount = database.db.data!.notes.length;
+
+    expect(originalCount - 1).toEqual(newCount);
   });
 });
