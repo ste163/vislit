@@ -219,10 +219,12 @@ ipcMain.handle(
   }
 );
 
-ipcMain.handle("progress-get-by-date", (_e, date: any) => {
-  // update parameter & type
-  console.log("GET PROGRESS BY DATE", date);
-});
+ipcMain.handle(
+  "progress-get-by-date",
+  (_e, request: { projectId: string; date: string }) => {
+    return progressController.getByDate(request.projectId, request.date);
+  }
+);
 
 ipcMain.handle("progress-modify", (_e, progress: Progress) => {
   // zod schema MUST ensure the date is an ISOstring otherwise, everything breaks

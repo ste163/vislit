@@ -10,7 +10,7 @@ import InputCheckBox from "./input-check-box.vue";
 
 const props = defineProps({
   date: {
-    type: String,
+    type: String, // must be an ISOString with time set to 0000
     required: true,
   },
   projectId: {
