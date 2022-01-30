@@ -124,11 +124,11 @@ describe("note-repository", () => {
   });
 
   it("returns undefined if no note by title found", () => {
-    expect(noteRepository.getByTitle("Something Note")).toBeUndefined();
+    expect(noteRepository.getByTitle("Something Note", "1")).toBeUndefined();
   });
 
   it("returns note by title", () => {
-    expect(noteRepository.getByTitle("First Note")).toEqual({
+    expect(noteRepository.getByTitle("First Note", "1")).toEqual({
       id: "1",
       projectId: "1",
       title: "First Note",

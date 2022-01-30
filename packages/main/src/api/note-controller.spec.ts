@@ -103,4 +103,34 @@ describe("project-controller-integration", () => {
       dateModified: seedDate,
     });
   });
+
+  it("returns error if trying to add note with a title and projectId already in database", () => {
+    const note: Note = {
+      projectId: "1",
+      title: "First Note",
+      dateCreated: seedDate,
+      dateModified: seedDate,
+    };
+
+    expect(noteController.add(note)).toEqual(
+      new Error("Note title already in database")
+    );
+  });
+
+  it("returns note and is searchable after adding", () => {
+    const note: Note = {
+      projectId: "1",
+      title: "  Newest Note   ",
+    };
+
+    const originalCount = database.db.data!.notes.length;
+    const response = noteController.add(note);
+    const newCount = database.db.data!.notes.length;
+    const searchResult = searchController.searchNotes(response.title);
+
+    expect(originalCount + 1).toEqual(newCount);
+    expect(response).toHaveProperty("id");
+    expect(response.title).toEqual("Newest Note");
+    expect(searchResult[0].title).toBe("Newest Note");
+  });
 });

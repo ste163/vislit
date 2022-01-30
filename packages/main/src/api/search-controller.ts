@@ -85,4 +85,8 @@ export default class SearchController {
   searchProjects(query: string) {
     return this.#projectSearchIndex.search(query);
   }
+
+  searchNotes(query: string) {
+    return this.#noteSearchIndex.search(query);
+  }
 }

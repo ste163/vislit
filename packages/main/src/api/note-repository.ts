@@ -24,14 +24,16 @@ class NoteRepository {
     return this.#database.db.data!.notes.find((note) => note?.id === id);
   }
 
-  getByTitle(title: string): Note | undefined {
-    return this.#database.db.data!.notes.find((note) => note.title === title);
+  getByTitle(title: string, projectId: string): Note | undefined {
+    return this.#database.db.data!.notes.find(
+      (note) => note.title === title && note.projectId === projectId
+    );
   }
 
   add(note: Note): Note {
     this.#database.db.data!.notes.push(this.#database.generateUniqueId(note));
     this.#database.db.write();
-    return this.getByTitle(note.title) as Note; // will always be a Note or the app would crash by now
+    return this.getByTitle(note.title, note.projectId) as Note; // will always be a Note or the app would crash by now
   }
 
   update(note: Note): Note {

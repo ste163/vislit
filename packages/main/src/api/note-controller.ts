@@ -19,8 +19,8 @@ class NoteController {
     this.#fileSystemController = fileSystemController;
   }
 
-  #checkForTitleTaken(title: string): void {
-    const note = this.#noteRepository.getByTitle(title);
+  #checkForTitleTaken(title: string, projectId: string): void {
+    const note = this.#noteRepository.getByTitle(title, projectId);
     if (note) throw new Error("Note title already in database");
   }
 
@@ -46,7 +46,25 @@ class NoteController {
     }
   }
 
-  // add(note)
+  add(note: Note): Note | Error {
+    try {
+      note.title = note.title.trim();
+      this.#checkForTitleTaken(note.title, note.projectId);
+
+      const date = new Date();
+      note.dateCreated = date;
+      note.dateModified = date;
+
+      const response = this.#noteRepository.add(note);
+      this.#searchController.addNote(response);
+      // fileSystem, add note file
+      return response;
+    } catch (e: any | Error) {
+      console.error(e);
+      return e;
+    }
+  }
+
   // update(note)
   // delete(note)
 }
