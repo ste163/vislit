@@ -8,7 +8,12 @@ class NoteRepository {
     this.#database = database;
   }
 
-  getAll(projectId: string): Note[] {
+  getAll(): Note[] {
+    // used only by searchController to index all notes
+    return this.#database.db.data!.notes;
+  }
+
+  getAllByProjectId(projectId: string): Note[] {
     // for now, only returning notes in alphabetical order
     return this.#database.db.data!.notes.filter(
       (note) => note.projectId === projectId
