@@ -15,6 +15,7 @@ import GoalRepository from "./api/goal-repository";
 import GoalController from "./api/goal-controller";
 import ProgressRepository from "./api/progress-repository";
 import ProgressController from "./api/progress-controller";
+import NoteRepository from "./api/note-repository";
 
 // declared outside of try block so it can be accessed by IPC
 let projectController: ProjectController;
@@ -31,7 +32,11 @@ try {
   const typeRepository = new TypeRepository(database);
   const goalRepository = new GoalRepository(database);
   const progressRepository = new ProgressRepository(database);
-  const searchController = new SearchController(projectRepository);
+  const noteRepository = new NoteRepository(database);
+  const searchController = new SearchController(
+    projectRepository,
+    noteRepository
+  );
   projectController = new ProjectController(
     projectRepository,
     searchController,

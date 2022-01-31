@@ -33,7 +33,7 @@ class GoalController {
 
       return this.#goalRepository.add(goal);
     } catch (error: any | Error) {
-      console.log(error);
+      console.error(error);
       return error;
     }
   }
@@ -64,7 +64,7 @@ class GoalController {
 
       return this.#goalRepository.update(goal);
     } catch (error: any | Error) {
-      console.log(error);
+      console.error(error);
       return error;
     }
   }
@@ -98,7 +98,7 @@ class GoalController {
       goal.dateModified = newGoalDate;
       return this.#goalRepository.add(goal);
     } catch (error: any | Error) {
-      console.log(error);
+      console.error(error);
       return error;
     }
   }
@@ -111,7 +111,7 @@ class GoalController {
       this.#goalRepository.delete(id);
       return true;
     } catch (error: any | Error) {
-      console.log(error);
+      console.error(error);
       return error;
     }
   }

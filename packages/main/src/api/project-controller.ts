@@ -68,13 +68,12 @@ class ProjectController {
   update(project: Project): Project | Error {
     try {
       const projectToUpdate = this.getById(project.id!);
+      if (projectToUpdate instanceof Error) return projectToUpdate;
       // Must get a copy of original project
       // before its updated, so it can be removed from search index
       const originalProjectForIndex = { ...projectToUpdate };
 
-      if (projectToUpdate instanceof Error) return projectToUpdate; // returns thrown error
-
-      if (project.title !== projectToUpdate.title)
+      if (project.title.trim() !== projectToUpdate.title)
         this.#checkForTitleTaken(project.title);
 
       // Update only certain properties
@@ -100,7 +99,6 @@ class ProjectController {
   delete(id: string): true | Error {
     try {
       const project = this.getById(id);
-
       if (project instanceof Error) throw new Error("Project not in database");
 
       this.#projectRepository.delete(id);

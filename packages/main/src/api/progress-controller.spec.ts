@@ -5,6 +5,7 @@ import type { Project, Goal, Progress } from "interfaces";
 import Database from "../database";
 import type FileSystemController from "./file-system-controller";
 import GoalRepository from "./goal-repository";
+import NoteRepository from "./note-repository";
 import ProgressController from "./progress-controller";
 import ProgressRepository from "./progress-repository";
 import ProjectController from "./project-controller";
@@ -17,6 +18,7 @@ describe("progress-controller-integration", () => {
   let seedProgress: Progress[];
   let database: Database;
   let goalRepository: GoalRepository;
+  let noteRepository: NoteRepository;
   let progressRepository: ProgressRepository;
   let projectRepository: ProjectRepository;
   let searchController: SearchController;
@@ -155,8 +157,9 @@ describe("progress-controller-integration", () => {
 
     goalRepository = new GoalRepository(database);
     projectRepository = new ProjectRepository(database);
+    noteRepository = new NoteRepository(database);
     progressRepository = new ProgressRepository(database);
-    searchController = new SearchController(projectRepository);
+    searchController = new SearchController(projectRepository, noteRepository);
     const mockFileSystemController = {} as unknown as FileSystemController;
     projectController = new ProjectController(
       projectRepository,

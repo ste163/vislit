@@ -1,19 +1,32 @@
 import Minisearch from "minisearch";
-import type { Project } from "interfaces";
+import type { Project, Note } from "interfaces";
 import type ProjectRepository from "./project-repository";
+import type NoteRepository from "./note-repository";
 
+// TODO: only import the Database instance
+// no need for controllers as we're pulling all the data
+// Once done:
+// - remove the getAll from notes
+// - update tests
 export default class SearchController {
   #projectRepository: ProjectRepository;
+  #noteRepository: NoteRepository;
   #projectSearchIndex: Minisearch<any>;
+  #noteSearchIndex: Minisearch<any>;
 
-  constructor(projectRepository: ProjectRepository) {
+  constructor(
+    projectRepository: ProjectRepository,
+    noteRepository: NoteRepository
+  ) {
     this.#projectRepository = projectRepository;
-    this.#projectSearchIndex = this.createProjectSearchIndex(
+    this.#noteRepository = noteRepository;
+    this.#projectSearchIndex = this.#createProjectSearchIndex(
       this.#projectRepository
     );
+    this.#noteSearchIndex = this.#createNoteSearchIndex(this.#noteRepository);
   }
 
-  createProjectSearchIndex(projectRepository: ProjectRepository) {
+  #createProjectSearchIndex(projectRepository: ProjectRepository) {
     const projects = projectRepository.getAll();
     const searchIndex = new Minisearch({
       fields: ["title", "description"],
@@ -24,16 +37,25 @@ export default class SearchController {
       },
     });
 
-    searchIndex.addAll(projects); // Index projects synchronously
+    searchIndex.addAll(projects); // index projects synchronously
+    return searchIndex;
+  }
+
+  #createNoteSearchIndex(noteRepository: NoteRepository) {
+    const notes = noteRepository.getAll();
+    const searchIndex = new Minisearch({
+      fields: ["title"],
+      storeFields: ["id", "title"],
+      searchOptions: {
+        fuzzy: 0.2,
+      },
+    });
+    searchIndex.addAll(notes); // index notes synchronously
     return searchIndex;
   }
 
   addProject(project: Project) {
     this.#projectSearchIndex.add(project);
-  }
-
-  deleteProject(project: Project) {
-    this.#projectSearchIndex.remove(project);
   }
 
   updateProject(originalProject: Project, updatedProject: Project) {
@@ -43,7 +65,28 @@ export default class SearchController {
     this.#projectSearchIndex.add(updatedProject);
   }
 
+  deleteProject(project: Project) {
+    this.#projectSearchIndex.remove(project);
+  }
+
+  addNote(note: Note) {
+    this.#noteSearchIndex.add(note);
+  }
+
+  updateNote(originalNote: Note, updatedNote: Note) {
+    this.#noteSearchIndex.remove(originalNote);
+    this.#noteSearchIndex.add(updatedNote);
+  }
+
+  deleteNote(note: Note) {
+    this.#noteSearchIndex.remove(note);
+  }
+
   searchProjects(query: string) {
     return this.#projectSearchIndex.search(query);
+  }
+
+  searchNotes(query: string) {
+    return this.#noteSearchIndex.search(query);
   }
 }
