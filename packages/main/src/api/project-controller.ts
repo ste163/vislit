@@ -99,7 +99,6 @@ class ProjectController {
   delete(id: string): true | Error {
     try {
       const project = this.getById(id);
-
       if (project instanceof Error) throw new Error("Project not in database");
 
       this.#projectRepository.delete(id);

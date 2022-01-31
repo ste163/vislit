@@ -88,7 +88,21 @@ class NoteController {
     }
   }
 
-  // delete(note)
+  delete(id: string): true | Error {
+    try {
+      const note = this.getById(id);
+      if (note instanceof Error)
+        throw new Error(`Note with id ${id} not in database`);
+
+      this.#noteRepository.delete(id);
+      this.#searchController.deleteNote(note);
+
+      return true; // don't return true, just check if the repsonse is not an instance of an error
+    } catch (e: any | Error) {
+      console.error(e);
+      return e;
+    }
+  }
 }
 
 export default NoteController;

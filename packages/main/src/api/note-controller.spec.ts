@@ -174,4 +174,18 @@ describe("project-controller-integration", () => {
     expect(response.title).toEqual("Updated Second Note");
     expect(searchResult[0].title).toEqual("Updated Second Note");
   });
+
+  it("returns error if trying to delete note by id not in database", () => {
+    expect(noteController.delete("999")).toEqual(
+      new Error("Note with id 999 not in database")
+    );
+  });
+
+  it("returns true and note no longer searchable after delete", () => {
+    const response = noteController.delete("2");
+    const searchResult = searchController.searchNotes("second");
+
+    expect(response).toEqual(true);
+    expect(searchResult).toEqual([]);
+  });
 });
