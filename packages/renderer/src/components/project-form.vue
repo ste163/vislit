@@ -41,7 +41,7 @@ const validationSchema = toFormValidator(
 
 const initialFormValues = {
   title: props.currentProject.title,
-  type: props.currentProject.typeId, // might need to be mapped to the Type
+  type: props.currentProject.typeId,
   description: props.currentProject.description,
 };
 
