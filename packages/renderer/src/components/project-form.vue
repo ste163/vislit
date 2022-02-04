@@ -79,6 +79,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
 
       const response = (await api.send("projects-add", newProject)) as Project;
 
+      // Change to check for error first, then throw the repsonse if there is one
       if (response && response instanceof Error === false) {
         // Display success message
         await store.getProjects();

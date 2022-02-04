@@ -22,6 +22,9 @@ const validChannels = [
   "writer-get-most-recent",
   "writer-get-by-id",
   "writer-save",
+  "notes-get-all-by-project-id",
+  "notes-get-by-id",
+  "notes-add",
 ];
 
 // Expose protected methods that allow the renderer process to use

@@ -67,7 +67,7 @@ class NoteController {
 
   update(note: Note): Note | Error {
     try {
-      const noteToUpdate = this.getById(note.id);
+      const noteToUpdate = this.getById(note.id!);
       if (noteToUpdate instanceof Error) return noteToUpdate;
 
       const originalNoteForIndex = { ...noteToUpdate };

@@ -65,6 +65,9 @@ export class Store {
     });
   }
 
+  // For SAFETY
+  // Have computed getState for all external state that is readOnly
+
   #setProjects = (allProjects: Project[]): void => {
     this.state.projects = allProjects;
   };
