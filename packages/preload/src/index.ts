@@ -21,12 +21,12 @@ const validChannels = [
   "progress-modify",
   "writer-get-most-recent",
   "writer-get-by-id",
-  "writer-save",
   "notes-get-all-by-project-id",
   "notes-get-by-id",
   "notes-add",
   "notes-update",
   "notes-delete",
+  "html-save",
 ];
 
 // Expose protected methods that allow the renderer process to use

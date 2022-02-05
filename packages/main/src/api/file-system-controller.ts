@@ -36,6 +36,10 @@ class FileSystemController {
 
   writeHtmlFile(htmlData: htmlData): true | Error {
     try {
+      // Based on data type,
+      // project: save createdAt date + id -> needs versioning based on date
+      // note: save id -> will not have versioning for notes
+
       const userData = `${this.getUserDataPath()}/projects/${htmlData.id}/${
         htmlData.type
       }/${new Date(htmlData.createdAt).toISOString().split("T")[0]}-${
@@ -48,6 +52,13 @@ class FileSystemController {
       return error;
     }
   }
+
+  // deleteHtmlFile(htmlData: htmlData): true | error {
+  //  // check that the file exists based on type: project or note
+  //  // read the directorty
+  //  // if it exists, delete the single file
+  //  // return true or error
+  // }
 
   readMostRecentHtmlFile(
     id: string,

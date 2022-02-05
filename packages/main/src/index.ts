@@ -252,16 +252,13 @@ ipcMain.handle("writer-get-by-id", (_e, projectId: string) => {
   console.log("GET PROJECTS FOR", projectId);
 });
 
-ipcMain.handle("writer-save", (_e, data: htmlData) => {
-  return fileSystemController.writeHtmlFile(data);
-});
-
 // Notes
 ipcMain.handle("notes-get-all-by-project-id", (_e, projectId: string) => {
   return noteController.getAllByProjectId(projectId);
 });
 
 ipcMain.handle("notes-get-by-id", (_e, id: string) => {
+  // TODO: return the html data here
   return noteController.getById(id);
 });
 
@@ -275,4 +272,10 @@ ipcMain.handle("notes-update", (_e, Note: Note) => {
 
 ipcMain.handle("notes-delete", (_e, id: string) => {
   return noteController.delete(id);
+});
+
+// Html
+ipcMain.handle("html-save", (_e, data: htmlData) => {
+  // Store note or project based on htmlData.type
+  return fileSystemController.writeHtmlFile(data);
 });

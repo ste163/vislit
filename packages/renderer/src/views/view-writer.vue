@@ -23,7 +23,7 @@ async function onSubmit(): Promise<void> {
       type: "documents",
       createdAt: new Date(),
     };
-    const response = await api.send("writer-save", data);
+    const response = await api.send("html-save", data);
     // check if error
     // or true
     // display success or error banner
@@ -44,6 +44,7 @@ onMounted(async () => {
       "writer-get-most-recent",
       store.state.activeProject?.id
     )) as Content;
+    // check response data for error
     editor.value.commands.setContent(mostRecentDocument);
   } catch (error: any | Error) {
     console.error(error);
