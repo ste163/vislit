@@ -9,7 +9,7 @@ import type { RouteLocationRaw } from "vue-router";
 import { useRouter } from "vue-router";
 import type { Store } from "../store";
 import BaseButtonClick from "./base-button-click.vue";
-import ColumnListHeader from "./column-list-header.vue";
+
 import ColumnListItem from "./column-list-item.vue";
 
 const store = inject("store") as Store;
@@ -66,16 +66,14 @@ watch(
 
 onMounted(async () => {
   // Always get the most up-to-date list of projects when column opens
-  if (store !== null && store.state.activeProject !== null) {
+  if (store !== null && store.state.activeProject !== null)
     await store.getProjects();
-  }
 });
 </script>
 
 <template>
   <div>
-    <!-- Move the Create button, checkbox & search bar into ColumnListControls component -->
-    <div class="column-list-controls">
+    <div>
       <base-button-click :background-color="'var(--white)'" @click="emitClick">
         Create Project
       </base-button-click>
@@ -86,7 +84,7 @@ onMounted(async () => {
     <!-- If searching for anything, hide all other items, and make the header say: Filtering by: term -->
 
     <div v-if="inProgressProjects.length > 0">
-      <column-list-header>In Progress</column-list-header>
+      <div class="column-list-header">In Progress</div>
       <!-- List of Items -> to be moved into ColumnListItem -->
       <div class="column-list-item-container">
         <column-list-item
@@ -100,7 +98,7 @@ onMounted(async () => {
 
     <!-- style as greyed? -->
     <div v-if="completedProjects.length > 0">
-      <column-list-header>Completed</column-list-header>
+      <div class="column-list-header">Completed</div>
       <div class="column-list-item-container">
         <column-list-item
           v-for="project in completedProjects"
@@ -113,7 +111,7 @@ onMounted(async () => {
 
     <!-- Style as greyed -->
     <div v-if="archivedCompletedProjects.length > 0">
-      <column-list-header>Archived, Completed</column-list-header>
+      <div class="column-list-header">Archived, Completed</div>
       <div class="column-list-item-container">
         <column-list-item
           v-for="project in archivedCompletedProjects"
@@ -126,7 +124,7 @@ onMounted(async () => {
 
     <!-- Style as greyed -->
     <div v-if="archivedRetiredProjects.length > 0">
-      <column-list-header>Archived, Retired</column-list-header>
+      <div class="column-list-header">Archived, Retired</div>
       <div class="column-list-item-container">
         <column-list-item
           v-for="project in archivedRetiredProjects"
@@ -140,10 +138,7 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.column-list-controls {
-  margin: 1em 0 2em 0;
-  padding: 0.5em 0.75em;
-}
+/* Convert to tailwind */
 
 .column-list-header {
   font-size: 0.85rem;
