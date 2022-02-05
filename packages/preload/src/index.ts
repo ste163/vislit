@@ -25,6 +25,8 @@ const validChannels = [
   "notes-get-all-by-project-id",
   "notes-get-by-id",
   "notes-add",
+  "notes-update",
+  "notes-delete",
 ];
 
 // Expose protected methods that allow the renderer process to use

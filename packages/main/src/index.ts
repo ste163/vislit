@@ -268,3 +268,11 @@ ipcMain.handle("notes-get-by-id", (_e, id: string) => {
 ipcMain.handle("notes-add", (_e, Note: Note) => {
   return noteController.add(Note);
 });
+
+ipcMain.handle("notes-update", (_e, Note: Note) => {
+  return noteController.update(Note);
+});
+
+ipcMain.handle("notes-delete", (_e, id: string) => {
+  return noteController.delete(id);
+});

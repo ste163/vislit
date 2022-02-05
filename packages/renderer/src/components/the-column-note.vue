@@ -1,3 +1,11 @@
+<!--
+  TODO:
+  move the list view and form view to two components.
+  reasoning?
+  separation of concerns
+  the-column-note should handle orchestration
+  not the specifics of handling the form and handling the list
+ -->
 <script setup lang="ts">
 import { ref, inject, onMounted, watch, computed } from "vue";
 import { z } from "zod";
@@ -26,9 +34,7 @@ async function getNotes(): Promise<void> {
       store.state.activeProject?.id
     )) as Note[];
     if (!response || response instanceof Error) throw response;
-    console.log(response);
-    // To save a re-render for 0 notes, only set state if more than one
-    if (response.length > 0) notes.value = response;
+    notes.value = response;
   } catch (error: any | Error) {
     console.error(error);
   }
@@ -48,6 +54,24 @@ async function setSelectedNote(noteId: string): Promise<void> {
     selectedNote.value = response;
     isEditViewOpen.value = true;
   } catch (error: any | Error) {
+    console.error(error);
+  }
+}
+
+async function onDeleteClick(event: MouseEvent, id: string): Promise<void> {
+  // TODO: Replace with a modal opener
+  // This function will live in the-column-note
+  // and will be used on event delete clicks from List and Form
+  event.stopPropagation();
+  console.log("DELETE CLICK", id);
+  try {
+    const { api } = window;
+    const response = await api.send("notes-delete", id);
+    if (!response || response instanceof Error) throw response;
+    await getNotes();
+    // success notification
+  } catch (error: any | Error) {
+    // error notification
     console.error(error);
   }
 }
@@ -76,15 +100,27 @@ const onSubmit = handleSubmit(async ({ title }) => {
   // This sends only the needed information to the backend
   const { api } = window;
   try {
-    // TODO UPDATE IF SELECTED NOTE EXISTS
-    const response = await api.send("notes-add", {
-      title,
-      projectId: store.state.activeProject?.id,
-    });
+    if (selectedNote.value) {
+      const updatedNote: Note = {
+        id: selectedNote.value.id,
+        projectId: selectedNote.value.projectId,
+        title,
+        dateCreated: selectedNote.value.dateCreated,
+        dateModified: selectedNote.value.dateModified,
+      };
+      const response = await api.send("notes-update", updatedNote);
+      if (!response || response instanceof Error) throw response;
 
-    if (!response || response instanceof Error) throw response;
-
-    console.log(response);
+      // Check for HTML content,
+      // if any changes, update!
+      // then show success notification
+    } else {
+      const response = await api.send("notes-add", {
+        title,
+        projectId: store.state.activeProject?.id,
+      });
+      if (!response || response instanceof Error) throw response;
+    }
 
     // Check for HTML content
     // If there is any, send to backend to create file
@@ -124,7 +160,8 @@ watch(selectedNote, resetForm);
           :key="note.id"
           @click="setSelectedNote(note.id!)"
         >
-          {{ note.title }}
+          <span> {{ note.title }}</span>
+          <button @click="(e) => onDeleteClick(e, note.id!)">Delete</button>
         </div>
       </div>
     </div>

@@ -97,7 +97,7 @@ class NoteController {
       this.#noteRepository.delete(id);
       this.#searchController.deleteNote(note);
 
-      return true; // don't return true, just check if the repsonse is not an instance of an error
+      return true; // returning true instead of undefined because that could potentially mean other things
     } catch (e: any | Error) {
       console.error(e);
       return e;
