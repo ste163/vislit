@@ -93,8 +93,7 @@ class ProjectRepository {
   }
 
   delete(id: string): void {
-    // TODO:
-    // - notes -> delete all from DB. When we delete the project directory, notes files will be deleted, too
+    this.#database.db.chain.get("notes").remove({ projectId: id }).value();
     this.#database.db.chain.get("goals").remove({ projectId: id }).value();
     this.#database.db.chain.get("progress").remove({ projectId: id }).value();
     this.#database.db.chain.get("projects").remove({ id }).value();

@@ -102,10 +102,7 @@ class NoteController {
 
       this.#noteRepository.delete(id);
       this.#searchController.deleteNote(note);
-
-      // TODO:
-      // Delete html file
-      // using fileSystemController.deleteHtmlFile()
+      this.#fileSystemController.deleteNote(id, note.projectId);
 
       return true; // returning true instead of undefined because that could potentially mean other things
     } catch (e: any | Error) {

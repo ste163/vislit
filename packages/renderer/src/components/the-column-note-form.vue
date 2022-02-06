@@ -10,7 +10,7 @@ import ButtonSubmit from "./button-submit.vue";
 import type { PropType, ShallowRef } from "vue";
 import type { Store } from "../store";
 import type { Note } from "interfaces";
-import type { Content, Editor } from "@tiptap/vue-3";
+import type { Editor } from "@tiptap/vue-3";
 
 const store = inject("store") as Store;
 
@@ -101,14 +101,6 @@ const onSubmit = handleSubmit(async ({ title }) => {
 });
 
 watch(() => props.selectedNote, resetForm);
-
-// onMount that checks
-// if there's a selected note
-// if so, fetch note data
-// but potentially do this in the watch
-// as that might be more efficient
-// because it's already "mounted"!!!
-// probably must do in watch
 </script>
 
 <template>

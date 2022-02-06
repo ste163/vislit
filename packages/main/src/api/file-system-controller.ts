@@ -1,10 +1,5 @@
 import fs from "fs";
 
-// TODO:
-// Return array of all files in a directory
-// Delete an individual file
-// Get an individual file by name (related to returning the array as that gives the file name)
-
 export type htmlData = {
   id: string; // projectId or noteId
   html: string;
@@ -58,12 +53,16 @@ class FileSystemController {
     }
   }
 
-  // deleteHtmlFile(htmlData: htmlData): true | error {
-  //  // check that the file exists based on type: project or note
-  //  // read the directorty
-  //  // if it exists, delete the single file
-  //  // return true or error
-  // }
+  deleteNote(id: string, projectId: string): true | Error {
+    try {
+      const userData = `${this.getUserDataPath()}/projects/${projectId}/notes/${id}.html`;
+      fs.rmSync(userData); // will return error if can't find file
+      return true;
+    } catch (error: any | Error) {
+      console.error(error);
+      return error;
+    }
+  }
 
   readNoteById(noteId: string, projectId: string): string | undefined | Error {
     try {
