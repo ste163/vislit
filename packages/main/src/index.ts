@@ -26,9 +26,12 @@ let typeController: TypeController;
 let goalController: GoalController;
 let progressController: ProgressController;
 
+// declared here to access window bounds
+let database: Database;
+
 // For now, instantiate db, controllers, & repos here
 try {
-  const database = new Database(app);
+  database = new Database(app);
   fileSystemController = new FileSystemController(app.getPath("userData"));
   const projectRepository = new ProjectRepository(database);
   const typeRepository = new TypeRepository(database);
@@ -110,6 +113,9 @@ const createWindow = async () => {
       preload: join(__dirname, "../../preload/dist/index.cjs"),
     },
   });
+  // restore last window size and location
+  const bounds = database.db.data?.windowBounds;
+  if (bounds) mainWindow.setBounds(bounds);
 
   /**
    * If you install `show: true` then it can cause issues when trying to close the window.
@@ -159,6 +165,18 @@ app.on("window-all-closed", () => {
 app
   .whenReady()
   .then(createWindow)
+  .then(() => {
+    mainWindow?.on("close", () => {
+      try {
+        // save window bounds to restore window state
+        const bounds = mainWindow?.getBounds();
+        database.db.data!.windowBounds = bounds;
+        database.db.write();
+      } catch (error: any | Error) {
+        console.log("Unable to save window bounds", error);
+      }
+    });
+  })
   .catch((e) => console.error("Failed create window:", e));
 
 // Auto-updates
