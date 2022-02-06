@@ -1,13 +1,14 @@
 import lodash from "lodash";
 import { nanoid } from "nanoid/non-secure";
 import { JSONFileSync, LowSync, MemorySync } from "lowdb";
-import type { App } from "electron";
+import type { App, Rectangle } from "electron";
 import type { Goal, Note, Progress, Project, Type } from "interfaces";
 import type { ObjectChain } from "lodash";
 
 interface VislitDatabase {
   dbType: string;
   dbVersion: string;
+  windowBounds: Rectangle | undefined;
   projects: Project[];
   types: Type[];
   goals: Goal[];
@@ -45,7 +46,8 @@ export default class Database {
         // Set default database structure
         db.data = {
           dbType: "vislit",
-          dbVersion: "0.1", // check version number to decide if database needs to be updated
+          dbVersion: "1.0.0", // check version number to decide if database needs to be updated
+          windowBounds: undefined,
           projects: [],
           types: [
             {
