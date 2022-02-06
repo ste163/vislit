@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+// todo: add test to see if this throws
+// just check if th error throws, not specifically what it is
 export const projectAddRequestSchema = z
   .object({
     title: z.string(),
