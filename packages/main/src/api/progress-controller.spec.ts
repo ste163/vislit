@@ -159,7 +159,7 @@ describe("progress-controller-integration", () => {
     projectRepository = new ProjectRepository(database);
     noteRepository = new NoteRepository(database);
     progressRepository = new ProgressRepository(database);
-    searchController = new SearchController(projectRepository, noteRepository);
+    searchController = new SearchController(database);
     const mockFileSystemController = {} as unknown as FileSystemController;
     projectController = new ProjectController(
       projectRepository,
