@@ -17,7 +17,6 @@ describe("project-controller-integration", () => {
   let noteRepository: NoteRepository;
   let searchController: SearchController;
   let noteController: NoteController;
-  let fileSystemController: FileSystemController;
   const seedDate = new Date();
 
   beforeEach(() => {
@@ -69,9 +68,8 @@ describe("project-controller-integration", () => {
     noteRepository = new NoteRepository(database);
     searchController = new SearchController(projectRepository, noteRepository);
     const mockFileSystemController = {
-      // Change these mocks later
-      makeProjectDirectory: jest.fn(() => undefined),
-      deleteProjectDirectory: jest.fn(() => undefined),
+      readNoteById: jest.fn(() => undefined),
+      deleteNote: jest.fn(() => undefined),
     } as unknown as FileSystemController;
     noteController = new NoteController(
       noteRepository,
@@ -99,6 +97,7 @@ describe("project-controller-integration", () => {
       id: "2",
       projectId: "1",
       title: "Second Note",
+      html: null,
       dateCreated: seedDate,
       dateModified: seedDate,
     });

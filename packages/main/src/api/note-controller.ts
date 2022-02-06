@@ -39,6 +39,12 @@ class NoteController {
       const note = this.#noteRepository.getById(id);
       if (note === undefined)
         throw new Error(`Note with id ${id} not in database`);
+
+      const html = this.#fileSystemController.readNoteById(
+        note.id!,
+        note.projectId
+      );
+      note.html = html instanceof Error || !html ? null : html;
       return note;
     } catch (e: any | Error) {
       console.error(e);
@@ -57,7 +63,7 @@ class NoteController {
 
       const response = this.#noteRepository.add(note);
       this.#searchController.addNote(response);
-      // fileSystem, add note file
+
       return response;
     } catch (e: any | Error) {
       console.error(e);
@@ -67,7 +73,7 @@ class NoteController {
 
   update(note: Note): Note | Error {
     try {
-      const noteToUpdate = this.getById(note.id);
+      const noteToUpdate = this.getById(note.id!);
       if (noteToUpdate instanceof Error) return noteToUpdate;
 
       const originalNoteForIndex = { ...noteToUpdate };
@@ -96,8 +102,9 @@ class NoteController {
 
       this.#noteRepository.delete(id);
       this.#searchController.deleteNote(note);
+      this.#fileSystemController.deleteNote(id, note.projectId);
 
-      return true; // don't return true, just check if the repsonse is not an instance of an error
+      return true; // returning true instead of undefined because that could potentially mean other things
     } catch (e: any | Error) {
       console.error(e);
       return e;

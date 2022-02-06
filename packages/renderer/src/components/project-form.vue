@@ -41,7 +41,7 @@ const validationSchema = toFormValidator(
 
 const initialFormValues = {
   title: props.currentProject.title,
-  type: props.currentProject.typeId, // might need to be mapped to the Type
+  type: props.currentProject.typeId,
   description: props.currentProject.description,
 };
 
@@ -79,6 +79,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
 
       const response = (await api.send("projects-add", newProject)) as Project;
 
+      // Change to check for error first, then throw the repsonse if there is one
       if (response && response instanceof Error === false) {
         // Display success message
         await store.getProjects();

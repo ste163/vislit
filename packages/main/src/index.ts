@@ -2,12 +2,14 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
 import { URL } from "url";
 import { existsSync, mkdirSync } from "fs";
-import type { Goal, Progress, Project } from "interfaces";
+import type { Goal, Note, Progress, Project } from "interfaces";
 import type { htmlData } from "./api/file-system-controller";
 import Database from "./database";
 import FileSystemController from "./api/file-system-controller";
 import ProjectRepository from "./api/project-repository";
 import ProjectController from "./api/project-controller";
+import NoteRepository from "./api/note-repository";
+import NoteController from "./api/note-controller";
 import SearchController from "./api/search-controller";
 import TypeRepository from "./api/type-repository";
 import TypeController from "./api/type-controller";
@@ -15,11 +17,11 @@ import GoalRepository from "./api/goal-repository";
 import GoalController from "./api/goal-controller";
 import ProgressRepository from "./api/progress-repository";
 import ProgressController from "./api/progress-controller";
-import NoteRepository from "./api/note-repository";
 
 // declared outside of try block so it can be accessed by IPC
-let projectController: ProjectController;
 let fileSystemController: FileSystemController;
+let projectController: ProjectController;
+let noteController: NoteController;
 let typeController: TypeController;
 let goalController: GoalController;
 let progressController: ProgressController;
@@ -39,6 +41,11 @@ try {
   );
   projectController = new ProjectController(
     projectRepository,
+    searchController,
+    fileSystemController
+  );
+  noteController = new NoteController(
+    noteRepository,
     searchController,
     fileSystemController
   );
@@ -245,6 +252,29 @@ ipcMain.handle("writer-get-by-id", (_e, projectId: string) => {
   console.log("GET PROJECTS FOR", projectId);
 });
 
-ipcMain.handle("writer-save", (_e, data: htmlData) => {
+// Notes
+ipcMain.handle("notes-get-all-by-project-id", (_e, projectId: string) => {
+  return noteController.getAllByProjectId(projectId);
+});
+
+ipcMain.handle("notes-get-by-id", (_e, id: string) => {
+  return noteController.getById(id);
+});
+
+ipcMain.handle("notes-add", (_e, Note: Note) => {
+  return noteController.add(Note);
+});
+
+ipcMain.handle("notes-update", (_e, Note: Note) => {
+  return noteController.update(Note);
+});
+
+ipcMain.handle("notes-delete", (_e, id: string) => {
+  return noteController.delete(id);
+});
+
+// Html
+ipcMain.handle("html-save", (_e, data: htmlData) => {
+  // Store note or project based on htmlData.type
   return fileSystemController.writeHtmlFile(data);
 });

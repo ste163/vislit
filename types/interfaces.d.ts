@@ -49,6 +49,7 @@ declare module "interfaces" {
     id?: string;
     projectId: string;
     title: string;
+    html?: string | null | undefined; // getById returns note content
     dateCreated?: Date | string;
     dateModified?: Date | string;
   }
