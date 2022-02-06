@@ -12,7 +12,6 @@ import type FileSystemController from "./file-system-controller";
 describe("project-controller-integration", () => {
   let seedData: Project[];
   let database: Database;
-  let noteRepository: NoteRepository;
   let projectRepository: ProjectRepository;
   let searchController: SearchController;
   let projectController: ProjectController;
@@ -48,7 +47,7 @@ describe("project-controller-integration", () => {
 
     database.db.data!.projects = seedData;
     projectRepository = new ProjectRepository(database);
-    noteRepository = new NoteRepository(database);
+    const noteRepository = new NoteRepository(database);
     searchController = new SearchController(database);
     const mockFileSystemController = {
       makeProjectDirectory: jest.fn(() => undefined),
@@ -113,44 +112,11 @@ describe("project-controller-integration", () => {
   it("returns duplicate title error if adding a project with a title already in db", () => {
     expect(
       projectController.add({
-        id: "",
         title: "It",
         description: "A murderous clown attacks a town",
         typeId: "2",
-        completed: false,
-        archived: false,
-        dateCreated: null,
-        dateModified: null,
       })
     ).toEqual(new Error("Project title already in database"));
-  });
-
-  it("returns error when adding project fails", () => {
-    const mockProjectRepository = {
-      add: jest.fn(() => {
-        throw new Error();
-      }),
-      getByTitle: jest.fn(() => undefined),
-    };
-
-    projectController = new ProjectController(
-      mockProjectRepository as unknown as ProjectRepository,
-      searchController,
-      fileSystemController
-    );
-
-    expect(
-      projectController.add({
-        id: "",
-        title: "It",
-        description: "A murderous clown attacks a town",
-        typeId: "2",
-        completed: false,
-        archived: false,
-        dateCreated: null,
-        dateModified: null,
-      })
-    ).toEqual(new Error());
   });
 
   it("returns trimmed project and is searchable after adding", () => {
@@ -158,10 +124,6 @@ describe("project-controller-integration", () => {
       title: "    The Dark Half  ",
       description: "  An evil pseudonym comes to life    ",
       typeId: "2",
-      completed: false,
-      archived: false,
-      dateCreated: null,
-      dateModified: null,
     };
 
     const response = projectController.add(projectToAdd as Project) as Project;

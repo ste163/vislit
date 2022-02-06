@@ -2,6 +2,8 @@ import type { Project } from "interfaces";
 import type SearchController from "./search-controller";
 import type FileSystemController from "./file-system-controller";
 import type ProjectRepository from "./project-repository";
+import type { projectAddRequest} from "../schemas";
+import { projectAddRequestSchema } from "../schemas";
 
 class ProjectController {
   #projectRepository: ProjectRepository;
@@ -44,18 +46,25 @@ class ProjectController {
     }
   }
 
-  add(project: Project): Project | Error {
+  add(project: projectAddRequest): Project | Error {
     try {
+      projectAddRequestSchema.parse(project);
+
       project.title = project.title.trim();
       project.description = project.description.trim();
 
       this.#checkForTitleTaken(project.title);
 
-      const date = new Date();
-      project.dateCreated = date;
-      project.dateModified = date; // setting here so getProjects can always return the most recent project first
+      // Type conversion from request schema to Project
+      const projectToAdd = { ...project } as Project;
 
-      const response = this.#projectRepository.add(project);
+      const date = new Date();
+      projectToAdd.dateCreated = date;
+      projectToAdd.dateModified = date; // setting here so getProjects can always return the most recent project first
+      projectToAdd.completed = false;
+      projectToAdd.archived = false;
+
+      const response = this.#projectRepository.add(projectToAdd);
       this.#searchController.addProject(response);
       this.#fileSystemController.makeProjectDirectory(response.id!);
       return response;

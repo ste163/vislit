@@ -17,6 +17,7 @@ import GoalRepository from "./api/goal-repository";
 import GoalController from "./api/goal-controller";
 import ProgressRepository from "./api/progress-repository";
 import ProgressController from "./api/progress-controller";
+import type { projectAddRequest } from "./schemas";
 
 // declared outside of try block so it can be accessed by IPC
 let fileSystemController: FileSystemController;
@@ -29,7 +30,7 @@ let progressController: ProgressController;
 // declared here to access window bounds
 let database: Database;
 
-// For now, instantiate db, controllers, & repos here
+// for now, instantiate db, controllers, & repos here
 try {
   database = new Database(app);
   fileSystemController = new FileSystemController(app.getPath("userData"));
@@ -179,7 +180,7 @@ app
   })
   .catch((e) => console.error("Failed create window:", e));
 
-// Auto-updates
+// auto-updating
 if (import.meta.env.PROD) {
   app
     .whenReady()
@@ -188,13 +189,13 @@ if (import.meta.env.PROD) {
     .catch((e) => console.error("Failed check updates:", e));
 }
 
-// API Endpoints
+// api endpoints
 ipcMain.handle("projects-get-all", () => {
   return projectController.getAll();
 });
 
-ipcMain.handle("projects-add", (_e, project: Project) => {
-  return projectController.add(project);
+ipcMain.handle("projects-add", (_e, request: projectAddRequest) => {
+  return projectController.add(request);
 });
 
 ipcMain.handle("projects-update", (_e, project: Project) => {
