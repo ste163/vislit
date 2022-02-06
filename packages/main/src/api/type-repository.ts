@@ -8,8 +8,8 @@ class TypeRepository {
     this.#database = database;
   }
 
-  getByValue(value: string): Type {
-    return this.#database.db.chain.get("types").find({ value }).value();
+  getByValue(value: string): Type | undefined {
+    return this.#database.db.data?.types.find((type) => type.value === value);
   }
 
   getAll(): Type[] {
@@ -30,11 +30,14 @@ class TypeRepository {
       this.#database.generateUniqueId({ value, dateCreated: new Date() })
     );
     this.#database.db.write();
-    return this.#database.db.chain.get("types").find({ value }).value();
+    return this.getByValue(value) as Type;
   }
 
   delete(id: string): void {
-    this.#database.db.chain.get("types").remove({ id }).value();
+    const filteredTypes = this.#database.db.data?.types.filter(
+      (type) => type.id !== id
+    ) as Type[];
+    this.#database.db.data!.types = filteredTypes;
     this.#database.db.write();
   }
 

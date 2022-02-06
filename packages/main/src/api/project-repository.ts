@@ -1,4 +1,4 @@
-import type { Project } from "interfaces";
+import type { Goal, Note, Progress, Project } from "interfaces";
 import type Database from "../database";
 
 class ProjectRepository {
@@ -45,11 +45,10 @@ class ProjectRepository {
     return this.#sortByMostRecentlyModified(projectsWithGoals);
   }
 
-  getById(id: string): Project {
-    const project = this.#database.db.chain
-      .get("projects")
-      .find({ id })
-      .value();
+  getById(id: string): Project | undefined {
+    const project = this.#database.db.data?.projects.find(
+      (project) => project.id === id
+    );
     if (project) {
       const projectWithTypes = this.#includeProjectType(project);
       return this.#includeGoals(projectWithTypes);
@@ -57,11 +56,10 @@ class ProjectRepository {
     return project; // undefined at this point;
   }
 
-  getByTitle(title: string): Project {
-    const project = this.#database.db.chain
-      .get("projects")
-      .find({ title })
-      .value();
+  getByTitle(title: string): Project | undefined {
+    const project = this.#database.db.data?.projects.find(
+      (project) => project.title === title
+    );
     if (project) {
       const projectWithTypes = this.#includeProjectType(project);
       return this.#includeGoals(projectWithTypes);
@@ -75,7 +73,7 @@ class ProjectRepository {
         this.#database.generateUniqueId(project)
       );
       this.#database.db.write();
-      const addedProject = this.getByTitle(project.title);
+      const addedProject = this.getByTitle(project.title) as Project;
       return addedProject;
     } else {
       throw Error("Db data was null");
@@ -83,20 +81,36 @@ class ProjectRepository {
   }
 
   update(project: Project): Project {
-    // Some code duplication from delete & add
-    // It's needed because we should only .write()
-    // once we're finished updating
-    this.#database.db.chain.get("projects").remove({ id: project.id }).value();
+    const filteredProjects = this.#database.db.data?.projects.filter(
+      (p) => p.id !== project.id
+    ) as Project[];
+    this.#database.db.data!.projects = filteredProjects;
     this.#database.db.data?.projects.push(project);
     this.#database.db.write();
-    return this.getById(project.id!);
+    return this.getById(project.id!) as Project;
   }
 
   delete(id: string): void {
-    this.#database.db.chain.get("notes").remove({ projectId: id }).value();
-    this.#database.db.chain.get("goals").remove({ projectId: id }).value();
-    this.#database.db.chain.get("progress").remove({ projectId: id }).value();
-    this.#database.db.chain.get("projects").remove({ id }).value();
+    const filteredNotes = this.#database.db.data?.notes.filter(
+      (note) => note.projectId !== id
+    ) as Note[];
+    this.#database.db.data!.notes = filteredNotes;
+
+    const filteredGoals = this.#database.db.data?.goals.filter(
+      (goal) => goal.projectId !== id
+    ) as Goal[];
+    this.#database.db.data!.goals = filteredGoals;
+
+    const filteredProgress = this.#database.db.data?.progress.filter(
+      (progress) => progress.projectId !== id
+    ) as Progress[];
+    this.#database.db.data!.progress = filteredProgress;
+
+    const filteredProjects = this.#database.db.data?.projects.filter(
+      (project) => project.id !== id
+    ) as Project[];
+    this.#database.db.data!.projects = filteredProjects;
+
     this.#database.db.write();
   }
 }
