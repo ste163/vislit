@@ -1,9 +1,7 @@
-import lodash from "lodash";
 import { nanoid } from "nanoid/non-secure";
 import { JSONFileSync, LowSync, MemorySync } from "lowdb";
 import type { App, Rectangle } from "electron";
 import type { Goal, Note, Progress, Project, Type } from "interfaces";
-import type { ObjectChain } from "lodash";
 
 interface VislitDatabase {
   dbType: string;
@@ -16,12 +14,8 @@ interface VislitDatabase {
   notes: Note[];
 }
 
-interface LowDbModel extends LowSync<VislitDatabase> {
-  chain: ObjectChain<VislitDatabase>; // Needed to include the chain function
-}
-
 export default class Database {
-  public db: LowDbModel;
+  public db: LowSync<VislitDatabase>;
   public generateUniqueId: (item: any) => any;
 
   #app: App;
@@ -33,12 +27,12 @@ export default class Database {
       return `${userDataDirPath}/vislit-database.json`;
     };
 
-    const loadDatabase = (): LowDbModel => {
+    const loadDatabase = (): LowSync<VislitDatabase> => {
       const adapter =
         process.env.NODE_ENV === "test"
           ? new MemorySync<VislitDatabase>() // in-memory test database
           : new JSONFileSync<VislitDatabase>(this.#getDbPath());
-      const db = new LowSync<VislitDatabase>(adapter) as LowDbModel;
+      const db = new LowSync<VislitDatabase>(adapter);
 
       db.read();
 
@@ -85,8 +79,7 @@ export default class Database {
         };
         db.write();
       }
-      // db.data must be initialized before lodash.chain is called
-      db.chain = lodash.chain(db.data);
+
       return db;
     };
 

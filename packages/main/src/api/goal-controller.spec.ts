@@ -6,7 +6,6 @@ import GoalRepository from "./goal-repository";
 import GoalController from "./goal-controller";
 import type SearchController from "./search-controller";
 import type FileSystemController from "./file-system-controller";
-import _ from "lodash";
 
 describe("goal-controller", () => {
   let seedProjects: Project[];

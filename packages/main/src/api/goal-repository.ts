@@ -29,18 +29,24 @@ class GoalRepository {
   add(goal: Goal): Goal {
     this.#database.db.data?.goals.push(this.#database.generateUniqueId(goal));
     this.#database.db.write();
-    return this.#database.db.chain.get("goals").find({ id: goal.id }).value();
+    return this.#database.db.data?.goals.find((g) => g.id === goal.id) as Goal;
   }
 
   update(goal: Goal): Goal {
-    this.#database.db.chain.get("goals").remove({ id: goal.id }).value();
+    const filteredGoals = this.#database.db.data?.goals.filter(
+      (g) => g.id !== goal.id
+    ) as Goal[];
+    this.#database.db.data!.goals = filteredGoals;
     this.#database.db.data?.goals.push(goal);
     this.#database.db.write();
     return this.getById(goal.id!)!; // double !s because this items will always be in db by this point
   }
 
   delete(id: string): void {
-    this.#database.db.chain.get("goals").remove({ id }).value();
+    const filteredGoals = this.#database.db.data?.goals.filter(
+      (g) => g.id !== id
+    ) as Goal[];
+    this.#database.db.data!.goals = filteredGoals;
     this.#database.db.write();
   }
 }
