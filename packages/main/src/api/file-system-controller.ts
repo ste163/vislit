@@ -6,10 +6,11 @@ import fs from "fs";
 // Get an individual file by name (related to returning the array as that gives the file name)
 
 export type htmlData = {
-  id: string;
+  id: string; // projectId or noteId
   html: string;
   type: "documents" | "notes";
-  createdAt: Date;
+  projectId?: string; // notes need projectId
+  createdAt?: Date;
 };
 
 class FileSystemController {
@@ -36,15 +37,19 @@ class FileSystemController {
 
   writeHtmlFile(htmlData: htmlData): true | Error {
     try {
-      // Based on data type,
-      // project: save createdAt date + id -> needs versioning based on date
-      // note: save id -> will not have versioning for notes
+      // documents save the date for versioning
+      // notes do not have versioning, only save id
+      const userData =
+        htmlData.type === "documents"
+          ? `${this.getUserDataPath()}/projects/${htmlData.id}/${
+              htmlData.type
+            }/${new Date(htmlData.createdAt!).toISOString().split("T")[0]}-${
+              htmlData.id
+            }.html`
+          : `${this.getUserDataPath()}/projects/${htmlData.projectId}/${
+              htmlData.type
+            }/${htmlData.id}.html`;
 
-      const userData = `${this.getUserDataPath()}/projects/${htmlData.id}/${
-        htmlData.type
-      }/${new Date(htmlData.createdAt).toISOString().split("T")[0]}-${
-        htmlData.id
-      }.html`;
       fs.writeFileSync(userData, htmlData.html);
       return true;
     } catch (error: any | Error) {
@@ -60,10 +65,23 @@ class FileSystemController {
   //  // return true or error
   // }
 
+  readNoteById(noteId: string, projectId: string): string | undefined | Error {
+    try {
+      const userData = `${this.getUserDataPath()}/projects/${projectId}/notes/${noteId}.html`;
+      const file = fs.readFileSync(userData, "utf-8");
+      if (file) return file;
+    } catch (error: any | Error) {
+      console.error(error);
+      return error;
+    }
+  }
+
   readMostRecentHtmlFile(
     id: string,
     type: "documents" | "notes"
   ): string | void | Error {
+    // Notes are stored without dates in filename
+    // Database stores note dates
     try {
       const userData = `${this.getUserDataPath()}/projects/${id}/${type}`;
       const files = fs.readdirSync(userData);

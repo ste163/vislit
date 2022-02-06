@@ -258,7 +258,6 @@ ipcMain.handle("notes-get-all-by-project-id", (_e, projectId: string) => {
 });
 
 ipcMain.handle("notes-get-by-id", (_e, id: string) => {
-  // TODO: return the html data here
   return noteController.getById(id);
 });
 

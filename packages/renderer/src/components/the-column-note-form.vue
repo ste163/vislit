@@ -29,7 +29,7 @@ const intialFormValues = computed(() => ({
 const emit = defineEmits(["delete", "back"]);
 
 const editor = useEditor({
-  content: "<p></p>",
+  content: props.selectedNote?.html ? props.selectedNote?.html : "<p></p>",
   extensions: [StarterKit],
 }) as ShallowRef<Editor>;
 
@@ -45,14 +45,26 @@ const { handleSubmit, meta, resetForm } = useForm({
   initialValues: intialFormValues, // using computed resets value properly
 });
 
+async function saveHtmlData(noteId: string): Promise<void> {
+  // no try catch as its caught in handleSumbit
+  const { api } = window;
+  const anyWrittenText = editor.value.getText();
+  if (anyWrittenText) {
+    const html = editor.value.getHTML();
+    const data = {
+      id: noteId,
+      projectId: store.state.activeProject?.id,
+      html,
+      type: "notes",
+    };
+    const htmlResponse = await api.send("html-save", data);
+    console.log("htmlResponse", htmlResponse);
+  }
+}
+
 const onSubmit = handleSubmit(async ({ title }) => {
-  // REASONING FOR TWO API CALLS:
-  // Create/Edit Note and Create/Edit Note HTML
-  // are two different pieces that are not necessarily related.
-  // You can have a note without html but not html without a note.
-  // You can also update the Note title but not the HTML
-  // or update the HTML and not the title.
-  // This sends only the needed information to the backend
+  // Separate note and html calls as the Note could change
+  // without changing the html content
   const { api } = window;
   try {
     if (props.selectedNote) {
@@ -63,30 +75,24 @@ const onSubmit = handleSubmit(async ({ title }) => {
         dateCreated: props.selectedNote.dateCreated,
         dateModified: props.selectedNote.dateModified,
       };
-      const response = await api.send("notes-update", updatedNote);
+      const response = (await api.send("notes-update", updatedNote)) as Note;
+
       if (!response || response instanceof Error) throw response;
 
-      // Check for HTML content,
-      // if any changes, update!
-      // then show success notification
+      await saveHtmlData(response.id!); // will always have an id by this point
+
+      // Show sucess notification
     } else {
-      const response = await api.send("notes-add", {
+      const response = (await api.send("notes-add", {
         title,
         projectId: store.state.activeProject?.id,
-      });
+      })) as Note;
+
       if (!response || response instanceof Error) throw response;
 
-      // Check for HTML content
-      // create new html file
-      // Show sucess notification
-    }
+      await saveHtmlData(response.id!); // will always have an id by this point
 
-    // Experiment with checking html content
-    const anyWrittenText = editor.value.getText();
-    if (anyWrittenText) {
-      const html = editor.value.getHTML();
-      console.log(html);
-      // save html
+      // Show sucess notification
     }
   } catch (error: any | Error) {
     // Show error toast
