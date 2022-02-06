@@ -35,10 +35,7 @@ try {
   const goalRepository = new GoalRepository(database);
   const progressRepository = new ProgressRepository(database);
   const noteRepository = new NoteRepository(database);
-  const searchController = new SearchController(
-    projectRepository,
-    noteRepository
-  );
+  const searchController = new SearchController(database);
   projectController = new ProjectController(
     projectRepository,
     searchController,

@@ -1,33 +1,20 @@
 import Minisearch from "minisearch";
 import type { Project, Note } from "interfaces";
-import type ProjectRepository from "./project-repository";
-import type NoteRepository from "./note-repository";
+import type Database from "../database";
 
-// TODO: only import the Database instance
-// no need for controllers as we're pulling all the data
-// Once done:
-// - remove the getAll from notes
-// - update tests
 export default class SearchController {
-  #projectRepository: ProjectRepository;
-  #noteRepository: NoteRepository;
+  #database: Database;
   #projectSearchIndex: Minisearch<any>;
   #noteSearchIndex: Minisearch<any>;
 
-  constructor(
-    projectRepository: ProjectRepository,
-    noteRepository: NoteRepository
-  ) {
-    this.#projectRepository = projectRepository;
-    this.#noteRepository = noteRepository;
-    this.#projectSearchIndex = this.#createProjectSearchIndex(
-      this.#projectRepository
-    );
-    this.#noteSearchIndex = this.#createNoteSearchIndex(this.#noteRepository);
+  constructor(database: Database) {
+    this.#database = database;
+    this.#projectSearchIndex = this.#createProjectSearchIndex(this.#database);
+    this.#noteSearchIndex = this.#createNoteSearchIndex(this.#database);
   }
 
-  #createProjectSearchIndex(projectRepository: ProjectRepository) {
-    const projects = projectRepository.getAll();
+  #createProjectSearchIndex(database: Database) {
+    const projects = database.db.data!.projects;
     const searchIndex = new Minisearch({
       fields: ["title", "description"],
       storeFields: ["id", "title", "description"],
@@ -41,8 +28,8 @@ export default class SearchController {
     return searchIndex;
   }
 
-  #createNoteSearchIndex(noteRepository: NoteRepository) {
-    const notes = noteRepository.getAll();
+  #createNoteSearchIndex(database: Database) {
+    const notes = database.db.data!.notes;
     const searchIndex = new Minisearch({
       fields: ["title"],
       storeFields: ["id", "title"],

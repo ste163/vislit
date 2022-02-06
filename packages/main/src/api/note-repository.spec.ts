@@ -67,25 +67,6 @@ describe("note-repository", () => {
     ];
   });
 
-  it("returns all notes regardless of project", () => {
-    expect(noteRepository.getAll()).toEqual([
-      {
-        id: "1",
-        projectId: "1",
-        title: "First Note",
-        dateCreated: noteDate1,
-        dateModified: noteDate1,
-      },
-      {
-        id: "2",
-        projectId: "1",
-        title: "Second Note",
-        dateCreated: noteDate2,
-        dateModified: noteDate2,
-      },
-    ]);
-  });
-
   it("returns empty array if no notes by projectId found", () => {
     expect(noteRepository.getAllByProjectId("999")).toStrictEqual([]);
   });
