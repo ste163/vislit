@@ -11,3 +11,20 @@ export const projectAddRequestSchema = z
   .strict(); // must use strict to only allow these keys
 
 export type projectAddRequest = z.infer<typeof projectAddRequestSchema>;
+
+export const projectUpdateRequestSchema = z
+  .object({
+    id: z.string(),
+    title: z.string(),
+    description: z.string(),
+    typeId: z.string(),
+    completed: z.boolean(),
+    archived: z.boolean(),
+  })
+  .strict();
+
+export type projectUpdateRequest = z.infer<typeof projectUpdateRequestSchema>;
+
+export const projectDeleteRequestSchema = z.string();
+
+export type projectDeleteRequest = z.infer<typeof projectDeleteRequestSchema>;

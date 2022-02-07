@@ -17,7 +17,11 @@ import GoalRepository from "./api/goal-repository";
 import GoalController from "./api/goal-controller";
 import ProgressRepository from "./api/progress-repository";
 import ProgressController from "./api/progress-controller";
-import type { projectAddRequest } from "./schemas";
+import type {
+  projectAddRequest,
+  projectDeleteRequest,
+  projectUpdateRequest,
+} from "./schemas";
 
 // declared outside of try block so it can be accessed by IPC
 let fileSystemController: FileSystemController;
@@ -198,12 +202,12 @@ ipcMain.handle("projects-add", (_e, request: projectAddRequest) => {
   return projectController.add(request);
 });
 
-ipcMain.handle("projects-update", (_e, project: Project) => {
-  return projectController.update(project);
+ipcMain.handle("projects-update", (_e, request: projectUpdateRequest) => {
+  return projectController.update(request);
 });
 
-ipcMain.handle("projects-delete", (_e, projectId: string) => {
-  return projectController.delete(projectId);
+ipcMain.handle("projects-delete", (_e, request: projectDeleteRequest) => {
+  return projectController.delete(request);
 });
 
 // project search endpoint

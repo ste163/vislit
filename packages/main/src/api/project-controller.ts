@@ -2,8 +2,16 @@ import type { Project } from "interfaces";
 import type SearchController from "./search-controller";
 import type FileSystemController from "./file-system-controller";
 import type ProjectRepository from "./project-repository";
-import type { projectAddRequest} from "../schemas";
-import { projectAddRequestSchema } from "../schemas";
+import type {
+  projectAddRequest,
+  projectDeleteRequest,
+  projectUpdateRequest,
+} from "../schemas";
+import {
+  projectAddRequestSchema,
+  projectUpdateRequestSchema,
+  projectDeleteRequestSchema,
+} from "../schemas";
 
 class ProjectController {
   #projectRepository: ProjectRepository;
@@ -74,10 +82,13 @@ class ProjectController {
     }
   }
 
-  update(project: Project): Project | Error {
+  update(project: projectUpdateRequest): Project | Error {
     try {
-      const projectToUpdate = this.getById(project.id!);
+      projectUpdateRequestSchema.parse(project);
+
+      const projectToUpdate = this.getById(project.id);
       if (projectToUpdate instanceof Error) return projectToUpdate;
+
       // Must get a copy of original project
       // before its updated, so it can be removed from search index
       const originalProjectForIndex = { ...projectToUpdate };
@@ -105,8 +116,10 @@ class ProjectController {
     }
   }
 
-  delete(id: string): true | Error {
+  delete(id: projectDeleteRequest): true | Error {
     try {
+      projectDeleteRequestSchema.parse(id);
+
       const project = this.getById(id);
       if (project instanceof Error) throw new Error("Project not in database");
 
@@ -114,7 +127,7 @@ class ProjectController {
       this.#searchController.deleteProject(project);
       this.#fileSystemController.deleteProjectDirectory(id);
 
-      return true; // don't return true, just check if the repsonse is not an instance of an error
+      return true;
     } catch (e: any | Error) {
       console.error(e);
       return e;
