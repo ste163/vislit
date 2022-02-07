@@ -1,5 +1,7 @@
 import type TypeRepository from "./type-repository";
 import type { Project, Type } from "interfaces";
+import type { idRequest, typeAddRequest } from "../schemas";
+import { typeAddRequestSchema, idRequestSchema } from "../schemas";
 
 class TypeController {
   #typeRepository: TypeRepository;
@@ -32,8 +34,9 @@ class TypeController {
     }
   }
 
-  add(value: string): Type | Error {
+  add(value: typeAddRequest): Type | Error {
     try {
+      typeAddRequestSchema.parse(value);
       this.#checkForTypeInDb(value);
       return this.#typeRepository.add(value.trim().toLowerCase());
     } catch (e: any | Error) {
@@ -42,8 +45,9 @@ class TypeController {
     }
   }
 
-  delete(id: string): true | Error {
+  delete(id: idRequest): true | Error {
     try {
+      idRequestSchema.parse(id);
       const types = this.#typeRepository.getAll();
       const foundType = types.find((type) => type.id === id);
       if (!foundType) throw new Error("Type not in database");

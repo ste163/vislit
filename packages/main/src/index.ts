@@ -18,9 +18,10 @@ import GoalController from "./api/goal-controller";
 import ProgressRepository from "./api/progress-repository";
 import ProgressController from "./api/progress-controller";
 import type {
+  idRequest,
   projectAddRequest,
-  projectDeleteRequest,
   projectUpdateRequest,
+  typeAddRequest,
 } from "./schemas";
 
 // declared outside of try block so it can be accessed by IPC
@@ -206,7 +207,7 @@ ipcMain.handle("projects-update", (_e, request: projectUpdateRequest) => {
   return projectController.update(request);
 });
 
-ipcMain.handle("projects-delete", (_e, request: projectDeleteRequest) => {
+ipcMain.handle("projects-delete", (_e, request: idRequest) => {
   return projectController.delete(request);
 });
 
@@ -218,11 +219,11 @@ ipcMain.handle("types-get-all", () => {
   return typeController.getAll();
 });
 
-ipcMain.handle("types-add", (_e, value: string) => {
+ipcMain.handle("types-add", (_e, value: typeAddRequest) => {
   return typeController.add(value);
 });
 
-ipcMain.handle("types-delete", (_e, id: string) => {
+ipcMain.handle("types-delete", (_e, id: idRequest) => {
   return typeController.delete(id);
 });
 

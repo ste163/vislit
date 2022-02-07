@@ -1,7 +1,10 @@
 import { z } from "zod";
 
-// todo: add test to see if this throws
-// just check if th error throws, not specifically what it is
+// General schemas
+export const idRequestSchema = z.string();
+export type idRequest = z.infer<typeof idRequestSchema>;
+
+// Specific schemas
 export const projectAddRequestSchema = z
   .object({
     title: z.string(),
@@ -25,6 +28,5 @@ export const projectUpdateRequestSchema = z
 
 export type projectUpdateRequest = z.infer<typeof projectUpdateRequestSchema>;
 
-export const projectDeleteRequestSchema = z.string();
-
-export type projectDeleteRequest = z.infer<typeof projectDeleteRequestSchema>;
+export const typeAddRequestSchema = z.string();
+export type typeAddRequest = z.infer<typeof typeAddRequestSchema>;

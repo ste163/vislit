@@ -3,14 +3,14 @@ import type SearchController from "./search-controller";
 import type FileSystemController from "./file-system-controller";
 import type ProjectRepository from "./project-repository";
 import type {
+  idRequest,
   projectAddRequest,
-  projectDeleteRequest,
   projectUpdateRequest,
 } from "../schemas";
 import {
+  idRequestSchema,
   projectAddRequestSchema,
   projectUpdateRequestSchema,
-  projectDeleteRequestSchema,
 } from "../schemas";
 
 class ProjectController {
@@ -116,9 +116,9 @@ class ProjectController {
     }
   }
 
-  delete(id: projectDeleteRequest): true | Error {
+  delete(id: idRequest): true | Error {
     try {
-      projectDeleteRequestSchema.parse(id);
+      idRequestSchema.parse(id);
 
       const project = this.getById(id);
       if (project instanceof Error) throw new Error("Project not in database");
