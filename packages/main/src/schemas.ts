@@ -28,5 +28,22 @@ export const projectUpdateRequestSchema = z
 
 export type projectUpdateRequest = z.infer<typeof projectUpdateRequestSchema>;
 
+export const htmlWriteRequestSchema = z
+  .object({
+    id: z.string(),
+    html: z.string(),
+    type: z
+      .string()
+      .refine((value: string) =>
+        value === "documents" || value === "notes" ? true : false
+      ),
+    projectId: z.string().optional(),
+    createdAt: z.date().optional(),
+  })
+  .strict();
+
+export type htmlWriteRequest = z.infer<typeof htmlWriteRequestSchema>;
+
 export const typeAddRequestSchema = z.string();
+
 export type typeAddRequest = z.infer<typeof typeAddRequestSchema>;

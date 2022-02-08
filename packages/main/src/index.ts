@@ -2,8 +2,7 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
 import { URL } from "url";
 import { existsSync, mkdirSync } from "fs";
-import type { Goal, Note, Progress, Project } from "interfaces";
-import type { htmlData } from "./api/file-system-controller";
+import type { Goal, Note, Progress } from "interfaces";
 import Database from "./database";
 import FileSystemController from "./api/file-system-controller";
 import ProjectRepository from "./api/project-repository";
@@ -18,6 +17,7 @@ import GoalController from "./api/goal-controller";
 import ProgressRepository from "./api/progress-repository";
 import ProgressController from "./api/progress-controller";
 import type {
+  htmlWriteRequest,
   idRequest,
   projectAddRequest,
   projectUpdateRequest,
@@ -295,7 +295,7 @@ ipcMain.handle("notes-delete", (_e, id: string) => {
 });
 
 // Html
-ipcMain.handle("html-save", (_e, data: htmlData) => {
-  // Store note or project based on htmlData.type
-  return fileSystemController.writeHtmlFile(data);
+ipcMain.handle("html-save", (_e, request: htmlWriteRequest) => {
+  // Stores note or project based on htmlData.type
+  return fileSystemController.writeHtmlFile(request);
 });

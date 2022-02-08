@@ -1,4 +1,6 @@
 import fs from "fs";
+import { htmlWriteRequestSchema, idRequestSchema } from "../schemas";
+import type { htmlWriteRequest, idRequest } from "../schemas";
 
 export type htmlData = {
   id: string; // projectId or noteId
@@ -18,20 +20,23 @@ class FileSystemController {
     return this.#userDataPath;
   }
 
-  makeProjectDirectory(projectId: string): void {
+  makeProjectDirectory(projectId: idRequest): void {
+    idRequestSchema.parse(projectId);
     const userData = this.getUserDataPath();
     fs.mkdirSync(`${userData}/projects/${projectId}`);
     fs.mkdirSync(`${userData}/projects/${projectId}/documents`);
     fs.mkdirSync(`${userData}/projects/${projectId}/notes`);
   }
 
-  deleteProjectDirectory(projectId: string): void {
+  deleteProjectDirectory(projectId: idRequest): void {
+    idRequestSchema.parse(projectId);
     const userData = this.getUserDataPath();
     fs.rmSync(`${userData}/projects/${projectId}`, { recursive: true });
   }
 
-  writeHtmlFile(htmlData: htmlData): true | Error {
+  writeHtmlFile(htmlData: htmlWriteRequest): true | Error {
     try {
+      htmlWriteRequestSchema.parse(htmlData);
       // documents save the date for versioning
       // notes do not have versioning, only save id
       const userData =
