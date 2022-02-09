@@ -40,10 +40,10 @@ class NoteController {
       if (note === undefined)
         throw new Error(`Note with id ${id} not in database`);
 
-      const html = this.#fileSystemController.readNoteById(
-        note.id!,
-        note.projectId
-      );
+      const html = this.#fileSystemController.readNoteById({
+        noteId: note.id!,
+        projectId: note.projectId,
+      });
       note.html = html instanceof Error || !html ? null : html;
       return note;
     } catch (e: any | Error) {
@@ -102,7 +102,7 @@ class NoteController {
 
       this.#noteRepository.delete(id);
       this.#searchController.deleteNote(note);
-      this.#fileSystemController.deleteNote(id, note.projectId);
+      this.#fileSystemController.deleteNote({ id, projectId: note.projectId });
 
       return true; // returning true instead of undefined because that could potentially mean other things
     } catch (e: any | Error) {

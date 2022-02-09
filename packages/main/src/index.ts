@@ -266,7 +266,10 @@ ipcMain.handle("progress-modify", (_e, progress: Progress) => {
 
 // Writer
 ipcMain.handle("writer-get-most-recent", (_e, projectId: string) => {
-  return fileSystemController.readMostRecentHtmlFile(projectId, "documents");
+  return fileSystemController.readMostRecentHtmlFile({
+    id: projectId,
+    type: "documents",
+  });
 });
 
 ipcMain.handle("writer-get-by-id", (_e, projectId: string) => {
