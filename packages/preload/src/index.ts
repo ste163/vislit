@@ -20,7 +20,6 @@ const validChannels = [
   "progress-get-by-date",
   "progress-modify",
   "writer-get-most-recent",
-  "writer-get-by-id",
   "notes-get-all-by-project-id",
   "notes-get-by-id",
   "notes-add",

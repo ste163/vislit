@@ -270,10 +270,6 @@ ipcMain.handle("writer-get-most-recent", (_e, id: idRequest) => {
   return fileSystemController.readMostRecentHtmlFile(id);
 });
 
-ipcMain.handle("writer-get-by-id", (_e, id: idRequest) => {
-  console.log("GET PROJECTS FOR", id);
-});
-
 // Notes
 ipcMain.handle("notes-get-all-by-project-id", (_e, id: idRequest) => {
   return noteController.getAllByProjectId(id);
