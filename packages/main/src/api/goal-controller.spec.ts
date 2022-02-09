@@ -7,8 +7,10 @@ import ProjectRepository from "./project-repository";
 import ProjectController from "./project-controller";
 import GoalRepository from "./goal-repository";
 import GoalController from "./goal-controller";
+import { ZodError } from "zod";
 import type SearchController from "./search-controller";
 import type FileSystemController from "./file-system-controller";
+import type { updateGoalRequest } from "../schemas";
 
 describe("goal-controller", () => {
   let seedProjects: Project[];
@@ -70,6 +72,19 @@ describe("goal-controller", () => {
     );
     goalRepository = new GoalRepository(database);
     goalController = new GoalController(goalRepository, projectController);
+  });
+
+  it("returns error if adding project that does not match schema", () => {
+    const goal = {
+      basedOnWordCountOrPageCount: "word",
+      wordOrPageCount: 500,
+      frequencyToRepeat: "daily",
+      proofreadCountsTowardGoal: true,
+      editCountsTowardGoal: true,
+      revisedCountsTowardsGoal: true,
+    };
+
+    expect(goalController.add(goal as Goal)).toBeInstanceOf(Error);
   });
 
   it("returns error if adding project by projectId not in database", () => {
@@ -144,6 +159,10 @@ describe("goal-controller", () => {
     expect(addedGoal).toHaveProperty("id");
   });
 
+  it("returns error if trying to set goal complete with id that doesn't match schema", () => {
+    expect(goalController.delete(123 as any as string)).toBeInstanceOf(Error);
+  });
+
   it("returns error when setting complete for a goal by id not in database", () => {
     expect(goalController.setCompletedById("999")).toEqual(
       new Error("Goal with id 999 does not exist in database")
@@ -189,8 +208,25 @@ describe("goal-controller", () => {
   });
 
   it("returns the updated goal with the set complete", () => {
-    const updatedGoal = goalController.setCompletedById("1");
+    const updatedGoal = goalController.setCompletedById("1") as Goal;
     expect(updatedGoal.completed).toEqual(true);
+  });
+
+  it("returns error if updating goal that doesn't match schema", () => {
+    expect(
+      goalController.update({
+        id: "2",
+        projectId: "1",
+        basedOnWordCountOrPageCount: "page",
+        wordOrPageCount: 2,
+        frequencyToRepeat: "daily",
+        proofreadCountsTowardGoal: true,
+        editCountsTowardGoal: true,
+        revisedCountsTowardsGoal: true,
+        active: true,
+        completed: true,
+      })
+    ).toBeInstanceOf(ZodError);
   });
 
   it("returns error if updating existing goal is not in database ", () => {
@@ -204,12 +240,15 @@ describe("goal-controller", () => {
         proofreadCountsTowardGoal: true,
         editCountsTowardGoal: true,
         revisedCountsTowardsGoal: true,
+        active: true,
+        completed: false,
       })
     ).toEqual(new Error("Goal with id 2 does not exist in database"));
   });
 
   it("returns error if updating activeGoal does not exist in database", () => {
     const goal: Goal = {
+      id: "999",
       projectId: "1",
       basedOnWordCountOrPageCount: "word",
       wordOrPageCount: 500,
@@ -217,6 +256,8 @@ describe("goal-controller", () => {
       proofreadCountsTowardGoal: true,
       editCountsTowardGoal: true,
       revisedCountsTowardsGoal: true,
+      active: true,
+      completed: false,
     };
 
     const mockGoalRepository = {
@@ -229,7 +270,7 @@ describe("goal-controller", () => {
       projectController
     );
 
-    expect(goalController.update(goal)).toEqual(
+    expect(goalController.update(goal as updateGoalRequest)).toEqual(
       new Error("No active goal for project id 1 exists in database")
     );
   });
@@ -244,6 +285,8 @@ describe("goal-controller", () => {
       proofreadCountsTowardGoal: true,
       editCountsTowardGoal: true,
       revisedCountsTowardsGoal: true,
+      active: true,
+      completed: false,
     };
 
     const mockActiveGoal = {
@@ -260,7 +303,7 @@ describe("goal-controller", () => {
       projectController
     );
 
-    expect(goalController.update(goal)).toEqual(
+    expect(goalController.update(goal as updateGoalRequest)).toEqual(
       new Error(
         "The goal you are trying to update with id 1 does not match the active goal with id 999"
       )
@@ -277,9 +320,11 @@ describe("goal-controller", () => {
       proofreadCountsTowardGoal: true,
       editCountsTowardGoal: true,
       revisedCountsTowardsGoal: true,
+      active: true,
+      completed: false,
     };
 
-    const response = goalController.update(goal) as Goal;
+    const response = goalController.update(goal as updateGoalRequest) as Goal;
     expect(response.active).toBe(true);
     expect(response.basedOnWordCountOrPageCount).toBe("page");
 
@@ -292,6 +337,10 @@ describe("goal-controller", () => {
     expect(originalGoal.basedOnWordCountOrPageCount).toBe("word");
     expect(updatedGoal.active).toBe(true);
     expect(updatedGoal.basedOnWordCountOrPageCount).toBe("page");
+  });
+
+  it("returns error if trying to delete with id that doesn't match schema", () => {
+    expect(goalController.delete(123 as any as string)).toBeInstanceOf(Error);
   });
 
   it("returns error if deleting goal by id not in database", () => {

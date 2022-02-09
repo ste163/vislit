@@ -53,12 +53,47 @@ export const deleteNoteRequestSchema = z
 
 export type deleteNoteRequest = z.infer<typeof deleteNoteRequestSchema>;
 
-export const readNoteByIdRequestSchema = z.object({
-  noteId: idRequestSchema,
-  projectId: idRequestSchema,
-});
+export const readNoteByIdRequestSchema = z
+  .object({
+    noteId: idRequestSchema,
+    projectId: idRequestSchema,
+  })
+  .strict();
 
 export type readNoteByIdRequest = z.infer<typeof readNoteByIdRequestSchema>;
+
+export const addGoalRequestSchema = z
+  .object({
+    projectId: idRequestSchema,
+    basedOnWordCountOrPageCount: z.string(),
+    frequencyToRepeat: z.string(),
+    wordOrPageCount: z.number(),
+    daysPerFrequency: z.number().optional(),
+    proofreadCountsTowardGoal: z.boolean().optional(),
+    editCountsTowardGoal: z.boolean().optional(),
+    revisedCountsTowardsGoal: z.boolean().optional(),
+  })
+  .strict();
+
+export type addGoalRequest = z.infer<typeof addGoalRequestSchema>;
+
+export const updateGoalRequestSchema = z
+  .object({
+    id: idRequestSchema,
+    projectId: idRequestSchema,
+    basedOnWordCountOrPageCount: z.string(),
+    frequencyToRepeat: z.string(),
+    wordOrPageCount: z.number(),
+    daysPerFrequency: z.number().optional(),
+    proofreadCountsTowardGoal: z.boolean().optional(),
+    editCountsTowardGoal: z.boolean().optional(),
+    revisedCountsTowardsGoal: z.boolean().optional(),
+    active: z.boolean().refine((value) => (value === true ? true : false)),
+    completed: z.boolean().refine((value) => (value === false ? true : false)),
+  })
+  .strict();
+
+export type updateGoalRequest = z.infer<typeof updateGoalRequestSchema>;
 
 export const typeAddRequestSchema = z.string();
 
