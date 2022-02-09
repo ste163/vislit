@@ -22,6 +22,7 @@ import type {
   projectAddRequest,
   projectUpdateRequest,
   typeAddRequest,
+  updateGoalRequest,
 } from "./schemas";
 
 // declared outside of try block so it can be accessed by IPC
@@ -232,16 +233,16 @@ ipcMain.handle("goals-add", (_e, goal: Goal) => {
   return goalController.add(goal);
 });
 
-ipcMain.handle("goals-update", (_e, goal: Goal) => {
-  return goalController.update(goal);
+ipcMain.handle("goals-update", (_e, request: updateGoalRequest) => {
+  return goalController.update(request);
 });
 
-ipcMain.handle("goals-delete", (_e, goalId: string) => {
-  return goalController.delete(goalId);
+ipcMain.handle("goals-delete", (_e, id: idRequest) => {
+  return goalController.delete(id);
 });
 
-ipcMain.handle("goals-completed", (_e, goalId: string) => {
-  return goalController.setCompletedById(goalId);
+ipcMain.handle("goals-completed", (_e, id: idRequest) => {
+  return goalController.setCompletedById(id);
 });
 
 // Progress
@@ -265,20 +266,20 @@ ipcMain.handle("progress-modify", (_e, progress: Progress) => {
 });
 
 // Writer
-ipcMain.handle("writer-get-most-recent", (_e, projectId: string) => {
-  return fileSystemController.readMostRecentHtmlFile(projectId);
+ipcMain.handle("writer-get-most-recent", (_e, id: idRequest) => {
+  return fileSystemController.readMostRecentHtmlFile(id);
 });
 
-ipcMain.handle("writer-get-by-id", (_e, projectId: string) => {
-  console.log("GET PROJECTS FOR", projectId);
+ipcMain.handle("writer-get-by-id", (_e, id: idRequest) => {
+  console.log("GET PROJECTS FOR", id);
 });
 
 // Notes
-ipcMain.handle("notes-get-all-by-project-id", (_e, projectId: string) => {
-  return noteController.getAllByProjectId(projectId);
+ipcMain.handle("notes-get-all-by-project-id", (_e, id: idRequest) => {
+  return noteController.getAllByProjectId(id);
 });
 
-ipcMain.handle("notes-get-by-id", (_e, id: string) => {
+ipcMain.handle("notes-get-by-id", (_e, id: idRequest) => {
   return noteController.getById(id);
 });
 
@@ -290,7 +291,7 @@ ipcMain.handle("notes-update", (_e, Note: Note) => {
   return noteController.update(Note);
 });
 
-ipcMain.handle("notes-delete", (_e, id: string) => {
+ipcMain.handle("notes-delete", (_e, id: idRequest) => {
   return noteController.delete(id);
 });
 

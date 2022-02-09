@@ -18,14 +18,17 @@ class ProgressController {
     this.#projectController = projectController;
   }
 
-  // All Goals are being returned to frontend based on Project: {goals: Goals[]},
+  // All Goals are being returned to frontend based on Project: { goals: Goals[] },
   // process all completed status on backend
   #calculateCompletedStatus(progress: Progress[]): Progress[] {
     const goalIds: string[] = progress?.map(({ goalId }) => goalId);
+
     const goals: Goal[] = this.#goalRepository.getManyById(goalIds);
+
     return progress.map((progress) => {
       const goal = goals.find(({ id }) => id === progress.goalId);
       if (!goal) throw new Error(`No goal by id ${progress.goalId} found`);
+
       if (
         goal.wordOrPageCount <= progress.count ||
         (goal.proofreadCountsTowardGoal === true &&
