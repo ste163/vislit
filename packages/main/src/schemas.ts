@@ -95,6 +95,25 @@ export const updateGoalRequestSchema = z
 
 export type updateGoalRequest = z.infer<typeof updateGoalRequestSchema>;
 
+export const addNoteRequestSchema = z
+  .object({
+    title: z.string(),
+    projectId: idRequestSchema,
+  })
+  .strict();
+
+export type addNoteRequest = z.infer<typeof addNoteRequestSchema>;
+
+export const updateNoteRequestSchema = z
+  .object({
+    id: idRequestSchema,
+    title: z.string(),
+    projectId: idRequestSchema,
+  })
+  .strict();
+
+export type updateNoteRequest = z.infer<typeof updateNoteRequestSchema>;
+
 export const typeAddRequestSchema = z.string();
 
 export type typeAddRequest = z.infer<typeof typeAddRequestSchema>;

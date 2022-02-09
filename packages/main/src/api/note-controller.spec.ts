@@ -1,19 +1,20 @@
 /**
  * @jest-environment node
  */
-import type { Project, Note } from "interfaces";
 import Database from "../database";
 import SearchController from "./search-controller";
-import type FileSystemController from "./file-system-controller";
 import ProjectRepository from "./project-repository";
 import NoteRepository from "./note-repository";
 import NoteController from "./note-controller";
+import { ZodError } from "zod";
+import type { Project, Note } from "interfaces";
+import type FileSystemController from "./file-system-controller";
+import type { updateNoteRequest } from "../schemas";
 
 describe("project-controller-integration", () => {
   let seedProjects: Project[];
   let seedNotes: Note[];
   let database: Database;
-  let projectRepository: ProjectRepository;
   let noteRepository: NoteRepository;
   let searchController: SearchController;
   let noteController: NoteController;
@@ -64,7 +65,7 @@ describe("project-controller-integration", () => {
 
     database.db.data!.projects = seedProjects;
     database.db.data!.notes = seedNotes;
-    projectRepository = new ProjectRepository(database);
+    const projectRepository = new ProjectRepository(database);
     noteRepository = new NoteRepository(database);
     searchController = new SearchController(database);
     const mockFileSystemController = {
@@ -78,12 +79,24 @@ describe("project-controller-integration", () => {
     );
   });
 
+  it("returns error if trying to get all notes with projectId that doesn't match schema", () => {
+    expect(
+      noteController.getAllByProjectId(123 as any as string)
+    ).toBeInstanceOf(ZodError);
+  });
+
   it("returns empty array if no notes found for that projectId", () => {
     expect(noteController.getAllByProjectId("999")).toStrictEqual([]);
   });
 
   it("returns notes by projectId", () => {
     expect(noteController.getAllByProjectId("1")).toEqual(seedNotes);
+  });
+
+  it("returns error if trying to get note with id that doesn't match schema", () => {
+    expect(noteController.getById(123 as any as string)).toBeInstanceOf(
+      ZodError
+    );
   });
 
   it("returns error if note by id not in database", () => {
@@ -103,12 +116,19 @@ describe("project-controller-integration", () => {
     });
   });
 
+  it("returns error if trying to add note that doesn't match schema", () => {
+    expect(
+      noteController.add({
+        title: 342 as any as string,
+        projectId: "232",
+      })
+    ).toBeInstanceOf(ZodError);
+  });
+
   it("returns error if trying to add note with a title and projectId already in database", () => {
     const note: Note = {
       projectId: "1",
       title: "First Note",
-      dateCreated: seedDate,
-      dateModified: seedDate,
     };
 
     expect(noteController.add(note)).toEqual(
@@ -123,7 +143,7 @@ describe("project-controller-integration", () => {
     };
 
     const originalCount = database.db.data!.notes.length;
-    const response = noteController.add(note);
+    const response = noteController.add(note) as Note;
     const newCount = database.db.data!.notes.length;
     const searchResult = searchController.searchNotes(response.title);
 
@@ -133,8 +153,19 @@ describe("project-controller-integration", () => {
     expect(searchResult[0].title).toBe("Newest Note");
   });
 
+  it("returns error if trying to update note that does not match schema", () => {
+    const note = {
+      id: "999",
+      projectId: "1",
+      title: "First Note",
+      content: "New Note!",
+    } as any as updateNoteRequest;
+
+    expect(noteController.update(note)).toBeInstanceOf(ZodError);
+  });
+
   it("returns error if trying to update note by id not in db", () => {
-    const note: Note = {
+    const note: updateNoteRequest = {
       id: "999",
       projectId: "1",
       title: "First Note",
@@ -146,7 +177,7 @@ describe("project-controller-integration", () => {
   });
 
   it("returns error if trying to update note with title already in db", () => {
-    const note: Note = {
+    const note: updateNoteRequest = {
       id: "2",
       projectId: "1",
       title: "First Note",
@@ -158,20 +189,26 @@ describe("project-controller-integration", () => {
   });
 
   it("returns updated searchable note after update", () => {
-    const note: Note = {
+    const note: updateNoteRequest = {
       id: "2",
       projectId: "1",
       title: "Updated Second Note",
     };
 
     const originalCount = database.db.data!.notes.length;
-    const response = noteController.update(note);
+    const response = noteController.update(note) as Note;
     const newCount = database.db.data!.notes.length;
     const searchResult = searchController.searchNotes(response.title);
 
     expect(originalCount).toEqual(newCount);
     expect(response.title).toEqual("Updated Second Note");
     expect(searchResult[0].title).toEqual("Updated Second Note");
+  });
+
+  it("returns error if trying to delete with id that doesn't match schema", () => {
+    expect(noteController.delete(123 as any as string)).toBeInstanceOf(
+      ZodError
+    );
   });
 
   it("returns error if trying to delete note by id not in database", () => {

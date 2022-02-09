@@ -2,7 +2,7 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
 import { URL } from "url";
 import { existsSync, mkdirSync } from "fs";
-import type { Goal, Note, Progress } from "interfaces";
+import type { Progress } from "interfaces";
 import Database from "./database";
 import FileSystemController from "./api/file-system-controller";
 import ProjectRepository from "./api/project-repository";
@@ -17,12 +17,15 @@ import GoalController from "./api/goal-controller";
 import ProgressRepository from "./api/progress-repository";
 import ProgressController from "./api/progress-controller";
 import type {
+  addGoalRequest,
+  addNoteRequest,
   htmlWriteRequest,
   idRequest,
   projectAddRequest,
   projectUpdateRequest,
   typeAddRequest,
   updateGoalRequest,
+  updateNoteRequest,
 } from "./schemas";
 
 // declared outside of try block so it can be accessed by IPC
@@ -229,7 +232,7 @@ ipcMain.handle("types-delete", (_e, id: idRequest) => {
 });
 
 // Goals
-ipcMain.handle("goals-add", (_e, goal: Goal) => {
+ipcMain.handle("goals-add", (_e, goal: addGoalRequest) => {
   return goalController.add(goal);
 });
 
@@ -279,12 +282,12 @@ ipcMain.handle("notes-get-by-id", (_e, id: idRequest) => {
   return noteController.getById(id);
 });
 
-ipcMain.handle("notes-add", (_e, Note: Note) => {
-  return noteController.add(Note);
+ipcMain.handle("notes-add", (_e, request: addNoteRequest) => {
+  return noteController.add(request);
 });
 
-ipcMain.handle("notes-update", (_e, Note: Note) => {
-  return noteController.update(Note);
+ipcMain.handle("notes-update", (_e, request: updateNoteRequest) => {
+  return noteController.update(request);
 });
 
 ipcMain.handle("notes-delete", (_e, id: idRequest) => {

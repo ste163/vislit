@@ -72,8 +72,6 @@ const onSubmit = handleSubmit(async ({ title }) => {
         id: props.selectedNote.id,
         projectId: props.selectedNote.projectId,
         title,
-        dateCreated: props.selectedNote.dateCreated,
-        dateModified: props.selectedNote.dateModified,
       };
       const response = (await api.send("notes-update", updatedNote)) as Note;
 
