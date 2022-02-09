@@ -60,21 +60,6 @@ export const readNoteByIdRequestSchema = z.object({
 
 export type readNoteByIdRequest = z.infer<typeof readNoteByIdRequestSchema>;
 
-export const readMostRecentHtmlFileRequestSchema = z
-  .object({
-    id: idRequestSchema,
-    type: z
-      .string()
-      .refine((value: string) =>
-        value === "documents" || value === "notes" ? true : false
-      ),
-  })
-  .strict();
-
-export type readMostRecentHtmlFileRequest = z.infer<
-  typeof readMostRecentHtmlFileRequestSchema
->;
-
 export const typeAddRequestSchema = z.string();
 
 export type typeAddRequest = z.infer<typeof typeAddRequestSchema>;

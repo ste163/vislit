@@ -89,19 +89,11 @@ describe("file-system-controller", () => {
 
   it("readMostRecentHtmlFile - returns error if wrong schema passed in", () => {
     expect(
-      fileSystemController.readMostRecentHtmlFile({
-        id: "1",
-        type: 2 as any as string,
-      })
+      fileSystemController.readMostRecentHtmlFile(2 as any as string)
     ).toBeInstanceOf(Error);
   });
 
   it("readMostRecentHtmlFile - returns file with correct schema", () => {
-    expect(
-      fileSystemController.readMostRecentHtmlFile({
-        id: "1",
-        type: "notes",
-      })
-    ).toBe("/file.html");
+    expect(fileSystemController.readMostRecentHtmlFile("1")).toBe("/file.html");
   });
 });

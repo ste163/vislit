@@ -3,7 +3,6 @@ import {
   deleteNoteRequestSchema,
   htmlWriteRequestSchema,
   idRequestSchema,
-  readMostRecentHtmlFileRequestSchema,
   readNoteByIdRequestSchema,
 } from "../schemas";
 import type {
@@ -11,7 +10,6 @@ import type {
   idRequest,
   deleteNoteRequest,
   readNoteByIdRequest,
-  readMostRecentHtmlFileRequest,
 } from "../schemas";
 
 class FileSystemController {
@@ -97,15 +95,10 @@ class FileSystemController {
     }
   }
 
-  readMostRecentHtmlFile(
-    request: readMostRecentHtmlFileRequest
-  ): string | void | Error {
-    // Notes are stored without dates in filename
-    // Database stores note dates
+  readMostRecentHtmlFile(projectId: idRequest): string | void | Error {
     try {
-      readMostRecentHtmlFileRequestSchema.parse(request);
-      const { id, type } = request;
-      const userData = `${this.getUserDataPath()}/projects/${id}/${type}`;
+      idRequestSchema.parse(projectId);
+      const userData = `${this.getUserDataPath()}/projects/${projectId}/documents`;
       const files = fs.readdirSync(userData);
       if (files.length) {
         // for now, assuming last file in list is most recent

@@ -6,7 +6,6 @@ import type { Note } from "interfaces";
 class NoteController {
   #noteRepository: NoteRepository;
   #searchController: SearchController;
-  // DO NOT do the file system yet; need frontend setup to manually test that it works
   #fileSystemController: FileSystemController;
 
   constructor(
