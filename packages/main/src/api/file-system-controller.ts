@@ -1,14 +1,18 @@
 import fs from "fs";
-import { htmlWriteRequestSchema, idRequestSchema } from "../schemas";
-import type { htmlWriteRequest, idRequest } from "../schemas";
-
-export type htmlData = {
-  id: string; // projectId or noteId
-  html: string;
-  type: "documents" | "notes";
-  projectId?: string; // notes need projectId
-  createdAt?: Date;
-};
+import {
+  deleteNoteRequestSchema,
+  htmlWriteRequestSchema,
+  idRequestSchema,
+  readMostRecentHtmlFileRequestSchema,
+  readNoteByIdRequestSchema,
+} from "../schemas";
+import type {
+  htmlWriteRequest,
+  idRequest,
+  deleteNoteRequest,
+  readNoteByIdRequest,
+  readMostRecentHtmlFileRequest,
+} from "../schemas";
 
 class FileSystemController {
   #userDataPath: string;
@@ -20,37 +24,46 @@ class FileSystemController {
     return this.#userDataPath;
   }
 
-  makeProjectDirectory(projectId: idRequest): void {
-    idRequestSchema.parse(projectId);
-    const userData = this.getUserDataPath();
-    fs.mkdirSync(`${userData}/projects/${projectId}`);
-    fs.mkdirSync(`${userData}/projects/${projectId}/documents`);
-    fs.mkdirSync(`${userData}/projects/${projectId}/notes`);
-  }
-
-  deleteProjectDirectory(projectId: idRequest): void {
-    idRequestSchema.parse(projectId);
-    const userData = this.getUserDataPath();
-    fs.rmSync(`${userData}/projects/${projectId}`, { recursive: true });
-  }
-
-  writeHtmlFile(htmlData: htmlWriteRequest): true | Error {
+  makeProjectDirectory(projectId: idRequest): true | Error {
     try {
-      htmlWriteRequestSchema.parse(htmlData);
+      idRequestSchema.parse(projectId);
+      const userData = this.getUserDataPath();
+      fs.mkdirSync(`${userData}/projects/${projectId}`);
+      fs.mkdirSync(`${userData}/projects/${projectId}/documents`);
+      fs.mkdirSync(`${userData}/projects/${projectId}/notes`);
+      return true;
+    } catch (error: any | Error) {
+      console.error(error);
+      return error;
+    }
+  }
+
+  deleteProjectDirectory(projectId: idRequest): true | Error {
+    try {
+      idRequestSchema.parse(projectId);
+      const userData = this.getUserDataPath();
+      fs.rmSync(`${userData}/projects/${projectId}`, { recursive: true });
+      return true;
+    } catch (error: any | Error) {
+      console.error(error);
+      return error;
+    }
+  }
+
+  writeHtmlFile(request: htmlWriteRequest): true | Error {
+    try {
+      htmlWriteRequestSchema.parse(request);
+      const { id, html, type, projectId, createdAt } = request;
       // documents save the date for versioning
       // notes do not have versioning, only save id
       const userData =
-        htmlData.type === "documents"
-          ? `${this.getUserDataPath()}/projects/${htmlData.id}/${
-              htmlData.type
-            }/${new Date(htmlData.createdAt!).toISOString().split("T")[0]}-${
-              htmlData.id
-            }.html`
-          : `${this.getUserDataPath()}/projects/${htmlData.projectId}/${
-              htmlData.type
-            }/${htmlData.id}.html`;
+        type === "documents"
+          ? `${this.getUserDataPath()}/projects/${id}/${type}/${
+              new Date(createdAt!).toISOString().split("T")[0]
+            }-${id}.html`
+          : `${this.getUserDataPath()}/projects/${projectId}/${type}/${id}.html`;
 
-      fs.writeFileSync(userData, htmlData.html);
+      fs.writeFileSync(userData, html);
       return true;
     } catch (error: any | Error) {
       console.error(error);
@@ -58,10 +71,12 @@ class FileSystemController {
     }
   }
 
-  deleteNote(id: string, projectId: string): true | Error {
+  deleteNote(request: deleteNoteRequest): true | Error {
     try {
+      deleteNoteRequestSchema.parse(request);
+      const { id, projectId } = request;
       const userData = `${this.getUserDataPath()}/projects/${projectId}/notes/${id}.html`;
-      fs.rmSync(userData); // will return error if can't find file
+      fs.rmSync(userData); // returns error if unable to find file
       return true;
     } catch (error: any | Error) {
       console.error(error);
@@ -69,8 +84,10 @@ class FileSystemController {
     }
   }
 
-  readNoteById(noteId: string, projectId: string): string | undefined | Error {
+  readNoteById(request: readNoteByIdRequest): string | undefined | Error {
     try {
+      readNoteByIdRequestSchema.parse(request);
+      const { noteId, projectId } = request;
       const userData = `${this.getUserDataPath()}/projects/${projectId}/notes/${noteId}.html`;
       const file = fs.readFileSync(userData, "utf-8");
       if (file) return file;
@@ -81,12 +98,13 @@ class FileSystemController {
   }
 
   readMostRecentHtmlFile(
-    id: string,
-    type: "documents" | "notes"
+    request: readMostRecentHtmlFileRequest
   ): string | void | Error {
     // Notes are stored without dates in filename
     // Database stores note dates
     try {
+      readMostRecentHtmlFileRequestSchema.parse(request);
+      const { id, type } = request;
       const userData = `${this.getUserDataPath()}/projects/${id}/${type}`;
       const files = fs.readdirSync(userData);
       if (files.length) {

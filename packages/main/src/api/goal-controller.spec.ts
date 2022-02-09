@@ -1,3 +1,6 @@
+/**
+ * @jest-environment node
+ */
 import type { Goal, Project } from "interfaces";
 import Database from "../database";
 import ProjectRepository from "./project-repository";

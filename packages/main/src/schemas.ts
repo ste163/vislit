@@ -9,7 +9,7 @@ export const projectAddRequestSchema = z
   .object({
     title: z.string(),
     description: z.string(),
-    typeId: z.string(),
+    typeId: idRequestSchema,
   })
   .strict(); // must use strict to only allow these keys
 
@@ -17,10 +17,10 @@ export type projectAddRequest = z.infer<typeof projectAddRequestSchema>;
 
 export const projectUpdateRequestSchema = z
   .object({
-    id: z.string(),
+    id: idRequestSchema,
     title: z.string(),
     description: z.string(),
-    typeId: z.string(),
+    typeId: idRequestSchema,
     completed: z.boolean(),
     archived: z.boolean(),
   })
@@ -30,19 +30,50 @@ export type projectUpdateRequest = z.infer<typeof projectUpdateRequestSchema>;
 
 export const htmlWriteRequestSchema = z
   .object({
-    id: z.string(),
+    id: idRequestSchema,
     html: z.string(),
     type: z
       .string()
       .refine((value: string) =>
         value === "documents" || value === "notes" ? true : false
       ),
-    projectId: z.string().optional(),
+    projectId: idRequestSchema.optional(),
     createdAt: z.date().optional(),
   })
   .strict();
 
 export type htmlWriteRequest = z.infer<typeof htmlWriteRequestSchema>;
+
+export const deleteNoteRequestSchema = z
+  .object({
+    id: idRequestSchema,
+    projectId: idRequestSchema,
+  })
+  .strict();
+
+export type deleteNoteRequest = z.infer<typeof deleteNoteRequestSchema>;
+
+export const readNoteByIdRequestSchema = z.object({
+  noteId: idRequestSchema,
+  projectId: idRequestSchema,
+});
+
+export type readNoteByIdRequest = z.infer<typeof readNoteByIdRequestSchema>;
+
+export const readMostRecentHtmlFileRequestSchema = z
+  .object({
+    id: idRequestSchema,
+    type: z
+      .string()
+      .refine((value: string) =>
+        value === "documents" || value === "notes" ? true : false
+      ),
+  })
+  .strict();
+
+export type readMostRecentHtmlFileRequest = z.infer<
+  typeof readMostRecentHtmlFileRequestSchema
+>;
 
 export const typeAddRequestSchema = z.string();
 

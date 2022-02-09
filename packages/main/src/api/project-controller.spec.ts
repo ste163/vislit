@@ -8,7 +8,10 @@ import ProjectRepository from "./project-repository";
 import NoteRepository from "./note-repository";
 import SearchController from "./search-controller";
 import type FileSystemController from "./file-system-controller";
-import { ZodError } from "zod";
+
+// TODO:
+// add failure test for makeProjectDirectory
+// add failure test for deleteProjectDirectory
 
 describe("project-controller-integration", () => {
   let seedData: Project[];
@@ -115,7 +118,7 @@ describe("project-controller-integration", () => {
         description: "A murderous clown attacks a town",
         typeId: "2",
       })
-    ).toBeInstanceOf(ZodError);
+    ).toBeInstanceOf(Error);
   });
 
   it("returns duplicate title error if adding a project with a title already in db", () => {
@@ -153,7 +156,7 @@ describe("project-controller-integration", () => {
       archived: false,
     };
 
-    expect(projectController.update(updatedProject)).toBeInstanceOf(ZodError);
+    expect(projectController.update(updatedProject)).toBeInstanceOf(Error);
   });
 
   it("returns error if updating project with id not in db", () => {
@@ -234,7 +237,7 @@ describe("project-controller-integration", () => {
 
   it("returns error if projectId doesn't match schema", () => {
     expect(projectController.delete(999 as any as string)).toBeInstanceOf(
-      ZodError
+      Error
     );
   });
 

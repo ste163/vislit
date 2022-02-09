@@ -74,7 +74,10 @@ class ProjectController {
 
       const response = this.#projectRepository.add(projectToAdd);
       this.#searchController.addProject(response);
-      this.#fileSystemController.makeProjectDirectory(response.id!);
+      const fsResponse = this.#fileSystemController.makeProjectDirectory(
+        response.id!
+      );
+      if (fsResponse instanceof Error) throw fsResponse;
       return response;
     } catch (e: any | Error) {
       console.error(e);
@@ -125,7 +128,8 @@ class ProjectController {
 
       this.#projectRepository.delete(id);
       this.#searchController.deleteProject(project);
-      this.#fileSystemController.deleteProjectDirectory(id);
+      const fsResponse = this.#fileSystemController.deleteProjectDirectory(id);
+      if (fsResponse instanceof Error) throw fsResponse;
 
       return true;
     } catch (e: any | Error) {
