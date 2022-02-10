@@ -18,7 +18,6 @@ describe("progress-controller-integration", () => {
   let seedProgress: Progress[];
   let database: Database;
   let goalRepository: GoalRepository;
-  let noteRepository: NoteRepository;
   let progressRepository: ProgressRepository;
   let projectRepository: ProjectRepository;
   let searchController: SearchController;
@@ -157,7 +156,7 @@ describe("progress-controller-integration", () => {
 
     goalRepository = new GoalRepository(database);
     projectRepository = new ProjectRepository(database);
-    noteRepository = new NoteRepository(database);
+    const noteRepository = new NoteRepository(database);
     progressRepository = new ProgressRepository(database);
     searchController = new SearchController(database);
     const mockFileSystemController = {} as unknown as FileSystemController;

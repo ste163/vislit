@@ -112,6 +112,11 @@ export const updateNoteRequestSchema = z
   })
   .strict();
 
+// Progress schemas are tricky
+// because they MUST be in ISO strings
+// so MUST MUST MUST check for only able to work with progress
+// that's in ISO string format
+
 export type updateNoteRequest = z.infer<typeof updateNoteRequestSchema>;
 
 export const typeAddRequestSchema = z.string();
