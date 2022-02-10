@@ -2,10 +2,10 @@
  * @jest-environment node
  */
 import type { Project, Goal, Progress } from "interfaces";
+import { ZodError } from "zod";
 import Database from "../database";
 import type FileSystemController from "./file-system-controller";
 import GoalRepository from "./goal-repository";
-import NoteRepository from "./note-repository";
 import ProgressController from "./progress-controller";
 import ProgressRepository from "./progress-repository";
 import ProjectController from "./project-controller";
@@ -156,7 +156,6 @@ describe("progress-controller-integration", () => {
 
     goalRepository = new GoalRepository(database);
     projectRepository = new ProjectRepository(database);
-    const noteRepository = new NoteRepository(database);
     progressRepository = new ProgressRepository(database);
     searchController = new SearchController(database);
     const mockFileSystemController = {} as unknown as FileSystemController;
@@ -172,26 +171,51 @@ describe("progress-controller-integration", () => {
     );
   });
 
+  it("getByDate - returns error schema doesn't match", () => {
+    const request = {
+      projectId: "3",
+      date: new Date("2020-01-01") as any as string,
+    };
+    expect(progressController.getByDate(request)).toBeInstanceOf(ZodError);
+  });
+
   it("getByDate - returns error if no project exists", () => {
-    expect(progressController.getByDate("3", new Date().toISOString())).toEqual(
+    const request = {
+      projectId: "3",
+      date: new Date().toISOString(),
+    };
+    expect(progressController.getByDate(request)).toEqual(
       new Error("Project with id 3 not in database")
     );
   });
 
   it("getByDate - returns undefined if no date found", () => {
-    expect(
-      progressController.getByDate("1", new Date().toISOString())
-    ).toBeUndefined();
+    const request = {
+      projectId: "1",
+      date: new Date().toISOString(),
+    };
+
+    expect(progressController.getByDate(request)).toBeUndefined();
   });
 
   it("getByDate - returns error if progress found but with a goal not in database", () => {
-    expect(progressController.getByDate("1", progressSeedDate3)).toEqual(
+    const request = {
+      projectId: "1",
+      date: progressSeedDate3,
+    };
+
+    expect(progressController.getByDate(request)).toEqual(
       new Error("No goal by id 0 found")
     );
   });
 
   it("getByDate - returns progress if date found with false completed if goal not met", () => {
-    expect(progressController.getByDate("1", progressSeedDate1)).toEqual({
+    const request = {
+      projectId: "1",
+      date: progressSeedDate1,
+    };
+
+    expect(progressController.getByDate(request)).toEqual({
       date: progressSeedDate1,
       projectId: "1",
       goalId: "1",
@@ -204,7 +228,12 @@ describe("progress-controller-integration", () => {
   });
 
   it("getByDate - returns completed progress if date found with goal count met only", () => {
-    expect(progressController.getByDate("2", progressSeedDate4)).toEqual({
+    const request = {
+      projectId: "1",
+      date: progressSeedDate4,
+    };
+
+    expect(progressController.getByDate(request)).toEqual({
       date: progressSeedDate4,
       projectId: "2",
       goalId: "1",
@@ -217,7 +246,12 @@ describe("progress-controller-integration", () => {
   });
 
   it("getByDate - returns completed progress if date found with proofread met only", () => {
-    expect(progressController.getByDate("2", progressSeedDate5)).toEqual({
+    const request = {
+      projectId: "1",
+      date: progressSeedDate5,
+    };
+
+    expect(progressController.getByDate(request)).toEqual({
       date: progressSeedDate5,
       projectId: "2",
       goalId: "1",
@@ -230,7 +264,12 @@ describe("progress-controller-integration", () => {
   });
 
   it("getByDate - returns completed progress if date found with edit met only", () => {
-    expect(progressController.getByDate("2", progressSeedDate6)).toEqual({
+    const request = {
+      projectId: "1",
+      date: progressSeedDate6,
+    };
+
+    expect(progressController.getByDate(request)).toEqual({
       date: progressSeedDate6,
       projectId: "2",
       goalId: "1",
@@ -243,7 +282,12 @@ describe("progress-controller-integration", () => {
   });
 
   it("getByDate - returns completed progress if date found with revised met only", () => {
-    expect(progressController.getByDate("2", progressSeedDate7)).toEqual({
+    const request = {
+      projectId: "1",
+      date: progressSeedDate7,
+    };
+
+    expect(progressController.getByDate(request)).toEqual({
       date: progressSeedDate7,
       projectId: "2",
       goalId: "1",

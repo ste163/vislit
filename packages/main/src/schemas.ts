@@ -112,10 +112,19 @@ export const updateNoteRequestSchema = z
   })
   .strict();
 
-// Progress schemas are tricky
-// because they MUST be in ISO strings
-// so MUST MUST MUST check for only able to work with progress
-// that's in ISO string format
+const isoDateRequestSchema = z.string().refine((date) => {
+  const parsedDate = new Date(Date.parse(date)).toISOString();
+  return parsedDate === date ? true : false;
+});
+
+export const getProgressByDateRequestSchema = z.object({
+  projectId: idRequestSchema,
+  date: isoDateRequestSchema,
+});
+
+export type getProgressByDateRequest = z.infer<
+  typeof getProgressByDateRequestSchema
+>;
 
 export type updateNoteRequest = z.infer<typeof updateNoteRequestSchema>;
 

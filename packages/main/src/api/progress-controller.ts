@@ -2,6 +2,8 @@ import type { Progress, Goal } from "interfaces";
 import type GoalRepository from "./goal-repository";
 import type ProgressRepository from "./progress-repository";
 import type ProjectController from "./project-controller";
+import type { getProgressByDateRequest } from "../schemas";
+import { getProgressByDateRequestSchema } from "../schemas";
 
 class ProgressController {
   #progressRepository: ProgressRepository;
@@ -44,8 +46,10 @@ class ProgressController {
     });
   }
 
-  getByDate(projectId: string, date: string): Progress | undefined | Error {
+  getByDate(request: getProgressByDateRequest): Progress | undefined | Error {
     try {
+      getProgressByDateRequestSchema.parse(request);
+      const { projectId, date } = request;
       // Not checking for goalId because dates can only exists on a single goal
       const response = this.#projectController.getById(projectId);
       if (response instanceof Error) throw response;

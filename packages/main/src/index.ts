@@ -19,6 +19,7 @@ import ProgressController from "./api/progress-controller";
 import type {
   addGoalRequest,
   addNoteRequest,
+  getProgressByDateRequest,
   htmlWriteRequest,
   idRequest,
   projectAddRequest,
@@ -260,8 +261,8 @@ ipcMain.handle(
 
 ipcMain.handle(
   "progress-get-by-date",
-  (_e, request: { projectId: string; date: string }) => {
-    return progressController.getByDate(request.projectId, request.date);
+  (_e, request: getProgressByDateRequest) => {
+    return progressController.getByDate(request);
   }
 );
 
