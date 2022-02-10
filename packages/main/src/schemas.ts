@@ -117,3 +117,7 @@ export type updateNoteRequest = z.infer<typeof updateNoteRequestSchema>;
 export const typeAddRequestSchema = z.string();
 
 export type typeAddRequest = z.infer<typeof typeAddRequestSchema>;
+
+export const searchRequestSchema = z.string();
+
+export type searchRequest = z.infer<typeof searchRequestSchema>;

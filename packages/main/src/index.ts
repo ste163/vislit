@@ -215,8 +215,10 @@ ipcMain.handle("projects-delete", (_e, request: idRequest) => {
   return projectController.delete(request);
 });
 
+// TODO:
+// implement
+// note search
 // project search endpoint
-// project auto-suggestion search endpoint
 
 // Types
 ipcMain.handle("types-get-all", () => {
