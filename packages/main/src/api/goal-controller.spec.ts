@@ -84,7 +84,7 @@ describe("goal-controller", () => {
       revisedCountsTowardsGoal: true,
     };
 
-    expect(goalController.add(goal as Goal)).toBeInstanceOf(Error);
+    expect(goalController.add(goal as Goal)).toBeInstanceOf(ZodError);
   });
 
   it("returns error if adding project by projectId not in database", () => {
@@ -160,7 +160,9 @@ describe("goal-controller", () => {
   });
 
   it("returns error if trying to set goal complete with id that doesn't match schema", () => {
-    expect(goalController.delete(123 as any as string)).toBeInstanceOf(Error);
+    expect(goalController.delete(123 as any as string)).toBeInstanceOf(
+      ZodError
+    );
   });
 
   it("returns error when setting complete for a goal by id not in database", () => {
@@ -340,7 +342,9 @@ describe("goal-controller", () => {
   });
 
   it("returns error if trying to delete with id that doesn't match schema", () => {
-    expect(goalController.delete(123 as any as string)).toBeInstanceOf(Error);
+    expect(goalController.delete(123 as any as string)).toBeInstanceOf(
+      ZodError
+    );
   });
 
   it("returns error if deleting goal by id not in database", () => {

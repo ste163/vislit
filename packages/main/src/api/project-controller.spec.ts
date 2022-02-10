@@ -5,8 +5,8 @@ import type { Project } from "interfaces";
 import Database from "../database";
 import ProjectController from "./project-controller";
 import ProjectRepository from "./project-repository";
-import NoteRepository from "./note-repository";
 import SearchController from "./search-controller";
+import { ZodError } from "zod";
 import type FileSystemController from "./file-system-controller";
 
 // TODO:
@@ -51,7 +51,6 @@ describe("project-controller-integration", () => {
 
     database.db.data!.projects = seedData;
     projectRepository = new ProjectRepository(database);
-    const noteRepository = new NoteRepository(database);
     searchController = new SearchController(database);
     const mockFileSystemController = {
       makeProjectDirectory: jest.fn(() => undefined),
@@ -118,7 +117,7 @@ describe("project-controller-integration", () => {
         description: "A murderous clown attacks a town",
         typeId: "2",
       })
-    ).toBeInstanceOf(Error);
+    ).toBeInstanceOf(ZodError);
   });
 
   it("returns duplicate title error if adding a project with a title already in db", () => {
@@ -156,7 +155,7 @@ describe("project-controller-integration", () => {
       archived: false,
     };
 
-    expect(projectController.update(updatedProject)).toBeInstanceOf(Error);
+    expect(projectController.update(updatedProject)).toBeInstanceOf(ZodError);
   });
 
   it("returns error if updating project with id not in db", () => {

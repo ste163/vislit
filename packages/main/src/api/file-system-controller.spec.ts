@@ -3,6 +3,7 @@
  */
 import fs from "fs";
 import FileSystemController from "./file-system-controller";
+import { ZodError } from "zod";
 import type { htmlWriteRequest } from "../schemas";
 
 describe("file-system-controller", () => {
@@ -24,7 +25,7 @@ describe("file-system-controller", () => {
   it("makeProjectDirectory - returns error if wrong schema passed in", () => {
     expect(
       fileSystemController.makeProjectDirectory(3 as any as string)
-    ).toBeInstanceOf(Error);
+    ).toBeInstanceOf(ZodError);
   });
 
   it("makeProjectDirectory - returns true with correct schema", () => {
@@ -34,7 +35,7 @@ describe("file-system-controller", () => {
   it("deleteProjectDirectory - returns error if wrong schema passed in", () => {
     expect(
       fileSystemController.deleteProjectDirectory(3 as any as string)
-    ).toBeInstanceOf(Error);
+    ).toBeInstanceOf(ZodError);
   });
 
   it("deleteProjectDirectory - returns true with correct schema", () => {
@@ -44,7 +45,7 @@ describe("file-system-controller", () => {
   it("writeHtmlFile - returns error if wrong schema passed in", () => {
     expect(
       fileSystemController.writeHtmlFile(3 as any as htmlWriteRequest)
-    ).toBeInstanceOf(Error);
+    ).toBeInstanceOf(ZodError);
   });
 
   it("writeHtmlFile - returns true with correct schema", () => {
@@ -63,7 +64,7 @@ describe("file-system-controller", () => {
         id: "1",
         projectId: 2 as any as string,
       })
-    ).toBeInstanceOf(Error);
+    ).toBeInstanceOf(ZodError);
   });
 
   it("deleteNote - returns true with correct schema", () => {
@@ -78,7 +79,7 @@ describe("file-system-controller", () => {
         noteId: "1",
         projectId: 2 as any as string,
       })
-    ).toBeInstanceOf(Error);
+    ).toBeInstanceOf(ZodError);
   });
 
   it("readNoteById - returns file with correct schema", () => {
@@ -90,7 +91,7 @@ describe("file-system-controller", () => {
   it("readMostRecentHtmlFile - returns error if wrong schema passed in", () => {
     expect(
       fileSystemController.readMostRecentHtmlFile(2 as any as string)
-    ).toBeInstanceOf(Error);
+    ).toBeInstanceOf(ZodError);
   });
 
   it("readMostRecentHtmlFile - returns file with correct schema", () => {
