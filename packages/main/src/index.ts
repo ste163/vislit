@@ -19,6 +19,7 @@ import ProgressController from "./api/progress-controller";
 import type {
   addGoalRequest,
   addNoteRequest,
+  getAllProgressRequest,
   getProgressByDateRequest,
   htmlWriteRequest,
   idRequest,
@@ -254,8 +255,8 @@ ipcMain.handle("goals-completed", (_e, id: idRequest) => {
 // Progress
 ipcMain.handle(
   "progress-get-all-by-year-month",
-  (_e, dates: { projectId: string; year: string; month: string }) => {
-    return progressController.getAll(dates.projectId, dates.year, dates.month);
+  (_e, request: getAllProgressRequest) => {
+    return progressController.getAll(request);
   }
 );
 
