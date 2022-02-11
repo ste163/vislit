@@ -62,7 +62,7 @@ class NoteController {
   add(request: addNoteRequest): Note | Error {
     try {
       addNoteRequestSchema.parse(request);
-      // TODO: DO ALL LIKE THIS
+
       const note = { ...request } as Note;
 
       note.title = note.title.trim();

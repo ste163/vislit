@@ -42,8 +42,9 @@ class ProjectController {
     }
   }
 
-  getById(id: string): Project | Error {
+  getById(id: idRequest): Project | Error {
     try {
+      idRequestSchema.parse(id);
       const project = this.#projectRepository.getById(id);
       if (project === undefined)
         throw new Error(`Project with id ${id} not in database`);
@@ -54,17 +55,16 @@ class ProjectController {
     }
   }
 
-  add(project: projectAddRequest): Project | Error {
+  add(request: projectAddRequest): Project | Error {
     try {
-      projectAddRequestSchema.parse(project);
+      projectAddRequestSchema.parse(request);
 
-      project.title = project.title.trim();
-      project.description = project.description.trim();
+      request.title = request.title.trim();
+      request.description = request.description.trim();
 
-      this.#checkForTitleTaken(project.title);
+      this.#checkForTitleTaken(request.title);
 
-      // Type conversion from request schema to Project
-      const projectToAdd = { ...project } as Project;
+      const projectToAdd = { ...request } as Project;
 
       const date = new Date();
       projectToAdd.dateCreated = date;
@@ -85,26 +85,28 @@ class ProjectController {
     }
   }
 
-  update(project: projectUpdateRequest): Project | Error {
+  update(request: projectUpdateRequest): Project | Error {
     try {
-      projectUpdateRequestSchema.parse(project);
+      projectUpdateRequestSchema.parse(request);
 
-      const projectToUpdate = this.getById(project.id);
+      const { id, title, description, archived, completed, typeId } = request;
+
+      const projectToUpdate = this.getById(id);
       if (projectToUpdate instanceof Error) return projectToUpdate;
 
       // Must get a copy of original project
       // before its updated, so it can be removed from search index
       const originalProjectForIndex = { ...projectToUpdate };
 
-      if (project.title.trim() !== projectToUpdate.title)
-        this.#checkForTitleTaken(project.title);
+      if (title.trim() !== projectToUpdate.title)
+        this.#checkForTitleTaken(title);
 
       // Update only certain properties
-      projectToUpdate.title = project.title.trim();
-      projectToUpdate.description = project.description.trim();
-      projectToUpdate.archived = project.archived;
-      projectToUpdate.completed = project.completed;
-      projectToUpdate.typeId = project.typeId;
+      projectToUpdate.title = title.trim(); // must trim here and in the if check before, or it doesn't save
+      projectToUpdate.description = description.trim();
+      projectToUpdate.archived = archived;
+      projectToUpdate.completed = completed;
+      projectToUpdate.typeId = typeId;
       projectToUpdate.dateModified = new Date();
 
       const updatedProject = this.#projectRepository.update(projectToUpdate);

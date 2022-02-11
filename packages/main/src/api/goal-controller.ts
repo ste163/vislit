@@ -79,17 +79,20 @@ class GoalController {
     }
   }
 
-  update(goal: updateGoalRequest): Goal | Error {
+  update(request: updateGoalRequest): Goal | Error {
     try {
-      updateGoalRequestSchema.parse(goal);
-      const existingGoal = this.#goalRepository.getById(goal.id!);
-      if (existingGoal === undefined)
-        throw new Error(`Goal with id ${goal.id} does not exist in database`);
+      updateGoalRequestSchema.parse(request);
 
-      const activeGoal = this.#goalRepository.getActive(goal.projectId);
+      const { id, projectId } = request;
+
+      const existingGoal = this.#goalRepository.getById(id);
+      if (existingGoal === undefined)
+        throw new Error(`Goal with id ${id} does not exist in database`);
+
+      const activeGoal = this.#goalRepository.getActive(projectId);
       if (activeGoal === undefined)
         throw new Error(
-          `No active goal for project id ${goal.projectId} exists in database`
+          `No active goal for project id ${projectId} exists in database`
         );
 
       if (existingGoal.id !== activeGoal.id)
@@ -98,7 +101,7 @@ class GoalController {
           `The goal you are trying to update with id ${existingGoal.id} does not match the active goal with id ${activeGoal.id}`
         );
 
-      const goalToUpdate = { ...goal } as Goal;
+      const goalToUpdate = { ...request } as Goal;
 
       existingGoal.dateModified = new Date();
       existingGoal.active = false;
