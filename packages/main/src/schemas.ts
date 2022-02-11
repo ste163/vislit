@@ -4,6 +4,17 @@ import { z } from "zod";
 export const idRequestSchema = z.string();
 export type idRequest = z.infer<typeof idRequestSchema>;
 
+// Helper schemas
+const isoDateRequestSchema = z.string().refine((date) => {
+  const parsedDate = new Date(Date.parse(date)).toISOString();
+  return parsedDate === date ? true : false;
+});
+
+const numberAsStringRequestSchema = z.string().refine((value) => {
+  const parsed = parseInt(value);
+  return isNaN(parsed) ? false : true;
+});
+
 // Specific schemas
 export const projectAddRequestSchema = z
   .object({
@@ -112,11 +123,6 @@ export const updateNoteRequestSchema = z
   })
   .strict();
 
-const isoDateRequestSchema = z.string().refine((date) => {
-  const parsedDate = new Date(Date.parse(date)).toISOString();
-  return parsedDate === date ? true : false;
-});
-
 export const getProgressByDateRequestSchema = z.object({
   projectId: idRequestSchema,
   date: isoDateRequestSchema,
@@ -125,6 +131,14 @@ export const getProgressByDateRequestSchema = z.object({
 export type getProgressByDateRequest = z.infer<
   typeof getProgressByDateRequestSchema
 >;
+
+export const getAllProgressRequestSchema = z.object({
+  projectId: idRequestSchema,
+  year: numberAsStringRequestSchema,
+  month: numberAsStringRequestSchema,
+});
+
+export type getAllProgressRequest = z.infer<typeof getAllProgressRequestSchema>;
 
 export type updateNoteRequest = z.infer<typeof updateNoteRequestSchema>;
 

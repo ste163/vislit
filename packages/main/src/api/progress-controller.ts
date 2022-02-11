@@ -2,8 +2,15 @@ import type { Progress, Goal } from "interfaces";
 import type GoalRepository from "./goal-repository";
 import type ProgressRepository from "./progress-repository";
 import type ProjectController from "./project-controller";
-import type { getProgressByDateRequest } from "../schemas";
-import { getProgressByDateRequestSchema } from "../schemas";
+import type {
+  getAllProgressRequest,
+  getProgressByDateRequest,
+} from "../schemas";
+
+import {
+  getProgressByDateRequestSchema,
+  getAllProgressRequestSchema,
+} from "../schemas";
 
 class ProgressController {
   #progressRepository: ProgressRepository;
@@ -61,12 +68,10 @@ class ProgressController {
     }
   }
 
-  getAll(
-    projectId: string,
-    year: string,
-    month: string
-  ): Progress[] | undefined | Error {
+  getAll(request: getAllProgressRequest): Progress[] | undefined | Error {
     try {
+      getAllProgressRequestSchema.parse(request);
+      const { projectId, year, month } = request;
       const response = this.#projectController.getById(projectId);
       if (response instanceof Error) throw response;
       const progress = this.#progressRepository.getAllByYearMonth(year, month);

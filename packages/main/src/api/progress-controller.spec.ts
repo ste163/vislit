@@ -299,18 +299,45 @@ describe("progress-controller-integration", () => {
     });
   });
 
+  it("getAll - returns error incorrect schema", () => {
+    const request = {
+      projectId: "3",
+      year: "2020",
+      month: "January",
+    };
+
+    expect(progressController.getAll(request)).toBeInstanceOf(ZodError);
+  });
   it("getAll - returns error if no project exists", () => {
-    expect(progressController.getAll("3", "2020", "03")).toEqual(
+    const request = {
+      projectId: "3",
+      year: "2020",
+      month: "03",
+    };
+
+    expect(progressController.getAll(request)).toEqual(
       new Error("Project with id 3 not in database")
     );
   });
 
   it("getAll - returns empty array if no progress by year-month found", () => {
-    expect(progressController.getAll("1", "1999", "01")).toEqual([]);
+    const request = {
+      projectId: "1",
+      year: "1999",
+      month: "01",
+    };
+
+    expect(progressController.getAll(request)).toEqual([]);
   });
 
   it("getAll - returns all progress by year-month", () => {
-    expect(progressController.getAll("1", "2020", "01")).toEqual([
+    const request = {
+      projectId: "1",
+      year: "2020",
+      month: "01",
+    };
+
+    expect(progressController.getAll(request)).toEqual([
       {
         date: progressSeedDate1,
         projectId: "1",
