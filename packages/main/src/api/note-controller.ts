@@ -2,11 +2,16 @@ import type NoteRepository from "./note-repository";
 import type SearchController from "./search-controller";
 import type FileSystemController from "./file-system-controller";
 import type { Note } from "interfaces";
+import type { addNoteRequest, idRequest, updateNoteRequest } from "../schemas";
+import {
+  idRequestSchema,
+  addNoteRequestSchema,
+  updateNoteRequestSchema,
+} from "../schemas";
 
 class NoteController {
   #noteRepository: NoteRepository;
   #searchController: SearchController;
-  // DO NOT do the file system yet; need frontend setup to manually test that it works
   #fileSystemController: FileSystemController;
 
   constructor(
@@ -25,8 +30,9 @@ class NoteController {
   }
 
   // TODO: Make getAll return alphabetically by default; any other sorting can be on frontend
-  getAllByProjectId(projectId: string): Note[] | Error {
+  getAllByProjectId(projectId: idRequest): Note[] | Error {
     try {
+      idRequestSchema.parse(projectId);
       return this.#noteRepository.getAllByProjectId(projectId);
     } catch (e: any | Error) {
       console.error(e);
@@ -34,16 +40,17 @@ class NoteController {
     }
   }
 
-  getById(id: string): Note | Error {
+  getById(id: idRequest): Note | Error {
     try {
+      idRequestSchema.parse(id);
       const note = this.#noteRepository.getById(id);
       if (note === undefined)
         throw new Error(`Note with id ${id} not in database`);
 
-      const html = this.#fileSystemController.readNoteById(
-        note.id!,
-        note.projectId
-      );
+      const html = this.#fileSystemController.readNoteById({
+        noteId: note.id!,
+        projectId: note.projectId,
+      });
       note.html = html instanceof Error || !html ? null : html;
       return note;
     } catch (e: any | Error) {
@@ -52,8 +59,12 @@ class NoteController {
     }
   }
 
-  add(note: Note): Note | Error {
+  add(request: addNoteRequest): Note | Error {
     try {
+      addNoteRequestSchema.parse(request);
+
+      const note = { ...request } as Note;
+
       note.title = note.title.trim();
       this.#checkForTitleTaken(note.title, note.projectId);
 
@@ -71,9 +82,12 @@ class NoteController {
     }
   }
 
-  update(note: Note): Note | Error {
+  update(request: updateNoteRequest): Note | Error {
     try {
-      const noteToUpdate = this.getById(note.id!);
+      updateNoteRequestSchema.parse(request);
+      const note = { ...request };
+
+      const noteToUpdate = this.getById(note.id);
       if (noteToUpdate instanceof Error) return noteToUpdate;
 
       const originalNoteForIndex = { ...noteToUpdate };
@@ -94,15 +108,16 @@ class NoteController {
     }
   }
 
-  delete(id: string): true | Error {
+  delete(id: idRequest): true | Error {
     try {
+      idRequestSchema.parse(id);
       const note = this.getById(id);
       if (note instanceof Error)
         throw new Error(`Note with id ${id} not in database`);
 
       this.#noteRepository.delete(id);
       this.#searchController.deleteNote(note);
-      this.#fileSystemController.deleteNote(id, note.projectId);
+      this.#fileSystemController.deleteNote({ id, projectId: note.projectId });
 
       return true; // returning true instead of undefined because that could potentially mean other things
     } catch (e: any | Error) {

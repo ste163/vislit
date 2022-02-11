@@ -2,8 +2,7 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
 import { URL } from "url";
 import { existsSync, mkdirSync } from "fs";
-import type { Goal, Note, Progress, Project } from "interfaces";
-import type { htmlData } from "./api/file-system-controller";
+import type { Progress } from "interfaces";
 import Database from "./database";
 import FileSystemController from "./api/file-system-controller";
 import ProjectRepository from "./api/project-repository";
@@ -17,6 +16,20 @@ import GoalRepository from "./api/goal-repository";
 import GoalController from "./api/goal-controller";
 import ProgressRepository from "./api/progress-repository";
 import ProgressController from "./api/progress-controller";
+import type {
+  addGoalRequest,
+  addNoteRequest,
+  getAllProgressRequest,
+  getProgressByDateRequest,
+  htmlWriteRequest,
+  idRequest,
+  modifyProgressRequest,
+  projectAddRequest,
+  projectUpdateRequest,
+  typeAddRequest,
+  updateGoalRequest,
+  updateNoteRequest,
+} from "./schemas";
 
 // declared outside of try block so it can be accessed by IPC
 let fileSystemController: FileSystemController;
@@ -29,7 +42,7 @@ let progressController: ProgressController;
 // declared here to access window bounds
 let database: Database;
 
-// For now, instantiate db, controllers, & repos here
+// for now, instantiate db, controllers, & repos here
 try {
   database = new Database(app);
   fileSystemController = new FileSystemController(app.getPath("userData"));
@@ -179,7 +192,7 @@ app
   })
   .catch((e) => console.error("Failed create window:", e));
 
-// Auto-updates
+// auto-updating
 if (import.meta.env.PROD) {
   app
     .whenReady()
@@ -188,108 +201,105 @@ if (import.meta.env.PROD) {
     .catch((e) => console.error("Failed check updates:", e));
 }
 
-// API Endpoints
+// api endpoints
 ipcMain.handle("projects-get-all", () => {
   return projectController.getAll();
 });
 
-ipcMain.handle("projects-add", (_e, project: Project) => {
-  return projectController.add(project);
+ipcMain.handle("projects-add", (_e, request: projectAddRequest) => {
+  return projectController.add(request);
 });
 
-ipcMain.handle("projects-update", (_e, project: Project) => {
-  return projectController.update(project);
+ipcMain.handle("projects-update", (_e, request: projectUpdateRequest) => {
+  return projectController.update(request);
 });
 
-ipcMain.handle("projects-delete", (_e, projectId: string) => {
-  return projectController.delete(projectId);
+ipcMain.handle("projects-delete", (_e, request: idRequest) => {
+  return projectController.delete(request);
 });
 
+// TODO:
+// implement
+// note search
 // project search endpoint
-// project auto-suggestion search endpoint
 
 // Types
 ipcMain.handle("types-get-all", () => {
   return typeController.getAll();
 });
 
-ipcMain.handle("types-add", (_e, value: string) => {
+ipcMain.handle("types-add", (_e, value: typeAddRequest) => {
   return typeController.add(value);
 });
 
-ipcMain.handle("types-delete", (_e, id: string) => {
+ipcMain.handle("types-delete", (_e, id: idRequest) => {
   return typeController.delete(id);
 });
 
 // Goals
-ipcMain.handle("goals-add", (_e, goal: Goal) => {
+ipcMain.handle("goals-add", (_e, goal: addGoalRequest) => {
   return goalController.add(goal);
 });
 
-ipcMain.handle("goals-update", (_e, goal: Goal) => {
-  return goalController.update(goal);
+ipcMain.handle("goals-update", (_e, request: updateGoalRequest) => {
+  return goalController.update(request);
 });
 
-ipcMain.handle("goals-delete", (_e, goalId: string) => {
-  return goalController.delete(goalId);
+ipcMain.handle("goals-delete", (_e, id: idRequest) => {
+  return goalController.delete(id);
 });
 
-ipcMain.handle("goals-completed", (_e, goalId: string) => {
-  return goalController.setCompletedById(goalId);
+ipcMain.handle("goals-completed", (_e, id: idRequest) => {
+  return goalController.setCompletedById(id);
 });
 
 // Progress
 ipcMain.handle(
   "progress-get-all-by-year-month",
-  (_e, dates: { projectId: string; year: string; month: string }) => {
-    return progressController.getAll(dates.projectId, dates.year, dates.month);
+  (_e, request: getAllProgressRequest) => {
+    return progressController.getAll(request);
   }
 );
 
 ipcMain.handle(
   "progress-get-by-date",
-  (_e, request: { projectId: string; date: string }) => {
-    return progressController.getByDate(request.projectId, request.date);
+  (_e, request: getProgressByDateRequest) => {
+    return progressController.getByDate(request);
   }
 );
 
-ipcMain.handle("progress-modify", (_e, progress: Progress) => {
-  // zod schema MUST ensure the date is an ISOstring otherwise, everything breaks
+ipcMain.handle("progress-modify", (_e, progress: modifyProgressRequest) => {
   return progressController.modify(progress);
 });
 
 // Writer
-ipcMain.handle("writer-get-most-recent", (_e, projectId: string) => {
-  return fileSystemController.readMostRecentHtmlFile(projectId, "documents");
-});
-
-ipcMain.handle("writer-get-by-id", (_e, projectId: string) => {
-  console.log("GET PROJECTS FOR", projectId);
+ipcMain.handle("writer-get-most-recent", (_e, id: idRequest) => {
+  return fileSystemController.readMostRecentHtmlFile(id);
 });
 
 // Notes
-ipcMain.handle("notes-get-all-by-project-id", (_e, projectId: string) => {
-  return noteController.getAllByProjectId(projectId);
+ipcMain.handle("notes-get-all-by-project-id", (_e, id: idRequest) => {
+  return noteController.getAllByProjectId(id);
 });
 
-ipcMain.handle("notes-get-by-id", (_e, id: string) => {
+ipcMain.handle("notes-get-by-id", (_e, id: idRequest) => {
   return noteController.getById(id);
 });
 
-ipcMain.handle("notes-add", (_e, Note: Note) => {
-  return noteController.add(Note);
+ipcMain.handle("notes-add", (_e, request: addNoteRequest) => {
+  return noteController.add(request);
 });
 
-ipcMain.handle("notes-update", (_e, Note: Note) => {
-  return noteController.update(Note);
+ipcMain.handle("notes-update", (_e, request: updateNoteRequest) => {
+  return noteController.update(request);
 });
 
-ipcMain.handle("notes-delete", (_e, id: string) => {
+ipcMain.handle("notes-delete", (_e, id: idRequest) => {
   return noteController.delete(id);
 });
 
 // Html
-ipcMain.handle("html-save", (_e, data: htmlData) => {
-  // Store note or project based on htmlData.type
-  return fileSystemController.writeHtmlFile(data);
+ipcMain.handle("html-save", (_e, request: htmlWriteRequest) => {
+  // Stores note or project based on htmlData.type
+  return fileSystemController.writeHtmlFile(request);
 });

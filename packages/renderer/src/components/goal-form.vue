@@ -102,8 +102,6 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
     newGoal.projectId = computedActiveGoal.value.projectId;
     newGoal.active = computedActiveGoal.value.active;
     newGoal.completed = computedActiveGoal.value.completed;
-    newGoal.dateCreated = computedActiveGoal.value.dateCreated;
-    newGoal.dateModified = computedActiveGoal.value.dateModified;
   }
 
   try {

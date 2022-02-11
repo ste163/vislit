@@ -67,14 +67,9 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
       resetForm();
     } else {
       const newProject = {
-        id: "",
         title: values.title,
         description: values.description,
         typeId: values.type,
-        completed: false,
-        archived: false,
-        dateCreated: null,
-        dateModified: null,
       };
 
       const response = (await api.send("projects-add", newProject)) as Project;

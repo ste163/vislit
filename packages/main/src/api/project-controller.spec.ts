@@ -5,14 +5,17 @@ import type { Project } from "interfaces";
 import Database from "../database";
 import ProjectController from "./project-controller";
 import ProjectRepository from "./project-repository";
-import NoteRepository from "./note-repository";
 import SearchController from "./search-controller";
+import { ZodError } from "zod";
 import type FileSystemController from "./file-system-controller";
+
+// TODO:
+// add failure test for makeProjectDirectory
+// add failure test for deleteProjectDirectory
 
 describe("project-controller-integration", () => {
   let seedData: Project[];
   let database: Database;
-  let noteRepository: NoteRepository;
   let projectRepository: ProjectRepository;
   let searchController: SearchController;
   let projectController: ProjectController;
@@ -48,7 +51,6 @@ describe("project-controller-integration", () => {
 
     database.db.data!.projects = seedData;
     projectRepository = new ProjectRepository(database);
-    noteRepository = new NoteRepository(database);
     searchController = new SearchController(database);
     const mockFileSystemController = {
       makeProjectDirectory: jest.fn(() => undefined),
@@ -105,52 +107,27 @@ describe("project-controller-integration", () => {
 
   it("returns project by id and can search for id by title", () => {
     const searchResult = searchController.searchProjects("it");
-
     expect(projectController.getById("1")).toEqual(seedData[0]);
     expect(searchResult[0].title).toBe("It");
+  });
+
+  it("returns error if project doesn't match schema", () => {
+    expect(
+      projectController.add({
+        description: "A murderous clown attacks a town",
+        typeId: "2",
+      })
+    ).toBeInstanceOf(ZodError);
   });
 
   it("returns duplicate title error if adding a project with a title already in db", () => {
     expect(
       projectController.add({
-        id: "",
         title: "It",
         description: "A murderous clown attacks a town",
         typeId: "2",
-        completed: false,
-        archived: false,
-        dateCreated: null,
-        dateModified: null,
       })
     ).toEqual(new Error("Project title already in database"));
-  });
-
-  it("returns error when adding project fails", () => {
-    const mockProjectRepository = {
-      add: jest.fn(() => {
-        throw new Error();
-      }),
-      getByTitle: jest.fn(() => undefined),
-    };
-
-    projectController = new ProjectController(
-      mockProjectRepository as unknown as ProjectRepository,
-      searchController,
-      fileSystemController
-    );
-
-    expect(
-      projectController.add({
-        id: "",
-        title: "It",
-        description: "A murderous clown attacks a town",
-        typeId: "2",
-        completed: false,
-        archived: false,
-        dateCreated: null,
-        dateModified: null,
-      })
-    ).toEqual(new Error());
   });
 
   it("returns trimmed project and is searchable after adding", () => {
@@ -158,10 +135,6 @@ describe("project-controller-integration", () => {
       title: "    The Dark Half  ",
       description: "  An evil pseudonym comes to life    ",
       typeId: "2",
-      completed: false,
-      archived: false,
-      dateCreated: null,
-      dateModified: null,
     };
 
     const response = projectController.add(projectToAdd as Project) as Project;
@@ -173,6 +146,18 @@ describe("project-controller-integration", () => {
     expect(searchResult[0].title).toEqual("The Dark Half");
   });
 
+  it("returns error if updating project that doesn't match schema", () => {
+    const updatedProject = {
+      title: "The Dark Half",
+      description: "An evil pseudonym comes to life",
+      typeId: "2",
+      completed: false,
+      archived: false,
+    };
+
+    expect(projectController.update(updatedProject)).toBeInstanceOf(ZodError);
+  });
+
   it("returns error if updating project with id not in db", () => {
     const updatedProject = {
       id: "5",
@@ -181,8 +166,6 @@ describe("project-controller-integration", () => {
       typeId: "2",
       completed: false,
       archived: false,
-      dateCreated: new Date(),
-      dateModified: new Date(),
     };
 
     expect(projectController.update(updatedProject)).toEqual(
@@ -198,8 +181,6 @@ describe("project-controller-integration", () => {
       typeId: "2",
       completed: false,
       archived: false,
-      dateCreated: new Date(),
-      dateModified: new Date(),
     };
 
     expect(projectController.update(updatedProject)).toEqual(
@@ -215,8 +196,6 @@ describe("project-controller-integration", () => {
       typeId: "2",
       completed: false,
       archived: false,
-      dateCreated: new Date(),
-      dateModified: new Date(),
     };
 
     const mockProjectRepository = {
@@ -243,8 +222,6 @@ describe("project-controller-integration", () => {
       typeId: "1",
       completed: false,
       archived: false,
-      dateCreated: new Date(),
-      dateModified: new Date(),
     };
 
     const response = projectController.update(projectToUpdate) as Project;
@@ -255,6 +232,12 @@ describe("project-controller-integration", () => {
       "A group of kids, and later as adults, fight evil"
     );
     expect(searchResult[0].title).toEqual("It - revised");
+  });
+
+  it("returns error if projectId doesn't match schema", () => {
+    expect(projectController.delete(999 as any as string)).toBeInstanceOf(
+      Error
+    );
   });
 
   it("returns error if project to delete is not in db", () => {

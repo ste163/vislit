@@ -2,6 +2,16 @@ import type { Project } from "interfaces";
 import type SearchController from "./search-controller";
 import type FileSystemController from "./file-system-controller";
 import type ProjectRepository from "./project-repository";
+import type {
+  idRequest,
+  projectAddRequest,
+  projectUpdateRequest,
+} from "../schemas";
+import {
+  idRequestSchema,
+  projectAddRequestSchema,
+  projectUpdateRequestSchema,
+} from "../schemas";
 
 class ProjectController {
   #projectRepository: ProjectRepository;
@@ -32,8 +42,9 @@ class ProjectController {
     }
   }
 
-  getById(id: string): Project | Error {
+  getById(id: idRequest): Project | Error {
     try {
+      idRequestSchema.parse(id);
       const project = this.#projectRepository.getById(id);
       if (project === undefined)
         throw new Error(`Project with id ${id} not in database`);
@@ -44,20 +55,29 @@ class ProjectController {
     }
   }
 
-  add(project: Project): Project | Error {
+  add(request: projectAddRequest): Project | Error {
     try {
-      project.title = project.title.trim();
-      project.description = project.description.trim();
+      projectAddRequestSchema.parse(request);
 
-      this.#checkForTitleTaken(project.title);
+      request.title = request.title.trim();
+      request.description = request.description.trim();
+
+      this.#checkForTitleTaken(request.title);
+
+      const projectToAdd = { ...request } as Project;
 
       const date = new Date();
-      project.dateCreated = date;
-      project.dateModified = date; // setting here so getProjects can always return the most recent project first
+      projectToAdd.dateCreated = date;
+      projectToAdd.dateModified = date; // setting here so getProjects can always return the most recent project first
+      projectToAdd.completed = false;
+      projectToAdd.archived = false;
 
-      const response = this.#projectRepository.add(project);
+      const response = this.#projectRepository.add(projectToAdd);
       this.#searchController.addProject(response);
-      this.#fileSystemController.makeProjectDirectory(response.id!);
+      const fsResponse = this.#fileSystemController.makeProjectDirectory(
+        response.id!
+      );
+      if (fsResponse instanceof Error) throw fsResponse;
       return response;
     } catch (e: any | Error) {
       console.error(e);
@@ -65,23 +85,28 @@ class ProjectController {
     }
   }
 
-  update(project: Project): Project | Error {
+  update(request: projectUpdateRequest): Project | Error {
     try {
-      const projectToUpdate = this.getById(project.id!);
+      projectUpdateRequestSchema.parse(request);
+
+      const { id, title, description, archived, completed, typeId } = request;
+
+      const projectToUpdate = this.getById(id);
       if (projectToUpdate instanceof Error) return projectToUpdate;
+
       // Must get a copy of original project
       // before its updated, so it can be removed from search index
       const originalProjectForIndex = { ...projectToUpdate };
 
-      if (project.title.trim() !== projectToUpdate.title)
-        this.#checkForTitleTaken(project.title);
+      if (title.trim() !== projectToUpdate.title)
+        this.#checkForTitleTaken(title);
 
       // Update only certain properties
-      projectToUpdate.title = project.title.trim();
-      projectToUpdate.description = project.description.trim();
-      projectToUpdate.archived = project.archived;
-      projectToUpdate.completed = project.completed;
-      projectToUpdate.typeId = project.typeId;
+      projectToUpdate.title = title.trim(); // must trim here and in the if check before, or it doesn't save
+      projectToUpdate.description = description.trim();
+      projectToUpdate.archived = archived;
+      projectToUpdate.completed = completed;
+      projectToUpdate.typeId = typeId;
       projectToUpdate.dateModified = new Date();
 
       const updatedProject = this.#projectRepository.update(projectToUpdate);
@@ -96,16 +121,19 @@ class ProjectController {
     }
   }
 
-  delete(id: string): true | Error {
+  delete(id: idRequest): true | Error {
     try {
+      idRequestSchema.parse(id);
+
       const project = this.getById(id);
       if (project instanceof Error) throw new Error("Project not in database");
 
       this.#projectRepository.delete(id);
       this.#searchController.deleteProject(project);
-      this.#fileSystemController.deleteProjectDirectory(id);
+      const fsResponse = this.#fileSystemController.deleteProjectDirectory(id);
+      if (fsResponse instanceof Error) throw fsResponse;
 
-      return true; // don't return true, just check if the repsonse is not an instance of an error
+      return true;
     } catch (e: any | Error) {
       console.error(e);
       return e;

@@ -35,14 +35,14 @@ declare module "interfaces" {
   }
 
   interface Progress {
-    date: string; // always use .toISOString() otherwise backend can't process between Date and string
+    date: string; // validation ensures its in ISOstring format
     projectId: string;
     goalId: string;
     count: number;
     edited: boolean;
     proofread: boolean;
     revised: boolean;
-    completed?: boolean; // this should be dynamically checked against the goal instead of saved into db on Get, otherwise it could become outdated
+    completed?: boolean; // dynamically checked against the goal instead of saved into db on get requests
   }
 
   interface Note {

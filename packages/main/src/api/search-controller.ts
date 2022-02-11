@@ -1,6 +1,9 @@
 import Minisearch from "minisearch";
+import { ZodError } from "zod";
 import type { Project, Note } from "interfaces";
 import type Database from "../database";
+import type { searchRequest } from "../schemas";
+import { searchRequestSchema } from "../schemas";
 
 export default class SearchController {
   #database: Database;
@@ -69,11 +72,23 @@ export default class SearchController {
     this.#noteSearchIndex.remove(note);
   }
 
-  searchProjects(query: string) {
-    return this.#projectSearchIndex.search(query);
+  searchProjects(query: searchRequest) {
+    try {
+      searchRequestSchema.parse(query);
+      return this.#projectSearchIndex.search(query);
+    } catch (error: any | Error | ZodError) {
+      console.error(error);
+      return error;
+    }
   }
 
-  searchNotes(query: string) {
-    return this.#noteSearchIndex.search(query);
+  searchNotes(query: searchRequest) {
+    try {
+      searchRequestSchema.parse(query);
+      return this.#noteSearchIndex.search(query);
+    } catch (error: any | Error | ZodError) {
+      console.error(error);
+      return error;
+    }
   }
 }

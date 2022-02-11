@@ -5,6 +5,7 @@ import type { Project, Type } from "interfaces";
 import Database from "../database";
 import TypeRepository from "./type-repository";
 import TypeController from "./type-controller";
+import { ZodError } from "zod";
 
 let typeSeedData: Type[];
 let projectSeedData: Project[];
@@ -152,11 +153,21 @@ describe("type-controller-integration", () => {
     expect(typeController.add("new")).toEqual(new Error());
   });
 
+  it("returns error when value doesn't match schema", () => {
+    expect(typeController.add(999 as any as string)).toBeInstanceOf(ZodError);
+  });
+
   it("returns added, trimmed, and normalized type successfully", () => {
     const addedType = typeController.add("  NeW   ");
     expect((addedType as Type).value).toEqual("new");
     expect(addedType).toHaveProperty("id");
     expect(addedType).toHaveProperty("dateCreated");
+  });
+
+  it("returns error when deleting doesn't match schema", () => {
+    expect(typeController.delete(999 as any as string)).toBeInstanceOf(
+      ZodError
+    );
   });
 
   it("returns error when trying to delete type by id not in database", () => {
