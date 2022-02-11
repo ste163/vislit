@@ -361,8 +361,22 @@ describe("progress-controller-integration", () => {
     ]);
   });
 
-  it("modify - returns error if no project exists", () => {
+  it("modify - returns error if doesn't match schema", () => {
     const progressDate = new Date("2020-01-20");
+    const progress: Progress = {
+      date: progressDate as any as string,
+      projectId: "3",
+      goalId: "1",
+      count: 700,
+      edited: false,
+      proofread: false,
+      revised: false,
+    };
+    expect(progressController.modify(progress)).toBeInstanceOf(ZodError);
+  });
+
+  it("modify - returns error if no project exists", () => {
+    const progressDate = new Date("2020-01-20").toISOString();
     const progress: Progress = {
       date: progressDate,
       projectId: "3",
@@ -378,7 +392,7 @@ describe("progress-controller-integration", () => {
   });
 
   it("modify - returns error if no goal for project exists", () => {
-    const progressDate = new Date("2020-01-20");
+    const progressDate = new Date("2020-01-20").toISOString();
     const progress: Progress = {
       date: progressDate,
       projectId: "1",

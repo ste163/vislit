@@ -5,11 +5,12 @@ import type ProjectController from "./project-controller";
 import type {
   getAllProgressRequest,
   getProgressByDateRequest,
+  modifyProgressRequest,
 } from "../schemas";
-
 import {
   getProgressByDateRequestSchema,
   getAllProgressRequestSchema,
+  modifyProgressRequestSchema,
 } from "../schemas";
 
 class ProgressController {
@@ -84,8 +85,11 @@ class ProgressController {
 
   // add, update, or delete based on changes to progress
   // not checking for completed status as frontend re-fetching status after completed modification
-  modify(progress: Progress): Progress[] | Progress | true | Error {
+  modify(
+    progress: modifyProgressRequest
+  ): Progress[] | Progress | true | Error {
     try {
+      modifyProgressRequestSchema.parse(progress);
       const project = this.#projectController.getById(progress.projectId);
       if (project instanceof Error) throw project;
 

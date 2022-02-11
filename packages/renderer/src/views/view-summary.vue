@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, inject, computed, watch, onMounted } from "vue";
 import type { Store } from "../store";
-import type { Goal, Progress, Project } from "interfaces";
+import type { Progress, Project } from "interfaces";
 import BaseTemplateCard from "../components/base-template-card.vue";
 import BaseCardContent from "../components/base-card-content.vue";
 import BaseButtonClick from "../components/base-button-click.vue";
@@ -19,6 +19,14 @@ import GoalManageModal from "../components/goal-manage-modal.vue";
 
 // TODO:
 // If completed or archived, no longer able to add/edit content or Project details
+
+// If it's later in day,
+// like 8pm EST,
+// new Date().toISOstring()
+// returns the next day
+// https://stackoverflow.com/questions/64781167/why-1-day-off-when-i-try-to-convert-date-into-toisostring-in-javascript
+// appears to be because ISO uses a standardized timezone instead of the user's timezone
+console.log(new Date().toISOString());
 
 const store = inject("store") as Store;
 

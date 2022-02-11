@@ -123,24 +123,42 @@ export const updateNoteRequestSchema = z
   })
   .strict();
 
-export const getProgressByDateRequestSchema = z.object({
-  projectId: idRequestSchema,
-  date: isoDateRequestSchema,
-});
+export type updateNoteRequest = z.infer<typeof updateNoteRequestSchema>;
+
+export const getProgressByDateRequestSchema = z
+  .object({
+    projectId: idRequestSchema,
+    date: isoDateRequestSchema,
+  })
+  .strict();
 
 export type getProgressByDateRequest = z.infer<
   typeof getProgressByDateRequestSchema
 >;
 
-export const getAllProgressRequestSchema = z.object({
-  projectId: idRequestSchema,
-  year: numberAsStringRequestSchema,
-  month: numberAsStringRequestSchema,
-});
+export const getAllProgressRequestSchema = z
+  .object({
+    projectId: idRequestSchema,
+    year: numberAsStringRequestSchema,
+    month: numberAsStringRequestSchema,
+  })
+  .strict();
 
 export type getAllProgressRequest = z.infer<typeof getAllProgressRequestSchema>;
 
-export type updateNoteRequest = z.infer<typeof updateNoteRequestSchema>;
+export const modifyProgressRequestSchema = z
+  .object({
+    date: isoDateRequestSchema,
+    projectId: idRequestSchema,
+    goalId: idRequestSchema,
+    count: z.number(),
+    edited: z.boolean(),
+    proofread: z.boolean(),
+    revised: z.boolean(),
+  })
+  .strict();
+
+export type modifyProgressRequest = z.infer<typeof modifyProgressRequestSchema>;
 
 export const typeAddRequestSchema = z.string();
 

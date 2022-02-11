@@ -23,6 +23,7 @@ import type {
   getProgressByDateRequest,
   htmlWriteRequest,
   idRequest,
+  modifyProgressRequest,
   projectAddRequest,
   projectUpdateRequest,
   typeAddRequest,
@@ -267,8 +268,7 @@ ipcMain.handle(
   }
 );
 
-ipcMain.handle("progress-modify", (_e, progress: Progress) => {
-  // zod schema MUST ensure the date is an ISOstring otherwise, everything breaks
+ipcMain.handle("progress-modify", (_e, progress: modifyProgressRequest) => {
   return progressController.modify(progress);
 });
 
