@@ -2,7 +2,6 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
 import { URL } from "url";
 import { existsSync, mkdirSync } from "fs";
-import type { Progress } from "interfaces";
 import Database from "./database";
 import FileSystemController from "./api/file-system-controller";
 import ProjectRepository from "./api/project-repository";
@@ -108,6 +107,9 @@ if (import.meta.env.MODE === "development") {
     .catch((e) => console.error("Failed install extension:", e));
 }
 
+// Need to initialize database, controllers, and repositories here
+// because we need access to the windowBounds to restore state
+
 let mainWindow: BrowserWindow | null = null;
 
 const createWindow = async () => {
@@ -175,8 +177,21 @@ app.on("window-all-closed", () => {
   }
 });
 
+async function asyncTestDelay() {
+  return new Promise((resolve) => {
+    setTimeout(resolve, 3000);
+  });
+}
+
 app
   .whenReady()
+  .then(async () => {
+    // THIS TEST WORKS!
+    // If in testing there appears to be a slowdown, show a splash screen
+    console.log("starting test");
+    await asyncTestDelay();
+    console.log("finished test");
+  })
   .then(createWindow)
   .then(() => {
     mainWindow?.on("close", () => {
