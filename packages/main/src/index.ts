@@ -3,19 +3,14 @@ import { join } from "path";
 import { URL } from "url";
 import { existsSync, mkdirSync } from "fs";
 import initializeApi from "./init-api";
-import Database from "./database";
-import FileSystemController from "./api/file-system-controller";
-import ProjectRepository from "./api/project-repository";
-import ProjectController from "./api/project-controller";
-import NoteRepository from "./api/note-repository";
-import NoteController from "./api/note-controller";
-import SearchController from "./api/search-controller";
-import TypeRepository from "./api/type-repository";
-import TypeController from "./api/type-controller";
-import GoalRepository from "./api/goal-repository";
-import GoalController from "./api/goal-controller";
-import ProgressRepository from "./api/progress-repository";
-import ProgressController from "./api/progress-controller";
+import type Database from "./database";
+import type FileSystemController from "./api/file-system-controller";
+import type ProjectController from "./api/project-controller";
+import type NoteController from "./api/note-controller";
+import type SearchController from "./api/search-controller";
+import type TypeController from "./api/type-controller";
+import type GoalController from "./api/goal-controller";
+import type ProgressController from "./api/progress-controller";
 import type {
   addGoalRequest,
   addNoteRequest,
@@ -31,47 +26,17 @@ import type {
   updateNoteRequest,
 } from "./schemas";
 
+// declared here to access window bounds
+let database: Database;
+
 // declared outside of try block so it can be accessed by IPC
 let fileSystemController: FileSystemController;
+let searchController: SearchController; // not used yet, but will be
 let projectController: ProjectController;
 let noteController: NoteController;
 let typeController: TypeController;
 let goalController: GoalController;
 let progressController: ProgressController;
-
-// declared here to access window bounds
-let database: Database;
-
-// for now, instantiate db, controllers, & repos here
-try {
-  database = new Database(app);
-  fileSystemController = new FileSystemController(app.getPath("userData"));
-  const projectRepository = new ProjectRepository(database);
-  const typeRepository = new TypeRepository(database);
-  const goalRepository = new GoalRepository(database);
-  const progressRepository = new ProgressRepository(database);
-  const noteRepository = new NoteRepository(database);
-  const searchController = new SearchController(database);
-  projectController = new ProjectController(
-    projectRepository,
-    searchController,
-    fileSystemController
-  );
-  noteController = new NoteController(
-    noteRepository,
-    searchController,
-    fileSystemController
-  );
-  typeController = new TypeController(typeRepository);
-  goalController = new GoalController(goalRepository, projectController);
-  progressController = new ProgressController(
-    progressRepository,
-    goalRepository,
-    projectController
-  );
-} catch (error) {
-  console.log(error);
-}
 
 // For now, check for projects & notes directories here
 try {
@@ -178,24 +143,32 @@ app.on("window-all-closed", () => {
   }
 });
 
-async function asyncTestDelay() {
-  return new Promise((resolve) => {
-    setTimeout(resolve, 3000);
-  });
-}
-
 app
   .whenReady()
   .then(async () => {
-    // THIS TEST WORKS!
-    // If in testing there appears to be a slowdown, show a splash screen
+    // TODO: If the startup gets long, show a splash screen before api init
 
-    // initilizeApi returns an object of all of the controllers and the database that need access later in the app
-    // because I need to assign them here
-    initializeApi();
-    console.log("starting test");
-    await asyncTestDelay();
-    console.log("finished test");
+    // initialize database and controllers
+    // and assign them for ipc access
+    const {
+      initDatabase,
+      initFileSystemController,
+      initSearchController,
+      initProjectController,
+      initNoteController,
+      initTypeController,
+      initGoalController,
+      initProgressController,
+    } = await initializeApi();
+
+    database = initDatabase;
+    fileSystemController = initFileSystemController;
+    searchController = initSearchController;
+    projectController = initProjectController;
+    noteController = initNoteController;
+    typeController = initTypeController;
+    goalController = initGoalController;
+    progressController = initProgressController;
   })
   .then(createWindow)
   .then(() => {
