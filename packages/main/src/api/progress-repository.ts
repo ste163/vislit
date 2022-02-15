@@ -35,20 +35,20 @@ class ProgressRepository {
     });
   }
 
-  add(progress: Progress): Progress {
+  async add(progress: Progress): Promise<Progress> {
     this.#database.db.data!.progress.push(progress);
-    this.#database.db.write();
+    await this.#database.db.write();
     return this.getByDate(progress.date) as Progress;
   }
 
-  update(progress: Progress): Progress {
+  async update(progress: Progress): Promise<Progress> {
     this.#database.db.data!.progress = this.#filterOutByDate(progress.date);
-    return this.add(progress);
+    return await this.add(progress);
   }
 
-  delete(date: string): true {
+  async delete(date: string): Promise<true> {
     this.#database.db.data!.progress = this.#filterOutByDate(date);
-    this.#database.db.write();
+    await this.#database.db.write();
     return true; // otherwise returns undefined, which could mean too many other things
   }
 }

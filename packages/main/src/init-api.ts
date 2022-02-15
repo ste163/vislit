@@ -1,6 +1,5 @@
-// probs make a return type cause the return type could get pretty huge
-
-import { app } from "electron";
+import type { App } from "electron";
+import initializeDatabase from "./init-database";
 import FileSystemController from "./api/file-system-controller";
 import GoalController from "./api/goal-controller";
 import GoalRepository from "./api/goal-repository";
@@ -26,11 +25,13 @@ type initializedApi = {
   initProgressController: ProgressController;
 };
 
-async function initializeApi(): Promise<initializedApi> {
+async function initializeApi(app: App): Promise<initializedApi> {
   try {
-    console.log("INITIALIZE");
+    console.log("initializing api");
 
-    const initDatabase = new Database(app);
+    const db = await initializeDatabase(app);
+
+    const initDatabase = new Database(db);
     const initFileSystemController = new FileSystemController(
       app.getPath("userData")
     );
@@ -74,7 +75,7 @@ async function initializeApi(): Promise<initializedApi> {
       initProgressController,
     };
   } catch (error: any | Error) {
-    console.log("Failed to initialize api");
+    console.log("failed to initialize api");
     console.error(error);
     return error;
   }

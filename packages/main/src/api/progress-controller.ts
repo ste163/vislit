@@ -85,9 +85,9 @@ class ProgressController {
 
   // add, update, or delete based on changes to progress
   // not checking for completed status as frontend re-fetching status after completed modification
-  modify(
+  async modify(
     progress: modifyProgressRequest
-  ): Progress[] | Progress | true | Error {
+  ): Promise<true | Progress | Progress[] | Error> {
     try {
       modifyProgressRequestSchema.parse(progress);
       const project = this.#projectController.getById(progress.projectId);
@@ -107,14 +107,15 @@ class ProgressController {
         progress.date
       );
 
-      if (!existingProgress) return this.#progressRepository.add(progress);
+      if (!existingProgress)
+        return await this.#progressRepository.add(progress);
       // If user reset all data/unchecked, delete progress
       return progress.count === 0 &&
         progress.edited === false &&
         progress.proofread === false &&
         progress.revised === false
-        ? this.#progressRepository.delete(existingProgress.date)
-        : this.#progressRepository.update(progress);
+        ? await this.#progressRepository.delete(existingProgress.date)
+        : await this.#progressRepository.update(progress);
     } catch (e: any | Error) {
       console.error(e);
       return e;

@@ -5,6 +5,9 @@ import type Database from "../database";
 import type { searchRequest } from "../schemas";
 import { searchRequestSchema } from "../schemas";
 
+// TODO:
+// initialize search indexes BEFORE construction
+
 export default class SearchController {
   #database: Database;
   #projectSearchIndex: Minisearch<any>;

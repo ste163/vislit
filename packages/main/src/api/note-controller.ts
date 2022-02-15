@@ -59,7 +59,7 @@ class NoteController {
     }
   }
 
-  add(request: addNoteRequest): Note | Error {
+  async add(request: addNoteRequest): Promise<Note | Error> {
     try {
       addNoteRequestSchema.parse(request);
 
@@ -72,8 +72,8 @@ class NoteController {
       note.dateCreated = date;
       note.dateModified = date;
 
-      const response = this.#noteRepository.add(note);
-      this.#searchController.addNote(response);
+      const response = await this.#noteRepository.add(note);
+      await this.#searchController.addNote(response);
 
       return response;
     } catch (e: any | Error) {
@@ -82,7 +82,7 @@ class NoteController {
     }
   }
 
-  update(request: updateNoteRequest): Note | Error {
+  async update(request: updateNoteRequest): Promise<Note | Error> {
     try {
       updateNoteRequestSchema.parse(request);
       const note = { ...request };
@@ -99,8 +99,11 @@ class NoteController {
       noteToUpdate.title = note.title.trim();
       noteToUpdate.dateModified = new Date();
 
-      const updatedNote = this.#noteRepository.update(noteToUpdate);
-      this.#searchController.updateNote(originalNoteForIndex, updatedNote);
+      const updatedNote = await this.#noteRepository.update(noteToUpdate);
+      await this.#searchController.updateNote(
+        originalNoteForIndex,
+        updatedNote
+      );
       return updatedNote;
     } catch (e: any | Error) {
       console.error(e);
@@ -108,16 +111,19 @@ class NoteController {
     }
   }
 
-  delete(id: idRequest): true | Error {
+  async delete(id: idRequest): Promise<true | Error> {
     try {
       idRequestSchema.parse(id);
       const note = this.getById(id);
       if (note instanceof Error)
         throw new Error(`Note with id ${id} not in database`);
 
-      this.#noteRepository.delete(id);
-      this.#searchController.deleteNote(note);
-      this.#fileSystemController.deleteNote({ id, projectId: note.projectId });
+      await this.#noteRepository.delete(id);
+      await this.#searchController.deleteNote(note);
+      await this.#fileSystemController.deleteNote({
+        id,
+        projectId: note.projectId,
+      });
 
       return true; // returning true instead of undefined because that could potentially mean other things
     } catch (e: any | Error) {

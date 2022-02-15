@@ -159,7 +159,7 @@ app
       initTypeController,
       initGoalController,
       initProgressController,
-    } = await initializeApi();
+    } = await initializeApi(app);
 
     database = initDatabase;
     fileSystemController = initFileSystemController;
