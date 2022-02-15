@@ -76,6 +76,7 @@ async function initializeApi(): Promise<initializedApi> {
   } catch (error: any | Error) {
     console.log("Failed to initialize api");
     console.error(error);
+    return error;
   }
 }
 
