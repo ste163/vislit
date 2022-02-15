@@ -2,6 +2,7 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
 import { URL } from "url";
 import { existsSync, mkdirSync } from "fs";
+import initializeApi from "./init-api";
 import Database from "./database";
 import FileSystemController from "./api/file-system-controller";
 import ProjectRepository from "./api/project-repository";
@@ -188,6 +189,10 @@ app
   .then(async () => {
     // THIS TEST WORKS!
     // If in testing there appears to be a slowdown, show a splash screen
+
+    // initilizeApi returns an object of all of the controllers and the database that need access later in the app
+    // because I need to assign them here
+    initializeApi();
     console.log("starting test");
     await asyncTestDelay();
     console.log("finished test");
@@ -238,6 +243,7 @@ ipcMain.handle("projects-delete", (_e, request: idRequest) => {
 // note search
 // project search endpoint
 
+// **********************
 // Types
 ipcMain.handle("types-get-all", () => {
   return typeController.getAll();
@@ -251,6 +257,7 @@ ipcMain.handle("types-delete", (_e, id: idRequest) => {
   return typeController.delete(id);
 });
 
+// **********************
 // Goals
 ipcMain.handle("goals-add", (_e, goal: addGoalRequest) => {
   return goalController.add(goal);
@@ -268,6 +275,7 @@ ipcMain.handle("goals-completed", (_e, id: idRequest) => {
   return goalController.setCompletedById(id);
 });
 
+// **********************
 // Progress
 ipcMain.handle(
   "progress-get-all-by-year-month",
@@ -287,11 +295,13 @@ ipcMain.handle("progress-modify", (_e, progress: modifyProgressRequest) => {
   return progressController.modify(progress);
 });
 
+// **********************
 // Writer
 ipcMain.handle("writer-get-most-recent", (_e, id: idRequest) => {
   return fileSystemController.readMostRecentHtmlFile(id);
 });
 
+// **********************
 // Notes
 ipcMain.handle("notes-get-all-by-project-id", (_e, id: idRequest) => {
   return noteController.getAllByProjectId(id);
@@ -313,6 +323,7 @@ ipcMain.handle("notes-delete", (_e, id: idRequest) => {
   return noteController.delete(id);
 });
 
+// **********************
 // Html
 ipcMain.handle("html-save", (_e, request: htmlWriteRequest) => {
   // Stores note or project based on htmlData.type
