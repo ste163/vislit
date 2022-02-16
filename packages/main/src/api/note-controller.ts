@@ -73,7 +73,7 @@ class NoteController {
       note.dateModified = date;
 
       const response = await this.#noteRepository.add(note);
-      await this.#searchController.addNote(response);
+      this.#searchController.addNote(response);
 
       return response;
     } catch (e: any | Error) {
@@ -100,10 +100,7 @@ class NoteController {
       noteToUpdate.dateModified = new Date();
 
       const updatedNote = await this.#noteRepository.update(noteToUpdate);
-      await this.#searchController.updateNote(
-        originalNoteForIndex,
-        updatedNote
-      );
+      this.#searchController.updateNote(originalNoteForIndex, updatedNote);
       return updatedNote;
     } catch (e: any | Error) {
       console.error(e);
@@ -119,7 +116,7 @@ class NoteController {
         throw new Error(`Note with id ${id} not in database`);
 
       await this.#noteRepository.delete(id);
-      await this.#searchController.deleteNote(note);
+      this.#searchController.deleteNote(note);
       await this.#fileSystemController.deleteNote({
         id,
         projectId: note.projectId,
