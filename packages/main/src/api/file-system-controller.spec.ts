@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import fs from "fs";
+import fs from "fs/promises";
 import FileSystemController from "./file-system-controller";
 import { ZodError } from "zod";
 import type { htmlWriteRequest } from "../schemas";
@@ -11,15 +11,15 @@ describe("file-system-controller", () => {
 
   beforeAll(() => {
     jest.spyOn(console, "error").mockImplementation(() => {});
-    jest.spyOn(fs, "mkdir").mockImplementation(() => undefined);
-    jest.spyOn(fs, "rm").mockImplementation(() => undefined);
-    jest.spyOn(fs, "writeFile").mockImplementation(() => undefined);
-    jest.spyOn(fs, "readFile").mockImplementation(() => "/file.html");
+    jest.spyOn(fs, "mkdir").mockImplementation(async () => undefined);
+    jest.spyOn(fs, "rm").mockImplementation(async () => undefined);
+    jest.spyOn(fs, "writeFile").mockImplementation(async () => undefined);
+    jest.spyOn(fs, "readFile").mockImplementation(async () => "/file.html");
     jest
       .spyOn(fs, "readdir")
       .mockImplementation(() => ["file1", "file2"] as any);
 
-    fileSystemController = new FileSystemController("/test");
+    fileSystemController = new FileSystemController("");
   });
 
   it("makeProjectDirectory - returns error if wrong schema passed in", async () => {
@@ -68,8 +68,8 @@ describe("file-system-controller", () => {
   });
 
   it("deleteNote - returns true with correct schema", async () => {
-    await expect(
-      fileSystemController.deleteNote({ id: "1", projectId: "2" })
+    expect(
+      await fileSystemController.deleteNote({ id: "1", projectId: "2" })
     ).toBe(true);
   });
 
