@@ -11,46 +11,46 @@ describe("file-system-controller", () => {
 
   beforeAll(() => {
     jest.spyOn(console, "error").mockImplementation(() => {});
-    jest.spyOn(fs, "mkdirSync").mockImplementation(() => undefined);
-    jest.spyOn(fs, "rmSync").mockImplementation(() => undefined);
-    jest.spyOn(fs, "writeFileSync").mockImplementation(() => undefined);
-    jest.spyOn(fs, "readFileSync").mockImplementation(() => "/file.html");
+    jest.spyOn(fs, "mkdir").mockImplementation(() => undefined);
+    jest.spyOn(fs, "rm").mockImplementation(() => undefined);
+    jest.spyOn(fs, "writeFile").mockImplementation(() => undefined);
+    jest.spyOn(fs, "readFile").mockImplementation(() => "/file.html");
     jest
-      .spyOn(fs, "readdirSync")
+      .spyOn(fs, "readdir")
       .mockImplementation(() => ["file1", "file2"] as any);
 
     fileSystemController = new FileSystemController("/test");
   });
 
-  it("makeProjectDirectory - returns error if wrong schema passed in", () => {
+  it("makeProjectDirectory - returns error if wrong schema passed in", async () => {
     expect(
-      fileSystemController.makeProjectDirectory(3 as any as string)
+      await fileSystemController.makeProjectDirectory(3 as any as string)
     ).toBeInstanceOf(ZodError);
   });
 
-  it("makeProjectDirectory - returns true with correct schema", () => {
-    expect(fileSystemController.makeProjectDirectory("1")).toBe(true);
+  it("makeProjectDirectory - returns true with correct schema", async () => {
+    expect(await fileSystemController.makeProjectDirectory("1")).toBe(true);
   });
 
-  it("deleteProjectDirectory - returns error if wrong schema passed in", () => {
+  it("deleteProjectDirectory - returns error if wrong schema passed in", async () => {
     expect(
-      fileSystemController.deleteProjectDirectory(3 as any as string)
+      await fileSystemController.deleteProjectDirectory(3 as any as string)
     ).toBeInstanceOf(ZodError);
   });
 
-  it("deleteProjectDirectory - returns true with correct schema", () => {
-    expect(fileSystemController.deleteProjectDirectory("1")).toBe(true);
+  it("deleteProjectDirectory - returns true with correct schema", async () => {
+    expect(await fileSystemController.deleteProjectDirectory("1")).toBe(true);
   });
 
-  it("writeHtmlFile - returns error if wrong schema passed in", () => {
+  it("writeHtmlFile - returns error if wrong schema passed in", async () => {
     expect(
-      fileSystemController.writeHtmlFile(3 as any as htmlWriteRequest)
+      await fileSystemController.writeHtmlFile(3 as any as htmlWriteRequest)
     ).toBeInstanceOf(ZodError);
   });
 
-  it("writeHtmlFile - returns true with correct schema", () => {
+  it("writeHtmlFile - returns true with correct schema", async () => {
     expect(
-      fileSystemController.writeHtmlFile({
+      await fileSystemController.writeHtmlFile({
         id: "1",
         html: "<p>Hello<p>",
         type: "notes",
@@ -58,43 +58,45 @@ describe("file-system-controller", () => {
     ).toBe(true);
   });
 
-  it("deleteNote - returns error if wrong schema passed in", () => {
+  it("deleteNote - returns error if wrong schema passed in", async () => {
     expect(
-      fileSystemController.deleteNote({
+      await fileSystemController.deleteNote({
         id: "1",
         projectId: 2 as any as string,
       })
     ).toBeInstanceOf(ZodError);
   });
 
-  it("deleteNote - returns true with correct schema", () => {
-    expect(fileSystemController.deleteNote({ id: "1", projectId: "2" })).toBe(
-      true
-    );
+  it("deleteNote - returns true with correct schema", async () => {
+    await expect(
+      fileSystemController.deleteNote({ id: "1", projectId: "2" })
+    ).toBe(true);
   });
 
-  it("readNoteById - returns error if wrong schema passed in", () => {
+  it("readNoteById - returns error if wrong schema passed in", async () => {
     expect(
-      fileSystemController.readNoteById({
+      await fileSystemController.readNoteById({
         noteId: "1",
         projectId: 2 as any as string,
       })
     ).toBeInstanceOf(ZodError);
   });
 
-  it("readNoteById - returns file with correct schema", () => {
+  it("readNoteById - returns file with correct schema", async () => {
     expect(
-      fileSystemController.readNoteById({ noteId: "1", projectId: "2" })
+      await fileSystemController.readNoteById({ noteId: "1", projectId: "2" })
     ).toBe("/file.html");
   });
 
-  it("readMostRecentHtmlFile - returns error if wrong schema passed in", () => {
+  it("readMostRecentHtmlFile - returns error if wrong schema passed in", async () => {
     expect(
-      fileSystemController.readMostRecentHtmlFile(2 as any as string)
+      await fileSystemController.readMostRecentHtmlFile(2 as any as string)
     ).toBeInstanceOf(ZodError);
   });
 
-  it("readMostRecentHtmlFile - returns file with correct schema", () => {
-    expect(fileSystemController.readMostRecentHtmlFile("1")).toBe("/file.html");
+  it("readMostRecentHtmlFile - returns file with correct schema", async () => {
+    expect(await fileSystemController.readMostRecentHtmlFile("1")).toBe(
+      "/file.html"
+    );
   });
 });

@@ -119,13 +119,13 @@ class GoalController {
     }
   }
 
-  delete(id: idRequest): true | Error {
+  async delete(id: idRequest): Promise<true | Error> {
     try {
       idRequestSchema.parse(id);
       const existingGoal = this.#goalRepository.getById(id);
       if (existingGoal === undefined)
         throw new Error(`Goal with id ${id} does not exist in database`);
-      this.#goalRepository.delete(id);
+      await this.#goalRepository.delete(id);
       return true;
     } catch (error: any | Error) {
       console.error(error);
