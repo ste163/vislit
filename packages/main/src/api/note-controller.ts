@@ -40,14 +40,14 @@ class NoteController {
     }
   }
 
-  getById(id: idRequest): Note | Error {
+  async getById(id: idRequest): Promise<Note | Error> {
     try {
       idRequestSchema.parse(id);
       const note = this.#noteRepository.getById(id);
       if (note === undefined)
         throw new Error(`Note with id ${id} not in database`);
 
-      const html = this.#fileSystemController.readNoteById({
+      const html = await this.#fileSystemController.readNoteById({
         noteId: note.id!,
         projectId: note.projectId,
       });
@@ -87,7 +87,7 @@ class NoteController {
       updateNoteRequestSchema.parse(request);
       const note = { ...request };
 
-      const noteToUpdate = this.getById(note.id);
+      const noteToUpdate = await this.getById(note.id);
       if (noteToUpdate instanceof Error) return noteToUpdate;
 
       const originalNoteForIndex = { ...noteToUpdate };
@@ -114,7 +114,7 @@ class NoteController {
   async delete(id: idRequest): Promise<true | Error> {
     try {
       idRequestSchema.parse(id);
-      const note = this.getById(id);
+      const note = await this.getById(id);
       if (note instanceof Error)
         throw new Error(`Note with id ${id} not in database`);
 

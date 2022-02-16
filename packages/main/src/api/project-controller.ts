@@ -73,7 +73,7 @@ class ProjectController {
       projectToAdd.archived = false;
 
       const response = await this.#projectRepository.add(projectToAdd);
-      await this.#searchController.addProject(response);
+      this.#searchController.addProject(response);
       const fsResponse = await this.#fileSystemController.makeProjectDirectory(
         response.id!
       );
@@ -112,7 +112,7 @@ class ProjectController {
       const updatedProject = await this.#projectRepository.update(
         projectToUpdate
       );
-      await this.#searchController.updateProject(
+      this.#searchController.updateProject(
         originalProjectForIndex as Project,
         updatedProject
       );
@@ -131,7 +131,7 @@ class ProjectController {
       if (project instanceof Error) throw new Error("Project not in database");
 
       await this.#projectRepository.delete(id);
-      await this.#searchController.deleteProject(project);
+      this.#searchController.deleteProject(project);
       const fsResponse =
         await this.#fileSystemController.deleteProjectDirectory(id);
       if (fsResponse instanceof Error) throw fsResponse;
