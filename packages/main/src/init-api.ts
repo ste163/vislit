@@ -9,7 +9,10 @@ import ProgressController from "./api/progress-controller";
 import ProgressRepository from "./api/progress-repository";
 import ProjectController from "./api/project-controller";
 import ProjectRepository from "./api/project-repository";
-import SearchController from "./api/search-controller";
+import {
+  SearchController,
+  initializeSearchIndexes,
+} from "./api/search-controller";
 import TypeController from "./api/type-controller";
 import TypeRepository from "./api/type-repository";
 
@@ -41,7 +44,13 @@ async function initializeApi(app: App): Promise<initializedApi> {
     const progressRepository = new ProgressRepository(initDatabase);
     const noteRepository = new NoteRepository(initDatabase);
 
-    const initSearchController = new SearchController(initDatabase);
+    const { projectSearchIndex, noteSearchIndex } =
+      await initializeSearchIndexes(initDatabase);
+    const initSearchController = new SearchController(
+      projectSearchIndex,
+      noteSearchIndex
+    );
+
     const initProjectController = new ProjectController(
       projectRepository,
       initSearchController,
@@ -76,6 +85,7 @@ async function initializeApi(app: App): Promise<initializedApi> {
   } catch (error: any | Error) {
     console.log("failed to initialize api");
     console.error(error);
+    // TODO: Need to stop attempting to start app and show error dialog
     return error;
   }
 }

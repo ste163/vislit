@@ -1,5 +1,5 @@
 import type { Project, Type } from "interfaces";
-import type Database from "../database";
+import type { Database } from "../database";
 
 class TypeRepository {
   #database: Database;

@@ -3,11 +3,11 @@ import { join } from "path";
 import { URL } from "url";
 import { existsSync, mkdirSync } from "fs";
 import initializeApi from "./init-api";
-import type Database from "./database";
+import type { Database } from "./database";
 import type FileSystemController from "./api/file-system-controller";
 import type ProjectController from "./api/project-controller";
 import type NoteController from "./api/note-controller";
-import type SearchController from "./api/search-controller";
+import type { SearchController } from "./api/search-controller";
 import type TypeController from "./api/type-controller";
 import type GoalController from "./api/goal-controller";
 import type ProgressController from "./api/progress-controller";
@@ -169,6 +169,8 @@ app
     typeController = initTypeController;
     goalController = initGoalController;
     progressController = initProgressController;
+
+    console.log("api initialized");
   })
   .then(createWindow)
   .then(() => {
