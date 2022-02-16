@@ -1,5 +1,5 @@
 import type { Goal, Note, Progress, Project } from "interfaces";
-import type Database from "../database";
+import type { Database } from "../database";
 
 class ProjectRepository {
   #database: Database;

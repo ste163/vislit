@@ -1,5 +1,5 @@
 import type { Goal } from "interfaces";
-import type Database from "../database";
+import type { Database } from "../database";
 
 class GoalRepository {
   #database: Database;
