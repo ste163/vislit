@@ -1,5 +1,5 @@
 import type { Progress } from "interfaces";
-import type Database from "../database";
+import type { Database } from "../database";
 
 // all dates passed into repo are ISO strings
 class ProgressRepository {

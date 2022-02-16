@@ -1,5 +1,5 @@
 import type { Note } from "interfaces";
-import type Database from "../database";
+import type { Database } from "../database";
 
 class NoteRepository {
   #database: Database;

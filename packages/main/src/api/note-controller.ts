@@ -1,5 +1,5 @@
 import type NoteRepository from "./note-repository";
-import type SearchController from "./search-controller";
+import type { SearchController } from "./search-controller";
 import type FileSystemController from "./file-system-controller";
 import type { Note } from "interfaces";
 import type { addNoteRequest, idRequest, updateNoteRequest } from "../schemas";
