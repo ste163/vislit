@@ -1,5 +1,5 @@
 import type { App } from "electron";
-import initializeDatabase from "./init-database";
+import { Database, initializeDatabase } from "./database";
 import FileSystemController from "./api/file-system-controller";
 import GoalController from "./api/goal-controller";
 import GoalRepository from "./api/goal-repository";
@@ -12,7 +12,6 @@ import ProjectRepository from "./api/project-repository";
 import SearchController from "./api/search-controller";
 import TypeController from "./api/type-controller";
 import TypeRepository from "./api/type-repository";
-import Database from "./database";
 
 type initializedApi = {
   initDatabase: Database;
