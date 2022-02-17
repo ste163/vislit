@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import Database from "../database";
+import { Database, initializeDatabase } from "../database";
 import ProjectRepository from "./project-repository";
 
 describe("project-repository", () => {
@@ -10,9 +10,10 @@ describe("project-repository", () => {
   const dateForIt = new Date();
   const dateForShining = new Date();
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const { app } = jest.requireMock("electron");
-    database = new Database(app);
+    const initDb = await initializeDatabase(app);
+    database = new Database(initDb);
     projectRepository = new ProjectRepository(database);
     database.db.data!.types = [
       {
@@ -189,7 +190,7 @@ describe("project-repository", () => {
     expect(project).toBeUndefined();
   });
 
-  it("returns added project", () => {
+  it("returns added project", async () => {
     const date = new Date();
     const newProject = {
       title: "The Dead Zone",
@@ -201,13 +202,13 @@ describe("project-repository", () => {
       dateCreated: date,
       dateModified: date,
     };
-    const addedProject = projectRepository.add(newProject);
+    const addedProject = await projectRepository.add(newProject);
     expect(addedProject.title).toEqual("The Dead Zone");
     const projectCount = projectRepository.getAll().length;
     expect(projectCount).toEqual(3);
   });
 
-  it("returns updated project", () => {
+  it("returns updated project", async () => {
     const dateModified = new Date();
     const updatedProject = {
       id: "1",
@@ -219,7 +220,7 @@ describe("project-repository", () => {
       dateCreated: dateForIt,
       dateModified: dateModified,
     };
-    const response = projectRepository.update(updatedProject);
+    const response = await projectRepository.update(updatedProject);
     expect(response).toEqual({
       id: "1",
       title: "It - by S.K.",
@@ -250,9 +251,9 @@ describe("project-repository", () => {
     });
   });
 
-  it("returns void when project deleted", () => {
+  it("returns void when project deleted", async () => {
     projectRepository.delete("1");
-    const projects = projectRepository.getAll();
+    const projects = await projectRepository.getAll();
     expect(projects.length).toEqual(1);
   });
 });
