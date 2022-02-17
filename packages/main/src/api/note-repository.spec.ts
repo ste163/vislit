@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 import type { Note } from "interfaces";
-import Database from "../database";
+import { Database, initializeDatabase } from "../database";
 import NoteRepository from "./note-repository";
 
 describe("note-repository", () => {
@@ -13,9 +13,10 @@ describe("note-repository", () => {
   const noteDate1 = new Date();
   const noteDate2 = new Date();
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const { app } = jest.requireMock("electron");
-    database = new Database(app);
+    const initDb = await initializeDatabase(app);
+    database = new Database(initDb);
     noteRepository = new NoteRepository(database);
     database.db.data!.types = [
       {
@@ -118,7 +119,7 @@ describe("note-repository", () => {
     });
   });
 
-  it("returns added note", () => {
+  it("returns added note", async () => {
     // A real note by this point would have dateCreated & modified
     // but those will be set in controller
     const note: Note = {
@@ -127,7 +128,7 @@ describe("note-repository", () => {
     };
 
     const originalCount = database.db.data!.notes.length;
-    const addedNote = noteRepository.add(note);
+    const addedNote = await noteRepository.add(note);
     const newCount = database.db.data!.notes.length;
 
     expect(addedNote).toHaveProperty("id");
@@ -135,7 +136,7 @@ describe("note-repository", () => {
     expect(originalCount + 1).toBe(newCount);
   });
 
-  it("returns updated note", () => {
+  it("returns updated note", async () => {
     const note: Note = {
       id: "1",
       projectId: "1",
@@ -145,16 +146,16 @@ describe("note-repository", () => {
     };
 
     const originalCount = database.db.data!.notes.length;
-    const updatedNote = noteRepository.update(note);
+    const updatedNote = await noteRepository.update(note);
     const newCount = database.db.data!.notes.length;
 
     expect(originalCount).toEqual(newCount);
     expect(updatedNote.title).toEqual("First Note that's Updated");
   });
 
-  it("returns void after deleting", () => {
+  it("returns void after deleting", async () => {
     const originalCount = database.db.data!.notes.length;
-    noteRepository.delete("2");
+    await noteRepository.delete("2");
     const newCount = database.db.data!.notes.length;
 
     expect(originalCount - 1).toEqual(newCount);
