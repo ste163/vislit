@@ -2,19 +2,26 @@
  * @jest-environment node
  */
 import { ZodError } from "zod";
-import Database from "../database";
-import SearchController from "./search-controller";
+import { Database, initializeDatabase } from "../database";
+import { SearchController, initializeSearchIndexes } from "./search-controller";
 import type { searchRequest } from "../schemas";
 
 // Only testing endpoints that frontend has access to
+// TODO: Tests with successful schema
 describe("file-system-controller", () => {
   let searchController: SearchController;
 
-  beforeAll(() => {
-    jest.spyOn(console, "error").mockImplementation(() => {});
+  beforeAll(async () => {
+    jest.spyOn(console, "error").mockImplementation(async () => {});
     const { app } = jest.requireMock("electron");
-    const database = new Database(app);
-    searchController = new SearchController(database);
+    const initDb = await initializeDatabase(app);
+    const database = new Database(initDb);
+    const { projectSearchIndex, noteSearchIndex } =
+      await initializeSearchIndexes(database);
+    searchController = new SearchController(
+      projectSearchIndex,
+      noteSearchIndex
+    );
   });
 
   it("searchProject - returns error if wrong schema passed in", () => {
