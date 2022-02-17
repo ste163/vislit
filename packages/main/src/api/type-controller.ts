@@ -34,25 +34,25 @@ class TypeController {
     }
   }
 
-  add(value: typeAddRequest): Type | Error {
+  async add(value: typeAddRequest): Promise<Type | Error> {
     try {
       typeAddRequestSchema.parse(value);
       this.#checkForTypeInDb(value);
-      return this.#typeRepository.add(value.trim().toLowerCase());
+      return await this.#typeRepository.add(value.trim().toLowerCase());
     } catch (e: any | Error) {
       console.error(e);
       return e;
     }
   }
 
-  delete(id: idRequest): true | Error {
+  async delete(id: idRequest): Promise<true | Error> {
     try {
       idRequestSchema.parse(id);
       const types = this.#typeRepository.getAll();
       const foundType = types.find((type) => type.id === id);
       if (!foundType) throw new Error("Type not in database");
       this.#checkForProjectsWithTypeInDb(id);
-      this.#typeRepository.delete(id);
+      await this.#typeRepository.delete(id);
       return true;
     } catch (e: any | Error) {
       console.error(e);

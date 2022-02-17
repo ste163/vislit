@@ -1,47 +1,54 @@
 import Minisearch from "minisearch";
 import { ZodError } from "zod";
 import type { Project, Note } from "interfaces";
-import type Database from "../database";
+import type { Database } from "../database";
 import type { searchRequest } from "../schemas";
 import { searchRequestSchema } from "../schemas";
 
-export default class SearchController {
-  #database: Database;
+// Must initialize search indexes outside of class constructor
+// as constructors can't be async
+export async function initializeSearchIndexes(database: Database): Promise<{
+  projectSearchIndex: Minisearch<any>;
+  noteSearchIndex: Minisearch<any>;
+}> {
+  console.log("initializing search indexes");
+
+  const projects = database.db.data!.projects;
+  const projectSearchIndex = new Minisearch({
+    fields: ["title", "description"],
+    storeFields: ["id", "title", "description"],
+    searchOptions: {
+      boost: { title: 2 },
+      fuzzy: 0.2,
+    },
+  });
+
+  await projectSearchIndex.addAllAsync(projects);
+
+  const notes = database.db.data!.notes;
+  const noteSearchIndex = new Minisearch({
+    fields: ["title"],
+    storeFields: ["id", "title"],
+    searchOptions: {
+      fuzzy: 0.2,
+    },
+  });
+
+  await noteSearchIndex.addAllAsync(notes);
+
+  return { projectSearchIndex, noteSearchIndex };
+}
+
+export class SearchController {
   #projectSearchIndex: Minisearch<any>;
   #noteSearchIndex: Minisearch<any>;
 
-  constructor(database: Database) {
-    this.#database = database;
-    this.#projectSearchIndex = this.#createProjectSearchIndex(this.#database);
-    this.#noteSearchIndex = this.#createNoteSearchIndex(this.#database);
-  }
-
-  #createProjectSearchIndex(database: Database) {
-    const projects = database.db.data!.projects;
-    const searchIndex = new Minisearch({
-      fields: ["title", "description"],
-      storeFields: ["id", "title", "description"],
-      searchOptions: {
-        boost: { title: 2 },
-        fuzzy: 0.2,
-      },
-    });
-
-    searchIndex.addAll(projects); // index projects synchronously
-    return searchIndex;
-  }
-
-  #createNoteSearchIndex(database: Database) {
-    const notes = database.db.data!.notes;
-    const searchIndex = new Minisearch({
-      fields: ["title"],
-      storeFields: ["id", "title"],
-      searchOptions: {
-        fuzzy: 0.2,
-      },
-    });
-    searchIndex.addAll(notes); // index notes synchronously
-    return searchIndex;
+  constructor(
+    projectSearchIndex: Minisearch<any>,
+    noteSearchIndex: Minisearch<any>
+  ) {
+    this.#projectSearchIndex = projectSearchIndex;
+    this.#noteSearchIndex = noteSearchIndex;
   }
 
   addProject(project: Project) {

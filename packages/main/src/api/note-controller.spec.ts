@@ -1,9 +1,8 @@
 /**
  * @jest-environment node
  */
-import Database from "../database";
-import SearchController from "./search-controller";
-import ProjectRepository from "./project-repository";
+import { Database, initializeDatabase } from "../database";
+import { SearchController, initializeSearchIndexes } from "./search-controller";
 import NoteRepository from "./note-repository";
 import NoteController from "./note-controller";
 import { ZodError } from "zod";
@@ -20,10 +19,11 @@ describe("project-controller-integration", () => {
   let noteController: NoteController;
   const seedDate = new Date();
 
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.spyOn(console, "error").mockImplementation(() => {});
     const { app } = jest.requireMock("electron");
-    database = new Database(app);
+    const initDb = await initializeDatabase(app);
+    database = new Database(initDb);
     seedProjects = [
       {
         id: "1",
@@ -65,9 +65,13 @@ describe("project-controller-integration", () => {
 
     database.db.data!.projects = seedProjects;
     database.db.data!.notes = seedNotes;
-    const projectRepository = new ProjectRepository(database);
     noteRepository = new NoteRepository(database);
-    searchController = new SearchController(database);
+    const { projectSearchIndex, noteSearchIndex } =
+      await initializeSearchIndexes(database);
+    searchController = new SearchController(
+      projectSearchIndex,
+      noteSearchIndex
+    );
     const mockFileSystemController = {
       readNoteById: jest.fn(() => undefined),
       deleteNote: jest.fn(() => undefined),
@@ -93,20 +97,20 @@ describe("project-controller-integration", () => {
     expect(noteController.getAllByProjectId("1")).toEqual(seedNotes);
   });
 
-  it("returns error if trying to get note with id that doesn't match schema", () => {
-    expect(noteController.getById(123 as any as string)).toBeInstanceOf(
+  it("returns error if trying to get note with id that doesn't match schema", async () => {
+    expect(await noteController.getById(123 as any as string)).toBeInstanceOf(
       ZodError
     );
   });
 
-  it("returns error if note by id not in database", () => {
-    expect(noteController.getById("999")).toEqual(
+  it("returns error if note by id not in database", async () => {
+    expect(await noteController.getById("999")).toEqual(
       new Error("Note with id 999 not in database")
     );
   });
 
-  it("returns note by id", () => {
-    expect(noteController.getById("2")).toEqual({
+  it("returns note by id", async () => {
+    expect(await noteController.getById("2")).toEqual({
       id: "2",
       projectId: "1",
       title: "Second Note",
@@ -116,34 +120,34 @@ describe("project-controller-integration", () => {
     });
   });
 
-  it("returns error if trying to add note that doesn't match schema", () => {
+  it("returns error if trying to add note that doesn't match schema", async () => {
     expect(
-      noteController.add({
+      await noteController.add({
         title: 342 as any as string,
         projectId: "232",
       })
     ).toBeInstanceOf(ZodError);
   });
 
-  it("returns error if trying to add note with a title and projectId already in database", () => {
+  it("returns error if trying to add note with a title and projectId already in database", async () => {
     const note: Note = {
       projectId: "1",
       title: "First Note",
     };
 
-    expect(noteController.add(note)).toEqual(
+    expect(await noteController.add(note)).toEqual(
       new Error("Note title already in database")
     );
   });
 
-  it("returns note and is searchable after adding", () => {
+  it("returns note and is searchable after adding", async () => {
     const note: Note = {
       projectId: "1",
       title: "  Newest Note   ",
     };
 
     const originalCount = database.db.data!.notes.length;
-    const response = noteController.add(note) as Note;
+    const response = (await noteController.add(note)) as Note;
     const newCount = database.db.data!.notes.length;
     const searchResult = searchController.searchNotes(response.title);
 
@@ -153,7 +157,7 @@ describe("project-controller-integration", () => {
     expect(searchResult[0].title).toBe("Newest Note");
   });
 
-  it("returns error if trying to update note that does not match schema", () => {
+  it("returns error if trying to update note that does not match schema", async () => {
     const note = {
       id: "999",
       projectId: "1",
@@ -161,34 +165,34 @@ describe("project-controller-integration", () => {
       content: "New Note!",
     } as any as updateNoteRequest;
 
-    expect(noteController.update(note)).toBeInstanceOf(ZodError);
+    expect(await noteController.update(note)).toBeInstanceOf(ZodError);
   });
 
-  it("returns error if trying to update note by id not in db", () => {
+  it("returns error if trying to update note by id not in db", async () => {
     const note: updateNoteRequest = {
       id: "999",
       projectId: "1",
       title: "First Note",
     };
 
-    expect(noteController.update(note)).toEqual(
+    expect(await noteController.update(note)).toEqual(
       new Error("Note with id 999 not in database")
     );
   });
 
-  it("returns error if trying to update note with title already in db", () => {
+  it("returns error if trying to update note with title already in db", async () => {
     const note: updateNoteRequest = {
       id: "2",
       projectId: "1",
       title: "First Note",
     };
 
-    expect(noteController.update(note)).toEqual(
+    expect(await noteController.update(note)).toEqual(
       new Error("Note title already in database")
     );
   });
 
-  it("returns updated searchable note after update", () => {
+  it("returns updated searchable note after update", async () => {
     const note: updateNoteRequest = {
       id: "2",
       projectId: "1",
@@ -196,7 +200,7 @@ describe("project-controller-integration", () => {
     };
 
     const originalCount = database.db.data!.notes.length;
-    const response = noteController.update(note) as Note;
+    const response = (await noteController.update(note)) as Note;
     const newCount = database.db.data!.notes.length;
     const searchResult = searchController.searchNotes(response.title);
 
@@ -205,20 +209,20 @@ describe("project-controller-integration", () => {
     expect(searchResult[0].title).toEqual("Updated Second Note");
   });
 
-  it("returns error if trying to delete with id that doesn't match schema", () => {
-    expect(noteController.delete(123 as any as string)).toBeInstanceOf(
+  it("returns error if trying to delete with id that doesn't match schema", async () => {
+    expect(await noteController.delete(123 as any as string)).toBeInstanceOf(
       ZodError
     );
   });
 
-  it("returns error if trying to delete note by id not in database", () => {
-    expect(noteController.delete("999")).toEqual(
+  it("returns error if trying to delete note by id not in database", async () => {
+    expect(await noteController.delete("999")).toEqual(
       new Error("Note with id 999 not in database")
     );
   });
 
-  it("returns true and note no longer searchable after delete", () => {
-    const response = noteController.delete("2");
+  it("returns true and note no longer searchable after delete", async () => {
+    const response = await noteController.delete("2");
     const searchResult = searchController.searchNotes("second");
 
     expect(response).toEqual(true);

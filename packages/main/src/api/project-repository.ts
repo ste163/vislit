@@ -1,5 +1,5 @@
 import type { Goal, Note, Progress, Project } from "interfaces";
-import type Database from "../database";
+import type { Database } from "../database";
 
 class ProjectRepository {
   #database: Database;
@@ -53,7 +53,6 @@ class ProjectRepository {
       const projectWithTypes = this.#includeProjectType(project);
       return this.#includeGoals(projectWithTypes);
     }
-    return project; // undefined at this point;
   }
 
   getByTitle(title: string): Project | undefined {
@@ -64,15 +63,14 @@ class ProjectRepository {
       const projectWithTypes = this.#includeProjectType(project);
       return this.#includeGoals(projectWithTypes);
     }
-    return project; // undefined at this point
   }
 
-  add(project: Project): Project {
+  async add(project: Project): Promise<Project> {
     if (this.#database.db.data !== null) {
       this.#database.db.data.projects.push(
         this.#database.generateUniqueId(project)
       );
-      this.#database.db.write();
+      await this.#database.db.write();
       const addedProject = this.getByTitle(project.title) as Project;
       return addedProject;
     } else {
@@ -80,17 +78,17 @@ class ProjectRepository {
     }
   }
 
-  update(project: Project): Project {
+  async update(project: Project): Promise<Project> {
     const filteredProjects = this.#database.db.data?.projects.filter(
       (p) => p.id !== project.id
     ) as Project[];
     this.#database.db.data!.projects = filteredProjects;
     this.#database.db.data?.projects.push(project);
-    this.#database.db.write();
+    await this.#database.db.write();
     return this.getById(project.id!) as Project;
   }
 
-  delete(id: string): void {
+  async delete(id: string): Promise<void> {
     const filteredNotes = this.#database.db.data?.notes.filter(
       (note) => note.projectId !== id
     ) as Note[];
@@ -111,7 +109,7 @@ class ProjectRepository {
     ) as Project[];
     this.#database.db.data!.projects = filteredProjects;
 
-    this.#database.db.write();
+    await this.#database.db.write();
   }
 }
 

@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 import type { Goal, Project } from "interfaces";
-import Database from "../database";
+import { Database, initializeDatabase } from "../database";
 import GoalRepository from "./goal-repository";
 
 describe("goal-repository", () => {
@@ -11,9 +11,10 @@ describe("goal-repository", () => {
   let database: Database;
   let goalRepository: GoalRepository;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.spyOn(console, "error").mockImplementation(() => {});
     const { app } = jest.requireMock("electron");
+    const initDb = await initializeDatabase(app);
     seedProjects = [
       {
         id: "1",
@@ -62,7 +63,7 @@ describe("goal-repository", () => {
         completed: false,
       },
     ];
-    database = new Database(app);
+    database = new Database(initDb);
     database.db.data!.projects = seedProjects;
     database.db.data!.goals = seedGoals;
     goalRepository = new GoalRepository(database);
@@ -119,7 +120,7 @@ describe("goal-repository", () => {
     });
   });
 
-  it("returns goal after successful add", () => {
+  it("returns goal after successful add", async () => {
     const goalToAdd: Goal = {
       projectId: "1",
       basedOnWordCountOrPageCount: "word",
@@ -129,25 +130,25 @@ describe("goal-repository", () => {
       editCountsTowardGoal: true,
       revisedCountsTowardsGoal: true,
     };
-    goalRepository.add(goalToAdd);
+    await goalRepository.add(goalToAdd);
     expect(database.db.data?.goals.length).toEqual(3);
   });
 
-  it("returns updated goal after successful update", () => {
+  it("returns updated goal after successful update", async () => {
     const goal = goalRepository.getById("1");
     if (goal) {
       goal.basedOnWordCountOrPageCount = "page";
       goal.wordOrPageCount = 5;
-      const updatedGoal = goalRepository.update(goal);
+      const updatedGoal = await goalRepository.update(goal);
       expect(updatedGoal.basedOnWordCountOrPageCount).toBe("page");
       expect(updatedGoal.wordOrPageCount).toBe(5);
       expect(updatedGoal.id).toEqual(goal.id);
     }
   });
 
-  it("returns void if goal deleted", () => {
+  it("returns void if goal deleted", async () => {
     const initialGoalCount = database.db.data?.goals.length as number;
-    goalRepository.delete("1");
+    await goalRepository.delete("1");
     const postDeleteGoalCount = database.db.data?.goals.length;
     expect(postDeleteGoalCount).toEqual(initialGoalCount - 1);
   });

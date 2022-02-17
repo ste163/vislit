@@ -1,5 +1,5 @@
 import type { Project, Type } from "interfaces";
-import type Database from "../database";
+import type { Database } from "../database";
 
 class TypeRepository {
   #database: Database;
@@ -25,20 +25,20 @@ class TypeRepository {
     return sortedAlphabetically;
   }
 
-  add(value: string): Type {
+  async add(value: string): Promise<Type> {
     this.#database.db.data?.types.push(
       this.#database.generateUniqueId({ value, dateCreated: new Date() })
     );
-    this.#database.db.write();
+    await this.#database.db.write();
     return this.getByValue(value) as Type;
   }
 
-  delete(id: string): void {
+  async delete(id: string): Promise<void> {
     const filteredTypes = this.#database.db.data?.types.filter(
       (type) => type.id !== id
     ) as Type[];
     this.#database.db.data!.types = filteredTypes;
-    this.#database.db.write();
+    await this.#database.db.write();
   }
 
   checkForTypeTaken(typeId: string): Project[] | undefined {

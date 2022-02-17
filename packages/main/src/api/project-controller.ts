@@ -1,5 +1,5 @@
 import type { Project } from "interfaces";
-import type SearchController from "./search-controller";
+import type { SearchController } from "./search-controller";
 import type FileSystemController from "./file-system-controller";
 import type ProjectRepository from "./project-repository";
 import type {
@@ -55,7 +55,7 @@ class ProjectController {
     }
   }
 
-  add(request: projectAddRequest): Project | Error {
+  async add(request: projectAddRequest): Promise<Project | Error> {
     try {
       projectAddRequestSchema.parse(request);
 
@@ -72,9 +72,9 @@ class ProjectController {
       projectToAdd.completed = false;
       projectToAdd.archived = false;
 
-      const response = this.#projectRepository.add(projectToAdd);
+      const response = await this.#projectRepository.add(projectToAdd);
       this.#searchController.addProject(response);
-      const fsResponse = this.#fileSystemController.makeProjectDirectory(
+      const fsResponse = await this.#fileSystemController.makeProjectDirectory(
         response.id!
       );
       if (fsResponse instanceof Error) throw fsResponse;
@@ -85,7 +85,7 @@ class ProjectController {
     }
   }
 
-  update(request: projectUpdateRequest): Project | Error {
+  async update(request: projectUpdateRequest): Promise<Project | Error> {
     try {
       projectUpdateRequestSchema.parse(request);
 
@@ -109,7 +109,9 @@ class ProjectController {
       projectToUpdate.typeId = typeId;
       projectToUpdate.dateModified = new Date();
 
-      const updatedProject = this.#projectRepository.update(projectToUpdate);
+      const updatedProject = await this.#projectRepository.update(
+        projectToUpdate
+      );
       this.#searchController.updateProject(
         originalProjectForIndex as Project,
         updatedProject
@@ -121,16 +123,17 @@ class ProjectController {
     }
   }
 
-  delete(id: idRequest): true | Error {
+  async delete(id: idRequest): Promise<true | Error> {
     try {
       idRequestSchema.parse(id);
 
       const project = this.getById(id);
       if (project instanceof Error) throw new Error("Project not in database");
 
-      this.#projectRepository.delete(id);
+      await this.#projectRepository.delete(id);
       this.#searchController.deleteProject(project);
-      const fsResponse = this.#fileSystemController.deleteProjectDirectory(id);
+      const fsResponse =
+        await this.#fileSystemController.deleteProjectDirectory(id);
       if (fsResponse instanceof Error) throw fsResponse;
 
       return true;

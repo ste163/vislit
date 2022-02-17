@@ -2,10 +2,10 @@
  * @jest-environment node
  */
 import type { Project } from "interfaces";
-import Database from "../database";
+import { Database, initializeDatabase } from "../database";
+import { SearchController, initializeSearchIndexes } from "./search-controller";
 import ProjectController from "./project-controller";
 import ProjectRepository from "./project-repository";
-import SearchController from "./search-controller";
 import { ZodError } from "zod";
 import type FileSystemController from "./file-system-controller";
 
@@ -21,10 +21,11 @@ describe("project-controller-integration", () => {
   let projectController: ProjectController;
   let fileSystemController: FileSystemController;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.spyOn(console, "error").mockImplementation(() => {});
     const { app } = jest.requireMock("electron");
-    database = new Database(app);
+    const initDb = await initializeDatabase(app);
+    database = new Database(initDb);
     const seedDate = new Date();
     seedData = [
       {
@@ -51,7 +52,12 @@ describe("project-controller-integration", () => {
 
     database.db.data!.projects = seedData;
     projectRepository = new ProjectRepository(database);
-    searchController = new SearchController(database);
+    const { projectSearchIndex, noteSearchIndex } =
+      await initializeSearchIndexes(database);
+    searchController = new SearchController(
+      projectSearchIndex,
+      noteSearchIndex
+    );
     const mockFileSystemController = {
       makeProjectDirectory: jest.fn(() => undefined),
       deleteProjectDirectory: jest.fn(() => undefined),
@@ -111,18 +117,18 @@ describe("project-controller-integration", () => {
     expect(searchResult[0].title).toBe("It");
   });
 
-  it("returns error if project doesn't match schema", () => {
+  it("returns error if project doesn't match schema", async () => {
     expect(
-      projectController.add({
+      await projectController.add({
         description: "A murderous clown attacks a town",
         typeId: "2",
       })
     ).toBeInstanceOf(ZodError);
   });
 
-  it("returns duplicate title error if adding a project with a title already in db", () => {
+  it("returns duplicate title error if adding a project with a title already in db", async () => {
     expect(
-      projectController.add({
+      await projectController.add({
         title: "It",
         description: "A murderous clown attacks a town",
         typeId: "2",
@@ -130,14 +136,16 @@ describe("project-controller-integration", () => {
     ).toEqual(new Error("Project title already in database"));
   });
 
-  it("returns trimmed project and is searchable after adding", () => {
+  it("returns trimmed project and is searchable after adding", async () => {
     const projectToAdd = {
       title: "    The Dark Half  ",
       description: "  An evil pseudonym comes to life    ",
       typeId: "2",
     };
 
-    const response = projectController.add(projectToAdd as Project) as Project;
+    const response = (await projectController.add(
+      projectToAdd as Project
+    )) as Project;
 
     const searchResult = searchController.searchProjects("dark half");
 
@@ -146,7 +154,7 @@ describe("project-controller-integration", () => {
     expect(searchResult[0].title).toEqual("The Dark Half");
   });
 
-  it("returns error if updating project that doesn't match schema", () => {
+  it("returns error if updating project that doesn't match schema", async () => {
     const updatedProject = {
       title: "The Dark Half",
       description: "An evil pseudonym comes to life",
@@ -155,10 +163,12 @@ describe("project-controller-integration", () => {
       archived: false,
     };
 
-    expect(projectController.update(updatedProject)).toBeInstanceOf(ZodError);
+    expect(await projectController.update(updatedProject)).toBeInstanceOf(
+      ZodError
+    );
   });
 
-  it("returns error if updating project with id not in db", () => {
+  it("returns error if updating project with id not in db", async () => {
     const updatedProject = {
       id: "5",
       title: "The Dark Half",
@@ -168,12 +178,12 @@ describe("project-controller-integration", () => {
       archived: false,
     };
 
-    expect(projectController.update(updatedProject)).toEqual(
+    expect(await projectController.update(updatedProject)).toEqual(
       new Error("Project with id 5 not in database")
     );
   });
 
-  it("returns error if updating project with new title already in db", () => {
+  it("returns error if updating project with new title already in db", async () => {
     const updatedProject = {
       id: "1",
       title: "The Shining",
@@ -183,12 +193,12 @@ describe("project-controller-integration", () => {
       archived: false,
     };
 
-    expect(projectController.update(updatedProject)).toEqual(
+    expect(await projectController.update(updatedProject)).toEqual(
       new Error("Project title already in database")
     );
   });
 
-  it("returns error if updating project fails", () => {
+  it("returns error if updating project fails", async () => {
     const projectToUpdate = {
       id: "1",
       title: "The Dark Half",
@@ -211,10 +221,12 @@ describe("project-controller-integration", () => {
       fileSystemController
     );
 
-    expect(projectController.update(projectToUpdate)).toEqual(new Error());
+    expect(await projectController.update(projectToUpdate)).toEqual(
+      new Error()
+    );
   });
 
-  it("returns updated, trimmed project and updated project is searchable", () => {
+  it("returns updated, trimmed project and updated project is searchable", async () => {
     const projectToUpdate = {
       id: "1",
       title: "    It - revised      ",
@@ -224,7 +236,9 @@ describe("project-controller-integration", () => {
       archived: false,
     };
 
-    const response = projectController.update(projectToUpdate) as Project;
+    const response = (await projectController.update(
+      projectToUpdate
+    )) as Project;
     const searchResult = searchController.searchProjects("revised");
 
     expect(response.title).toEqual("It - revised");
@@ -234,19 +248,19 @@ describe("project-controller-integration", () => {
     expect(searchResult[0].title).toEqual("It - revised");
   });
 
-  it("returns error if projectId doesn't match schema", () => {
-    expect(projectController.delete(999 as any as string)).toBeInstanceOf(
+  it("returns error if projectId doesn't match schema", async () => {
+    expect(await projectController.delete(999 as any as string)).toBeInstanceOf(
       Error
     );
   });
 
-  it("returns error if project to delete is not in db", () => {
-    expect(projectController.delete("4")).toEqual(
+  it("returns error if project to delete is not in db", async () => {
+    expect(await projectController.delete("4")).toEqual(
       new Error("Project not in database")
     );
   });
 
-  it("returns error if project delete fails", () => {
+  it("returns error if project delete fails", async () => {
     const mockProjectRepository = {
       delete: jest.fn(() => {
         throw new Error();
@@ -260,11 +274,11 @@ describe("project-controller-integration", () => {
       fileSystemController
     );
 
-    expect(projectController.delete("1")).toEqual(new Error());
+    expect(await projectController.delete("1")).toEqual(new Error());
   });
 
-  it("returns true and project is no longer searchable on delete", () => {
-    const response = projectController.delete("2");
+  it("returns true and project is no longer searchable on delete", async () => {
+    const response = await projectController.delete("2");
     const searchResult = searchController.searchProjects("shining");
 
     expect(response).toEqual(true);

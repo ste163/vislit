@@ -1,16 +1,17 @@
 /**
  * @jest-environment node
  */
-import Database from "../database";
+import { Database, initializeDatabase } from "../database";
 import TypeRepository from "./type-repository";
 
 describe("type-repository", () => {
   let typeRepository: TypeRepository;
   const typeSeedDate = new Date();
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const { app } = jest.requireMock("electron");
-    const database = new Database(app);
+    const initDb = await initializeDatabase(app);
+    const database = new Database(initDb);
     typeRepository = new TypeRepository(database);
     database.db.data!.types = [
       {
@@ -104,9 +105,9 @@ describe("type-repository", () => {
     });
   });
 
-  it("returns added type when successfully added", () => {
+  it("returns added type when successfully added", async () => {
     const originalTypeCount = typeRepository.getAll().length;
-    const addedType = typeRepository.add("non-fiction");
+    const addedType = await typeRepository.add("non-fiction");
     const newTypeCount = typeRepository.getAll().length;
     expect(addedType).toHaveProperty("id");
     expect(addedType).toHaveProperty("dateCreated");
@@ -114,9 +115,9 @@ describe("type-repository", () => {
     expect(newTypeCount).toEqual(originalTypeCount + 1);
   });
 
-  it("deletes type from database", () => {
+  it("deletes type from database", async () => {
     const originalTypeCount = typeRepository.getAll().length;
-    typeRepository.delete("1");
+    await typeRepository.delete("1");
     const newTypeCount = typeRepository.getAll().length;
     expect(newTypeCount).toEqual(originalTypeCount - 1);
   });

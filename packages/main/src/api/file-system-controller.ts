@@ -1,4 +1,4 @@
-import fs from "fs";
+import { mkdir, rm, writeFile, readFile, readdir } from "fs/promises";
 import {
   deleteNoteRequestSchema,
   htmlWriteRequestSchema,
@@ -22,13 +22,13 @@ class FileSystemController {
     return this.#userDataPath;
   }
 
-  makeProjectDirectory(projectId: idRequest): true | Error {
+  async makeProjectDirectory(projectId: idRequest): Promise<true | Error> {
     try {
       idRequestSchema.parse(projectId);
       const userData = this.getUserDataPath();
-      fs.mkdirSync(`${userData}/projects/${projectId}`);
-      fs.mkdirSync(`${userData}/projects/${projectId}/documents`);
-      fs.mkdirSync(`${userData}/projects/${projectId}/notes`);
+      await mkdir(`${userData}/projects/${projectId}`);
+      await mkdir(`${userData}/projects/${projectId}/documents`);
+      await mkdir(`${userData}/projects/${projectId}/notes`);
       return true;
     } catch (error: any | Error) {
       console.error(error);
@@ -36,11 +36,11 @@ class FileSystemController {
     }
   }
 
-  deleteProjectDirectory(projectId: idRequest): true | Error {
+  async deleteProjectDirectory(projectId: idRequest): Promise<true | Error> {
     try {
       idRequestSchema.parse(projectId);
       const userData = this.getUserDataPath();
-      fs.rmSync(`${userData}/projects/${projectId}`, { recursive: true });
+      await rm(`${userData}/projects/${projectId}`, { recursive: true });
       return true;
     } catch (error: any | Error) {
       console.error(error);
@@ -48,7 +48,7 @@ class FileSystemController {
     }
   }
 
-  writeHtmlFile(request: htmlWriteRequest): true | Error {
+  async writeHtmlFile(request: htmlWriteRequest): Promise<true | Error> {
     try {
       htmlWriteRequestSchema.parse(request);
       const { id, html, type, projectId, createdAt } = request;
@@ -61,7 +61,7 @@ class FileSystemController {
             }-${id}.html`
           : `${this.getUserDataPath()}/projects/${projectId}/${type}/${id}.html`;
 
-      fs.writeFileSync(userData, html);
+      await writeFile(userData, html);
       return true;
     } catch (error: any | Error) {
       console.error(error);
@@ -69,12 +69,12 @@ class FileSystemController {
     }
   }
 
-  deleteNote(request: deleteNoteRequest): true | Error {
+  async deleteNote(request: deleteNoteRequest): Promise<true | Error> {
     try {
       deleteNoteRequestSchema.parse(request);
       const { id, projectId } = request;
       const userData = `${this.getUserDataPath()}/projects/${projectId}/notes/${id}.html`;
-      fs.rmSync(userData); // returns error if unable to find file
+      await rm(userData); // returns error if unable to find file
       return true;
     } catch (error: any | Error) {
       console.error(error);
@@ -82,12 +82,14 @@ class FileSystemController {
     }
   }
 
-  readNoteById(request: readNoteByIdRequest): string | undefined | Error {
+  async readNoteById(
+    request: readNoteByIdRequest
+  ): Promise<string | Error | undefined> {
     try {
       readNoteByIdRequestSchema.parse(request);
       const { noteId, projectId } = request;
       const userData = `${this.getUserDataPath()}/projects/${projectId}/notes/${noteId}.html`;
-      const file = fs.readFileSync(userData, "utf-8");
+      const file = await readFile(userData, "utf-8");
       if (file) return file;
     } catch (error: any | Error) {
       console.error(error);
@@ -95,15 +97,17 @@ class FileSystemController {
     }
   }
 
-  readMostRecentHtmlFile(projectId: idRequest): string | void | Error {
+  async readMostRecentHtmlFile(
+    projectId: idRequest
+  ): Promise<string | void | Error> {
     try {
       idRequestSchema.parse(projectId);
       const userData = `${this.getUserDataPath()}/projects/${projectId}/documents`;
-      const files = fs.readdirSync(userData);
+      const files = await readdir(userData);
       if (files.length) {
         // for now, assuming last file in list is most recent
         const mostRecentFileName = files[files.length - 1];
-        return fs.readFileSync(`${userData}/${mostRecentFileName}`, "utf-8");
+        return await readFile(`${userData}/${mostRecentFileName}`, "utf-8");
       }
     } catch (error: any | Error) {
       console.error(error);

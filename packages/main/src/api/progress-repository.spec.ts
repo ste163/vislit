@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 import type { Progress } from "interfaces";
-import Database from "../database";
+import { Database, initializeDatabase } from "../database";
 import ProgressRepository from "./progress-repository";
 
 describe("progress-repository", () => {
@@ -12,9 +12,10 @@ describe("progress-repository", () => {
   const seedDate2 = new Date("2020-01-01").toISOString();
   const seedDate3 = new Date("2020-01-15").toISOString();
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const { app } = jest.requireMock("electron");
-    database = new Database(app);
+    const initDb = await initializeDatabase(app);
+    database = new Database(initDb);
     progressRepository = new ProgressRepository(database);
     const seedProgess: Progress[] = [
       {
@@ -75,7 +76,7 @@ describe("progress-repository", () => {
     expect(progressRepository.getAllByYearMonth("2020", "01")).toHaveLength(2);
   });
 
-  it("returns added progress", () => {
+  it("returns added progress", async () => {
     const seedDate4 = new Date("2020-01-16").toISOString();
     const newProgress: Progress = {
       date: seedDate4,
@@ -87,13 +88,13 @@ describe("progress-repository", () => {
       revised: false,
     };
     const originalCount = database.db.data.progress.length;
-    const addedProgress = progressRepository.add(newProgress);
+    const addedProgress = await progressRepository.add(newProgress);
     const postCount = database.db.data.progress.length;
     expect(originalCount + 1).toEqual(postCount);
     expect(addedProgress).toEqual(newProgress);
   });
 
-  it("returns updated progress", () => {
+  it("returns updated progress", async () => {
     const progressToUpdate: Progress = {
       date: seedDate2,
       projectId: "1",
@@ -104,15 +105,15 @@ describe("progress-repository", () => {
       revised: true,
     };
     const originalCount = database.db.data.progress.length;
-    const updatedProgress = progressRepository.update(progressToUpdate);
+    const updatedProgress = await progressRepository.update(progressToUpdate);
     const postCount = database.db.data.progress.length;
     expect(originalCount).toEqual(postCount);
     expect(updatedProgress).toEqual(progressToUpdate);
   });
 
-  it("returns void after deleting progress", () => {
+  it("returns void after deleting progress", async () => {
     const originalCount = database.db.data.progress.length;
-    progressRepository.delete(seedDate3);
+    await progressRepository.delete(seedDate3);
     const postCount = database.db.data.progress.length;
     expect(originalCount - 1).toEqual(postCount);
     database.db.data.progress.forEach((progress) => {

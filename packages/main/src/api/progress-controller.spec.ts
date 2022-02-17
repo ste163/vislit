@@ -3,14 +3,14 @@
  */
 import type { Project, Goal, Progress } from "interfaces";
 import { ZodError } from "zod";
-import Database from "../database";
+import { Database, initializeDatabase } from "../database";
+import { SearchController, initializeSearchIndexes } from "./search-controller";
 import type FileSystemController from "./file-system-controller";
 import GoalRepository from "./goal-repository";
 import ProgressController from "./progress-controller";
 import ProgressRepository from "./progress-repository";
 import ProjectController from "./project-controller";
 import ProjectRepository from "./project-repository";
-import SearchController from "./search-controller";
 
 describe("progress-controller-integration", () => {
   let seedProjects: Project[];
@@ -31,10 +31,11 @@ describe("progress-controller-integration", () => {
   const progressSeedDate6 = new Date("2022-01-03").toISOString();
   const progressSeedDate7 = new Date("2022-01-04").toISOString();
 
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.spyOn(console, "error").mockImplementation(() => {});
     const { app } = jest.requireMock("electron");
-    database = new Database(app);
+    const initDb = await initializeDatabase(app);
+    database = new Database(initDb);
     const projectSeedDate = new Date();
     seedProjects = [
       {
@@ -157,7 +158,12 @@ describe("progress-controller-integration", () => {
     goalRepository = new GoalRepository(database);
     projectRepository = new ProjectRepository(database);
     progressRepository = new ProgressRepository(database);
-    searchController = new SearchController(database);
+    const { projectSearchIndex, noteSearchIndex } =
+      await initializeSearchIndexes(database);
+    searchController = new SearchController(
+      projectSearchIndex,
+      noteSearchIndex
+    );
     const mockFileSystemController = {} as unknown as FileSystemController;
     projectController = new ProjectController(
       projectRepository,
@@ -361,7 +367,7 @@ describe("progress-controller-integration", () => {
     ]);
   });
 
-  it("modify - returns error if doesn't match schema", () => {
+  it("modify - returns error if doesn't match schema", async () => {
     const progressDate = new Date("2020-01-20");
     const progress: Progress = {
       date: progressDate as any as string,
@@ -372,10 +378,10 @@ describe("progress-controller-integration", () => {
       proofread: false,
       revised: false,
     };
-    expect(progressController.modify(progress)).toBeInstanceOf(ZodError);
+    expect(await progressController.modify(progress)).toBeInstanceOf(ZodError);
   });
 
-  it("modify - returns error if no project exists", () => {
+  it("modify - returns error if no project exists", async () => {
     const progressDate = new Date("2020-01-20").toISOString();
     const progress: Progress = {
       date: progressDate,
@@ -386,12 +392,12 @@ describe("progress-controller-integration", () => {
       proofread: false,
       revised: false,
     };
-    expect(progressController.modify(progress)).toEqual(
+    expect(await progressController.modify(progress)).toEqual(
       new Error("Project with id 3 not in database")
     );
   });
 
-  it("modify - returns error if no goal for project exists", () => {
+  it("modify - returns error if no goal for project exists", async () => {
     const progressDate = new Date("2020-01-20").toISOString();
     const progress: Progress = {
       date: progressDate,
@@ -402,12 +408,12 @@ describe("progress-controller-integration", () => {
       proofread: false,
       revised: false,
     };
-    expect(progressController.modify(progress)).toEqual(
+    expect(await progressController.modify(progress)).toEqual(
       new Error("Goal with id 999 does not exist on Project with id 1")
     );
   });
 
-  it("modify - returns added progress if date does not exist", () => {
+  it("modify - returns added progress if date does not exist", async () => {
     const progressDate = new Date("2020-01-20").toISOString();
     const progress: Progress = {
       date: progressDate,
@@ -418,10 +424,10 @@ describe("progress-controller-integration", () => {
       proofread: false,
       revised: false,
     };
-    expect(progressController.modify(progress)).toEqual(progress);
+    expect(await progressController.modify(progress)).toEqual(progress);
   });
 
-  it("modify - returns true after deleting if date exists but incoming progress count is 0 and all info is false", () => {
+  it("modify - returns true after deleting if date exists but incoming progress count is 0 and all info is false", async () => {
     const progress: Progress = {
       date: progressSeedDate1,
       projectId: "1",
@@ -431,10 +437,10 @@ describe("progress-controller-integration", () => {
       proofread: false,
       revised: false,
     };
-    expect(progressController.modify(progress)).toEqual(true);
+    expect(await progressController.modify(progress)).toEqual(true);
   });
 
-  it("modify - returns updated progress if date exists", () => {
+  it("modify - returns updated progress if date exists", async () => {
     const progress: Progress = {
       date: progressSeedDate1,
       projectId: "1",
@@ -444,6 +450,6 @@ describe("progress-controller-integration", () => {
       proofread: true,
       revised: false,
     };
-    expect(progressController.modify(progress)).toEqual(progress);
+    expect(await progressController.modify(progress)).toEqual(progress);
   });
 });

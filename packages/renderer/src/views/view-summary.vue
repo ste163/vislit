@@ -61,30 +61,26 @@ function openNotesColumn(): void {
 }
 
 async function toggleProjectComplete(): Promise<void> {
-  const updatedProject: Project = {
+  const updatedProject = {
     id: activeProject.value.id,
     typeId: activeProject.value.typeId,
     title: activeProject.value.title,
     description: activeProject.value.description,
     completed: !activeProject.value.completed,
     archived: activeProject.value.archived,
-    dateModified: activeProject.value.dateModified,
-    dateCreated: activeProject.value.dateCreated,
-  };
+  } as any as Project;
   await store.updateProject(updatedProject);
 }
 
 async function toggleProjectArchived(): Promise<void> {
-  const updatedProject: Project = {
+  const updatedProject = {
     id: activeProject.value.id,
     typeId: activeProject.value.typeId,
     title: activeProject.value.title,
     description: activeProject.value.description,
     completed: activeProject.value.completed,
     archived: !activeProject.value.archived,
-    dateModified: activeProject.value.dateModified,
-    dateCreated: activeProject.value.dateCreated,
-  };
+  } as any as Project;
   await store.updateProject(updatedProject);
 }
 

@@ -1,5 +1,5 @@
 import type NoteRepository from "./note-repository";
-import type SearchController from "./search-controller";
+import type { SearchController } from "./search-controller";
 import type FileSystemController from "./file-system-controller";
 import type { Note } from "interfaces";
 import type { addNoteRequest, idRequest, updateNoteRequest } from "../schemas";
@@ -40,14 +40,14 @@ class NoteController {
     }
   }
 
-  getById(id: idRequest): Note | Error {
+  async getById(id: idRequest): Promise<Note | Error> {
     try {
       idRequestSchema.parse(id);
       const note = this.#noteRepository.getById(id);
       if (note === undefined)
         throw new Error(`Note with id ${id} not in database`);
 
-      const html = this.#fileSystemController.readNoteById({
+      const html = await this.#fileSystemController.readNoteById({
         noteId: note.id!,
         projectId: note.projectId,
       });
@@ -59,7 +59,7 @@ class NoteController {
     }
   }
 
-  add(request: addNoteRequest): Note | Error {
+  async add(request: addNoteRequest): Promise<Note | Error> {
     try {
       addNoteRequestSchema.parse(request);
 
@@ -72,7 +72,7 @@ class NoteController {
       note.dateCreated = date;
       note.dateModified = date;
 
-      const response = this.#noteRepository.add(note);
+      const response = await this.#noteRepository.add(note);
       this.#searchController.addNote(response);
 
       return response;
@@ -82,12 +82,12 @@ class NoteController {
     }
   }
 
-  update(request: updateNoteRequest): Note | Error {
+  async update(request: updateNoteRequest): Promise<Note | Error> {
     try {
       updateNoteRequestSchema.parse(request);
       const note = { ...request };
 
-      const noteToUpdate = this.getById(note.id);
+      const noteToUpdate = await this.getById(note.id);
       if (noteToUpdate instanceof Error) return noteToUpdate;
 
       const originalNoteForIndex = { ...noteToUpdate };
@@ -99,7 +99,7 @@ class NoteController {
       noteToUpdate.title = note.title.trim();
       noteToUpdate.dateModified = new Date();
 
-      const updatedNote = this.#noteRepository.update(noteToUpdate);
+      const updatedNote = await this.#noteRepository.update(noteToUpdate);
       this.#searchController.updateNote(originalNoteForIndex, updatedNote);
       return updatedNote;
     } catch (e: any | Error) {
@@ -108,16 +108,19 @@ class NoteController {
     }
   }
 
-  delete(id: idRequest): true | Error {
+  async delete(id: idRequest): Promise<true | Error> {
     try {
       idRequestSchema.parse(id);
-      const note = this.getById(id);
+      const note = await this.getById(id);
       if (note instanceof Error)
         throw new Error(`Note with id ${id} not in database`);
 
-      this.#noteRepository.delete(id);
+      await this.#noteRepository.delete(id);
       this.#searchController.deleteNote(note);
-      this.#fileSystemController.deleteNote({ id, projectId: note.projectId });
+      await this.#fileSystemController.deleteNote({
+        id,
+        projectId: note.projectId,
+      });
 
       return true; // returning true instead of undefined because that could potentially mean other things
     } catch (e: any | Error) {
