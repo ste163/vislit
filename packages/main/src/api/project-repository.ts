@@ -53,7 +53,6 @@ class ProjectRepository {
       const projectWithTypes = this.#includeProjectType(project);
       return this.#includeGoals(projectWithTypes);
     }
-    return project; // undefined at this point;
   }
 
   getByTitle(title: string): Project | undefined {
@@ -64,7 +63,6 @@ class ProjectRepository {
       const projectWithTypes = this.#includeProjectType(project);
       return this.#includeGoals(projectWithTypes);
     }
-    return project; // undefined at this point
   }
 
   async add(project: Project): Promise<Project> {
