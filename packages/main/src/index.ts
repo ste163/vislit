@@ -29,9 +29,9 @@ import type {
 // declared here to access window bounds
 let database: Database;
 
-// declared outside of try block so it can be accessed by IPC
+// declared here so it can be accessed by IPC
 let fileSystemController: FileSystemController;
-let searchController: SearchController; // not used yet, but will be
+let searchController: SearchController; // not used yet, but will be!
 let projectController: ProjectController;
 let noteController: NoteController;
 let typeController: TypeController;
