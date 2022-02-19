@@ -40,7 +40,7 @@ class ProgressController {
       if (!goal) throw new Error(`No goal by id ${progress.goalId} found`);
 
       if (
-        goal.wordOrPageCount <= progress.count ||
+        goal.wordCount <= progress.count ||
         (goal.proofreadCountsTowardGoal === true &&
           progress.proofread === true) ||
         (goal.editCountsTowardGoal === true && progress.edited === true) ||
