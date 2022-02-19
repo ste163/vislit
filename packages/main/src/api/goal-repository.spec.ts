@@ -1,13 +1,14 @@
 /**
  * @jest-environment node
  */
-import type { Goal, Project } from "interfaces";
+import type { Goal, Project, Progress } from "interfaces";
 import { Database, initializeDatabase } from "../database";
 import GoalRepository from "./goal-repository";
 
 describe("goal-repository", () => {
   let seedProjects: Project[];
   let seedGoals: Goal[];
+  let seedProgress: Progress[];
   let database: Database;
   let goalRepository: GoalRepository;
 
@@ -63,9 +64,39 @@ describe("goal-repository", () => {
         completed: false,
       },
     ];
+    seedProgress = [
+      {
+        date: new Date(),
+        projectId: "1",
+        goalId: "1",
+        count: 250,
+        edited: false,
+        proofread: false,
+        revised: false,
+      },
+      {
+        date: new Date(),
+        projectId: "1",
+        goalId: "1",
+        count: 500,
+        edited: false,
+        proofread: true,
+        revised: false,
+      },
+      {
+        date: new Date(),
+        projectId: "1",
+        goalId: "2",
+        count: 300,
+        edited: false,
+        proofread: false,
+        revised: true,
+      },
+    ];
     database = new Database(initDb);
-    database.db.data!.projects = seedProjects;
-    database.db.data!.goals = seedGoals;
+    database.db.data.projects = seedProjects;
+    database.db.data.goals = seedGoals;
+    database.db.data.progress = seedProgress;
     goalRepository = new GoalRepository(database);
   });
 
@@ -131,7 +162,7 @@ describe("goal-repository", () => {
       revisedCountsTowardsGoal: true,
     };
     await goalRepository.add(goalToAdd);
-    expect(database.db.data?.goals.length).toEqual(3);
+    expect(database.db.data.goals.length).toEqual(3);
   });
 
   it("returns updated goal after successful update", async () => {
@@ -146,10 +177,12 @@ describe("goal-repository", () => {
     }
   });
 
-  it("returns void if goal deleted", async () => {
-    const initialGoalCount = database.db.data?.goals.length as number;
+  it("returns void if goal deleted and progress deleted", async () => {
+    const initialGoalCount = database.db.data.goals.length;
     await goalRepository.delete("1");
-    const postDeleteGoalCount = database.db.data?.goals.length;
+    const postDeleteGoalCount = database.db.data.goals.length;
+    const postDeleteProgressCount = database.db.data.progress.length;
     expect(postDeleteGoalCount).toEqual(initialGoalCount - 1);
+    expect(postDeleteProgressCount).toEqual(1);
   });
 });

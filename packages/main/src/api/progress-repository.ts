@@ -18,6 +18,8 @@ class ProgressRepository {
     });
   }
 
+  // TODO: This is not getting for the requested project id.
+  // but for ALL progress, for ALL projects.
   getByDate(date: string): Progress | undefined {
     return this.#database.db.data!.progress.filter((dbProgress) => {
       // Check against the YYYY-MM-DD without timezone
@@ -27,6 +29,8 @@ class ProgressRepository {
     })[0];
   }
 
+  // TODO: This is not getting for the requested project id.
+  // but for ALL progress, for ALL projects.
   getAllByYearMonth(year: string, month: string): Progress[] {
     return this.#database.db.data!.progress.filter((progress) => {
       const date = progress.date.toString().split("T")[0];
