@@ -119,7 +119,10 @@ class ProgressController {
         progress.edited === false &&
         progress.proofread === false &&
         progress.revised === false
-        ? await this.#progressRepository.delete(existingProgress.date)
+        ? await this.#progressRepository.delete(
+            progress.projectId,
+            existingProgress.date
+          )
         : await this.#progressRepository.update(progress);
     } catch (e: any | Error) {
       console.error(e);
