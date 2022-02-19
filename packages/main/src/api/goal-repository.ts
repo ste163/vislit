@@ -1,4 +1,4 @@
-import type { Goal } from "interfaces";
+import type { Goal, Progress } from "interfaces";
 import type { Database } from "../database";
 
 class GoalRepository {
@@ -43,6 +43,12 @@ class GoalRepository {
   }
 
   async delete(id: string): Promise<void> {
+    // Must delete all related progress or else you have progress with a goal that doesn't exist
+    const filteredProgress = this.#database.db.data?.progress.filter(
+      (progress) => progress.goalId !== id
+    ) as Progress[];
+    this.#database.db.data!.progress = filteredProgress;
+
     const filteredGoals = this.#database.db.data?.goals.filter(
       (g) => g.id !== id
     ) as Goal[];
