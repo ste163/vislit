@@ -61,7 +61,7 @@ class ProgressController {
       // Not checking for goalId because dates can only exists on a single goal
       const response = this.#projectController.getById(projectId);
       if (response instanceof Error) throw response;
-      const progress = this.#progressRepository.getByDate(date);
+      const progress = this.#progressRepository.getByDate(projectId, date);
       if (progress) return this.#calculateCompletedStatus([progress])[0];
     } catch (e: any | Error) {
       console.error(e);
@@ -75,7 +75,11 @@ class ProgressController {
       const { projectId, year, month } = request;
       const response = this.#projectController.getById(projectId);
       if (response instanceof Error) throw response;
-      const progress = this.#progressRepository.getAllByYearMonth(year, month);
+      const progress = this.#progressRepository.getAllByYearMonth(
+        projectId,
+        year,
+        month
+      );
       if (progress) return this.#calculateCompletedStatus(progress);
     } catch (e: any | Error) {
       console.error(e);
@@ -104,6 +108,7 @@ class ProgressController {
         );
 
       const existingProgress = this.#progressRepository.getByDate(
+        progress.projectId,
         progress.date
       );
 
