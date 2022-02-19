@@ -114,6 +114,15 @@ describe("progress-controller-integration", () => {
         revised: false,
       },
       {
+        date: progressSeedDate1, // duplicate date for project's 1 and 2
+        projectId: "2",
+        goalId: "1",
+        count: 2,
+        edited: false,
+        proofread: false,
+        revised: false,
+      },
+      {
         date: progressSeedDate4,
         projectId: "2",
         goalId: "1",
@@ -235,7 +244,7 @@ describe("progress-controller-integration", () => {
 
   it("getByDate - returns completed progress if date found with goal count met only", () => {
     const request = {
-      projectId: "1",
+      projectId: "2",
       date: progressSeedDate4,
     };
 
@@ -253,7 +262,7 @@ describe("progress-controller-integration", () => {
 
   it("getByDate - returns completed progress if date found with proofread met only", () => {
     const request = {
-      projectId: "1",
+      projectId: "2",
       date: progressSeedDate5,
     };
 
@@ -271,7 +280,7 @@ describe("progress-controller-integration", () => {
 
   it("getByDate - returns completed progress if date found with edit met only", () => {
     const request = {
-      projectId: "1",
+      projectId: "2",
       date: progressSeedDate6,
     };
 
@@ -289,7 +298,7 @@ describe("progress-controller-integration", () => {
 
   it("getByDate - returns completed progress if date found with revised met only", () => {
     const request = {
-      projectId: "1",
+      projectId: "2",
       date: progressSeedDate7,
     };
 

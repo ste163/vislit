@@ -45,18 +45,27 @@ describe("progress-repository", () => {
         proofread: false,
         revised: true,
       },
+      {
+        date: seedDate2,
+        projectId: "2", // same date for 2 projects
+        goalId: "1",
+        count: 600,
+        edited: true,
+        proofread: false,
+        revised: true,
+      },
     ];
     database.db.data!.progress = seedProgress;
   });
 
   it("returns undefined if date not found", () => {
     expect(
-      progressRepository.getByDate(new Date("1999-01-01").toISOString())
+      progressRepository.getByDate("1", new Date("1999-01-01").toISOString())
     ).toBeUndefined();
   });
 
-  it("returns progress if date found", () => {
-    expect(progressRepository.getByDate(seedDate)).toEqual({
+  it("returns progress if projectId and date found", () => {
+    expect(progressRepository.getByDate("1", seedDate)).toEqual({
       date: seedDate,
       projectId: "1",
       goalId: "1",
@@ -68,11 +77,15 @@ describe("progress-repository", () => {
   });
 
   it("returns empty array if no progress by year or month exists", () => {
-    expect(progressRepository.getAllByYearMonth("1995", "01")).toHaveLength(0);
+    expect(
+      progressRepository.getAllByYearMonth("1", "1995", "01")
+    ).toHaveLength(0);
   });
 
-  it("returns all progress by year and month", () => {
-    expect(progressRepository.getAllByYearMonth("2020", "01")).toHaveLength(2);
+  it("returns all progress by projectId, year, and month", () => {
+    expect(
+      progressRepository.getAllByYearMonth("1", "2020", "01")
+    ).toHaveLength(2);
   });
 
   it("returns added progress", async () => {
@@ -112,7 +125,7 @@ describe("progress-repository", () => {
 
   it("returns void after deleting progress", async () => {
     const originalCount = database.db.data.progress.length;
-    await progressRepository.delete(seedDate3);
+    await progressRepository.delete("1", seedDate3);
     const postCount = database.db.data.progress.length;
     expect(originalCount - 1).toEqual(postCount);
     database.db.data.progress.forEach((progress) => {
