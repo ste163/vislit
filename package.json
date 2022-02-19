@@ -23,9 +23,9 @@
     "watch": "node scripts/watch.js",
     "lint": "eslint . --ext js,ts,vue --fix",
     "format": "prettier --write './packages/*/src/**'",
-    "typecheck-main": "tsc --noEmit -p packages/main/tsconfig.json",
-    "typecheck-preload": "tsc --noEmit -p packages/preload/tsconfig.json",
-    "typecheck-renderer": "vue-tsc --noEmit -p packages/renderer/tsconfig.json",
+    "typecheck:main": "tsc --noEmit -p packages/main/tsconfig.json",
+    "typecheck:preload": "tsc --noEmit -p packages/preload/tsconfig.json",
+    "typecheck:renderer": "vue-tsc --noEmit -p packages/renderer/tsconfig.json",
     "typecheck": "npm run typecheck:main && npm run typecheck:preload && npm run typecheck:renderer"
   },
   "simple-git-hooks": {
