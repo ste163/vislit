@@ -60,8 +60,8 @@ describe("goal-controller", () => {
       active: true,
       completed: false,
     };
-    database.db.data!.projects = seedProjects;
-    database.db.data?.goals.push(seedGoal);
+    database.db.data.projects = seedProjects;
+    database.db.data.goals.push(seedGoal);
     projectRepository = new ProjectRepository(database);
     const mockSearchController = jest.fn() as unknown as SearchController;
     const mockFileSystemController =

@@ -162,7 +162,7 @@ describe("goal-repository", () => {
       revisedCountsTowardsGoal: true,
     };
     await goalRepository.add(goalToAdd);
-    expect(database.db.data?.goals.length).toEqual(3);
+    expect(database.db.data.goals.length).toEqual(3);
   });
 
   it("returns updated goal after successful update", async () => {
