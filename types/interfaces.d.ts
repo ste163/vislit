@@ -21,15 +21,14 @@ declare module "interfaces" {
   interface Goal {
     id?: string;
     projectId: string;
-    basedOnWordCountOrPageCount: "word" | "page";
-    wordOrPageCount: number;
-    frequencyToRepeat: "daily" | "weekly" | "monthly";
-    daysPerFrequency?: number;
+    wordCount: number;
+    isDaily: boolean;
+    daysPerMonth: number | null;
     proofreadCountsTowardGoal: boolean;
     editCountsTowardGoal: boolean;
     revisedCountsTowardsGoal: boolean;
-    active?: boolean; // only one goal can be active at a time
-    completed?: boolean;
+    active: boolean; // only one goal can be active at a time
+    completed: boolean;
     dateCreated?: Date | string;
     dateModified?: Date | string;
   }

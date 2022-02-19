@@ -51,17 +51,17 @@ describe("goal-controller", () => {
     seedGoal = {
       id: "1",
       projectId: "1",
-      basedOnWordCountOrPageCount: "word",
-      wordOrPageCount: 500,
-      frequencyToRepeat: "daily",
+      wordCount: 500,
+      isDaily: false,
+      daysPerMonth: 14,
       proofreadCountsTowardGoal: true,
       editCountsTowardGoal: true,
       revisedCountsTowardsGoal: true,
       active: true,
       completed: false,
     };
-    database.db.data.projects = seedProjects;
-    database.db.data.goals.push(seedGoal);
+    database.db.data!.projects = seedProjects;
+    database.db.data!.goals.push(seedGoal);
     projectRepository = new ProjectRepository(database);
     const mockSearchController = jest.fn() as unknown as SearchController;
     const mockFileSystemController =
@@ -85,15 +85,15 @@ describe("goal-controller", () => {
       revisedCountsTowardsGoal: true,
     };
 
-    expect(await goalController.add(goal as Goal)).toBeInstanceOf(ZodError);
+    expect(await goalController.add(goal as any)).toBeInstanceOf(ZodError);
   });
 
   it("returns error if adding project by projectId not in database", async () => {
-    const goal: Goal = {
+    const goal = {
       projectId: "999",
-      basedOnWordCountOrPageCount: "word",
-      wordOrPageCount: 500,
-      frequencyToRepeat: "daily",
+      wordCount: 500,
+      isDaily: true,
+      daysPerMonth: null,
       proofreadCountsTowardGoal: true,
       editCountsTowardGoal: true,
       revisedCountsTowardsGoal: true,
@@ -105,11 +105,11 @@ describe("goal-controller", () => {
   });
 
   it("returns error if adding a goal to a project with an already active goal", async () => {
-    const goal: Goal = {
+    const goal = {
       projectId: "1",
-      basedOnWordCountOrPageCount: "word",
-      wordOrPageCount: 500,
-      frequencyToRepeat: "daily",
+      wordCount: 250,
+      isDaily: false,
+      daysPerMonth: 7,
       proofreadCountsTowardGoal: true,
       editCountsTowardGoal: true,
       revisedCountsTowardsGoal: true,
@@ -119,37 +119,12 @@ describe("goal-controller", () => {
     );
   });
 
-  it("returns error if adding goal fails", async () => {
-    const goal: Goal = {
-      projectId: "1",
-      basedOnWordCountOrPageCount: "word",
-      wordOrPageCount: 500,
-      frequencyToRepeat: "daily",
-      proofreadCountsTowardGoal: true,
-      editCountsTowardGoal: true,
-      revisedCountsTowardsGoal: true,
-    };
-    const mockGoalRepository = {
-      getActive: jest.fn(() => undefined),
-      add: jest.fn(() => {
-        throw new Error();
-      }),
-    } as unknown as GoalRepository;
-
-    const goalController = new GoalController(
-      mockGoalRepository,
-      projectController
-    );
-
-    expect(await goalController.add(goal)).toEqual(new Error());
-  });
-
   it("returns added project", async () => {
-    const goal: Goal = {
+    const goal = {
       projectId: "2",
-      basedOnWordCountOrPageCount: "word",
-      wordOrPageCount: 500,
-      frequencyToRepeat: "daily",
+      wordCount: 250,
+      isDaily: false,
+      daysPerMonth: 7,
       proofreadCountsTowardGoal: true,
       editCountsTowardGoal: true,
       revisedCountsTowardsGoal: true,
@@ -220,7 +195,6 @@ describe("goal-controller", () => {
       await goalController.update({
         id: "2",
         projectId: "1",
-        basedOnWordCountOrPageCount: "page",
         wordOrPageCount: 2,
         frequencyToRepeat: "daily",
         proofreadCountsTowardGoal: true,
@@ -228,7 +202,7 @@ describe("goal-controller", () => {
         revisedCountsTowardsGoal: true,
         active: true,
         completed: true,
-      })
+      } as any)
     ).toBeInstanceOf(ZodError);
   });
 
@@ -237,9 +211,9 @@ describe("goal-controller", () => {
       await goalController.update({
         id: "2",
         projectId: "1",
-        basedOnWordCountOrPageCount: "page",
-        wordOrPageCount: 2,
-        frequencyToRepeat: "daily",
+        wordCount: 250,
+        isDaily: false,
+        daysPerMonth: 7,
         proofreadCountsTowardGoal: true,
         editCountsTowardGoal: true,
         revisedCountsTowardsGoal: true,
@@ -253,9 +227,9 @@ describe("goal-controller", () => {
     const goal: Goal = {
       id: "999",
       projectId: "1",
-      basedOnWordCountOrPageCount: "word",
-      wordOrPageCount: 500,
-      frequencyToRepeat: "daily",
+      wordCount: 250,
+      isDaily: false,
+      daysPerMonth: 7,
       proofreadCountsTowardGoal: true,
       editCountsTowardGoal: true,
       revisedCountsTowardsGoal: true,
@@ -282,9 +256,9 @@ describe("goal-controller", () => {
     const goal: Goal = {
       id: "1",
       projectId: "1",
-      basedOnWordCountOrPageCount: "word",
-      wordOrPageCount: 500,
-      frequencyToRepeat: "daily",
+      wordCount: 250,
+      isDaily: false,
+      daysPerMonth: 7,
       proofreadCountsTowardGoal: true,
       editCountsTowardGoal: true,
       revisedCountsTowardsGoal: true,
@@ -317,9 +291,9 @@ describe("goal-controller", () => {
     const goal: Goal = {
       id: "1",
       projectId: "1",
-      basedOnWordCountOrPageCount: "page",
-      wordOrPageCount: 2,
-      frequencyToRepeat: "daily",
+      wordCount: 150,
+      isDaily: false,
+      daysPerMonth: 7,
       proofreadCountsTowardGoal: true,
       editCountsTowardGoal: true,
       revisedCountsTowardsGoal: true,
@@ -331,7 +305,7 @@ describe("goal-controller", () => {
       goal as updateGoalRequest
     )) as Goal;
     expect(response.active).toBe(true);
-    expect(response.basedOnWordCountOrPageCount).toBe("page");
+    expect(response.wordCount).toBe(150);
 
     const goalsAfterFirstUpdate = [...database.db.data!.goals];
     expect(goalsAfterFirstUpdate.length).toBe(2);
@@ -339,9 +313,9 @@ describe("goal-controller", () => {
     const originalGoal = goalsAfterFirstUpdate[0];
     const updatedGoal = goalsAfterFirstUpdate[1]; // updated goal is always last because it's pushed to end of array
     expect(originalGoal.active).toBe(false);
-    expect(originalGoal.basedOnWordCountOrPageCount).toBe("word");
+    expect(originalGoal.wordCount).toBe(500);
     expect(updatedGoal.active).toBe(true);
-    expect(updatedGoal.basedOnWordCountOrPageCount).toBe("page");
+    expect(updatedGoal.wordCount).toBe(150);
   });
 
   it("returns error if trying to delete with id that doesn't match schema", async () => {

@@ -8,7 +8,6 @@ import { toFormValidator } from "@vee-validate/zod";
 import { z } from "zod";
 import InputText from "./input-text.vue";
 import ButtonSubmit from "./button-submit.vue";
-import InputSelect from "./input-select.vue";
 import InputCheckBox from "./input-check-box.vue";
 
 const store = inject("store") as Store;
@@ -19,9 +18,9 @@ const props = defineProps({
     required: false,
     default: {
       projectId: "",
-      basedOnWordCountOrPageCount: "",
-      wordOrPageCount: "",
-      frequencyToRepeat: "",
+      isDaily: false,
+      daysPerMonth: "",
+      wordCount: "",
     } as unknown as Goal,
   },
 });
@@ -38,14 +37,13 @@ const computedActiveGoal = computed(() =>
 
 const validationSchema = toFormValidator(
   z.object({
-    basedOnWordCountOrPageCount: z.string().nonempty("Required."),
-    frequencyToRepeat: z.string().nonempty("Required.").or(z.number()),
-    daysPerFrequency: z
+    isDaily: z.boolean().optional(),
+    daysPerMonth: z
       .string()
       .regex(/^([^-])[0-9]*$/)
       .optional()
       .or(z.number()),
-    wordOrPageCount: z
+    wordCount: z
       .string({
         required_error: "Required",
       })
@@ -58,17 +56,17 @@ const validationSchema = toFormValidator(
 );
 
 const initialFormValues = {
-  basedOnWordCountOrPageCount: props.activeGoal.basedOnWordCountOrPageCount,
-  frequencyToRepeat: props.activeGoal.frequencyToRepeat,
-  wordOrPageCount: props.activeGoal.wordOrPageCount,
+  daysPerMonth: props.activeGoal.daysPerMonth,
+  isDaily: props.activeGoal.isDaily,
+  wordCount: props.activeGoal.wordCount,
   edited: props.activeGoal.editCountsTowardGoal,
   proofread: props.activeGoal.proofreadCountsTowardGoal,
   revised: props.activeGoal.revisedCountsTowardsGoal,
 };
 
-if (computedActiveGoal.value && "daysPerFrequency" in props.activeGoal) {
-  (initialFormValues as any).daysPerFrequency =
-    computedActiveGoal.value.daysPerFrequency;
+if (computedActiveGoal.value && "daysPerMonth" in props.activeGoal) {
+  (initialFormValues as any).daysPerMonth =
+    computedActiveGoal.value.daysPerMonth;
 }
 
 const { handleSubmit, meta, values } = useForm({
@@ -79,23 +77,17 @@ const { handleSubmit, meta, values } = useForm({
 const onSubmit = handleSubmit(async (values, { resetForm }) => {
   const newGoal: Goal = {
     projectId: store.state.activeProject!.id!,
-    basedOnWordCountOrPageCount: values.basedOnWordCountOrPageCount as
-      | "word"
-      | "page",
-    wordOrPageCount: parseInt(values.wordOrPageCount as unknown as string), // casting because Goal has number but form forces it to a string
-    frequencyToRepeat: values.frequencyToRepeat as
-      | "daily"
-      | "weekly"
-      | "monthly",
+    isDaily: values.isDaily,
+    wordCount: parseInt(values.wordCount as unknown as string), // casting because Goal has number but form forces it to a string
     proofreadCountsTowardGoal: values.proofread,
     editCountsTowardGoal: values.edited,
     revisedCountsTowardsGoal: values.revised,
-  };
+  } as any as Goal;
 
-  // daysPerFrequency only exists for non-daily goals
-  // must use any type as daysPerFrequency can't have an initial form value
-  if ((values as any).daysPerFrequency)
-    newGoal.daysPerFrequency = parseInt((values as any).daysPerFrequency);
+  // daysPerMonth only exists for non-daily goals
+  // must use any type as daysPerMonth can't have an initial form value
+  if ((values as any).daysPerMonth)
+    newGoal.daysPerMonth = parseInt((values as any).daysPerMonth);
 
   if (computedActiveGoal.value) {
     newGoal.id = computedActiveGoal.value.id;
@@ -119,68 +111,24 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
     console.error(error.message);
   }
 });
-
-const frequencyLabel = computed(() =>
-  values.frequencyToRepeat === "weekly" ? "week" : "month"
-);
-
-const wordOrPageLabel = computed(() =>
-  values.basedOnWordCountOrPageCount === "word" ? "Word" : "Page"
-);
-
-const pageOrWordCountLabel = computed(() =>
-  values.frequencyToRepeat !== "daily"
-    ? `${wordOrPageLabel.value} count for each day in ${frequencyLabel.value}`
-    : `${wordOrPageLabel.value} count per day`
-);
-
-const frequencyMax = computed(() =>
-  values.frequencyToRepeat === "weekly" ? "6" : "31"
-);
 </script>
 
 <template>
   <form class="form" @submit.prevent="onSubmit">
-    <input-select
-      :values="[
-        { id: 'word', value: 'Word' },
-        { id: 'page', value: 'Page' },
-      ]"
-      :is-editable="false"
-      :name="'basedOnWordCountOrPageCount'"
-      :label="'Based on word count or page count'"
-    />
-
-    <input-select
-      :values="[
-        { id: 'daily', value: 'Daily' },
-        { id: 'weekly', value: 'Weekly' },
-        { id: 'monthly', value: 'Monthly' },
-      ]"
-      :is-editable="false"
-      :name="'frequencyToRepeat'"
-      :label="'Time frame'"
-    />
+    <!-- Check box for isDaily -->
 
     <input-text
-      v-if="
-        values.frequencyToRepeat !== 'daily' && values.frequencyToRepeat as any !== ''
-      "
-      name="daysPerFrequency"
-      :label="`Days to repeat per  ${frequencyLabel}`"
+      name="daysPerMonth"
+      :label="'Days to repeat per month'"
       type="number"
-      :max="frequencyMax"
+      max="31"
       min="1"
       :background-color="'var(--lightGray)'"
     />
 
     <input-text
-      v-if="
-        values.basedOnWordCountOrPageCount as any !== '' &&
-        values.frequencyToRepeat as any !== ''
-      "
-      name="wordOrPageCount"
-      :label="pageOrWordCountLabel"
+      name="wordCount"
+      :label="'Word Count'"
       type="number"
       max="999999999"
       min="1"

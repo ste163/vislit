@@ -76,10 +76,9 @@ export type readNoteByIdRequest = z.infer<typeof readNoteByIdRequestSchema>;
 export const addGoalRequestSchema = z
   .object({
     projectId: idRequestSchema,
-    basedOnWordCountOrPageCount: z.string(),
-    frequencyToRepeat: z.string(),
-    wordOrPageCount: z.number(),
-    daysPerFrequency: z.number().optional(),
+    wordCount: z.number(),
+    isDaily: z.boolean(),
+    daysPerMonth: z.number().nullable(),
     proofreadCountsTowardGoal: z.boolean().optional(),
     editCountsTowardGoal: z.boolean().optional(),
     revisedCountsTowardsGoal: z.boolean().optional(),
@@ -92,10 +91,9 @@ export const updateGoalRequestSchema = z
   .object({
     id: idRequestSchema,
     projectId: idRequestSchema,
-    basedOnWordCountOrPageCount: z.string(),
-    frequencyToRepeat: z.string(),
-    wordOrPageCount: z.number(),
-    daysPerFrequency: z.number().optional(),
+    wordCount: z.number(),
+    isDaily: z.boolean(),
+    daysPerMonth: z.number().nullable(),
     proofreadCountsTowardGoal: z.boolean().optional(),
     editCountsTowardGoal: z.boolean().optional(),
     revisedCountsTowardsGoal: z.boolean().optional(),

@@ -42,9 +42,9 @@ describe("goal-repository", () => {
       {
         id: "1",
         projectId: "2",
-        basedOnWordCountOrPageCount: "word",
-        wordOrPageCount: 500,
-        frequencyToRepeat: "daily",
+        wordCount: 500,
+        isDaily: false,
+        daysPerMonth: 14,
         proofreadCountsTowardGoal: true,
         editCountsTowardGoal: true,
         revisedCountsTowardsGoal: true,
@@ -54,9 +54,9 @@ describe("goal-repository", () => {
       {
         id: "2",
         projectId: "2",
-        basedOnWordCountOrPageCount: "page",
-        wordOrPageCount: 1,
-        frequencyToRepeat: "daily",
+        wordCount: 1,
+        isDaily: true,
+        daysPerMonth: null,
         proofreadCountsTowardGoal: false,
         editCountsTowardGoal: true,
         revisedCountsTowardsGoal: true,
@@ -66,7 +66,7 @@ describe("goal-repository", () => {
     ];
     seedProgress = [
       {
-        date: new Date(),
+        date: new Date().toISOString(),
         projectId: "1",
         goalId: "1",
         count: 250,
@@ -75,7 +75,7 @@ describe("goal-repository", () => {
         revised: false,
       },
       {
-        date: new Date(),
+        date: new Date().toISOString(),
         projectId: "1",
         goalId: "1",
         count: 500,
@@ -84,7 +84,7 @@ describe("goal-repository", () => {
         revised: false,
       },
       {
-        date: new Date(),
+        date: new Date().toISOString(),
         projectId: "1",
         goalId: "2",
         count: 300,
@@ -94,9 +94,9 @@ describe("goal-repository", () => {
       },
     ];
     database = new Database(initDb);
-    database.db.data.projects = seedProjects;
-    database.db.data.goals = seedGoals;
-    database.db.data.progress = seedProgress;
+    database.db.data!.projects = seedProjects;
+    database.db.data!.goals = seedGoals;
+    database.db.data!.progress = seedProgress;
     goalRepository = new GoalRepository(database);
   });
 
@@ -108,9 +108,9 @@ describe("goal-repository", () => {
     expect(goalRepository.getById("1")).toEqual({
       id: "1",
       projectId: "2",
-      basedOnWordCountOrPageCount: "word",
-      wordOrPageCount: 500,
-      frequencyToRepeat: "daily",
+      wordCount: 500,
+      isDaily: false,
+      daysPerMonth: 14,
       proofreadCountsTowardGoal: true,
       editCountsTowardGoal: true,
       revisedCountsTowardsGoal: true,
@@ -140,9 +140,9 @@ describe("goal-repository", () => {
     expect(goal).toEqual({
       id: "2",
       projectId: "2",
-      basedOnWordCountOrPageCount: "page",
-      wordOrPageCount: 1,
-      frequencyToRepeat: "daily",
+      wordCount: 1,
+      isDaily: true,
+      daysPerMonth: null,
       proofreadCountsTowardGoal: false,
       editCountsTowardGoal: true,
       revisedCountsTowardsGoal: true,
@@ -154,34 +154,34 @@ describe("goal-repository", () => {
   it("returns goal after successful add", async () => {
     const goalToAdd: Goal = {
       projectId: "1",
-      basedOnWordCountOrPageCount: "word",
-      wordOrPageCount: 250,
-      frequencyToRepeat: "daily",
+      isDaily: true,
+      daysPerMonth: null,
+      wordCount: 250,
       proofreadCountsTowardGoal: true,
       editCountsTowardGoal: true,
       revisedCountsTowardsGoal: true,
+      completed: false,
+      active: true,
     };
     await goalRepository.add(goalToAdd);
-    expect(database.db.data.goals.length).toEqual(3);
+    expect(database.db.data!.goals.length).toEqual(3);
   });
 
   it("returns updated goal after successful update", async () => {
     const goal = goalRepository.getById("1");
     if (goal) {
-      goal.basedOnWordCountOrPageCount = "page";
-      goal.wordOrPageCount = 5;
+      goal.wordCount = 5;
       const updatedGoal = await goalRepository.update(goal);
-      expect(updatedGoal.basedOnWordCountOrPageCount).toBe("page");
-      expect(updatedGoal.wordOrPageCount).toBe(5);
+      expect(updatedGoal.wordCount).toBe(5);
       expect(updatedGoal.id).toEqual(goal.id);
     }
   });
 
   it("returns void if goal deleted and progress deleted", async () => {
-    const initialGoalCount = database.db.data.goals.length;
+    const initialGoalCount = database.db.data!.goals.length;
     await goalRepository.delete("1");
-    const postDeleteGoalCount = database.db.data.goals.length;
-    const postDeleteProgressCount = database.db.data.progress.length;
+    const postDeleteGoalCount = database.db.data!.goals.length;
+    const postDeleteProgressCount = database.db.data!.progress.length;
     expect(postDeleteGoalCount).toEqual(initialGoalCount - 1);
     expect(postDeleteProgressCount).toEqual(1);
   });

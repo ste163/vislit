@@ -211,9 +211,9 @@ watch(() => store.state.activeGoal, fetchTodaysProgress);
       <template #header> Goal </template>
       <p v-if="store.state.activeGoal">
         Currently active goal: write
-        {{ store.state.activeGoal.wordOrPageCount }}
-        {{ store.state.activeGoal.basedOnWordCountOrPageCount }}
-        {{ store.state.activeGoal.frequencyToRepeat }}
+        {{ store.state.activeGoal.wordCount }} words
+        <!-- But if its isDaily, then every day per month, calculated by length of days in month -->
+        {{ store.state.activeGoal.daysPerMonth }} days per month
       </p>
       <p v-else>
         No active goal. Add a new goal to continue tracking progress.

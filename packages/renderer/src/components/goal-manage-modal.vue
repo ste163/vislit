@@ -55,10 +55,8 @@ async function onCompleteClick(goalId: string): Promise<void> {
     <template #header>Manage Goals</template>
     <div v-if="store.state.activeGoal">
       <h2>Active goal</h2>
-      {{ store.state.activeGoal.wordOrPageCount }}
-      {{ store.state.activeGoal.basedOnWordCountOrPageCount }},
-      {{ store.state.activeGoal.daysPerFrequency }} days per
-      {{ store.state.activeGoal.frequencyToRepeat }}.
+      {{ store.state.activeGoal.wordCount }} words,
+      {{ store.state.activeGoal.daysPerMonth }} days per month.
       <button @click="isFormActive = !isFormActive">Edit Active Goal</button>
       <button @click="onCompleteClick(store.state.activeGoal?.id as string)">
         Set Goal as Completed
@@ -83,9 +81,7 @@ async function onCompleteClick(goalId: string): Promise<void> {
     Count of old goals: {{ previousGoals?.length }}
     <div v-for="goal in previousGoals" :key="goal.id">
       {{ goal?.dateModified }}
-      {{ goal?.wordOrPageCount }}
-      {{ goal?.basedOnWordCountOrPageCount }}, {{ goal?.daysPerFrequency }} days
-      per {{ goal?.frequencyToRepeat }}.
+      {{ goal?.wordCount }} words, {{ goal?.daysPerMonth }} days per month
       <button @click="onDeleteClick(goal.id as string)">Delete Goal</button>
     </div>
   </base-modal>
