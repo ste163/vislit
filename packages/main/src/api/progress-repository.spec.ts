@@ -19,7 +19,7 @@ describe("progress-repository", () => {
     const initDb = await initializeDatabase(app);
     database = new Database(initDb);
     progressRepository = new ProgressRepository(database);
-    const seedProgress: Progress[] = [
+    database.db.data!.progress = [
       {
         date: seedDate,
         projectId: "1",
@@ -57,16 +57,15 @@ describe("progress-repository", () => {
         revised: true,
       },
     ];
-    database.db.data!.progress = seedProgress;
   });
 
-  it("returns undefined if date not found", () => {
+  it("getByDate - returns undefined if date not found", () => {
     expect(
       progressRepository.getByDate("1", new Date("1999-01-01").toISOString())
     ).toBeUndefined();
   });
 
-  it("returns progress if projectId and date found", () => {
+  it("getByDate - returns progress if projectId and date found", () => {
     expect(progressRepository.getByDate("1", seedDate)).toEqual({
       date: seedDate,
       projectId: "1",
@@ -78,19 +77,19 @@ describe("progress-repository", () => {
     });
   });
 
-  it("returns empty array if no progress by year or month exists", () => {
+  it("getAllByYearMonth - returns empty array if no progress by year or month exists", () => {
     expect(
       progressRepository.getAllByYearMonth("1", "1995", "01")
     ).toHaveLength(0);
   });
 
-  it("returns all progress by projectId, year, and month", () => {
+  it("getAllByYearMonth - returns all progress by projectId, year, and month", () => {
     expect(
       progressRepository.getAllByYearMonth("1", "2020", "01")
     ).toHaveLength(2);
   });
 
-  it("returns added progress", async () => {
+  it("add - returns added progress", async () => {
     const seedDate4 = new Date("2020-01-16").toISOString();
     const newProgress: Progress = {
       date: seedDate4,
@@ -108,7 +107,7 @@ describe("progress-repository", () => {
     expect(addedProgress).toEqual(newProgress);
   });
 
-  it("returns updated progress", async () => {
+  it("update - returns updated progress", async () => {
     const progressToUpdate: Progress = {
       date: seedDate2,
       projectId: "1",
@@ -125,10 +124,11 @@ describe("progress-repository", () => {
     expect(updatedProgress).toEqual(progressToUpdate);
   });
 
-  it("returns void after deleting progress", async () => {
+  it("delete - returns true after deleting progress", async () => {
     const originalCount = database.db.data!.progress.length;
-    await progressRepository.delete("1", seedDate3);
+    const response = await progressRepository.delete("1", seedDate3);
     const postCount = database.db.data!.progress.length;
+    expect(response).toBe(true);
     expect(originalCount - 1).toEqual(postCount);
     database.db.data!.progress.forEach((progress) => {
       expect(progress.date).not.toEqual(seedDate3);

@@ -7,7 +7,6 @@ import { SearchController, initializeSearchIndexes } from "./search-controller";
 import type { searchRequest } from "../schemas";
 
 // Only testing endpoints that frontend has access to
-// TODO: Tests with successful schema
 describe("file-system-controller", () => {
   let searchController: SearchController;
 
@@ -25,15 +24,23 @@ describe("file-system-controller", () => {
     );
   });
 
-  it("searchProject - returns error if wrong schema passed in", () => {
+  it("searchProject - returns error if wrong schema", () => {
     expect(
       searchController.searchProjects({ query: "test" } as any as searchRequest)
     ).toEqual(new Error("Request does not match schema"));
   });
 
-  it("searchNotes - returns error if wrong schema passed in", () => {
+  it("searchProject - calls search with correct schema", () => {
+    expect(searchController.searchProjects("test")).toEqual([]);
+  });
+
+  it("searchNotes - returns error if wrong schema", () => {
     expect(
       searchController.searchNotes({ query: "test" } as any as searchRequest)
     ).toEqual(new Error("Request does not match schema"));
+  });
+
+  it("searchNotes - calls search with correct schema", () => {
+    expect(searchController.searchNotes("test")).toEqual([]);
   });
 });

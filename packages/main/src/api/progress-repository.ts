@@ -57,7 +57,7 @@ class ProgressRepository {
   async delete(projectId: string, date: string): Promise<true> {
     this.database.db.data!.progress = this.#filterOutByDate(projectId, date);
     await this.database.db.write();
-    return true;
+    return true; // only repo that needs to return true as controller returns from a ternary
   }
 }
 

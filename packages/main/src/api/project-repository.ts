@@ -62,16 +62,12 @@ class ProjectRepository {
   }
 
   async add(project: Project): Promise<Project> {
-    if (this.database.db.data !== null) {
-      this.database.db.data.projects.push(
-        this.database.generateUniqueId(project)
-      );
-      await this.database.db.write();
-      const addedProject = this.getByTitle(project.title) as Project;
-      return addedProject;
-    } else {
-      throw Error("Db data was null");
-    }
+    this.database.db.data!.projects.push(
+      this.database.generateUniqueId(project)
+    );
+    await this.database.db.write();
+    const addedProject = this.getByTitle(project.title) as Project;
+    return addedProject;
   }
 
   async update(project: Project): Promise<Project> {

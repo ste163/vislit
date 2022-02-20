@@ -6,13 +6,11 @@ import { Database, initializeDatabase } from "../database";
 import { SearchController, initializeSearchIndexes } from "./search-controller";
 import NoteRepository from "./note-repository";
 import NoteController from "./note-controller";
-import type { Project, Note } from "interfaces";
+import type { Note } from "interfaces";
 import type FileSystemController from "./file-system-controller";
 import type { updateNoteRequest } from "../schemas";
 
-describe("project-controller-integration", () => {
-  let seedProjects: Project[];
-  let seedNotes: Note[];
+describe("project-controller", () => {
   let database: Database;
   let noteRepository: NoteRepository;
   let searchController: SearchController;
@@ -25,7 +23,7 @@ describe("project-controller-integration", () => {
     const { app } = await vi.importMock("electron");
     const initDb = await initializeDatabase(app);
     database = new Database(initDb);
-    seedProjects = [
+    database.db.data!.projects = [
       {
         id: "1",
         title: "It",
@@ -47,7 +45,7 @@ describe("project-controller-integration", () => {
         dateModified: seedDate,
       },
     ];
-    seedNotes = [
+    database.db.data!.notes = [
       {
         id: "1",
         projectId: "1",
@@ -63,9 +61,6 @@ describe("project-controller-integration", () => {
         dateModified: seedDate,
       },
     ];
-
-    database.db.data!.projects = seedProjects;
-    database.db.data!.notes = seedNotes;
     noteRepository = new NoteRepository(database);
     const { projectSearchIndex, noteSearchIndex } =
       await initializeSearchIndexes(database);
@@ -84,33 +79,48 @@ describe("project-controller-integration", () => {
     );
   });
 
-  it("returns error if trying to get all notes with projectId that doesn't match schema", () => {
+  it("getAllByProjectId - returns error if incorrect schema", () => {
     expect(noteController.getAllByProjectId(123 as any as string)).toEqual(
       new Error("Request does not match schema")
     );
   });
 
-  it("returns empty array if no notes found for that projectId", () => {
+  it("getAllByProjectId - returns empty array if no notes found for that projectId", () => {
     expect(noteController.getAllByProjectId("999")).toStrictEqual([]);
   });
 
-  it("returns notes by projectId", () => {
-    expect(noteController.getAllByProjectId("1")).toEqual(seedNotes);
+  it("getAllByProjectId - returns notes by projectId", () => {
+    expect(noteController.getAllByProjectId("1")).toEqual([
+      {
+        id: "1",
+        projectId: "1",
+        title: "First Note",
+        dateCreated: seedDate,
+        dateModified: seedDate,
+      },
+      {
+        id: "2",
+        projectId: "1",
+        title: "Second Note",
+        dateCreated: seedDate,
+        dateModified: seedDate,
+      },
+    ]);
   });
 
-  it("returns error if trying to get note with id that doesn't match schema", async () => {
+  it("getById - returns error if incorrect schema", async () => {
     expect(await noteController.getById(123 as any as string)).toEqual(
       new Error("Request does not match schema")
     );
   });
 
-  it("returns error if note by id not in database", async () => {
+  it("getById - returns error if note by id not in database", async () => {
     expect(await noteController.getById("999")).toEqual(
       new Error("Note with id 999 not in database")
     );
   });
 
-  it("returns note by id", async () => {
+  it("getById - returns note by id", async () => {
     expect(await noteController.getById("2")).toEqual({
       id: "2",
       projectId: "1",
@@ -121,7 +131,7 @@ describe("project-controller-integration", () => {
     });
   });
 
-  it("returns error if trying to add note that doesn't match schema", async () => {
+  it("add - returns error if incorrect schema", async () => {
     expect(
       await noteController.add({
         title: 342 as any as string,
@@ -130,7 +140,7 @@ describe("project-controller-integration", () => {
     ).toEqual(new Error("Request does not match schema"));
   });
 
-  it("returns error if trying to add note with a title and projectId already in database", async () => {
+  it("add - returns error if trying to add note with a title and projectId already in database", async () => {
     const note: Note = {
       projectId: "1",
       title: "First Note",
@@ -141,7 +151,7 @@ describe("project-controller-integration", () => {
     );
   });
 
-  it("returns note and is searchable after adding", async () => {
+  it("add - returns note and is searchable after adding", async () => {
     const note: Note = {
       projectId: "1",
       title: "  Newest Note   ",
@@ -158,7 +168,7 @@ describe("project-controller-integration", () => {
     expect(searchResult[0].title).toBe("Newest Note");
   });
 
-  it("returns error if trying to update note that does not match schema", async () => {
+  it("update - returns error if incorrect schema", async () => {
     const note = {
       id: "999",
       projectId: "1",
@@ -171,7 +181,7 @@ describe("project-controller-integration", () => {
     );
   });
 
-  it("returns error if trying to update note by id not in db", async () => {
+  it("update - returns error if trying to update note by id not in db", async () => {
     const note: updateNoteRequest = {
       id: "999",
       projectId: "1",
@@ -183,7 +193,7 @@ describe("project-controller-integration", () => {
     );
   });
 
-  it("returns error if trying to update note with title already in db", async () => {
+  it("update - returns error if trying to update note with title already in db", async () => {
     const note: updateNoteRequest = {
       id: "2",
       projectId: "1",
@@ -195,7 +205,7 @@ describe("project-controller-integration", () => {
     );
   });
 
-  it("returns updated searchable note after update", async () => {
+  it("update - returns updated searchable note after update", async () => {
     const note: updateNoteRequest = {
       id: "2",
       projectId: "1",
@@ -212,19 +222,19 @@ describe("project-controller-integration", () => {
     expect(searchResult[0].title).toEqual("Updated Second Note");
   });
 
-  it("returns error if trying to delete with id that doesn't match schema", async () => {
+  it("delete - returns error if incorrect schema", async () => {
     expect(await noteController.delete(123 as any as string)).toEqual(
       new Error("Request does not match schema")
     );
   });
 
-  it("returns error if trying to delete note by id not in database", async () => {
+  it("delete - returns error if trying to delete note by id not in database", async () => {
     expect(await noteController.delete("999")).toEqual(
       new Error("Note with id 999 not in database")
     );
   });
 
-  it("returns true and note no longer searchable after delete", async () => {
+  it("delete - returns true and note no longer searchable after delete", async () => {
     const response = await noteController.delete("2");
     const searchResult = searchController.searchNotes("second");
 

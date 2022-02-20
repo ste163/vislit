@@ -2,14 +2,11 @@
  * @vitest-environment node
  */
 import { describe, beforeEach, it, expect, vi } from "vitest";
-import type { Goal, Project, Progress } from "interfaces";
+import type { Goal } from "interfaces";
 import { Database, initializeDatabase } from "../database";
 import GoalRepository from "./goal-repository";
 
 describe("goal-repository", () => {
-  let seedProjects: Project[];
-  let seedGoals: Goal[];
-  let seedProgress: Progress[];
   let database: Database;
   let goalRepository: GoalRepository;
 
@@ -18,7 +15,9 @@ describe("goal-repository", () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     const { app } = await vi.importMock("electron");
     const initDb = await initializeDatabase(app);
-    seedProjects = [
+
+    database = new Database(initDb);
+    database.db.data!.projects = [
       {
         id: "1",
         title: "It",
@@ -40,7 +39,7 @@ describe("goal-repository", () => {
         dateModified: new Date(),
       },
     ];
-    seedGoals = [
+    database.db.data!.goals = [
       {
         id: "1",
         projectId: "2",
@@ -66,7 +65,7 @@ describe("goal-repository", () => {
         completed: false,
       },
     ];
-    seedProgress = [
+    database.db.data!.progress = [
       {
         date: new Date().toISOString(),
         projectId: "1",
@@ -95,18 +94,14 @@ describe("goal-repository", () => {
         revised: true,
       },
     ];
-    database = new Database(initDb);
-    database.db.data!.projects = seedProjects;
-    database.db.data!.goals = seedGoals;
-    database.db.data!.progress = seedProgress;
     goalRepository = new GoalRepository(database);
   });
 
-  it("returns undefined if no goal by id found", () => {
+  it("getById - returns undefined if no goal by id found", () => {
     expect(goalRepository.getById("999")).toBeUndefined();
   });
 
-  it("returns goal by id", () => {
+  it("getById - returns goal by id", () => {
     expect(goalRepository.getById("1")).toEqual({
       id: "1",
       projectId: "2",
@@ -121,23 +116,48 @@ describe("goal-repository", () => {
     });
   });
 
-  it("returns empty array if no goals by id found", () => {
+  it("getManyById - returns empty array if no goals by id found", () => {
     expect(goalRepository.getManyById(["998", "999"])).toStrictEqual([]);
   });
 
-  it("returns all goals found with those ids", () => {
-    expect(goalRepository.getManyById(["1", "2"])).toEqual(seedGoals);
+  it("getManyById - returns all goals found with those ids", () => {
+    expect(goalRepository.getManyById(["1", "2"])).toEqual([
+      {
+        id: "1",
+        projectId: "2",
+        wordCount: 500,
+        isDaily: false,
+        daysPerMonth: 14,
+        proofreadCountsTowardGoal: true,
+        editCountsTowardGoal: true,
+        revisedCountsTowardsGoal: true,
+        active: false,
+        completed: false,
+      },
+      {
+        id: "2",
+        projectId: "2",
+        wordCount: 1,
+        isDaily: true,
+        daysPerMonth: null,
+        proofreadCountsTowardGoal: false,
+        editCountsTowardGoal: true,
+        revisedCountsTowardsGoal: true,
+        active: true,
+        completed: false,
+      },
+    ]);
   });
 
-  it("returns undefined if no goals with that projectId", () => {
+  it("getActive - returns undefined if no goals with that projectId", () => {
     expect(goalRepository.getActive("999")).toEqual(undefined);
   });
 
-  it("returns undefined if projectId in database but no active goals", () => {
+  it("getActive - returns undefined if projectId in database but no active goals", () => {
     expect(goalRepository.getActive("1")).toEqual(undefined);
   });
 
-  it("returns active goal by projectId", () => {
+  it("getActive - returns active goal by projectId", () => {
     const goal = goalRepository.getActive("2");
     expect(goal).toEqual({
       id: "2",
@@ -153,7 +173,7 @@ describe("goal-repository", () => {
     });
   });
 
-  it("returns goal after successful add", async () => {
+  it("add - returns goal after successful add", async () => {
     const goalToAdd: Goal = {
       projectId: "1",
       isDaily: true,
@@ -169,7 +189,7 @@ describe("goal-repository", () => {
     expect(database.db.data!.goals.length).toEqual(3);
   });
 
-  it("returns updated goal after successful update", async () => {
+  it("update - returns updated goal after successful update", async () => {
     const goal = goalRepository.getById("1");
     if (goal) {
       goal.wordCount = 5;
@@ -179,7 +199,7 @@ describe("goal-repository", () => {
     }
   });
 
-  it("returns void if goal deleted and progress deleted", async () => {
+  it("delete - returns void if goal deleted and progress deleted", async () => {
     const initialGoalCount = database.db.data!.goals.length;
     await goalRepository.delete("1");
     const postDeleteGoalCount = database.db.data!.goals.length;

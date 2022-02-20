@@ -70,11 +70,11 @@ describe("note-repository", () => {
     ];
   });
 
-  it("returns empty array if no notes by projectId found", () => {
+  it("getAllByProjectId - returns empty array if no notes by projectId found", () => {
     expect(noteRepository.getAllByProjectId("999")).toStrictEqual([]);
   });
 
-  it("returns notes by projectId", () => {
+  it("getAllByProjectId - returns notes by projectId", () => {
     expect(noteRepository.getAllByProjectId("1")).toEqual([
       {
         id: "1",
@@ -93,11 +93,11 @@ describe("note-repository", () => {
     ]);
   });
 
-  it("returns undefined if no note by id found", () => {
+  it("getById - returns undefined if no note by id found", () => {
     expect(noteRepository.getById("999")).toBeUndefined();
   });
 
-  it("returns note by id", () => {
+  it("getById - returns note by id", () => {
     expect(noteRepository.getById("1")).toEqual({
       id: "1",
       projectId: "1",
@@ -107,11 +107,11 @@ describe("note-repository", () => {
     });
   });
 
-  it("returns undefined if no note by title found", () => {
+  it("getByTitle - returns undefined if no note by title found", () => {
     expect(noteRepository.getByTitle("Something Note", "1")).toBeUndefined();
   });
 
-  it("returns note by title", () => {
+  it("getByTitle - returns note by title", () => {
     expect(noteRepository.getByTitle("First Note", "1")).toEqual({
       id: "1",
       projectId: "1",
@@ -121,7 +121,7 @@ describe("note-repository", () => {
     });
   });
 
-  it("returns added note", async () => {
+  it("add - returns added note", async () => {
     // A real note by this point would have dateCreated & modified
     // but those will be set in controller
     const note: Note = {
@@ -138,7 +138,7 @@ describe("note-repository", () => {
     expect(originalCount + 1).toBe(newCount);
   });
 
-  it("returns updated note", async () => {
+  it("update - returns updated note", async () => {
     const note: Note = {
       id: "1",
       projectId: "1",
@@ -155,11 +155,10 @@ describe("note-repository", () => {
     expect(updatedNote.title).toEqual("First Note that's Updated");
   });
 
-  it("returns void after deleting", async () => {
+  it("delete - returns void after deleting", async () => {
     const originalCount = database.db.data!.notes.length;
     await noteRepository.delete("2");
     const newCount = database.db.data!.notes.length;
-
     expect(originalCount - 1).toEqual(newCount);
   });
 });
