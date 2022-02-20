@@ -1,7 +1,7 @@
 /**
- * @jest-environment node
+ * @vitest-environment node
  */
-import fs from "fs/promises";
+import { describe, beforeEach, it, expect, vi } from "vitest";
 import FileSystemController from "./file-system-controller";
 import { ZodError } from "zod";
 import type { htmlWriteRequest } from "../schemas";
@@ -9,15 +9,18 @@ import type { htmlWriteRequest } from "../schemas";
 describe("file-system-controller", () => {
   let fileSystemController: FileSystemController;
 
-  beforeAll(() => {
-    jest.spyOn(console, "error").mockImplementation(() => {});
-    jest.spyOn(fs, "mkdir").mockImplementation(async () => undefined);
-    jest.spyOn(fs, "rm").mockImplementation(async () => undefined);
-    jest.spyOn(fs, "writeFile").mockImplementation(async () => undefined);
-    jest.spyOn(fs, "readFile").mockImplementation(async () => "/file.html");
-    jest
-      .spyOn(fs, "readdir")
-      .mockImplementation(() => ["file1", "file2"] as any);
+  beforeEach(() => {
+    vi.mock("fs/promises", () => {
+      return {
+        mkdir: vi.fn(),
+        rm: vi.fn(),
+        writeFile: vi.fn(),
+        readFile: vi.fn(() => "/file.html"),
+        readdir: vi.fn(() => ["file1", "file2"]),
+      };
+    });
+
+    vi.spyOn(console, "error").mockImplementation(() => {});
 
     fileSystemController = new FileSystemController("");
   });

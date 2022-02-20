@@ -1,6 +1,7 @@
 /**
- * @jest-environment node
+ * @vitest-environment node
  */
+import { describe, beforeEach, it, expect, vi } from "vitest";
 import type { Goal, Project, Progress } from "interfaces";
 import { Database, initializeDatabase } from "../database";
 import GoalRepository from "./goal-repository";
@@ -13,8 +14,9 @@ describe("goal-repository", () => {
   let goalRepository: GoalRepository;
 
   beforeEach(async () => {
-    jest.spyOn(console, "error").mockImplementation(() => {});
-    const { app } = jest.requireMock("electron");
+    vi.spyOn(console, "log").mockImplementation(() => {});
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const { app } = await vi.importMock("electron");
     const initDb = await initializeDatabase(app);
     seedProjects = [
       {

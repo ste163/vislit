@@ -6,7 +6,7 @@ thumbs.db
 
 .eslintcache
 
-# Jest output
+# Vitest output
 /coverage
 
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider

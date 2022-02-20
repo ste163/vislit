@@ -1,6 +1,7 @@
 /**
- * @jest-environment node
+ * @vitest-environment node
  */
+import { describe, beforeEach, it, expect, vi } from "vitest";
 import type { Project, Goal, Progress } from "interfaces";
 import { ZodError } from "zod";
 import { Database, initializeDatabase } from "../database";
@@ -32,8 +33,9 @@ describe("progress-controller-integration", () => {
   const progressSeedDate7 = new Date("2022-01-04").toISOString();
 
   beforeEach(async () => {
-    jest.spyOn(console, "error").mockImplementation(() => {});
-    const { app } = jest.requireMock("electron");
+    vi.spyOn(console, "log").mockImplementation(() => {});
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const { app } = await vi.importMock("electron");
     const initDb = await initializeDatabase(app);
     database = new Database(initDb);
     const projectSeedDate = new Date();
@@ -63,9 +65,9 @@ describe("progress-controller-integration", () => {
       {
         id: "1",
         projectId: "1",
-        basedOnWordCountOrPageCount: "word",
-        wordOrPageCount: 500,
-        frequencyToRepeat: "daily",
+        isDaily: false,
+        daysPerMonth: 14,
+        wordCount: 500,
         proofreadCountsTowardGoal: true,
         editCountsTowardGoal: true,
         revisedCountsTowardsGoal: true,
@@ -75,9 +77,9 @@ describe("progress-controller-integration", () => {
       {
         id: "2",
         projectId: "2",
-        basedOnWordCountOrPageCount: "page",
-        wordOrPageCount: 2,
-        frequencyToRepeat: "daily",
+        wordCount: 2,
+        isDaily: true,
+        daysPerMonth: null,
         proofreadCountsTowardGoal: true,
         editCountsTowardGoal: true,
         revisedCountsTowardsGoal: true,

@@ -1,6 +1,7 @@
 /**
- * @jest-environment node
+ * @vitest-environment node
  */
+import { describe, beforeEach, it, expect, vi } from "vitest";
 import { Database, initializeDatabase } from "../database";
 import { SearchController, initializeSearchIndexes } from "./search-controller";
 import NoteRepository from "./note-repository";
@@ -20,8 +21,9 @@ describe("project-controller-integration", () => {
   const seedDate = new Date();
 
   beforeEach(async () => {
-    jest.spyOn(console, "error").mockImplementation(() => {});
-    const { app } = jest.requireMock("electron");
+    vi.spyOn(console, "log").mockImplementation(() => {});
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const { app } = await vi.importMock("electron");
     const initDb = await initializeDatabase(app);
     database = new Database(initDb);
     seedProjects = [
@@ -73,8 +75,8 @@ describe("project-controller-integration", () => {
       noteSearchIndex
     );
     const mockFileSystemController = {
-      readNoteById: jest.fn(() => undefined),
-      deleteNote: jest.fn(() => undefined),
+      readNoteById: vi.fn(() => undefined),
+      deleteNote: vi.fn(() => undefined),
     } as unknown as FileSystemController;
     noteController = new NoteController(
       noteRepository,
