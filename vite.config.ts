@@ -9,6 +9,8 @@ export default defineConfig({
   base: path.resolve(__dirname, "./dist/"),
   plugins: [vue(), eslintPlugin()],
   test: {
-    // Using defaults
+    coverage: {
+      reporter: ["html"],
+    },
   },
 });
