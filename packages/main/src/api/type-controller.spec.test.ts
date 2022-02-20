@@ -2,13 +2,11 @@
  * @vitest-environment node
  */
 import { describe, beforeEach, it, expect, vi } from "vitest";
-import type { Project, Type } from "interfaces";
+import type { Type } from "interfaces";
 import { Database, initializeDatabase } from "../database";
 import TypeRepository from "./type-repository";
 import TypeController from "./type-controller";
 
-let typeSeedData: Type[];
-let projectSeedData: Project[];
 let database: Database;
 let typeRepository: TypeRepository;
 let typeController: TypeController;
@@ -22,7 +20,8 @@ describe("type-controller", () => {
     const { app } = await vi.importMock("electron");
     const initDb = await initializeDatabase(app);
     database = new Database(initDb);
-    typeSeedData = [
+    const seedDate = typeSeedDate;
+    database.db.data!.types = [
       {
         id: "1",
         value: "novel",
@@ -59,8 +58,7 @@ describe("type-controller", () => {
         dateCreated: typeSeedDate,
       },
     ];
-    const seedDate = typeSeedDate;
-    projectSeedData = [
+    database.db.data!.projects = [
       {
         id: "1",
         title: "It",
@@ -82,9 +80,6 @@ describe("type-controller", () => {
         dateModified: seedDate,
       },
     ];
-
-    database.db.data!.types = typeSeedData;
-    database.db.data!.projects = projectSeedData;
     typeRepository = new TypeRepository(database);
     typeController = new TypeController(typeRepository);
   });
@@ -135,7 +130,7 @@ describe("type-controller", () => {
     );
   });
 
-  it("add - returns error when value doesn't match schema", async () => {
+  it("add - returns error if incorrect schema", async () => {
     expect(await typeController.add(999 as any as string)).toEqual(
       new Error("Request does not match schema")
     );
@@ -148,13 +143,13 @@ describe("type-controller", () => {
     expect(addedType).toHaveProperty("dateCreated");
   });
 
-  it("delete - returns error when deleting doesn't match schema", async () => {
+  it("delete - returns error if incorrect schema", async () => {
     expect(await typeController.delete(999 as any as string)).toEqual(
       new Error("Request does not match schema")
     );
   });
 
-  it("delete - returns error when trying to delete type by id not in database", async () => {
+  it("delete - returns error when id not in database", async () => {
     expect(await typeController.delete("9000")).toEqual(
       new Error("Type not in database")
     );

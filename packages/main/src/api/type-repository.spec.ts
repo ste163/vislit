@@ -107,7 +107,11 @@ describe("type-repository", () => {
     });
   });
 
-  it("add - returns added type when successfully added", async () => {
+  it("checkForTypeTaken - returns empty array if no projects by type", () => {
+    expect(typeRepository.checkForTypeTaken("1")).toEqual([]);
+  });
+
+  it("add - returns added type when successful", async () => {
     const originalTypeCount = typeRepository.getAll().length;
     const addedType = await typeRepository.add("non-fiction");
     const newTypeCount = typeRepository.getAll().length;
@@ -117,14 +121,10 @@ describe("type-repository", () => {
     expect(newTypeCount).toEqual(originalTypeCount + 1);
   });
 
-  it("delete - deletes type from database", async () => {
+  it("delete - deletes type", async () => {
     const originalTypeCount = typeRepository.getAll().length;
     await typeRepository.delete("1");
     const newTypeCount = typeRepository.getAll().length;
     expect(newTypeCount).toEqual(originalTypeCount - 1);
-  });
-
-  it("checkForTypeTaken - returns empty array if no projects by type", () => {
-    expect(typeRepository.checkForTypeTaken("1")).toEqual([]);
   });
 });
