@@ -9,6 +9,6 @@ export default defineConfig({
   base: path.resolve(__dirname, "./dist/"),
   plugins: [vue(), eslintPlugin()],
   test: {
-    // only using defaults
+    // Using defaults
   },
 });
