@@ -7,26 +7,21 @@ import {
   addGoalRequestSchema,
   updateGoalRequestSchema,
 } from "../schemas";
+import handleError from "./util-handle-error";
 
 class GoalController {
-  #goalRepository: GoalRepository;
-  #projectController: ProjectController;
-
   constructor(
-    goalRepository: GoalRepository,
-    projectController: ProjectController
-  ) {
-    this.#goalRepository = goalRepository;
-    this.#projectController = projectController;
-  }
+    private goalRepository: GoalRepository,
+    private projectController: ProjectController
+  ) {}
 
   async add(goal: addGoalRequest): Promise<Error | Goal> {
     try {
       addGoalRequestSchema.parse(goal);
-      const existingProject = this.#projectController.getById(goal.projectId);
+      const existingProject = this.projectController.getById(goal.projectId);
       if (existingProject instanceof Error) return existingProject;
 
-      const activeGoal = this.#goalRepository.getActive(goal.projectId);
+      const activeGoal = this.goalRepository.getActive(goal.projectId);
       if (activeGoal)
         throw new Error(
           `Active goal already exists for project with id ${goal.projectId}`
@@ -40,10 +35,9 @@ class GoalController {
       goalToAdd.active = true;
       goalToAdd.completed = false;
 
-      return await this.#goalRepository.add(goalToAdd);
+      return await this.goalRepository.add(goalToAdd);
     } catch (error: any | Error) {
-      console.error(error);
-      return error;
+      return handleError(error);
     }
   }
 
@@ -52,11 +46,11 @@ class GoalController {
   async setCompletedById(id: idRequest): Promise<Error | Goal> {
     try {
       idRequestSchema.parse(id);
-      const goal = this.#goalRepository.getById(id);
+      const goal = this.goalRepository.getById(id);
       if (goal === undefined)
         throw new Error(`Goal with id ${id} does not exist in database`);
 
-      const activeGoal = this.#goalRepository.getActive(goal.projectId);
+      const activeGoal = this.goalRepository.getActive(goal.projectId);
       if (activeGoal === undefined)
         throw new Error(
           `No active goal for project id ${goal.projectId} exists in database`
@@ -72,10 +66,9 @@ class GoalController {
       goal.completed = true;
       goal.dateModified = new Date();
 
-      return await this.#goalRepository.update(goal);
+      return await this.goalRepository.update(goal);
     } catch (error: any | Error) {
-      console.error(error);
-      return error;
+      return handleError(error);
     }
   }
 
@@ -85,11 +78,11 @@ class GoalController {
 
       const { id, projectId } = request;
 
-      const existingGoal = this.#goalRepository.getById(id);
+      const existingGoal = this.goalRepository.getById(id);
       if (existingGoal === undefined)
         throw new Error(`Goal with id ${id} does not exist in database`);
 
-      const activeGoal = this.#goalRepository.getActive(projectId);
+      const activeGoal = this.goalRepository.getActive(projectId);
       if (activeGoal === undefined)
         throw new Error(
           `No active goal for project id ${projectId} exists in database`
@@ -105,31 +98,29 @@ class GoalController {
 
       existingGoal.dateModified = new Date();
       existingGoal.active = false;
-      this.#goalRepository.update(existingGoal);
+      this.goalRepository.update(existingGoal);
 
       const newGoalDate = new Date();
       goalToUpdate.completed = false;
       goalToUpdate.active = true;
       goalToUpdate.dateCreated = newGoalDate;
       goalToUpdate.dateModified = newGoalDate;
-      return await this.#goalRepository.add(goalToUpdate);
+      return await this.goalRepository.add(goalToUpdate);
     } catch (error: any | Error) {
-      console.error(error);
-      return error;
+      return handleError(error);
     }
   }
 
   async delete(id: idRequest): Promise<true | Error> {
     try {
       idRequestSchema.parse(id);
-      const existingGoal = this.#goalRepository.getById(id);
+      const existingGoal = this.goalRepository.getById(id);
       if (existingGoal === undefined)
         throw new Error(`Goal with id ${id} does not exist in database`);
-      await this.#goalRepository.delete(id);
+      await this.goalRepository.delete(id);
       return true;
     } catch (error: any | Error) {
-      console.error(error);
-      return error;
+      return handleError(error);
     }
   }
 }

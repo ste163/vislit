@@ -6,7 +6,6 @@ import { Database, initializeDatabase } from "../database";
 import { SearchController, initializeSearchIndexes } from "./search-controller";
 import NoteRepository from "./note-repository";
 import NoteController from "./note-controller";
-import { ZodError } from "zod";
 import type { Project, Note } from "interfaces";
 import type FileSystemController from "./file-system-controller";
 import type { updateNoteRequest } from "../schemas";
@@ -86,9 +85,9 @@ describe("project-controller-integration", () => {
   });
 
   it("returns error if trying to get all notes with projectId that doesn't match schema", () => {
-    expect(
-      noteController.getAllByProjectId(123 as any as string)
-    ).toBeInstanceOf(ZodError);
+    expect(noteController.getAllByProjectId(123 as any as string)).toEqual(
+      new Error("Request does not match schema")
+    );
   });
 
   it("returns empty array if no notes found for that projectId", () => {
@@ -100,8 +99,8 @@ describe("project-controller-integration", () => {
   });
 
   it("returns error if trying to get note with id that doesn't match schema", async () => {
-    expect(await noteController.getById(123 as any as string)).toBeInstanceOf(
-      ZodError
+    expect(await noteController.getById(123 as any as string)).toEqual(
+      new Error("Request does not match schema")
     );
   });
 
@@ -128,7 +127,7 @@ describe("project-controller-integration", () => {
         title: 342 as any as string,
         projectId: "232",
       })
-    ).toBeInstanceOf(ZodError);
+    ).toEqual(new Error("Request does not match schema"));
   });
 
   it("returns error if trying to add note with a title and projectId already in database", async () => {
@@ -167,7 +166,9 @@ describe("project-controller-integration", () => {
       content: "New Note!",
     } as any as updateNoteRequest;
 
-    expect(await noteController.update(note)).toBeInstanceOf(ZodError);
+    expect(await noteController.update(note)).toEqual(
+      new Error("Request does not match schema")
+    );
   });
 
   it("returns error if trying to update note by id not in db", async () => {
@@ -212,8 +213,8 @@ describe("project-controller-integration", () => {
   });
 
   it("returns error if trying to delete with id that doesn't match schema", async () => {
-    expect(await noteController.delete(123 as any as string)).toBeInstanceOf(
-      ZodError
+    expect(await noteController.delete(123 as any as string)).toEqual(
+      new Error("Request does not match schema")
     );
   });
 

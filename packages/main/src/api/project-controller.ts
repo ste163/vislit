@@ -12,46 +12,37 @@ import {
   projectAddRequestSchema,
   projectUpdateRequestSchema,
 } from "../schemas";
+import handleError from "./util-handle-error";
 
 class ProjectController {
-  #projectRepository: ProjectRepository;
-  #searchController: SearchController;
-  #fileSystemController: FileSystemController;
-
   constructor(
-    projectRepository: ProjectRepository,
-    searchController: SearchController,
-    fileSystemController: FileSystemController
-  ) {
-    this.#projectRepository = projectRepository;
-    this.#searchController = searchController;
-    this.#fileSystemController = fileSystemController;
-  }
+    private projectRepository: ProjectRepository,
+    private searchController: SearchController,
+    private fileSystemController: FileSystemController
+  ) {}
 
   #checkForTitleTaken(title: string): void {
-    const project = this.#projectRepository.getByTitle(title);
+    const project = this.projectRepository.getByTitle(title);
     if (project) throw new Error("Project title already in database");
   }
 
   getAll(): Project[] | Error {
     try {
-      return this.#projectRepository.getAll();
-    } catch (e: any | Error) {
-      console.error(e);
-      return e;
+      return this.projectRepository.getAll();
+    } catch (error: any | Error) {
+      return handleError(error);
     }
   }
 
   getById(id: idRequest): Project | Error {
     try {
       idRequestSchema.parse(id);
-      const project = this.#projectRepository.getById(id);
+      const project = this.projectRepository.getById(id);
       if (project === undefined)
         throw new Error(`Project with id ${id} not in database`);
       return project;
-    } catch (e: any | Error) {
-      console.error(e);
-      return e;
+    } catch (error: any | Error) {
+      return handleError(error);
     }
   }
 
@@ -72,16 +63,15 @@ class ProjectController {
       projectToAdd.completed = false;
       projectToAdd.archived = false;
 
-      const response = await this.#projectRepository.add(projectToAdd);
-      this.#searchController.addProject(response);
-      const fsResponse = await this.#fileSystemController.makeProjectDirectory(
+      const response = await this.projectRepository.add(projectToAdd);
+      this.searchController.addProject(response);
+      const fsResponse = await this.fileSystemController.makeProjectDirectory(
         response.id!
       );
       if (fsResponse instanceof Error) throw fsResponse;
       return response;
-    } catch (e: any | Error) {
-      console.error(e);
-      return e;
+    } catch (error: any | Error) {
+      return handleError(error);
     }
   }
 
@@ -109,17 +99,16 @@ class ProjectController {
       projectToUpdate.typeId = typeId;
       projectToUpdate.dateModified = new Date();
 
-      const updatedProject = await this.#projectRepository.update(
+      const updatedProject = await this.projectRepository.update(
         projectToUpdate
       );
-      this.#searchController.updateProject(
+      this.searchController.updateProject(
         originalProjectForIndex as Project,
         updatedProject
       );
       return updatedProject;
-    } catch (e: any | Error) {
-      console.error(e);
-      return e;
+    } catch (error: any | Error) {
+      return handleError(error);
     }
   }
 
@@ -130,16 +119,16 @@ class ProjectController {
       const project = this.getById(id);
       if (project instanceof Error) throw new Error("Project not in database");
 
-      await this.#projectRepository.delete(id);
-      this.#searchController.deleteProject(project);
-      const fsResponse =
-        await this.#fileSystemController.deleteProjectDirectory(id);
+      await this.projectRepository.delete(id);
+      this.searchController.deleteProject(project);
+      const fsResponse = await this.fileSystemController.deleteProjectDirectory(
+        id
+      );
       if (fsResponse instanceof Error) throw fsResponse;
 
       return true;
-    } catch (e: any | Error) {
-      console.error(e);
-      return e;
+    } catch (error: any | Error) {
+      return handleError(error);
     }
   }
 }

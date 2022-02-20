@@ -3,14 +3,10 @@ import type { Database } from "../database";
 
 // all dates passed into repo are ISO strings
 class ProgressRepository {
-  #database: Database;
-
-  constructor(database: Database) {
-    this.#database = database;
-  }
+  constructor(private database: Database) {}
 
   #filterOutByDate(projectId: string, date: string): Progress[] {
-    return this.#database.db.data!.progress.filter((progress) => {
+    return this.database.db.data!.progress.filter((progress) => {
       if (progress.projectId !== projectId) return progress;
       // Check against the YYYY-MM-DD without timezone
       const progressFromDb = progress.date.toString().split("T")[0];
@@ -20,7 +16,7 @@ class ProgressRepository {
   }
 
   getByDate(projectId: string, date: string): Progress | undefined {
-    return this.#database.db.data!.progress.filter((progress) => {
+    return this.database.db.data!.progress.filter((progress) => {
       if (progress.projectId === projectId) {
         // Check against the YYYY-MM-DD without timezone
         const dbDate = progress.date.toString().split("T")[0];
@@ -35,7 +31,7 @@ class ProgressRepository {
     year: string,
     month: string
   ): Progress[] {
-    return this.#database.db.data!.progress.filter((progress) => {
+    return this.database.db.data!.progress.filter((progress) => {
       if (progress.projectId === projectId) {
         const date = progress.date.toString().split("T")[0];
         const [splitYear, splitMonth] = date.split("-");
@@ -45,13 +41,13 @@ class ProgressRepository {
   }
 
   async add(progress: Progress): Promise<Progress> {
-    this.#database.db.data!.progress.push(progress);
-    await this.#database.db.write();
+    this.database.db.data!.progress.push(progress);
+    await this.database.db.write();
     return this.getByDate(progress.projectId, progress.date) as Progress;
   }
 
   async update(progress: Progress): Promise<Progress> {
-    this.#database.db.data!.progress = this.#filterOutByDate(
+    this.database.db.data!.progress = this.#filterOutByDate(
       progress.projectId,
       progress.date
     );
@@ -59,8 +55,8 @@ class ProgressRepository {
   }
 
   async delete(projectId: string, date: string): Promise<true> {
-    this.#database.db.data!.progress = this.#filterOutByDate(projectId, date);
-    await this.#database.db.write();
+    this.database.db.data!.progress = this.#filterOutByDate(projectId, date);
+    await this.database.db.write();
     return true;
   }
 }

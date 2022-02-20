@@ -2,7 +2,6 @@
  * @vitest-environment node
  */
 import { describe, beforeEach, it, expect, vi } from "vitest";
-import { ZodError } from "zod";
 import { Database, initializeDatabase } from "../database";
 import { SearchController, initializeSearchIndexes } from "./search-controller";
 import type { searchRequest } from "../schemas";
@@ -29,12 +28,12 @@ describe("file-system-controller", () => {
   it("searchProject - returns error if wrong schema passed in", () => {
     expect(
       searchController.searchProjects({ query: "test" } as any as searchRequest)
-    ).toBeInstanceOf(ZodError);
+    ).toEqual(new Error("Request does not match schema"));
   });
 
   it("searchNotes - returns error if wrong schema passed in", () => {
     expect(
       searchController.searchNotes({ query: "test" } as any as searchRequest)
-    ).toBeInstanceOf(ZodError);
+    ).toEqual(new Error("Request does not match schema"));
   });
 });

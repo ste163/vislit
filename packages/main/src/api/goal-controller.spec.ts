@@ -3,15 +3,14 @@
  */
 import { describe, beforeEach, it, expect, vi } from "vitest";
 import type { Goal, Project } from "interfaces";
+import type { SearchController } from "./search-controller";
+import type FileSystemController from "./file-system-controller";
+import type { updateGoalRequest } from "../schemas";
 import { Database, initializeDatabase } from "../database";
 import ProjectRepository from "./project-repository";
 import ProjectController from "./project-controller";
 import GoalRepository from "./goal-repository";
 import GoalController from "./goal-controller";
-import { ZodError } from "zod";
-import type { SearchController } from "./search-controller";
-import type FileSystemController from "./file-system-controller";
-import type { updateGoalRequest } from "../schemas";
 
 describe("goal-controller", () => {
   let seedProjects: Project[];
@@ -76,7 +75,7 @@ describe("goal-controller", () => {
     goalController = new GoalController(goalRepository, projectController);
   });
 
-  it("returns error if adding project that does not match schema", async () => {
+  it("add - returns error if adding project that does not match schema", async () => {
     const goal = {
       basedOnWordCountOrPageCount: "word",
       wordOrPageCount: 500,
@@ -86,10 +85,12 @@ describe("goal-controller", () => {
       revisedCountsTowardsGoal: true,
     };
 
-    expect(await goalController.add(goal as any)).toBeInstanceOf(ZodError);
+    expect(await goalController.add(goal as any)).toEqual(
+      new Error("Request does not match schema")
+    );
   });
 
-  it("returns error if adding project by projectId not in database", async () => {
+  it("add - returns error if adding project by projectId not in database", async () => {
     const goal = {
       projectId: "999",
       wordCount: 500,
@@ -105,7 +106,7 @@ describe("goal-controller", () => {
     );
   });
 
-  it("returns error if adding a goal to a project with an already active goal", async () => {
+  it("add - returns error if adding a goal to a project with an already active goal", async () => {
     const goal = {
       projectId: "1",
       wordCount: 250,
@@ -120,7 +121,7 @@ describe("goal-controller", () => {
     );
   });
 
-  it("returns added project", async () => {
+  it("add - returns added project", async () => {
     const goal = {
       projectId: "2",
       wordCount: 250,
@@ -136,19 +137,19 @@ describe("goal-controller", () => {
     expect(addedGoal).toHaveProperty("id");
   });
 
-  it("returns error if trying to set goal complete with id that doesn't match schema", async () => {
-    expect(await goalController.delete(123 as any as string)).toBeInstanceOf(
-      ZodError
+  it("setCompletedById - returns error if trying to set goal complete with id that doesn't match schema", async () => {
+    expect(await goalController.setCompletedById(123 as any as string)).toEqual(
+      new Error("Request does not match schema")
     );
   });
 
-  it("returns error when setting complete for a goal by id not in database", async () => {
+  it("setCompletedById - returns error when setting complete for a goal by id not in database", async () => {
     expect(await goalController.setCompletedById("999")).toEqual(
       new Error("Goal with id 999 does not exist in database")
     );
   });
 
-  it("returns error when setting complete for a project without an active goal", async () => {
+  it("setCompletedById - returns error when setting complete for a project without an active goal", async () => {
     const mockGoalRepository = {
       getById: vi.fn(() => seedGoal),
       getActive: vi.fn(() => undefined),
@@ -164,7 +165,7 @@ describe("goal-controller", () => {
     );
   });
 
-  it("returns error when setting complete when the goal does not match the active goal", async () => {
+  it("setCompletedById - returns error when setting complete when the goal does not match the active goal", async () => {
     const mockActiveGoal = {
       id: "999",
     };
@@ -186,12 +187,12 @@ describe("goal-controller", () => {
     );
   });
 
-  it("returns the updated goal with the set complete", async () => {
+  it("setCompletedById - returns the updated goal with the set complete", async () => {
     const updatedGoal = (await goalController.setCompletedById("1")) as Goal;
     expect(updatedGoal.completed).toEqual(true);
   });
 
-  it("returns error if updating goal that doesn't match schema", async () => {
+  it("update - returns error if updating goal that doesn't match schema", async () => {
     expect(
       await goalController.update({
         id: "2",
@@ -204,10 +205,10 @@ describe("goal-controller", () => {
         active: true,
         completed: true,
       } as any)
-    ).toBeInstanceOf(ZodError);
+    ).toEqual(new Error("Request does not match schema"));
   });
 
-  it("returns error if updating existing goal is not in database", async () => {
+  it("update - returns error if updating existing goal is not in database", async () => {
     expect(
       await goalController.update({
         id: "2",
@@ -224,7 +225,7 @@ describe("goal-controller", () => {
     ).toEqual(new Error("Goal with id 2 does not exist in database"));
   });
 
-  it("returns error if updating activeGoal does not exist in database", async () => {
+  it("update - returns error if updating activeGoal does not exist in database", async () => {
     const goal: Goal = {
       id: "999",
       projectId: "1",
@@ -253,7 +254,7 @@ describe("goal-controller", () => {
     );
   });
 
-  it("returns error if updating the existing goal id does not equal project's active goal id", async () => {
+  it("update - returns error if updating the existing goal id does not equal project's active goal id", async () => {
     const goal: Goal = {
       id: "1",
       projectId: "1",
@@ -288,7 +289,7 @@ describe("goal-controller", () => {
     );
   });
 
-  it("returns the updated active goal and sets the previous goal as inactive", async () => {
+  it("update - returns the updated active goal and sets the previous goal as inactive", async () => {
     const goal: Goal = {
       id: "1",
       projectId: "1",
@@ -319,19 +320,19 @@ describe("goal-controller", () => {
     expect(updatedGoal.wordCount).toBe(150);
   });
 
-  it("returns error if trying to delete with id that doesn't match schema", async () => {
-    expect(await goalController.delete(123 as any as string)).toBeInstanceOf(
-      ZodError
+  it("delete - returns error if trying to delete with id that doesn't match schema", async () => {
+    expect(await goalController.delete(123 as any as string)).toEqual(
+      new Error("Request does not match schema")
     );
   });
 
-  it("returns error if deleting goal by id not in database", async () => {
+  it("delete - returns error if deleting goal by id not in database", async () => {
     expect(await goalController.delete("999")).toEqual(
       new Error("Goal with id 999 does not exist in database")
     );
   });
 
-  it("returns true if goal successfully deleted", async () => {
+  it("delete - returns true if goal successfully deleted", async () => {
     expect(await goalController.delete("1")).toEqual(true);
   });
 });

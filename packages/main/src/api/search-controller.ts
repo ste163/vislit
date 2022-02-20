@@ -1,9 +1,9 @@
 import Minisearch from "minisearch";
-import { ZodError } from "zod";
 import type { Project, Note } from "interfaces";
 import type { Database } from "../database";
 import type { searchRequest } from "../schemas";
 import { searchRequestSchema } from "../schemas";
+import handleError from "./util-handle-error";
 
 // Must initialize search indexes outside of class constructor
 // as constructors can't be async
@@ -40,62 +40,54 @@ export async function initializeSearchIndexes(database: Database): Promise<{
 }
 
 export class SearchController {
-  #projectSearchIndex: Minisearch<any>;
-  #noteSearchIndex: Minisearch<any>;
-
   constructor(
-    projectSearchIndex: Minisearch<any>,
-    noteSearchIndex: Minisearch<any>
-  ) {
-    this.#projectSearchIndex = projectSearchIndex;
-    this.#noteSearchIndex = noteSearchIndex;
-  }
+    private projectSearchIndex: Minisearch<any>,
+    private noteSearchIndex: Minisearch<any>
+  ) {}
 
   addProject(project: Project) {
-    this.#projectSearchIndex.add(project);
+    this.projectSearchIndex.add(project);
   }
 
   updateProject(originalProject: Project, updatedProject: Project) {
     // Must remove the original project before adding.
     // Trying to remove project that doesn't match index corrupts index
-    this.#projectSearchIndex.remove(originalProject);
-    this.#projectSearchIndex.add(updatedProject);
+    this.projectSearchIndex.remove(originalProject);
+    this.projectSearchIndex.add(updatedProject);
   }
 
   deleteProject(project: Project) {
-    this.#projectSearchIndex.remove(project);
+    this.projectSearchIndex.remove(project);
   }
 
   addNote(note: Note) {
-    this.#noteSearchIndex.add(note);
+    this.noteSearchIndex.add(note);
   }
 
   updateNote(originalNote: Note, updatedNote: Note) {
-    this.#noteSearchIndex.remove(originalNote);
-    this.#noteSearchIndex.add(updatedNote);
+    this.noteSearchIndex.remove(originalNote);
+    this.noteSearchIndex.add(updatedNote);
   }
 
   deleteNote(note: Note) {
-    this.#noteSearchIndex.remove(note);
+    this.noteSearchIndex.remove(note);
   }
 
   searchProjects(query: searchRequest) {
     try {
       searchRequestSchema.parse(query);
-      return this.#projectSearchIndex.search(query);
-    } catch (error: any | Error | ZodError) {
-      console.error(error);
-      return error;
+      return this.projectSearchIndex.search(query);
+    } catch (error: any | Error) {
+      return handleError(error);
     }
   }
 
   searchNotes(query: searchRequest) {
     try {
       searchRequestSchema.parse(query);
-      return this.#noteSearchIndex.search(query);
-    } catch (error: any | Error | ZodError) {
-      console.error(error);
-      return error;
+      return this.noteSearchIndex.search(query);
+    } catch (error: any | Error) {
+      return handleError(error);
     }
   }
 }

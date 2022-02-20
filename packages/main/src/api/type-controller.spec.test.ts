@@ -6,7 +6,6 @@ import type { Project, Type } from "interfaces";
 import { Database, initializeDatabase } from "../database";
 import TypeRepository from "./type-repository";
 import TypeController from "./type-controller";
-import { ZodError } from "zod";
 
 let typeSeedData: Type[];
 let projectSeedData: Project[];
@@ -158,8 +157,8 @@ describe("type-controller-integration", () => {
   });
 
   it("returns error when value doesn't match schema", async () => {
-    expect(await typeController.add(999 as any as string)).toBeInstanceOf(
-      ZodError
+    expect(await typeController.add(999 as any as string)).toEqual(
+      new Error("Request does not match schema")
     );
   });
 
@@ -171,8 +170,8 @@ describe("type-controller-integration", () => {
   });
 
   it("returns error when deleting doesn't match schema", async () => {
-    expect(await typeController.delete(999 as any as string)).toBeInstanceOf(
-      ZodError
+    expect(await typeController.delete(999 as any as string)).toEqual(
+      new Error("Request does not match schema")
     );
   });
 

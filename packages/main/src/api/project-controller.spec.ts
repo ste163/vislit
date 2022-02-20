@@ -7,7 +7,6 @@ import { Database, initializeDatabase } from "../database";
 import { SearchController, initializeSearchIndexes } from "./search-controller";
 import ProjectController from "./project-controller";
 import ProjectRepository from "./project-repository";
-import { ZodError } from "zod";
 import type FileSystemController from "./file-system-controller";
 
 // TODO:
@@ -125,7 +124,7 @@ describe("project-controller-integration", () => {
         description: "A murderous clown attacks a town",
         typeId: "2",
       } as any)
-    ).toBeInstanceOf(ZodError);
+    ).toEqual(new Error("Request does not match schema"));
   });
 
   it("returns duplicate title error if adding a project with a title already in db", async () => {
@@ -165,9 +164,9 @@ describe("project-controller-integration", () => {
       archived: false,
     };
 
-    expect(
-      await projectController.update(updatedProject as any)
-    ).toBeInstanceOf(ZodError);
+    expect(await projectController.update(updatedProject as any)).toEqual(
+      new Error("Request does not match schema")
+    );
   });
 
   it("returns error if updating project with id not in db", async () => {

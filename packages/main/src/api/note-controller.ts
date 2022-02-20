@@ -1,3 +1,4 @@
+import handleError from "./util-handle-error";
 import type NoteRepository from "./note-repository";
 import type { SearchController } from "./search-controller";
 import type FileSystemController from "./file-system-controller";
@@ -10,22 +11,14 @@ import {
 } from "../schemas";
 
 class NoteController {
-  #noteRepository: NoteRepository;
-  #searchController: SearchController;
-  #fileSystemController: FileSystemController;
-
   constructor(
-    noteRepository: NoteRepository,
-    searchController: SearchController,
-    fileSystemController: FileSystemController
-  ) {
-    this.#noteRepository = noteRepository;
-    this.#searchController = searchController;
-    this.#fileSystemController = fileSystemController;
-  }
+    private noteRepository: NoteRepository,
+    private searchController: SearchController,
+    private fileSystemController: FileSystemController
+  ) {}
 
   #checkForTitleTaken(title: string, projectId: string): void {
-    const note = this.#noteRepository.getByTitle(title, projectId);
+    const note = this.noteRepository.getByTitle(title, projectId);
     if (note) throw new Error("Note title already in database");
   }
 
@@ -33,29 +26,27 @@ class NoteController {
   getAllByProjectId(projectId: idRequest): Note[] | Error {
     try {
       idRequestSchema.parse(projectId);
-      return this.#noteRepository.getAllByProjectId(projectId);
-    } catch (e: any | Error) {
-      console.error(e);
-      return e;
+      return this.noteRepository.getAllByProjectId(projectId);
+    } catch (error: any | Error) {
+      return handleError(error);
     }
   }
 
   async getById(id: idRequest): Promise<Note | Error> {
     try {
       idRequestSchema.parse(id);
-      const note = this.#noteRepository.getById(id);
+      const note = this.noteRepository.getById(id);
       if (note === undefined)
         throw new Error(`Note with id ${id} not in database`);
 
-      const html = await this.#fileSystemController.readNoteById({
+      const html = await this.fileSystemController.readNoteById({
         noteId: note.id!,
         projectId: note.projectId,
       });
       note.html = html instanceof Error || !html ? null : html;
       return note;
-    } catch (e: any | Error) {
-      console.error(e);
-      return e;
+    } catch (error: any | Error) {
+      return handleError(error);
     }
   }
 
@@ -72,13 +63,12 @@ class NoteController {
       note.dateCreated = date;
       note.dateModified = date;
 
-      const response = await this.#noteRepository.add(note);
-      this.#searchController.addNote(response);
+      const response = await this.noteRepository.add(note);
+      this.searchController.addNote(response);
 
       return response;
-    } catch (e: any | Error) {
-      console.error(e);
-      return e;
+    } catch (error: any | Error) {
+      return handleError(error);
     }
   }
 
@@ -99,12 +89,11 @@ class NoteController {
       noteToUpdate.title = note.title.trim();
       noteToUpdate.dateModified = new Date();
 
-      const updatedNote = await this.#noteRepository.update(noteToUpdate);
-      this.#searchController.updateNote(originalNoteForIndex, updatedNote);
+      const updatedNote = await this.noteRepository.update(noteToUpdate);
+      this.searchController.updateNote(originalNoteForIndex, updatedNote);
       return updatedNote;
-    } catch (e: any | Error) {
-      console.error(e);
-      return e;
+    } catch (error: any | Error) {
+      return handleError(error);
     }
   }
 
@@ -115,17 +104,16 @@ class NoteController {
       if (note instanceof Error)
         throw new Error(`Note with id ${id} not in database`);
 
-      await this.#noteRepository.delete(id);
-      this.#searchController.deleteNote(note);
-      await this.#fileSystemController.deleteNote({
+      await this.noteRepository.delete(id);
+      this.searchController.deleteNote(note);
+      await this.fileSystemController.deleteNote({
         id,
         projectId: note.projectId,
       });
 
-      return true; // returning true instead of undefined because that could potentially mean other things
-    } catch (e: any | Error) {
-      console.error(e);
-      return e;
+      return true;
+    } catch (error: any | Error) {
+      return handleError(error);
     }
   }
 }

@@ -3,10 +3,10 @@
  */
 import { describe, beforeEach, it, expect, vi } from "vitest";
 import type { Project, Goal, Progress } from "interfaces";
-import { ZodError } from "zod";
+import type FileSystemController from "./file-system-controller";
+
 import { Database, initializeDatabase } from "../database";
 import { SearchController, initializeSearchIndexes } from "./search-controller";
-import type FileSystemController from "./file-system-controller";
 import GoalRepository from "./goal-repository";
 import ProgressController from "./progress-controller";
 import ProgressRepository from "./progress-repository";
@@ -193,7 +193,9 @@ describe("progress-controller-integration", () => {
       projectId: "3",
       date: new Date("2020-01-01") as any as string,
     };
-    expect(progressController.getByDate(request)).toBeInstanceOf(ZodError);
+    expect(progressController.getByDate(request)).toEqual(
+      new Error("Request does not match schema")
+    );
   });
 
   it("getByDate - returns error if no project exists", () => {
@@ -323,7 +325,9 @@ describe("progress-controller-integration", () => {
       month: "January",
     };
 
-    expect(progressController.getAll(request)).toBeInstanceOf(ZodError);
+    expect(progressController.getAll(request)).toEqual(
+      new Error("Request does not match schema")
+    );
   });
   it("getAll - returns error if no project exists", () => {
     const request = {
@@ -389,7 +393,9 @@ describe("progress-controller-integration", () => {
       proofread: false,
       revised: false,
     };
-    expect(await progressController.modify(progress)).toBeInstanceOf(ZodError);
+    expect(await progressController.modify(progress)).toEqual(
+      new Error("Request does not match schema")
+    );
   });
 
   it("modify - returns error if no project exists", async () => {

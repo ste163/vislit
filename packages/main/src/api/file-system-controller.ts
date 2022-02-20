@@ -1,4 +1,5 @@
 import { mkdir, rm, writeFile, readFile, readdir } from "fs/promises";
+import handleError from "./util-handle-error";
 import {
   deleteNoteRequestSchema,
   htmlWriteRequestSchema,
@@ -13,13 +14,10 @@ import type {
 } from "../schemas";
 
 class FileSystemController {
-  #userDataPath: string;
-  constructor(userData: string) {
-    this.#userDataPath = userData;
-  }
+  constructor(private userDataPath: string) {}
 
   getUserDataPath(): string {
-    return this.#userDataPath;
+    return this.userDataPath;
   }
 
   async makeProjectDirectory(projectId: idRequest): Promise<true | Error> {
@@ -31,8 +29,7 @@ class FileSystemController {
       await mkdir(`${userData}/projects/${projectId}/notes`);
       return true;
     } catch (error: any | Error) {
-      console.error(error);
-      return error;
+      return handleError(error);
     }
   }
 
@@ -43,8 +40,7 @@ class FileSystemController {
       await rm(`${userData}/projects/${projectId}`, { recursive: true });
       return true;
     } catch (error: any | Error) {
-      console.error(error);
-      return error;
+      return handleError(error);
     }
   }
 
@@ -64,8 +60,7 @@ class FileSystemController {
       await writeFile(userData, html);
       return true;
     } catch (error: any | Error) {
-      console.error(error);
-      return error;
+      return handleError(error);
     }
   }
 
@@ -77,8 +72,7 @@ class FileSystemController {
       await rm(userData); // returns error if unable to find file
       return true;
     } catch (error: any | Error) {
-      console.error(error);
-      return error;
+      return handleError(error);
     }
   }
 
@@ -92,8 +86,7 @@ class FileSystemController {
       const file = await readFile(userData, "utf-8");
       if (file) return file;
     } catch (error: any | Error) {
-      console.error(error);
-      return error;
+      return handleError(error);
     }
   }
 
@@ -110,8 +103,7 @@ class FileSystemController {
         return await readFile(`${userData}/${mostRecentFileName}`, "utf-8");
       }
     } catch (error: any | Error) {
-      console.error(error);
-      return error;
+      return handleError(error);
     }
   }
 }

@@ -2,11 +2,7 @@ import type { Goal, Note, Progress, Project } from "interfaces";
 import type { Database } from "../database";
 
 class ProjectRepository {
-  #database: Database;
-
-  constructor(database: Database) {
-    this.#database = database;
-  }
+  constructor(private database: Database) {}
 
   #sortByMostRecentlyModified(array: any[]): any[] {
     const copy = [...array];
@@ -20,13 +16,13 @@ class ProjectRepository {
   }
 
   #includeProjectType(project: Project): Project {
-    const types = this.#database.db.data!.types;
+    const types = this.database.db.data!.types;
     project.type = types.find((type) => project.typeId === type.id);
     return project;
   }
 
   #includeGoals(project: Project): Project {
-    const goals = this.#database.db.data!.goals.filter(
+    const goals = this.database.db.data!.goals.filter(
       (goal) => goal.projectId === project.id
     );
     const sortedGoals = this.#sortByMostRecentlyModified(goals);
@@ -35,7 +31,7 @@ class ProjectRepository {
   }
 
   getAll(): Project[] {
-    const projects = this.#database.db.data!.projects;
+    const projects = this.database.db.data!.projects;
     const projectsWithTypes = projects.map((project) =>
       this.#includeProjectType(project)
     );
@@ -46,7 +42,7 @@ class ProjectRepository {
   }
 
   getById(id: string): Project | undefined {
-    const project = this.#database.db.data?.projects.find(
+    const project = this.database.db.data?.projects.find(
       (project) => project.id === id
     );
     if (project) {
@@ -56,7 +52,7 @@ class ProjectRepository {
   }
 
   getByTitle(title: string): Project | undefined {
-    const project = this.#database.db.data?.projects.find(
+    const project = this.database.db.data?.projects.find(
       (project) => project.title === title
     );
     if (project) {
@@ -66,11 +62,11 @@ class ProjectRepository {
   }
 
   async add(project: Project): Promise<Project> {
-    if (this.#database.db.data !== null) {
-      this.#database.db.data.projects.push(
-        this.#database.generateUniqueId(project)
+    if (this.database.db.data !== null) {
+      this.database.db.data.projects.push(
+        this.database.generateUniqueId(project)
       );
-      await this.#database.db.write();
+      await this.database.db.write();
       const addedProject = this.getByTitle(project.title) as Project;
       return addedProject;
     } else {
@@ -79,37 +75,37 @@ class ProjectRepository {
   }
 
   async update(project: Project): Promise<Project> {
-    const filteredProjects = this.#database.db.data?.projects.filter(
+    const filteredProjects = this.database.db.data?.projects.filter(
       (p) => p.id !== project.id
     ) as Project[];
-    this.#database.db.data!.projects = filteredProjects;
-    this.#database.db.data?.projects.push(project);
-    await this.#database.db.write();
+    this.database.db.data!.projects = filteredProjects;
+    this.database.db.data?.projects.push(project);
+    await this.database.db.write();
     return this.getById(project.id!) as Project;
   }
 
   async delete(id: string): Promise<void> {
-    const filteredNotes = this.#database.db.data?.notes.filter(
+    const filteredNotes = this.database.db.data?.notes.filter(
       (note) => note.projectId !== id
     ) as Note[];
-    this.#database.db.data!.notes = filteredNotes;
+    this.database.db.data!.notes = filteredNotes;
 
-    const filteredGoals = this.#database.db.data?.goals.filter(
+    const filteredGoals = this.database.db.data?.goals.filter(
       (goal) => goal.projectId !== id
     ) as Goal[];
-    this.#database.db.data!.goals = filteredGoals;
+    this.database.db.data!.goals = filteredGoals;
 
-    const filteredProgress = this.#database.db.data?.progress.filter(
+    const filteredProgress = this.database.db.data?.progress.filter(
       (progress) => progress.projectId !== id
     ) as Progress[];
-    this.#database.db.data!.progress = filteredProgress;
+    this.database.db.data!.progress = filteredProgress;
 
-    const filteredProjects = this.#database.db.data?.projects.filter(
+    const filteredProjects = this.database.db.data?.projects.filter(
       (project) => project.id !== id
     ) as Project[];
-    this.#database.db.data!.projects = filteredProjects;
+    this.database.db.data!.projects = filteredProjects;
 
-    await this.#database.db.write();
+    await this.database.db.write();
   }
 }
 
