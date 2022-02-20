@@ -24,7 +24,7 @@ describe("file-system-controller", () => {
     );
   });
 
-  it("searchProject - returns error if wrong schema passed in", () => {
+  it("searchProject - returns error if wrong schema", () => {
     expect(
       searchController.searchProjects({ query: "test" } as any as searchRequest)
     ).toEqual(new Error("Request does not match schema"));
@@ -34,7 +34,7 @@ describe("file-system-controller", () => {
     expect(searchController.searchProjects("test")).toEqual([]);
   });
 
-  it("searchNotes - returns error if wrong schema passed in", () => {
+  it("searchNotes - returns error if wrong schema", () => {
     expect(
       searchController.searchNotes({ query: "test" } as any as searchRequest)
     ).toEqual(new Error("Request does not match schema"));

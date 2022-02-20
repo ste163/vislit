@@ -24,7 +24,7 @@ describe("file-system-controller", () => {
     fileSystemController = new FileSystemController("");
   });
 
-  it("makeProjectDirectory - returns error if wrong schema passed in", async () => {
+  it("makeProjectDirectory - returns error if wrong schema", async () => {
     expect(
       await fileSystemController.makeProjectDirectory(3 as any as string)
     ).toEqual(new Error("Request does not match schema"));
@@ -34,7 +34,7 @@ describe("file-system-controller", () => {
     expect(await fileSystemController.makeProjectDirectory("1")).toEqual(true);
   });
 
-  it("deleteProjectDirectory - returns error if wrong schema passed in", async () => {
+  it("deleteProjectDirectory - returns error if wrong schema", async () => {
     expect(
       await fileSystemController.deleteProjectDirectory(3 as any as string)
     ).toEqual(new Error("Request does not match schema"));
@@ -46,7 +46,7 @@ describe("file-system-controller", () => {
     );
   });
 
-  it("writeHtmlFile - returns error if wrong schema passed in", async () => {
+  it("writeHtmlFile - returns error if wrong schema", async () => {
     expect(
       await fileSystemController.writeHtmlFile(3 as any as htmlWriteRequest)
     ).toEqual(new Error("Request does not match schema"));
@@ -62,7 +62,7 @@ describe("file-system-controller", () => {
     ).toEqual(true);
   });
 
-  it("deleteNote - returns error if wrong schema passed in", async () => {
+  it("deleteNote - returns error if wrong schema", async () => {
     expect(
       await fileSystemController.deleteNote({
         id: "1",
@@ -77,7 +77,7 @@ describe("file-system-controller", () => {
     ).toEqual(true);
   });
 
-  it("readNoteById - returns error if wrong schema passed in", async () => {
+  it("readNoteById - returns error if wrong schema", async () => {
     expect(
       await fileSystemController.readNoteById({
         noteId: "1",
@@ -92,7 +92,7 @@ describe("file-system-controller", () => {
     ).toEqual("/file.html");
   });
 
-  it("readMostRecentHtmlFile - returns error if wrong schema passed in", async () => {
+  it("readMostRecentHtmlFile - returns error if wrong schema", async () => {
     expect(
       await fileSystemController.readMostRecentHtmlFile(2 as any as string)
     ).toEqual(new Error("Request does not match schema"));
