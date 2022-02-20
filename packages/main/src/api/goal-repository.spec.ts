@@ -2,14 +2,11 @@
  * @vitest-environment node
  */
 import { describe, beforeEach, it, expect, vi } from "vitest";
-import type { Goal, Project, Progress } from "interfaces";
+import type { Goal } from "interfaces";
 import { Database, initializeDatabase } from "../database";
 import GoalRepository from "./goal-repository";
 
 describe("goal-repository", () => {
-  let seedProjects: Project[];
-  let seedGoals: Goal[];
-  let seedProgress: Progress[];
   let database: Database;
   let goalRepository: GoalRepository;
 
@@ -18,7 +15,9 @@ describe("goal-repository", () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     const { app } = await vi.importMock("electron");
     const initDb = await initializeDatabase(app);
-    seedProjects = [
+
+    database = new Database(initDb);
+    database.db.data!.projects = [
       {
         id: "1",
         title: "It",
@@ -40,7 +39,7 @@ describe("goal-repository", () => {
         dateModified: new Date(),
       },
     ];
-    seedGoals = [
+    database.db.data!.goals = [
       {
         id: "1",
         projectId: "2",
@@ -66,7 +65,7 @@ describe("goal-repository", () => {
         completed: false,
       },
     ];
-    seedProgress = [
+    database.db.data!.progress = [
       {
         date: new Date().toISOString(),
         projectId: "1",
@@ -95,10 +94,6 @@ describe("goal-repository", () => {
         revised: true,
       },
     ];
-    database = new Database(initDb);
-    database.db.data!.projects = seedProjects;
-    database.db.data!.goals = seedGoals;
-    database.db.data!.progress = seedProgress;
     goalRepository = new GoalRepository(database);
   });
 
@@ -126,7 +121,32 @@ describe("goal-repository", () => {
   });
 
   it("getManyById - returns all goals found with those ids", () => {
-    expect(goalRepository.getManyById(["1", "2"])).toEqual(seedGoals);
+    expect(goalRepository.getManyById(["1", "2"])).toEqual([
+      {
+        id: "1",
+        projectId: "2",
+        wordCount: 500,
+        isDaily: false,
+        daysPerMonth: 14,
+        proofreadCountsTowardGoal: true,
+        editCountsTowardGoal: true,
+        revisedCountsTowardsGoal: true,
+        active: false,
+        completed: false,
+      },
+      {
+        id: "2",
+        projectId: "2",
+        wordCount: 1,
+        isDaily: true,
+        daysPerMonth: null,
+        proofreadCountsTowardGoal: false,
+        editCountsTowardGoal: true,
+        revisedCountsTowardsGoal: true,
+        active: true,
+        completed: false,
+      },
+    ]);
   });
 
   it("getActive - returns undefined if no goals with that projectId", () => {
