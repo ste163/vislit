@@ -80,7 +80,7 @@ class ProjectRepository {
     return this.getById(project.id!) as Project;
   }
 
-  async delete(id: string): Promise<true> {
+  async delete(id: string): Promise<void> {
     const filteredNotes = this.database.db.data?.notes.filter(
       (note) => note.projectId !== id
     ) as Note[];

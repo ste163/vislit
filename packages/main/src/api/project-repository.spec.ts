@@ -63,6 +63,35 @@ describe("project-repository", () => {
         completed: false,
       },
     ];
+    database.db.data!.progress = [
+      {
+        date: new Date(),
+        projectId: "1",
+        goalId: "1",
+        count: 250,
+        edited: false,
+        proofread: false,
+        revised: false,
+      },
+      {
+        date: new Date(),
+        projectId: "1",
+        goalId: "1",
+        count: 500,
+        edited: false,
+        proofread: true,
+        revised: false,
+      },
+    ];
+    database.db.data!.notes = [
+      {
+        id: "1",
+        projectId: "1",
+        title: "First Note",
+        dateCreated: new Date(),
+        dateModified: new Date(),
+      },
+    ];
   });
 
   it("getAll - can get all projects", () => {
@@ -223,9 +252,18 @@ describe("project-repository", () => {
     });
   });
 
-  it("delete - returns void when project deleted", async () => {
+  it("delete - returns void when project deleted and deletes all related data", async () => {
+    const originalNoteLength = database.db.data!.notes.length;
+    const originalGoalLength = database.db.data!.goals.length;
+    const originalProgressLength = database.db.data!.progress.length;
+
     await projectRepository.delete("1");
     const projects = projectRepository.getAll();
     expect(projects.length).toEqual(1);
+    expect(originalNoteLength - 1).toEqual(database.db.data!.notes.length);
+    expect(originalGoalLength - 1).toEqual(database.db.data!.goals.length);
+    expect(originalProgressLength - 2).toEqual(
+      database.db.data!.progress.length
+    );
   });
 });
