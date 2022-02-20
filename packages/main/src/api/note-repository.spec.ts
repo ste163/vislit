@@ -155,11 +155,10 @@ describe("note-repository", () => {
     expect(updatedNote.title).toEqual("First Note that's Updated");
   });
 
-  it("delete - returns true after deleting", async () => {
+  it("delete - returns void after deleting", async () => {
     const originalCount = database.db.data!.notes.length;
-    const response = await noteRepository.delete("2");
+    await noteRepository.delete("2");
     const newCount = database.db.data!.notes.length;
-    expect(response).toEqual(true);
     expect(originalCount - 1).toEqual(newCount);
   });
 });

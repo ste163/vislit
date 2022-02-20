@@ -37,13 +37,12 @@ class NoteRepository {
     return this.getById(note.id as string) as Note;
   }
 
-  async delete(id: string): Promise<true> {
+  async delete(id: string): Promise<void> {
     const filteredNotes = this.database.db.data!.notes.filter(
       (n) => n.id !== id
     );
     this.database.db.data!.notes = filteredNotes;
     await this.database.db.write();
-    return true;
   }
 }
 
