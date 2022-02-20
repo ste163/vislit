@@ -73,6 +73,12 @@ describe("project-controller", () => {
     expect(projectController.getAll()).toEqual(seedData);
   });
 
+  it("getById - returns error if incorrect schema", async () => {
+    expect(await projectController.getById(231 as any)).toEqual(
+      new Error("Request does not match schema")
+    );
+  });
+
   it("getById - returns error if getting project by id is not in db", () => {
     expect(projectController.getById("300")).toEqual(
       new Error("Project with id 300 not in database")
@@ -85,7 +91,7 @@ describe("project-controller", () => {
     expect(searchResult[0].title).toBe("It");
   });
 
-  it("add - returns error if project doesn't match schema", async () => {
+  it("add - returns error if incorrect schema", async () => {
     expect(
       await projectController.add({
         description: "A murderous clown attacks a town",
@@ -122,7 +128,7 @@ describe("project-controller", () => {
     expect(searchResult[0].title).toEqual("The Dark Half");
   });
 
-  it("update - returns error if updating project that doesn't match schema", async () => {
+  it("update - returns error if incorrect schema", async () => {
     const updatedProject = {
       title: "The Dark Half",
       description: "An evil pseudonym comes to life",
@@ -188,19 +194,19 @@ describe("project-controller", () => {
     expect(searchResult[0].title).toEqual("It - revised");
   });
 
-  it("delete - returns error if projectId doesn't match schema", async () => {
+  it("delete - returns error if incorrect schema", async () => {
     expect(await projectController.delete(999 as any as string)).toBeInstanceOf(
       Error
     );
   });
 
-  it("returns error if project to delete is not in db", async () => {
+  it("delete - returns error if project is not in db", async () => {
     expect(await projectController.delete("4")).toEqual(
       new Error("Project not in database")
     );
   });
 
-  it("delete - returns true and project is no longer searchable on delete", async () => {
+  it("delete - returns true and project is no longer searchable", async () => {
     const response = await projectController.delete("2");
     const searchResult = searchController.searchProjects("shining");
 
