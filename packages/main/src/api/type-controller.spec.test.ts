@@ -1,6 +1,7 @@
 /**
- * @jest-environment node
+ * @vitest-environment node
  */
+import { describe, beforeEach, it, expect, vi } from "vitest";
 import type { Project, Type } from "interfaces";
 import { Database, initializeDatabase } from "../database";
 import TypeRepository from "./type-repository";
@@ -15,9 +16,11 @@ let typeController: TypeController;
 
 describe("type-controller-integration", () => {
   const typeSeedDate = new Date();
+
   beforeEach(async () => {
-    jest.spyOn(console, "error").mockImplementation(() => {});
-    const { app } = jest.requireMock("electron");
+    vi.spyOn(console, "log").mockImplementation(() => {});
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const { app } = await vi.importMock("electron");
     const initDb = await initializeDatabase(app);
     database = new Database(initDb);
     typeSeedData = [
@@ -89,7 +92,7 @@ describe("type-controller-integration", () => {
 
   it("returns error when get all types fails", () => {
     const mockTypeRepository = {
-      getAll: jest.fn(() => {
+      getAll: vi.fn(() => {
         throw new Error();
       }),
     } as unknown as TypeRepository;
@@ -145,8 +148,8 @@ describe("type-controller-integration", () => {
 
   it("returns error when adding type fails", async () => {
     const mockTypeRepository = {
-      getByValue: jest.fn(() => undefined),
-      add: jest.fn(() => {
+      getByValue: vi.fn(() => undefined),
+      add: vi.fn(() => {
         throw new Error();
       }),
     } as unknown as TypeRepository;
@@ -188,9 +191,9 @@ describe("type-controller-integration", () => {
 
   it("returns error when deleting type fails", async () => {
     const mockTypeRepository = {
-      getAll: jest.fn(() => typeSeedData),
-      checkForTypeTaken: jest.fn(() => undefined),
-      delete: jest.fn(() => {
+      getAll: vi.fn(() => typeSeedData),
+      checkForTypeTaken: vi.fn(() => undefined),
+      delete: vi.fn(() => {
         throw new Error();
       }),
     } as unknown as TypeRepository;

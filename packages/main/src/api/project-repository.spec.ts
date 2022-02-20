@@ -1,6 +1,7 @@
 /**
- * @jest-environment node
+ * @vitest-environment node
  */
+import { describe, beforeEach, it, expect, vi } from "vitest";
 import { Database, initializeDatabase } from "../database";
 import ProjectRepository from "./project-repository";
 
@@ -11,7 +12,8 @@ describe("project-repository", () => {
   const dateForShining = new Date();
 
   beforeEach(async () => {
-    const { app } = jest.requireMock("electron");
+    vi.spyOn(console, "log").mockImplementation(() => {});
+    const { app } = await vi.importMock("electron");
     const initDb = await initializeDatabase(app);
     database = new Database(initDb);
     projectRepository = new ProjectRepository(database);
@@ -51,9 +53,9 @@ describe("project-repository", () => {
       {
         id: "1",
         projectId: "1",
-        basedOnWordCountOrPageCount: "word",
-        wordOrPageCount: 500,
-        frequencyToRepeat: "daily",
+        isDaily: false,
+        daysPerMonth: 14,
+        wordCount: 500,
         proofreadCountsTowardGoal: true,
         editCountsTowardGoal: true,
         revisedCountsTowardsGoal: true,
@@ -109,9 +111,9 @@ describe("project-repository", () => {
           {
             id: "1",
             projectId: "1",
-            basedOnWordCountOrPageCount: "word",
-            wordOrPageCount: 500,
-            frequencyToRepeat: "daily",
+            isDaily: false,
+            daysPerMonth: 14,
+            wordCount: 500,
             proofreadCountsTowardGoal: true,
             editCountsTowardGoal: true,
             revisedCountsTowardsGoal: true,
@@ -234,9 +236,9 @@ describe("project-repository", () => {
         {
           id: "1",
           projectId: "1",
-          basedOnWordCountOrPageCount: "word",
-          wordOrPageCount: 500,
-          frequencyToRepeat: "daily",
+          isDaily: false,
+          daysPerMonth: 14,
+          wordCount: 500,
           proofreadCountsTowardGoal: true,
           editCountsTowardGoal: true,
           revisedCountsTowardsGoal: true,

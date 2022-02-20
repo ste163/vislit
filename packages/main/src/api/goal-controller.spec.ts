@@ -1,6 +1,7 @@
 /**
- * @jest-environment node
+ * @vitest-environment node
  */
+import { describe, beforeEach, it, expect, vi } from "vitest";
 import type { Goal, Project } from "interfaces";
 import { Database, initializeDatabase } from "../database";
 import ProjectRepository from "./project-repository";
@@ -22,8 +23,9 @@ describe("goal-controller", () => {
   let goalController: GoalController;
 
   beforeEach(async () => {
-    jest.spyOn(console, "error").mockImplementation(() => {});
-    const { app } = jest.requireMock("electron");
+    vi.spyOn(console, "log").mockImplementation(() => {});
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const { app } = await vi.importMock("electron");
     const initDb = await initializeDatabase(app);
     database = new Database(initDb);
     seedProjects = [
@@ -63,9 +65,8 @@ describe("goal-controller", () => {
     database.db.data!.projects = seedProjects;
     database.db.data!.goals.push(seedGoal);
     projectRepository = new ProjectRepository(database);
-    const mockSearchController = jest.fn() as unknown as SearchController;
-    const mockFileSystemController =
-      jest.fn() as unknown as FileSystemController;
+    const mockSearchController = vi.fn() as unknown as SearchController;
+    const mockFileSystemController = vi.fn() as unknown as FileSystemController;
     projectController = new ProjectController(
       projectRepository,
       mockSearchController,
@@ -149,8 +150,8 @@ describe("goal-controller", () => {
 
   it("returns error when setting complete for a project without an active goal", async () => {
     const mockGoalRepository = {
-      getById: jest.fn(() => seedGoal),
-      getActive: jest.fn(() => undefined),
+      getById: vi.fn(() => seedGoal),
+      getActive: vi.fn(() => undefined),
     } as unknown as GoalRepository;
 
     const goalController = new GoalController(
@@ -169,8 +170,8 @@ describe("goal-controller", () => {
     };
 
     const mockGoalRepository = {
-      getById: jest.fn(() => seedGoal),
-      getActive: jest.fn(() => mockActiveGoal),
+      getById: vi.fn(() => seedGoal),
+      getActive: vi.fn(() => mockActiveGoal),
     } as unknown as GoalRepository;
 
     const goalController = new GoalController(
@@ -238,8 +239,8 @@ describe("goal-controller", () => {
     };
 
     const mockGoalRepository = {
-      getById: jest.fn(() => goal),
-      getActive: jest.fn(() => undefined),
+      getById: vi.fn(() => goal),
+      getActive: vi.fn(() => undefined),
     } as unknown as GoalRepository;
 
     const goalController = new GoalController(
@@ -271,8 +272,8 @@ describe("goal-controller", () => {
     };
 
     const mockGoalRepository = {
-      getById: jest.fn(() => goal),
-      getActive: jest.fn(() => mockActiveGoal),
+      getById: vi.fn(() => goal),
+      getActive: vi.fn(() => mockActiveGoal),
     } as unknown as GoalRepository;
 
     const goalController = new GoalController(

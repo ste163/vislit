@@ -1,6 +1,7 @@
 /**
- * @jest-environment node
+ * @vitest-environment node
  */
+import { describe, beforeEach, it, expect, vi } from "vitest";
 import { Database, initializeDatabase } from "../database";
 import TypeRepository from "./type-repository";
 
@@ -9,7 +10,8 @@ describe("type-repository", () => {
   const typeSeedDate = new Date();
 
   beforeEach(async () => {
-    const { app } = jest.requireMock("electron");
+    vi.spyOn(console, "log").mockImplementation(() => {});
+    const { app } = await vi.importMock("electron");
     const initDb = await initializeDatabase(app);
     const database = new Database(initDb);
     typeRepository = new TypeRepository(database);

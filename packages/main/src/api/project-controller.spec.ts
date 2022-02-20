@@ -1,6 +1,7 @@
 /**
- * @jest-environment node
+ * @vitest-environment node
  */
+import { describe, beforeEach, it, expect, vi } from "vitest";
 import type { Project } from "interfaces";
 import { Database, initializeDatabase } from "../database";
 import { SearchController, initializeSearchIndexes } from "./search-controller";
@@ -22,8 +23,9 @@ describe("project-controller-integration", () => {
   let fileSystemController: FileSystemController;
 
   beforeEach(async () => {
-    jest.spyOn(console, "error").mockImplementation(() => {});
-    const { app } = jest.requireMock("electron");
+    vi.spyOn(console, "log").mockImplementation(() => {});
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const { app } = await vi.importMock("electron");
     const initDb = await initializeDatabase(app);
     database = new Database(initDb);
     const seedDate = new Date();
@@ -59,8 +61,8 @@ describe("project-controller-integration", () => {
       noteSearchIndex
     );
     const mockFileSystemController = {
-      makeProjectDirectory: jest.fn(() => undefined),
-      deleteProjectDirectory: jest.fn(() => undefined),
+      makeProjectDirectory: vi.fn(() => undefined),
+      deleteProjectDirectory: vi.fn(() => undefined),
     } as unknown as FileSystemController;
     projectController = new ProjectController(
       projectRepository,
@@ -71,7 +73,7 @@ describe("project-controller-integration", () => {
 
   it("returns error when getting all projects", () => {
     const mockProjectRepository = {
-      getAll: jest.fn(() => {
+      getAll: vi.fn(() => {
         throw new Error();
       }),
     };
@@ -97,7 +99,7 @@ describe("project-controller-integration", () => {
 
   it("returns error if get by id fails", () => {
     const mockProjectRepository = {
-      getById: jest.fn(() => {
+      getById: vi.fn(() => {
         throw new Error();
       }),
     };
@@ -122,7 +124,7 @@ describe("project-controller-integration", () => {
       await projectController.add({
         description: "A murderous clown attacks a town",
         typeId: "2",
-      })
+      } as any)
     ).toBeInstanceOf(ZodError);
   });
 
@@ -163,9 +165,9 @@ describe("project-controller-integration", () => {
       archived: false,
     };
 
-    expect(await projectController.update(updatedProject)).toBeInstanceOf(
-      ZodError
-    );
+    expect(
+      await projectController.update(updatedProject as any)
+    ).toBeInstanceOf(ZodError);
   });
 
   it("returns error if updating project with id not in db", async () => {
@@ -209,10 +211,10 @@ describe("project-controller-integration", () => {
     };
 
     const mockProjectRepository = {
-      update: jest.fn(() => {
+      update: vi.fn(() => {
         throw new Error();
       }),
-      getById: jest.fn(() => projectToUpdate),
+      getById: vi.fn(() => projectToUpdate),
     };
 
     projectController = new ProjectController(
@@ -262,10 +264,10 @@ describe("project-controller-integration", () => {
 
   it("returns error if project delete fails", async () => {
     const mockProjectRepository = {
-      delete: jest.fn(() => {
+      delete: vi.fn(() => {
         throw new Error();
       }),
-      getById: jest.fn(() => seedData[0]),
+      getById: vi.fn(() => seedData[0]),
     };
 
     projectController = new ProjectController(

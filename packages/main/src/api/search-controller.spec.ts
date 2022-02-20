@@ -1,6 +1,7 @@
 /**
- * @jest-environment node
+ * @vitest-environment node
  */
+import { describe, beforeEach, it, expect, vi } from "vitest";
 import { ZodError } from "zod";
 import { Database, initializeDatabase } from "../database";
 import { SearchController, initializeSearchIndexes } from "./search-controller";
@@ -11,9 +12,10 @@ import type { searchRequest } from "../schemas";
 describe("file-system-controller", () => {
   let searchController: SearchController;
 
-  beforeAll(async () => {
-    jest.spyOn(console, "error").mockImplementation(async () => {});
-    const { app } = jest.requireMock("electron");
+  beforeEach(async () => {
+    vi.spyOn(console, "log").mockImplementation(() => {});
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const { app } = await vi.importMock("electron");
     const initDb = await initializeDatabase(app);
     const database = new Database(initDb);
     const { projectSearchIndex, noteSearchIndex } =
