@@ -19,7 +19,7 @@ describe("progress-repository", () => {
     const initDb = await initializeDatabase(app);
     database = new Database(initDb);
     progressRepository = new ProgressRepository(database);
-    const seedProgress: Progress[] = [
+    database.db.data!.progress = [
       {
         date: seedDate,
         projectId: "1",
@@ -57,7 +57,6 @@ describe("progress-repository", () => {
         revised: true,
       },
     ];
-    database.db.data!.progress = seedProgress;
   });
 
   it("getByDate - returns undefined if date not found", () => {

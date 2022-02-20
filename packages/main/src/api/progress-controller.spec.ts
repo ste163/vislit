@@ -2,7 +2,7 @@
  * @vitest-environment node
  */
 import { describe, beforeEach, it, expect, vi } from "vitest";
-import type { Project, Goal, Progress } from "interfaces";
+import type { Progress } from "interfaces";
 import type FileSystemController from "./file-system-controller";
 
 import { Database, initializeDatabase } from "../database";
@@ -14,9 +14,6 @@ import ProjectController from "./project-controller";
 import ProjectRepository from "./project-repository";
 
 describe("progress-controller", () => {
-  let seedProjects: Project[];
-  let seedGoals: Goal[];
-  let seedProgress: Progress[];
   let database: Database;
   let goalRepository: GoalRepository;
   let progressRepository: ProgressRepository;
@@ -39,7 +36,7 @@ describe("progress-controller", () => {
     const initDb = await initializeDatabase(app);
     database = new Database(initDb);
     const projectSeedDate = new Date();
-    seedProjects = [
+    const seedProjects = [
       {
         id: "1",
         title: "It",
@@ -61,7 +58,7 @@ describe("progress-controller", () => {
         dateModified: projectSeedDate,
       },
     ];
-    seedGoals = [
+    const seedGoals = [
       {
         id: "1",
         projectId: "1",
@@ -87,7 +84,7 @@ describe("progress-controller", () => {
         completed: false,
       },
     ];
-    seedProgress = [
+    const seedProgress = [
       {
         date: progressSeedDate1,
         projectId: "1",
@@ -188,7 +185,7 @@ describe("progress-controller", () => {
     );
   });
 
-  it("getByDate - returns error schema doesn't match", () => {
+  it("getByDate - returns error if incorrect schema", () => {
     const request = {
       projectId: "3",
       date: new Date("2020-01-01") as any as string,
@@ -382,7 +379,7 @@ describe("progress-controller", () => {
     ]);
   });
 
-  it("modify - returns error if doesn't match schema", async () => {
+  it("modify - returns error if incorrect schema", async () => {
     const progressDate = new Date("2020-01-20");
     const progress: Progress = {
       date: progressDate as any as string,

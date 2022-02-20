@@ -6,13 +6,11 @@ import { Database, initializeDatabase } from "../database";
 import { SearchController, initializeSearchIndexes } from "./search-controller";
 import NoteRepository from "./note-repository";
 import NoteController from "./note-controller";
-import type { Project, Note } from "interfaces";
+import type { Note } from "interfaces";
 import type FileSystemController from "./file-system-controller";
 import type { updateNoteRequest } from "../schemas";
 
 describe("project-controller", () => {
-  let seedProjects: Project[];
-  let seedNotes: Note[];
   let database: Database;
   let noteRepository: NoteRepository;
   let searchController: SearchController;
@@ -25,7 +23,7 @@ describe("project-controller", () => {
     const { app } = await vi.importMock("electron");
     const initDb = await initializeDatabase(app);
     database = new Database(initDb);
-    seedProjects = [
+    database.db.data!.projects = [
       {
         id: "1",
         title: "It",
@@ -47,7 +45,7 @@ describe("project-controller", () => {
         dateModified: seedDate,
       },
     ];
-    seedNotes = [
+    database.db.data!.notes = [
       {
         id: "1",
         projectId: "1",
@@ -63,9 +61,6 @@ describe("project-controller", () => {
         dateModified: seedDate,
       },
     ];
-
-    database.db.data!.projects = seedProjects;
-    database.db.data!.notes = seedNotes;
     noteRepository = new NoteRepository(database);
     const { projectSearchIndex, noteSearchIndex } =
       await initializeSearchIndexes(database);
@@ -84,7 +79,7 @@ describe("project-controller", () => {
     );
   });
 
-  it("getAllByProjectId - returns error if trying to get all notes with projectId that doesn't match schema", () => {
+  it("getAllByProjectId - returns error if incorrect schema", () => {
     expect(noteController.getAllByProjectId(123 as any as string)).toEqual(
       new Error("Request does not match schema")
     );
@@ -95,10 +90,25 @@ describe("project-controller", () => {
   });
 
   it("getAllByProjectId - returns notes by projectId", () => {
-    expect(noteController.getAllByProjectId("1")).toEqual(seedNotes);
+    expect(noteController.getAllByProjectId("1")).toEqual([
+      {
+        id: "1",
+        projectId: "1",
+        title: "First Note",
+        dateCreated: seedDate,
+        dateModified: seedDate,
+      },
+      {
+        id: "2",
+        projectId: "1",
+        title: "Second Note",
+        dateCreated: seedDate,
+        dateModified: seedDate,
+      },
+    ]);
   });
 
-  it("getById - returns error if trying to get note with id that doesn't match schema", async () => {
+  it("getById - returns error if incorrect schema", async () => {
     expect(await noteController.getById(123 as any as string)).toEqual(
       new Error("Request does not match schema")
     );
@@ -121,7 +131,7 @@ describe("project-controller", () => {
     });
   });
 
-  it("add - returns error if trying to add note that doesn't match schema", async () => {
+  it("add - returns error if incorrect schema", async () => {
     expect(
       await noteController.add({
         title: 342 as any as string,
@@ -158,7 +168,7 @@ describe("project-controller", () => {
     expect(searchResult[0].title).toBe("Newest Note");
   });
 
-  it("update - returns error if trying to update note that does not match schema", async () => {
+  it("update - returns error if incorrect schema", async () => {
     const note = {
       id: "999",
       projectId: "1",
@@ -212,7 +222,7 @@ describe("project-controller", () => {
     expect(searchResult[0].title).toEqual("Updated Second Note");
   });
 
-  it("delete - returns error if trying to delete with id that doesn't match schema", async () => {
+  it("delete - returns error if incorrect schema", async () => {
     expect(await noteController.delete(123 as any as string)).toEqual(
       new Error("Request does not match schema")
     );
