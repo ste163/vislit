@@ -13,13 +13,12 @@ import type FileSystemController from "./file-system-controller";
 // add failure test for makeProjectDirectory
 // add failure test for deleteProjectDirectory
 
-describe("project-controller-integration", () => {
+describe("project-controller", () => {
   let seedData: Project[];
   let database: Database;
   let projectRepository: ProjectRepository;
   let searchController: SearchController;
   let projectController: ProjectController;
-  let fileSystemController: FileSystemController;
 
   beforeEach(async () => {
     vi.spyOn(console, "log").mockImplementation(() => {});
@@ -70,55 +69,23 @@ describe("project-controller-integration", () => {
     );
   });
 
-  it("returns error when getting all projects", () => {
-    const mockProjectRepository = {
-      getAll: vi.fn(() => {
-        throw new Error();
-      }),
-    };
-
-    projectController = new ProjectController(
-      mockProjectRepository as unknown as ProjectRepository,
-      searchController,
-      fileSystemController
-    );
-
-    expect(projectController.getAll()).toEqual(new Error());
-  });
-
-  it("returns all projects", () => {
+  it("getAll - returns all projects", () => {
     expect(projectController.getAll()).toEqual(seedData);
   });
 
-  it("returns error if getting project by id is not in db", () => {
+  it("getById - returns error if getting project by id is not in db", () => {
     expect(projectController.getById("300")).toEqual(
       new Error("Project with id 300 not in database")
     );
   });
 
-  it("returns error if get by id fails", () => {
-    const mockProjectRepository = {
-      getById: vi.fn(() => {
-        throw new Error();
-      }),
-    };
-
-    projectController = new ProjectController(
-      mockProjectRepository as unknown as ProjectRepository,
-      searchController,
-      fileSystemController
-    );
-
-    expect(projectController.getById("20")).toEqual(new Error());
-  });
-
-  it("returns project by id and can search for id by title", () => {
+  it("getById - returns project by id and can search for id by title", () => {
     const searchResult = searchController.searchProjects("it");
     expect(projectController.getById("1")).toEqual(seedData[0]);
     expect(searchResult[0].title).toBe("It");
   });
 
-  it("returns error if project doesn't match schema", async () => {
+  it("add - returns error if project doesn't match schema", async () => {
     expect(
       await projectController.add({
         description: "A murderous clown attacks a town",
@@ -127,7 +94,7 @@ describe("project-controller-integration", () => {
     ).toEqual(new Error("Request does not match schema"));
   });
 
-  it("returns duplicate title error if adding a project with a title already in db", async () => {
+  it("add - returns duplicate title error if adding a project with a title already in db", async () => {
     expect(
       await projectController.add({
         title: "It",
@@ -137,7 +104,7 @@ describe("project-controller-integration", () => {
     ).toEqual(new Error("Project title already in database"));
   });
 
-  it("returns trimmed project and is searchable after adding", async () => {
+  it("add - returns trimmed project and is searchable after adding", async () => {
     const projectToAdd = {
       title: "    The Dark Half  ",
       description: "  An evil pseudonym comes to life    ",
@@ -155,7 +122,7 @@ describe("project-controller-integration", () => {
     expect(searchResult[0].title).toEqual("The Dark Half");
   });
 
-  it("returns error if updating project that doesn't match schema", async () => {
+  it("update - returns error if updating project that doesn't match schema", async () => {
     const updatedProject = {
       title: "The Dark Half",
       description: "An evil pseudonym comes to life",
@@ -169,7 +136,7 @@ describe("project-controller-integration", () => {
     );
   });
 
-  it("returns error if updating project with id not in db", async () => {
+  it("update - returns error if updating project with id not in db", async () => {
     const updatedProject = {
       id: "5",
       title: "The Dark Half",
@@ -184,7 +151,7 @@ describe("project-controller-integration", () => {
     );
   });
 
-  it("returns error if updating project with new title already in db", async () => {
+  it("update - returns error if updating project with new title already in db", async () => {
     const updatedProject = {
       id: "1",
       title: "The Shining",
@@ -199,35 +166,7 @@ describe("project-controller-integration", () => {
     );
   });
 
-  it("returns error if updating project fails", async () => {
-    const projectToUpdate = {
-      id: "1",
-      title: "The Dark Half",
-      description: "An evil pseudonym comes to life",
-      typeId: "2",
-      completed: false,
-      archived: false,
-    };
-
-    const mockProjectRepository = {
-      update: vi.fn(() => {
-        throw new Error();
-      }),
-      getById: vi.fn(() => projectToUpdate),
-    };
-
-    projectController = new ProjectController(
-      mockProjectRepository as unknown as ProjectRepository,
-      searchController,
-      fileSystemController
-    );
-
-    expect(await projectController.update(projectToUpdate)).toEqual(
-      new Error()
-    );
-  });
-
-  it("returns updated, trimmed project and updated project is searchable", async () => {
+  it("update - returns updated, trimmed project and updated project is searchable", async () => {
     const projectToUpdate = {
       id: "1",
       title: "    It - revised      ",
@@ -249,7 +188,7 @@ describe("project-controller-integration", () => {
     expect(searchResult[0].title).toEqual("It - revised");
   });
 
-  it("returns error if projectId doesn't match schema", async () => {
+  it("delete - returns error if projectId doesn't match schema", async () => {
     expect(await projectController.delete(999 as any as string)).toBeInstanceOf(
       Error
     );
@@ -261,28 +200,11 @@ describe("project-controller-integration", () => {
     );
   });
 
-  it("returns error if project delete fails", async () => {
-    const mockProjectRepository = {
-      delete: vi.fn(() => {
-        throw new Error();
-      }),
-      getById: vi.fn(() => seedData[0]),
-    };
-
-    projectController = new ProjectController(
-      mockProjectRepository as unknown as ProjectRepository,
-      searchController,
-      fileSystemController
-    );
-
-    expect(await projectController.delete("1")).toEqual(new Error());
-  });
-
-  it("returns true and project is no longer searchable on delete", async () => {
+  it("delete - returns true and project is no longer searchable on delete", async () => {
     const response = await projectController.delete("2");
     const searchResult = searchController.searchProjects("shining");
 
-    expect(response).toEqual(true);
+    expect(response).toBe(true);
     expect(searchResult).toEqual([]);
   });
 });

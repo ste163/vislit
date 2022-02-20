@@ -102,11 +102,11 @@ describe("goal-repository", () => {
     goalRepository = new GoalRepository(database);
   });
 
-  it("returns undefined if no goal by id found", () => {
+  it("getById - returns undefined if no goal by id found", () => {
     expect(goalRepository.getById("999")).toBeUndefined();
   });
 
-  it("returns goal by id", () => {
+  it("getById - returns goal by id", () => {
     expect(goalRepository.getById("1")).toEqual({
       id: "1",
       projectId: "2",
@@ -121,23 +121,23 @@ describe("goal-repository", () => {
     });
   });
 
-  it("returns empty array if no goals by id found", () => {
+  it("getManyById - returns empty array if no goals by id found", () => {
     expect(goalRepository.getManyById(["998", "999"])).toStrictEqual([]);
   });
 
-  it("returns all goals found with those ids", () => {
+  it("getManyById - returns all goals found with those ids", () => {
     expect(goalRepository.getManyById(["1", "2"])).toEqual(seedGoals);
   });
 
-  it("returns undefined if no goals with that projectId", () => {
+  it("getActive - returns undefined if no goals with that projectId", () => {
     expect(goalRepository.getActive("999")).toEqual(undefined);
   });
 
-  it("returns undefined if projectId in database but no active goals", () => {
+  it("getActive - returns undefined if projectId in database but no active goals", () => {
     expect(goalRepository.getActive("1")).toEqual(undefined);
   });
 
-  it("returns active goal by projectId", () => {
+  it("getActive - returns active goal by projectId", () => {
     const goal = goalRepository.getActive("2");
     expect(goal).toEqual({
       id: "2",
@@ -153,7 +153,7 @@ describe("goal-repository", () => {
     });
   });
 
-  it("returns goal after successful add", async () => {
+  it("add - returns goal after successful add", async () => {
     const goalToAdd: Goal = {
       projectId: "1",
       isDaily: true,
@@ -169,7 +169,7 @@ describe("goal-repository", () => {
     expect(database.db.data!.goals.length).toEqual(3);
   });
 
-  it("returns updated goal after successful update", async () => {
+  it("update - returns updated goal after successful update", async () => {
     const goal = goalRepository.getById("1");
     if (goal) {
       goal.wordCount = 5;
@@ -179,7 +179,7 @@ describe("goal-repository", () => {
     }
   });
 
-  it("returns void if goal deleted and progress deleted", async () => {
+  it("delete - returns void if goal deleted and progress deleted", async () => {
     const initialGoalCount = database.db.data!.goals.length;
     await goalRepository.delete("1");
     const postDeleteGoalCount = database.db.data!.goals.length;

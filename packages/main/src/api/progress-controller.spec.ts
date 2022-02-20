@@ -13,7 +13,7 @@ import ProgressRepository from "./progress-repository";
 import ProjectController from "./project-controller";
 import ProjectRepository from "./project-repository";
 
-describe("progress-controller-integration", () => {
+describe("progress-controller", () => {
   let seedProjects: Project[];
   let seedGoals: Goal[];
   let seedProgress: Progress[];

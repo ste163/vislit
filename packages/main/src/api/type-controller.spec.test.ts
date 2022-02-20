@@ -13,7 +13,7 @@ let database: Database;
 let typeRepository: TypeRepository;
 let typeController: TypeController;
 
-describe("type-controller-integration", () => {
+describe("type-controller", () => {
   const typeSeedDate = new Date();
 
   beforeEach(async () => {
@@ -89,17 +89,7 @@ describe("type-controller-integration", () => {
     typeController = new TypeController(typeRepository);
   });
 
-  it("returns error when get all types fails", () => {
-    const mockTypeRepository = {
-      getAll: vi.fn(() => {
-        throw new Error();
-      }),
-    } as unknown as TypeRepository;
-    typeController = new TypeController(mockTypeRepository);
-    expect(typeController.getAll()).toEqual(new Error());
-  });
-
-  it("returns all types sorted alphabetically", () => {
+  it("getAll - returns all types sorted alphabetically", () => {
     expect(typeController.getAll()).toEqual([
       {
         id: "3",
@@ -139,68 +129,45 @@ describe("type-controller-integration", () => {
     ]);
   });
 
-  it("returns error when trying to add a type already in db", async () => {
+  it("add - returns error when trying to add a type already in db", async () => {
     expect(await typeController.add("novel")).toEqual(
       new Error("Type is already in database")
     );
   });
 
-  it("returns error when adding type fails", async () => {
-    const mockTypeRepository = {
-      getByValue: vi.fn(() => undefined),
-      add: vi.fn(() => {
-        throw new Error();
-      }),
-    } as unknown as TypeRepository;
-    typeController = new TypeController(mockTypeRepository);
-    expect(await typeController.add("new")).toEqual(new Error());
-  });
-
-  it("returns error when value doesn't match schema", async () => {
+  it("add - returns error when value doesn't match schema", async () => {
     expect(await typeController.add(999 as any as string)).toEqual(
       new Error("Request does not match schema")
     );
   });
 
-  it("returns added, trimmed, and normalized type successfully", async () => {
+  it("add - returns added, trimmed, and normalized type successfully", async () => {
     const addedType = await typeController.add("  NeW   ");
     expect((addedType as Type).value).toEqual("new");
     expect(addedType).toHaveProperty("id");
     expect(addedType).toHaveProperty("dateCreated");
   });
 
-  it("returns error when deleting doesn't match schema", async () => {
+  it("delete - returns error when deleting doesn't match schema", async () => {
     expect(await typeController.delete(999 as any as string)).toEqual(
       new Error("Request does not match schema")
     );
   });
 
-  it("returns error when trying to delete type by id not in database", async () => {
+  it("delete - returns error when trying to delete type by id not in database", async () => {
     expect(await typeController.delete("9000")).toEqual(
       new Error("Type not in database")
     );
   });
 
-  it("returns error when trying to delete a type linked to a project already in database", async () => {
+  it("delete - returns error when trying to delete a type linked to a project already in database", async () => {
     const response = await typeController.delete("1");
     expect(response).toEqual(
       new Error("Type cannot be deleted as projects are connected to this type")
     );
   });
 
-  it("returns error when deleting type fails", async () => {
-    const mockTypeRepository = {
-      getAll: vi.fn(() => typeSeedData),
-      checkForTypeTaken: vi.fn(() => undefined),
-      delete: vi.fn(() => {
-        throw new Error();
-      }),
-    } as unknown as TypeRepository;
-    typeController = new TypeController(mockTypeRepository);
-    expect(await typeController.delete("1")).toEqual(new Error());
-  });
-
-  it("returns true when deleting a type not connected to a project is successful", async () => {
+  it("delete - returns true when deleting a type not connected to a project is successful", async () => {
     const originalTypeCount = (typeController.getAll() as Type[]).length;
     const response = await typeController.delete("6");
     const newTypeCount = (typeController.getAll() as Type[]).length;

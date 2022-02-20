@@ -65,37 +65,7 @@ describe("project-repository", () => {
     ];
   });
 
-  it("throws error if project date is null", () => {
-    database.db.data!.projects = [
-      {
-        id: "1",
-        title: "It",
-        description: "An evil clown attacks a town.",
-        typeId: "1",
-        completed: false,
-        archived: false,
-        dateCreated: null,
-        dateModified: dateForIt,
-      },
-      {
-        id: "2",
-        title: "The Shining",
-        description: "An evil hotel possesses a groundskeeper.",
-        typeId: "2",
-        completed: false,
-        archived: false,
-        dateCreated: dateForShining,
-        dateModified: null,
-      },
-    ];
-    try {
-      projectRepository.getAll();
-    } catch (e: any | Error) {
-      expect(e.message).toBe("Project date was null");
-    }
-  });
-
-  it("can get all projects", () => {
+  it("getAll - can get all projects", () => {
     const projects = projectRepository.getAll();
     expect(projects).toEqual([
       {
@@ -144,7 +114,7 @@ describe("project-repository", () => {
     ]);
   });
 
-  it("returns project by title", () => {
+  it("getByTitle - returns project by title", () => {
     const project = projectRepository.getByTitle("The Shining");
     expect(project).toEqual({
       id: "2",
@@ -163,12 +133,12 @@ describe("project-repository", () => {
     });
   });
 
-  it("returns undefined when getting project by title not in db", () => {
+  it("getByTitle - returns undefined when getting project by title not in db", () => {
     const project = projectRepository.getByTitle("The Dead Zone");
     expect(project).toBeUndefined();
   });
 
-  it("returns project by id", () => {
+  it("getById - returns project by id", () => {
     const project = projectRepository.getById("2");
     expect(project).toEqual({
       id: "2",
@@ -187,12 +157,12 @@ describe("project-repository", () => {
     });
   });
 
-  it("returns undefined when project by id not in database", () => {
+  it("getById - returns undefined when project by id not in database", () => {
     const project = projectRepository.getById("100");
     expect(project).toBeUndefined();
   });
 
-  it("returns added project", async () => {
+  it("add - returns added project", async () => {
     const date = new Date();
     const newProject = {
       title: "The Dead Zone",
@@ -210,7 +180,7 @@ describe("project-repository", () => {
     expect(projectCount).toEqual(3);
   });
 
-  it("returns updated project", async () => {
+  it("update - returns updated project", async () => {
     const dateModified = new Date();
     const updatedProject = {
       id: "1",
@@ -253,9 +223,9 @@ describe("project-repository", () => {
     });
   });
 
-  it("returns void when project deleted", async () => {
-    projectRepository.delete("1");
-    const projects = await projectRepository.getAll();
+  it("delete - returns void when project deleted", async () => {
+    await projectRepository.delete("1");
+    const projects = projectRepository.getAll();
     expect(projects.length).toEqual(1);
   });
 });

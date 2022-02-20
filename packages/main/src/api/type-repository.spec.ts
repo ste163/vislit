@@ -54,7 +54,7 @@ describe("type-repository", () => {
     ];
   });
 
-  it("returns all types sorted alphabetically", () => {
+  it("getAll - returns all types sorted alphabetically", () => {
     const types = typeRepository.getAll();
     expect(types).toEqual([
       {
@@ -95,11 +95,11 @@ describe("type-repository", () => {
     ]);
   });
 
-  it("returns undefined if type is not in database", () => {
+  it("getByValue - returns undefined if type is not in database", () => {
     expect(typeRepository.getByValue("non-fiction")).toEqual(undefined);
   });
 
-  it("returns type if it's in database", () => {
+  it("getByValue - returns type if it's in database", () => {
     expect(typeRepository.getByValue("short story")).toEqual({
       id: "4",
       value: "short story",
@@ -107,7 +107,7 @@ describe("type-repository", () => {
     });
   });
 
-  it("returns added type when successfully added", async () => {
+  it("add - returns added type when successfully added", async () => {
     const originalTypeCount = typeRepository.getAll().length;
     const addedType = await typeRepository.add("non-fiction");
     const newTypeCount = typeRepository.getAll().length;
@@ -117,14 +117,14 @@ describe("type-repository", () => {
     expect(newTypeCount).toEqual(originalTypeCount + 1);
   });
 
-  it("deletes type from database", async () => {
+  it("delete - deletes type from database", async () => {
     const originalTypeCount = typeRepository.getAll().length;
     await typeRepository.delete("1");
     const newTypeCount = typeRepository.getAll().length;
     expect(newTypeCount).toEqual(originalTypeCount - 1);
   });
 
-  it("returns empty array if no projects by type", () => {
+  it("checkForTypeTaken - returns empty array if no projects by type", () => {
     expect(typeRepository.checkForTypeTaken("1")).toEqual([]);
   });
 });
