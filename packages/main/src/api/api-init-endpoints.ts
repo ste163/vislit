@@ -28,7 +28,9 @@ export default function initializeApiEndpoints(
   noteController: NoteController,
   fileSystemController: FileSystemController
 ) {
-  // api endpoints
+  /**
+   * Projects
+   */
   ipcMain.handle("projects-get-all", () => {
     return projectController.getAll();
   });
@@ -45,13 +47,16 @@ export default function initializeApiEndpoints(
     return projectController.delete(request);
   });
 
+  /**
+   * Search
+   */
   // TODO:
-  // implement
-  // note search
-  // project search endpoint
+  // implement: note search
+  // implement: project search endpoint
 
-  // **********************
-  // Types
+  /**
+   * Types
+   */
   ipcMain.handle("types-get-all", () => {
     return typeController.getAll();
   });
@@ -64,8 +69,9 @@ export default function initializeApiEndpoints(
     return typeController.delete(id);
   });
 
-  // **********************
-  // Goals
+  /**
+   * Goals
+   */
   ipcMain.handle("goals-add", (_e, goal: addGoalRequest) => {
     return goalController.add(goal);
   });
@@ -82,8 +88,9 @@ export default function initializeApiEndpoints(
     return goalController.setCompletedById(id);
   });
 
-  // **********************
-  // Progress
+  /**
+   * Progress
+   */
   ipcMain.handle(
     "progress-get-all-by-year-month",
     (_e, request: getAllProgressRequest) => {
@@ -102,14 +109,16 @@ export default function initializeApiEndpoints(
     return progressController.modify(progress);
   });
 
-  // **********************
-  // Writer
+  /**
+   * Writer
+   */
   ipcMain.handle("writer-get-most-recent", (_e, id: idRequest) => {
     return fileSystemController.readMostRecentHtmlFile(id);
   });
 
-  // **********************
-  // Notes
+  /**
+   * Notes
+   */
   ipcMain.handle("notes-get-all-by-project-id", (_e, id: idRequest) => {
     return noteController.getAllByProjectId(id);
   });
@@ -130,8 +139,9 @@ export default function initializeApiEndpoints(
     return noteController.delete(id);
   });
 
-  // **********************
-  // Html
+  /**
+   * Html
+   */
   ipcMain.handle("html-save", (_e, request: htmlWriteRequest) => {
     // Stores note or project based on htmlData.type
     return fileSystemController.writeHtmlFile(request);
