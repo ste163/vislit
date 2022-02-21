@@ -5,10 +5,10 @@ import initializeApiControllers from "./api/api-init-controllers";
 import initializeApiEndpoints from "./api/api-init-endpoints";
 import type { BrowserWindow } from "electron";
 import type { Database } from "./database";
+import type { SearchController } from "./api/search-controller";
 import type FileSystemController from "./api/file-system-controller";
 import type ProjectController from "./api/project-controller";
 import type NoteController from "./api/note-controller";
-import type { SearchController } from "./api/search-controller";
 import type TypeController from "./api/type-controller";
 import type GoalController from "./api/goal-controller";
 import type ProgressController from "./api/progress-controller";
@@ -64,9 +64,7 @@ app.disableHardwareAcceleration();
  * Shut down background process if all windows was closed
  */
 app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
+  if (process.platform !== "darwin") app.quit();
 });
 
 /**
@@ -134,7 +132,7 @@ app
   .catch((e) => console.error("Failed create window:", e));
 
 /**
- * Install Vue.js or some other devtools in development mode only
+ * Install Vue devtools in development mode only
  */
 if (import.meta.env.DEV) {
   app

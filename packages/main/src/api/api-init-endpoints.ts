@@ -143,7 +143,7 @@ export default function initializeApiEndpoints(
    * Html
    */
   ipcMain.handle("html-save", (_e, request: htmlWriteRequest) => {
-    // Stores note or project based on htmlData.type
+    // Stores note or project based on request.type
     return fileSystemController.writeHtmlFile(request);
   });
 }

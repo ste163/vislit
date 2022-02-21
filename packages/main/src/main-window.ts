@@ -51,9 +51,7 @@ async function createWindow(database: Database) {
           "../renderer/dist/index.html",
           "file://" + __dirname
         ).toString();
-
   await browserWindow.loadURL(pageUrl);
-
   return browserWindow;
 }
 
@@ -62,16 +60,8 @@ async function createWindow(database: Database) {
  */
 export async function restoreOrCreateWindow(database: Database) {
   let window = BrowserWindow.getAllWindows().find((w) => !w.isDestroyed());
-
-  if (window === undefined) {
-    window = await createWindow(database);
-  }
-
-  if (window.isMinimized()) {
-    window.restore();
-  }
-
+  if (window === undefined) window = await createWindow(database);
+  if (window.isMinimized()) window.restore();
   window.focus();
-
   return window;
 }
