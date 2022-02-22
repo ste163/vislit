@@ -1,8 +1,8 @@
 import Minisearch from "minisearch";
 import type { Project, Note } from "interfaces";
 import type { Database } from "../database";
-import type { searchRequest } from "../schemas";
-import { searchRequestSchema } from "../schemas";
+import type { searchRequest } from "./request-schemas";
+import { searchRequestSchema } from "./request-schemas";
 import handleError from "./util-handle-error";
 
 // Must initialize search indexes outside of class constructor

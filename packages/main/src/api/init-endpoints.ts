@@ -18,7 +18,7 @@ import type {
   typeAddRequest,
   updateGoalRequest,
   updateNoteRequest,
-} from "../schemas";
+} from "./request-schemas";
 
 export default function initializeApiEndpoints(
   projectController: ProjectController,

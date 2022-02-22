@@ -8,7 +8,7 @@ import NoteRepository from "./note-repository";
 import NoteController from "./note-controller";
 import type { Note } from "interfaces";
 import type FileSystemController from "./file-system-controller";
-import type { updateNoteRequest } from "../schemas";
+import type { updateNoteRequest } from "./request-schemas";
 
 describe("project-controller", () => {
   let database: Database;

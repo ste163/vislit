@@ -3,7 +3,7 @@
  */
 import { describe, beforeEach, it, expect, vi } from "vitest";
 import FileSystemController from "./file-system-controller";
-import type { htmlWriteRequest } from "../schemas";
+import type { htmlWriteRequest } from "./request-schemas";
 
 describe("file-system-controller", () => {
   let fileSystemController: FileSystemController;

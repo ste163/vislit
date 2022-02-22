@@ -6,12 +6,12 @@ import type {
   idRequest,
   projectAddRequest,
   projectUpdateRequest,
-} from "../schemas";
+} from "./request-schemas";
 import {
   idRequestSchema,
   projectAddRequestSchema,
   projectUpdateRequestSchema,
-} from "../schemas";
+} from "./request-schemas";
 import handleError from "./util-handle-error";
 
 class ProjectController {

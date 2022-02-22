@@ -5,13 +5,13 @@ import {
   htmlWriteRequestSchema,
   idRequestSchema,
   readNoteByIdRequestSchema,
-} from "../schemas";
+} from "./request-schemas";
 import type {
   htmlWriteRequest,
   idRequest,
   deleteNoteRequest,
   readNoteByIdRequest,
-} from "../schemas";
+} from "./request-schemas";
 
 class FileSystemController {
   constructor(private userDataPath: string) {}
