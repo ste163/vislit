@@ -1,7 +1,7 @@
 import type TypeRepository from "./type-repository";
 import type { Project, Type } from "interfaces";
-import type { idRequest, typeAddRequest } from "../schemas";
-import { typeAddRequestSchema, idRequestSchema } from "../schemas";
+import type { idRequest, typeAddRequest } from "./request-schemas";
+import { typeAddRequestSchema, idRequestSchema } from "./request-schemas";
 import handleError from "./util-handle-error";
 
 class TypeController {

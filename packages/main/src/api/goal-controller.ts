@@ -1,12 +1,16 @@
 import type { Goal } from "interfaces";
 import type GoalRepository from "./goal-repository";
 import type ProjectController from "./project-controller";
-import type { addGoalRequest, idRequest, updateGoalRequest } from "../schemas";
+import type {
+  addGoalRequest,
+  idRequest,
+  updateGoalRequest,
+} from "./request-schemas";
 import {
   idRequestSchema,
   addGoalRequestSchema,
   updateGoalRequestSchema,
-} from "../schemas";
+} from "./request-schemas";
 import handleError from "./util-handle-error";
 
 class GoalController {

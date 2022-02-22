@@ -6,12 +6,12 @@ import type {
   getAllProgressRequest,
   getProgressByDateRequest,
   modifyProgressRequest,
-} from "../schemas";
+} from "./request-schemas";
 import {
   getProgressByDateRequestSchema,
   getAllProgressRequestSchema,
   modifyProgressRequestSchema,
-} from "../schemas";
+} from "./request-schemas";
 import handleError from "./util-handle-error";
 
 class ProgressController {

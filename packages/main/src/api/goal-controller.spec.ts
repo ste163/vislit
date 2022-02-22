@@ -5,7 +5,7 @@ import { describe, beforeEach, it, expect, vi } from "vitest";
 import type { Goal, Project } from "interfaces";
 import type { SearchController } from "./search-controller";
 import type FileSystemController from "./file-system-controller";
-import type { updateGoalRequest } from "../schemas";
+import type { updateGoalRequest } from "./request-schemas";
 import { Database, initializeDatabase } from "../database";
 import ProjectRepository from "./project-repository";
 import ProjectController from "./project-controller";

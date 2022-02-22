@@ -1,20 +1,17 @@
 import type { App } from "electron";
-import { Database, initializeDatabase } from "./database";
-import FileSystemController from "./api/file-system-controller";
-import GoalController from "./api/goal-controller";
-import GoalRepository from "./api/goal-repository";
-import NoteController from "./api/note-controller";
-import NoteRepository from "./api/note-repository";
-import ProgressController from "./api/progress-controller";
-import ProgressRepository from "./api/progress-repository";
-import ProjectController from "./api/project-controller";
-import ProjectRepository from "./api/project-repository";
-import {
-  SearchController,
-  initializeSearchIndexes,
-} from "./api/search-controller";
-import TypeController from "./api/type-controller";
-import TypeRepository from "./api/type-repository";
+import { Database, initializeDatabase } from "../database";
+import FileSystemController from "./file-system-controller";
+import GoalController from "./goal-controller";
+import GoalRepository from "./goal-repository";
+import NoteController from "./note-controller";
+import NoteRepository from "./note-repository";
+import ProgressController from "./progress-controller";
+import ProgressRepository from "./progress-repository";
+import ProjectController from "./project-controller";
+import ProjectRepository from "./project-repository";
+import { SearchController, initializeSearchIndexes } from "./search-controller";
+import TypeController from "./type-controller";
+import TypeRepository from "./type-repository";
 
 type initializedApi = {
   initDatabase: Database;
@@ -27,17 +24,15 @@ type initializedApi = {
   initProgressController: ProgressController;
 };
 
-async function initializeApi(app: App): Promise<initializedApi> {
+async function initializeApiControllers(app: App): Promise<initializedApi> {
   try {
     console.log("initializing api");
 
     const db = await initializeDatabase(app);
-
     const initDatabase = new Database(db);
     const initFileSystemController = new FileSystemController(
       app.getPath("userData")
     );
-
     const projectRepository = new ProjectRepository(initDatabase);
     const typeRepository = new TypeRepository(initDatabase);
     const goalRepository = new GoalRepository(initDatabase);
@@ -90,4 +85,4 @@ async function initializeApi(app: App): Promise<initializedApi> {
   }
 }
 
-export default initializeApi;
+export default initializeApiControllers;

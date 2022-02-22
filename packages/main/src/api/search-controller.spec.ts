@@ -4,7 +4,7 @@
 import { describe, beforeEach, it, expect, vi } from "vitest";
 import { Database, initializeDatabase } from "../database";
 import { SearchController, initializeSearchIndexes } from "./search-controller";
-import type { searchRequest } from "../schemas";
+import type { searchRequest } from "./request-schemas";
 
 // Only testing endpoints that frontend has access to
 describe("file-system-controller", () => {
