@@ -2,7 +2,7 @@ const colors = require("tailwindcss/colors");
 
 // Must be in ./ and in ./packages/renderer
 module.exports = {
-  content: ["./index.html", "./packages/renderer/src/**/*.{vue,js,ts}"],
+  content: ["./src/**/*.{vue,js,ts}"],
   darkMode: "media", // or 'media' or 'class'
   theme: {
     fontFamily: {
