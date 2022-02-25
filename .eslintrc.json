@@ -17,7 +17,14 @@
     "sourceType": "module",
     "ecmaFeatures": { "jsx": false }
   },
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "testing-library"],
+  "overrides": [
+    {
+      // enable eslint-plugin-testing-library rules or preset only for matching files
+      "files": ["**/packages/renderer/**/?(*.)+(spec|test).[jt]s?(x)"],
+      "extends": ["plugin:testing-library/vue"]
+    }
+  ],
   "ignorePatterns": ["types/env.d.ts", "node_modules/**", "**/dist/**"],
   "rules": {
     "@typescript-eslint/no-unused-vars": "off",

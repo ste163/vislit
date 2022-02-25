@@ -10,7 +10,7 @@
   "include": [
     "src/**/*.vue",
     "src/**/*.ts",
-    "src/**/*.tsx",
+    "src/**/*.spec.ts",
     "shims-vue.d.ts",
     "../../types/**/*.d.ts",
     "../preload/electron-api.d.ts"
