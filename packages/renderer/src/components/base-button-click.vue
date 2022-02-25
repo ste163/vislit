@@ -16,11 +16,11 @@ const props = defineProps({
   },
   backgroundColor: {
     type: String,
-    default: "var(--lightGray)",
+    default: "",
   },
   textColor: {
     type: String,
-    default: "var(--black)",
+    default: "",
   },
 });
 

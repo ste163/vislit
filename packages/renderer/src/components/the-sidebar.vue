@@ -3,5 +3,5 @@
 </script>
 
 <template>
-  <nav>Sidebar Nav</nav>
+  <nav class="bg-white w-[120px]">Sidebar Nav</nav>
 </template>

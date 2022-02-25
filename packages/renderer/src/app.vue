@@ -21,9 +21,11 @@ onMounted(async () => {
 <template>
   <the-sidebar />
 
-  <main>
-    <router-view v-slot="{ Component }">
-      <component :is="Component" />
-    </router-view>
-  </main>
+  <div class="flex-grow">
+    <main class="m-4">
+      <router-view v-slot="{ Component }">
+        <component :is="Component" />
+      </router-view>
+    </main>
+  </div>
 </template>

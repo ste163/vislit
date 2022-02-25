@@ -8,7 +8,7 @@
   >
     <title>Close Icon</title>
     <path
-      id="app-icon-close"
+      id="close"
       d="m4.709 4.709-4.0999-4.0999m4.0999 2.84e-5 -4.0999 4.0999"
       stroke-linecap="round"
       stroke-width="1.1918"
