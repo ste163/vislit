@@ -62,8 +62,9 @@
   font-weight: 900;
 }
 
+/* Replace with tailwind */
 :root {
-  /* Fot */
+  /* Fonts */
   --fontFamilySans: "Heebo", sans-serif;
   --fontFamilySerif: "Noto", serif;
   --letterSpacingSmaller: 0.05em;
@@ -105,28 +106,6 @@ body {
   overflow: hidden;
 }
 
-input {
-  background-color: var(--white);
-  border: 2px solid transparent;
-  border-radius: 0.3em;
-  padding: 0.4em;
-  outline: 0;
-  transition: all 0.3s ease-in-out;
-}
-
-input:focus {
-  border-color: var(--primary);
-}
-
-button {
-  outline: 0;
-  border: 0;
-  border-radius: 0.4rem;
-  padding: 0.5rem 1rem;
-  font-size: 0.85rem; /* Equates to ~13.5pxs -> don't go smaller than that */
-  cursor: pointer;
-}
-
 h1 {
   font-family: "Noto";
   font-weight: 400;
@@ -138,9 +117,4 @@ h3 {
 
 a {
   color: var(--black);
-}
-
-/* global */
-.button-icon {
-  height: 1rem;
 }
