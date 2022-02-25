@@ -12,21 +12,19 @@
       },
       "args": ["."],
       "outputCapture": "std"
+    },
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "Debug Current Test File",
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "program": "${workspaceRoot}/node_modules/vitest/vitest.mjs",
+      "args": ["run", "${relativeFile}"],
+      "smartStep": true,
+      "console": "integratedTerminal"
     }
-    // {
-    // TODO: Get Vitest debugging working
-    //   "name": "Debug Vitest Tests",
-    //   "type": "node",
-    //   "request": "launch",
-    //   "runtimeArgs": [
-    //     "--inspect-brk",
-    //     "${workspaceRoot}/node_modules/.bin/vitest",
-    //     "--runInBand"
-    //   ],
-    //   "console": "integratedTerminal",
-    //   "internalConsoleOptions": "neverOpen",
-    //   "port": 9229
-    // }
   ],
   "compounds": [
     {
