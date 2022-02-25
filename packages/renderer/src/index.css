@@ -65,56 +65,35 @@
 /* Replace with tailwind */
 :root {
   /* Fonts */
-  --fontFamilySans: "Heebo", sans-serif;
-  --fontFamilySerif: "Noto", serif;
   --letterSpacingSmaller: 0.05em;
   --letterSpacingSmall: 0.1em;
   --letterSpacingMedium: 0.2em;
 
   /* Color */
-  --dashboardBackground: #e5e5e5;
-  --columnBackground: #f6f6f6;
-  --columnHeader: #f0f0f0;
 
-  --black: #333333;
+  /* Go to mockup and find the shades of gray */
+  /* then order them based on value, using tailwind styles */
+
+  --dashboardBackground: #e5e5e5;
 
   --lightestGray: #f6f6f6;
   --lightGray: #f0f0f0;
   --gray: #9b9b9b;
 
-  --white: white;
-
-  --primary: #3772ff;
   --primary-pulse: #3773ffb0;
-  --warning: #b24c63;
-  --warning-transparent: #b24c6314;
-  --success: #68b684;
-  --success-transparent: #68b68429;
-  --success-dark: #497a5a;
-  --notification: #fdca40;
   --notification-pulse: #fdcb40c7;
 }
 
-/* overrides */
-body {
-  font-family: "Heebo";
-  font-weight: 300;
-  background-color: var(--dashboardBackground);
-  color: var(--black);
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-}
+@layer base {
+  body {
+    @apply font-sans font-light text-black m-0 p-0 overflow-hidden;
+  }
 
-h1 {
-  font-family: "Noto";
-  font-weight: 400;
-}
+  h1 {
+    @apply font-serif font-normal;
+  }
 
-h3 {
-  font-weight: 300;
-}
-
-a {
-  color: var(--black);
+  h3 {
+    @apply font-light;
+  }
 }
