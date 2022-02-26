@@ -7,7 +7,7 @@ import path from "path";
 
 export default defineConfig({
   base: path.resolve(__dirname, "./dist/"),
-  plugins: [vue(), eslintPlugin()],
+  plugins: [vue({ reactivityTransform: true }), eslintPlugin()],
   test: {
     environment: "happy-dom",
     coverage: {

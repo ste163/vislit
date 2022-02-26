@@ -1,11 +1,13 @@
 <script setup lang="ts">
-// Empty for test coverage
+interface Props {
+  isLoading: boolean;
+}
+
+const { isLoading } = defineProps<Props>();
 </script>
 
 <template>
-  <div>
-    <h1>Welcome</h1>
-    <!-- Test examples for loading -->
+  <div class="flex w-full h-full self-center place-content-center">
     <!-- <svg
       role="status"
       class="inline mr-2 w-10 h-10 text-gray-200 animate-spin dark:text-gray-300 fill-primary"
@@ -22,30 +24,22 @@
         fill="currentFill"
       />
     </svg> -->
-    <!-- Skeleton: if doing skeleton, should make it AS CLOSE as possible to matching the real thing so it looks cleaner
-  and can animate the switch between components (ie, they share the same base card div + height and width, but the content swaps) -->
-    <div
-      class="bg-white p-2 sm:p-4 sm:h-64 rounded-2xl flex flex-col sm:flex-row gap-5 select-none"
+
+    <section
+      class="bg-white py-8 px-12 rounded-xl w-full h-fit sm:w-full lg:w-5/6 max-w-[850px]"
     >
-      <div
-        class="h-52 sm:h-full sm:w-72 rounded-xl bg-gray-200 animate-pulse"
-      ></div>
-      <div class="flex flex-col flex-1 gap-5 sm:p-2">
-        <div class="flex flex-1 flex-col gap-3">
-          <div class="bg-gray-200 w-full animate-pulse h-14 rounded-2xl"></div>
-          <div class="bg-gray-200 w-full animate-pulse h-3 rounded-2xl"></div>
-          <div class="bg-gray-200 w-full animate-pulse h-3 rounded-2xl"></div>
-          <div class="bg-gray-200 w-full animate-pulse h-3 rounded-2xl"></div>
-          <div class="bg-gray-200 w-full animate-pulse h-3 rounded-2xl"></div>
-        </div>
-        <div class="mt-auto flex gap-3">
-          <div class="bg-gray-200 w-20 h-8 animate-pulse rounded-full"></div>
-          <div class="bg-gray-200 w-20 h-8 animate-pulse rounded-full"></div>
-          <div
-            class="bg-gray-200 w-20 h-8 animate-pulse rounded-full ml-auto"
-          ></div>
-        </div>
+      <div v-if="isLoading" class="flex flex-col gap-4 h-full">
+        <div class="h-8 w-3/5 rounded-xl bg-gray-200 animate-pulse" />
+        <div class="bg-gray-200 w-10/12 animate-pulse h-10 rounded-xl" />
+        <div class="bg-gray-200 w-9/12 animate-pulse h-12 rounded-xl" />
+        <div class="bg-gray-200 w-11/12 animate-pulse h-24 rounded-xl" />
+        <div class="bg-gray-200 w-9/12 animate-pulse h-12 rounded-xl" />
       </div>
-    </div>
+      <div v-else>
+        <h1>Welcome to Vislit!</h1>
+      </div>
+    </section>
   </div>
 </template>
+
+<!-- Note: welcome page and summary page should share same loading card component because they're very similar -->
