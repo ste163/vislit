@@ -12,7 +12,7 @@
     "src/**/*.ts",
     "src/**/*.spec.ts",
     "shims-vue.d.ts",
-    "../../types/**/*.d.ts",
+    "../../types/*.d.ts",
     "../preload/electron-api.d.ts"
   ]
 }

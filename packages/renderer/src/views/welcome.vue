@@ -36,7 +36,35 @@ const { isLoading } = defineProps<Props>();
         <div class="bg-gray-200 w-9/12 animate-pulse h-12 rounded-xl" />
       </div>
       <div v-else>
-        <h1>Welcome to Vislit!</h1>
+        <h1 class="mb-10">Welcome to Vislit!</h1>
+        <h2>Import previous Vislit Data</h2>
+        <p class="my-3">
+          Have previously exported data? Import now by clicking below, or later
+          from
+          <span class="font-bold whitespace-nowrap"
+            >File -> Import Vislit Data</span
+          >.
+        </p>
+        <button>Import Vislit Data</button>
+
+        <h2 class="mt-12">Choose a save location for your Vislit Data</h2>
+        <p class="my-3">
+          By default, Vislit stores your data in: DYNAMIC LOCATION FROM BACKEND.
+          If you would prefer to store data in another location or in a cloud
+          sync folder (like in Google Drive, OneDrive, or DropBox), select that
+          now or later by going to
+          <span class="font-bold whitespace-nowrap"
+            >File -> Change Save Location</span
+          >.
+        </p>
+        <button>Change Save Location</button>
+
+        <h2 class="mt-12">Create a Project</h2>
+        <p class="my-3">
+          To get started writing, setting goals, and tracking progress, create a
+          project.
+        </p>
+        <button>Create a Project</button>
       </div>
     </section>
   </div>

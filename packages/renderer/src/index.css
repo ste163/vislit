@@ -68,7 +68,11 @@
   }
 
   h1 {
-    @apply font-serif font-normal;
+    @apply font-serif font-bold text-xl;
+  }
+
+  h2 {
+    @apply text-base font-bold;
   }
 
   h3 {
@@ -76,6 +80,6 @@
   }
 
   #app {
-    @apply h-full w-full flex;
+    @apply h-full w-full;
   }
 }

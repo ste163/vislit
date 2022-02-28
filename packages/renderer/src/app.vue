@@ -1,10 +1,32 @@
 <script setup lang="ts">
+import type { Project, Type } from "interfaces";
 import { ref, onMounted } from "vue";
 import TheSidebar from "./components/the-sidebar.vue";
 
 const isLoading = ref<boolean>(true);
+const isFetchErrorActive = ref<boolean>(false);
+const fetchErrorMessage = ref<string>("");
+
+const types = ref<Type[]>([]);
+const projects = ref<Project[]>([]);
 
 onMounted(async () => {
+  try {
+    const { api } = window;
+    const typesResponse = (await api.send("types-get-all")) as Type[];
+    if (typesResponse instanceof Error) throw typesResponse;
+    types.value = typesResponse;
+    const projectsResponse = (await api.send("projects-get-all")) as Project[];
+    if (projectsResponse instanceof Error) throw projectsResponse;
+    projects.value = projectsResponse;
+  } catch (error: any | Error) {
+    console.log(error);
+    fetchErrorMessage.value = error?.message;
+    isFetchErrorActive.value = true;
+  } finally {
+    isLoading.value = false;
+  }
+
   // isLoading is true by default
   // fetch Projects
   // fetch Types
@@ -29,13 +51,24 @@ onMounted(async () => {
 </script>
 
 <template>
-  <the-sidebar :is-disabled="true" :is-loading="isLoading" />
+  <div v-if="isFetchErrorActive" class="h-full w-full flex flex-col">
+    <h1>Unable to access data</h1>
+    <p>
+      Please restart Vislit. If the error persists, share the below error
+      message on GitHub issues (link)
+    </p>
+    <p>Error message: {{ fetchErrorMessage }}</p>
+  </div>
 
-  <div class="flex-grow">
-    <main class="flex flex-col h-full p-4">
-      <router-view v-slot="{ Component }" :is-loading="isLoading">
-        <component :is="Component" />
-      </router-view>
-    </main>
+  <div v-else class="h-full w-full flex">
+    <the-sidebar :is-disabled="true" :is-loading="isLoading" />
+
+    <div class="flex-grow">
+      <main class="flex flex-col h-full p-4">
+        <router-view v-slot="{ Component }" :is-loading="isLoading">
+          <component :is="Component" />
+        </router-view>
+      </main>
+    </div>
   </div>
 </template>
