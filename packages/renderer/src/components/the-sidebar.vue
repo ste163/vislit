@@ -31,7 +31,7 @@ const { isDisabled, isLoading } = defineProps<Props>();
     </div>
     <div v-else>
       <div>
-        <h2 :class="isDisabled && 'text-gray-400'" class="header mt-2">
+        <h2 :class="isDisabled && 'text-gray-300'" class="header mt-2">
           Views
         </h2>
         <ul>
@@ -60,7 +60,7 @@ const { isDisabled, isLoading } = defineProps<Props>();
       </div>
 
       <div>
-        <h2 :class="isDisabled && 'text-gray-400'" class="header mt-8">
+        <h2 :class="isDisabled && 'text-gray-300'" class="header mt-8">
           Columns
         </h2>
         <ul>
@@ -82,11 +82,11 @@ const { isDisabled, isLoading } = defineProps<Props>();
 
 <style scoped>
 .nav {
-  @apply bg-white w-[160px] flex flex-col select-none;
+  @apply bg-white w-[145px] flex flex-col select-none;
 }
 
 .header {
-  @apply text-sm px-3;
+  @apply text-xs px-3;
 }
 
 .button {
@@ -94,6 +94,6 @@ const { isDisabled, isLoading } = defineProps<Props>();
 }
 
 .button-text {
-  @apply text-sm font-bold ml-3;
+  @apply text-xs font-bold ml-3;
 }
 </style>

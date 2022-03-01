@@ -65,8 +65,8 @@ onMounted(async () => {
 
     <div class="flex-grow">
       <main class="flex flex-col h-full p-4">
-        <router-view v-slot="{ Component }" :is-loading="isLoading">
-          <component :is="Component" />
+        <router-view v-slot="{ Component, route }" :is-loading="isLoading">
+          <component :is="Component" :key="route.path" />
         </router-view>
       </main>
     </div>

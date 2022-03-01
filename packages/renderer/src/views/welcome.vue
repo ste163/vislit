@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import BaseButton from "../components/base-button.vue";
+
 interface Props {
   isLoading: boolean;
 }
@@ -45,7 +47,7 @@ const { isLoading } = defineProps<Props>();
             >File -> Import Vislit Data</span
           >.
         </p>
-        <button>Import Vislit Data</button>
+        <base-button>Import Vislit Data</base-button>
 
         <h2 class="mt-12">Choose a save location for your Vislit Data</h2>
         <p class="my-3">
@@ -57,14 +59,17 @@ const { isLoading } = defineProps<Props>();
             >File -> Change Save Location</span
           >.
         </p>
-        <button>Change Save Location</button>
+        <base-button>Change Save Location</base-button>
 
         <h2 class="mt-12">Create a Project</h2>
         <p class="my-3">
           To get started writing, setting goals, and tracking progress, create a
           project.
         </p>
-        <button>Create a Project</button>
+        <!-- look into using var() with tailwind -->
+        <base-button :background-color="'#3772ff'" :text-color="'white'"
+          >Create a Project</base-button
+        >
       </div>
     </section>
   </div>

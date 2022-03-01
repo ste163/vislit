@@ -1,28 +1,17 @@
 <script setup lang="ts">
-import type { ButtonHTMLAttributes, PropType } from "vue";
+interface Props {
+  type?: "button" | "submit" | "reset";
+  isDisabled?: boolean;
+  backgroundColor?: string;
+  textColor?: string;
+}
 
-const props = defineProps({
-  type: {
-    type: Object as PropType<ButtonHTMLAttributes>,
-    default: () => {
-      return {
-        type: "button",
-      };
-    },
-  },
-  isDisabled: {
-    type: Boolean,
-    default: false,
-  },
-  backgroundColor: {
-    type: String,
-    default: "",
-  },
-  textColor: {
-    type: String,
-    default: "",
-  },
-});
+const {
+  type = "button",
+  isDisabled = false,
+  backgroundColor = "",
+  textColor = "",
+} = defineProps<Props>();
 
 const emit = defineEmits(["click"]);
 
@@ -55,7 +44,7 @@ function createEffectOnClick(e: MouseEvent): void {
 <template>
   <button
     ref="button"
-    :type="type.type"
+    :type="type"
     :disabled="isDisabled"
     class="base-button-click"
     @click="createEffectOnClick"

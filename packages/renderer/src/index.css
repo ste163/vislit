@@ -9,12 +9,6 @@
 }
 
 @font-face {
-  font-family: "Noto";
-  src: url(../assets/fonts/NotoSerif-Bold.ttf);
-  font-weight: 500;
-}
-
-@font-face {
   font-family: "Heebo";
   src: url(../assets/fonts/Heebo-ExtraLight.ttf);
   font-weight: 200;
@@ -68,15 +62,23 @@
   }
 
   h1 {
-    @apply font-serif font-bold text-xl;
+    @apply font-serif text-xl;
   }
 
   h2 {
-    @apply text-base font-bold;
+    @apply text-sm font-bold;
   }
 
   h3 {
-    @apply font-light;
+    @apply text-sm font-light;
+  }
+
+  p {
+    @apply text-sm;
+  }
+
+  button {
+    @apply text-sm;
   }
 
   #app {
