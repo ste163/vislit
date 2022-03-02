@@ -30,6 +30,7 @@ const variants = {
   },
 };
 
+// css props can't be an object, must be separate computed state
 const textColor = computed(() => variants[variant].text);
 const backgroundColor = computed(() => variants[variant].background);
 
