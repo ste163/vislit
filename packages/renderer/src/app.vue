@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Project, Type } from "interfaces";
 import { ref, onMounted } from "vue";
+import send from "./api";
 import TheSidebar from "./components/the-sidebar.vue";
 
 const isLoading = ref<boolean>(true);
@@ -12,11 +13,10 @@ const projects = ref<Project[]>([]);
 
 onMounted(async () => {
   try {
-    const { api } = window;
-    const typesResponse = (await api.send("types-get-all")) as Type[];
+    const typesResponse = (await send("types-get-all")) as Type[];
     if (typesResponse instanceof Error) throw typesResponse;
     types.value = typesResponse;
-    const projectsResponse = (await api.send("projects-get-all")) as Project[];
+    const projectsResponse = (await send("projects-get-all")) as Project[];
     if (projectsResponse instanceof Error) throw projectsResponse;
     projects.value = projectsResponse;
   } catch (error: any | Error) {

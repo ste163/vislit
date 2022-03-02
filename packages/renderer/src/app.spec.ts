@@ -15,20 +15,21 @@ import router from "./router";
 
 it.skip("when data (projects or types) fails to fetch, render error page and no sidebar", () => {
   // mock fetching data as failure (this will be biggest thing to figure out)
-  const window = {
-    api: {
-      send: () => {},
-    },
-  };
+  // mock not working...
+  vi.mock("./api", () => {
+    return {
+      window: {
+        api: {
+          send: vi.fn(() => {
+            throw new Error();
+          }),
+        },
+      },
+    };
+  });
 
   // potential: make an abstraction layer for the window.api, otherwise I have to use window.api everywhere
   // an abstraction would allow for easier mocking! Then I don't have ts ignore and eslint errors
-
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const typeFetchMock = vi.spyOn(api, "send").mockImplementation(() => {
-    throw new Error();
-  });
 
   render(App, {
     global: {
@@ -37,5 +38,4 @@ it.skip("when data (projects or types) fails to fetch, render error page and no 
   });
 
   expect(screen.getByText("Unable to access data")).toBeTruthy();
-  expect(typeFetchMock).toHaveBeenCalledTimes(1);
 });
