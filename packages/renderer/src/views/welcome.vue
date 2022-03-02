@@ -67,9 +67,7 @@ const { isLoading } = defineProps<Props>();
           project.
         </p>
         <!-- look into using var() with tailwind -->
-        <base-button :background-color="'#3772ff'" :text-color="'white'"
-          >Create a Project</base-button
-        >
+        <base-button :variant="'primary'">Create a Project</base-button>
       </div>
     </section>
   </div>

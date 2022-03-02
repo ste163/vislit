@@ -1,17 +1,37 @@
 <script setup lang="ts">
+import { computed } from "vue";
+
 interface Props {
   type?: "button" | "submit" | "reset";
   isDisabled?: boolean;
-  backgroundColor?: string;
-  textColor?: string;
+  variant?: "primary" | "secondary" | "default"; // default is light gray background, black text
 }
 
 const {
   type = "button",
   isDisabled = false,
-  backgroundColor = "",
-  textColor = "",
+  variant = "default",
 } = defineProps<Props>();
+
+// See if it's possible to double up var() and tailwind so I don't have to
+// hard-code the colors
+const variants = {
+  primary: {
+    text: "white",
+    background: "#3772ff",
+  },
+  secondary: {
+    text: "#333333",
+    background: "#fdca40",
+  },
+  default: {
+    text: "#333333",
+    background: "bg-gray-500",
+  },
+};
+
+const textColor = computed(() => variants[variant].text);
+const backgroundColor = computed(() => variants[variant].background);
 
 const emit = defineEmits(["click"]);
 
