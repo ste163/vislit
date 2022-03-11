@@ -66,11 +66,11 @@
   }
 
   h2 {
-    @apply text-sm font-bold;
+    @apply text-base font-bold;
   }
 
   h3 {
-    @apply text-sm font-light;
+    @apply text-base font-light;
   }
 
   p {

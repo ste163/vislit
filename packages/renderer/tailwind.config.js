@@ -9,6 +9,14 @@ module.exports = {
       sans: ["Heebo"],
       serif: ["Noto"],
     },
+    fontSize: {
+      xs: ".65rem",
+      sm: ".8rem",
+      base: ".9rem",
+      lg: "1rem",
+      xl: "1.25rem",
+      "2xl": "1.5rem",
+    },
     extend: {
       colors: {
         currentColor: colors.currentColor,
