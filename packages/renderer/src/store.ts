@@ -1,4 +1,4 @@
-// Attempt to not use a store
+// NOT USING STORE RIGHT NOW - attempt to not use at all
 import type { Column, DropZone, Goal, Project, Type } from "interfaces";
 import { reactive } from "vue";
 
