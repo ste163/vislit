@@ -2,8 +2,6 @@ import { render, screen, waitFor } from "@testing-library/vue";
 import { expect, it, vi } from "vitest";
 import App from "./app.vue";
 import router from "./router";
-// Fetching data fails:
-// - render failure state
 // fetching data successfully on user with no data
 // // First scenario
 // - show welcome page
@@ -22,10 +20,7 @@ it("when data (projects or types) fails to fetch, render error page and no sideb
   };
 
   Object.defineProperty(window, "api", {
-    configurable: true,
-    enumerable: true,
     value: api,
-    writable: true,
   });
 
   render(App, {
@@ -34,7 +29,9 @@ it("when data (projects or types) fails to fetch, render error page and no sideb
     },
   });
 
-  // Fetch data
+  // await for loading state to have finished
+
+  // Fetch data was called
   expect(window.api.send).toHaveBeenCalledOnce();
 
   // Wait for state to update
