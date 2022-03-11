@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/vue";
+import { render, screen, waitFor } from "@testing-library/vue";
 import { expect, it, vi } from "vitest";
 import App from "./app.vue";
 import router from "./router";
@@ -13,23 +13,20 @@ import router from "./router";
 // - user with data and localStorage settings
 // - restore settings
 
-it.skip("when data (projects or types) fails to fetch, render error page and no sidebar", () => {
-  // mock fetching data as failure (this will be biggest thing to figure out)
-  // mock not working...
-  vi.mock("./api", () => {
-    return {
-      window: {
-        api: {
-          send: vi.fn(() => {
-            throw new Error();
-          }),
-        },
-      },
-    };
-  });
+it("when data (projects or types) fails to fetch, render error page and no sidebar", async () => {
+  // To mock on the window object, need to add the api to the window
+  const api = {
+    send: vi.fn(() => {
+      throw new Error("Mock failed response");
+    }),
+  };
 
-  // potential: make an abstraction layer for the window.api, otherwise I have to use window.api everywhere
-  // an abstraction would allow for easier mocking! Then I don't have ts ignore and eslint errors
+  Object.defineProperty(window, "api", {
+    configurable: true,
+    enumerable: true,
+    value: api,
+    writable: true,
+  });
 
   render(App, {
     global: {
@@ -37,5 +34,11 @@ it.skip("when data (projects or types) fails to fetch, render error page and no 
     },
   });
 
-  expect(screen.getByText("Unable to access data")).toBeTruthy();
+  // Fetch data
+  expect(window.api.send).toHaveBeenCalledOnce();
+
+  // Wait for state to update
+  await waitFor(() => {
+    expect(screen.getByText("Unable to access data")).toBeTruthy();
+  });
 });
