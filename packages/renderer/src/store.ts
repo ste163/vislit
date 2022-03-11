@@ -1,3 +1,4 @@
+// NOT USING STORE RIGHT NOW - attempt to not use at all
 import type { Column, DropZone, Goal, Project, Type } from "interfaces";
 import { reactive } from "vue";
 
@@ -17,7 +18,7 @@ export class Store {
 
   constructor() {
     // TODO:
-    // Columns needs to be pulled/saved in localStorage
+    // - Columns needs to be pulled/saved in localStorage
     // - Look into having this state be private
     // - then have a getter for getting computed values of projects, activeProject, etc
     this.state = reactive({
