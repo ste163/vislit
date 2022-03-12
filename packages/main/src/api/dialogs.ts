@@ -25,6 +25,11 @@ export async function showExportDialog() {
 
   if (result.filePath) {
     try {
+      // This exports just the database
+      // need to also export the database + project directory
+      // should probably store all in a vislit-data folder
+      // /vislit-data/vislit-database.json
+      // /vislit-data/projects/whatever
       const databasePath = `${app.getPath("userData")}/vislit-database.json`;
       await copyFile(databasePath, result.filePath);
     } catch (error: any | Error) {
@@ -36,19 +41,22 @@ export async function showExportDialog() {
   }
 }
 
-export async function showImportDialog(): Promise<void> {
+export async function showImportWarningDialog(): Promise<void> {
   const result = await dialog.showMessageBox({
-    title: "Import Database",
+    title: "Import Data",
     message: "Warning",
     detail:
-      "Importing a new database will overwrite the currently loaded database. To ensure no data loss, export your current database and back it up.",
-    buttons: ["Select database to import", "Export current database", "Cancel"],
+      "Importing data will overwrite currently loaded data. To ensure no data loss, export your current data and back it up.",
+    buttons: [
+      "Select 'vislit-data' folder to import",
+      "Export current 'vislit-data' folder",
+      "Cancel",
+    ],
   });
 
   switch (result.response) {
     case 0:
-      // this._showImportDialog();
-      console.log("import");
+      showImportDialog();
       break;
     case 1:
       showExportDialog();
@@ -56,4 +64,9 @@ export async function showImportDialog(): Promise<void> {
     default:
       break;
   }
+}
+
+async function showImportDialog(): Promise<void> {
+  // imports the entire vislit-data folder
+  console.log("IMPORT");
 }

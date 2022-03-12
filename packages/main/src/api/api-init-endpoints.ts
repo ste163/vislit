@@ -1,5 +1,5 @@
 import { ipcMain } from "electron";
-import { showFetchErrorDialog, showImportDialog } from "./dialogs";
+import { showFetchErrorDialog, showImportWarningDialog } from "./dialogs";
 import type FileSystemController from "./file-system-controller";
 import type GoalController from "./goal-controller";
 import type NoteController from "./note-controller";
@@ -34,7 +34,10 @@ export default function initializeApiEndpoints(
    */
   ipcMain.handle("dialog-fetch-error", () => showFetchErrorDialog());
 
-  ipcMain.handle("dialog-import-data", async () => await showImportDialog());
+  ipcMain.handle(
+    "dialog-import-data",
+    async () => await showImportWarningDialog()
+  );
 
   ipcMain.handle("dialog-change-save-location", () => {
     // need to have 2 lowdb's
