@@ -35,7 +35,7 @@ onMounted(async () => {
     console.error(error);
     fetchErrorMessage.value = error?.message;
     isFetchErrorActive.value = true;
-    await send("fetch-error");
+    await send("dialog-fetch-error");
   } finally {
     isLoading.value = false;
   }

@@ -1,8 +1,8 @@
 import { app, dialog } from "electron";
 import { restoreOrCreateWindow } from "./main-window";
 import { existsSync, mkdirSync } from "fs";
-import initializeApiControllers from "./api/init-controllers";
-import initializeApiEndpoints from "./api/init-endpoints";
+import initializeApiControllers from "./api/api-init-controllers";
+import initializeApiEndpoints from "./api/api-init-endpoints";
 import type { BrowserWindow } from "electron";
 import type { Database } from "./database";
 import type { SearchController } from "./api/search-controller";
