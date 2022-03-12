@@ -1,5 +1,22 @@
 import { app, dialog } from "electron";
-import { copyFile } from "fs/promises";
+import { readdir, mkdir, copyFile } from "fs/promises";
+import { join } from "path";
+
+// move this into a helper? Or into the fs-controller?
+// https://stackoverflow.com/questions/39106516/node-fs-copy-a-folder
+async function copyDir(src: string, dest: string): Promise<void> {
+  await mkdir(dest, { recursive: true });
+  const entries = await readdir(src, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const srcPath = join(src, entry.name);
+    const destPath = join(dest, entry.name);
+
+    entry.isDirectory()
+      ? await copyDir(srcPath, destPath)
+      : await copyFile(srcPath, destPath);
+  }
+}
 
 export function showFetchErrorDialog(): void {
   // todo: add link to github issues
@@ -15,9 +32,11 @@ export async function showExportDialog() {
   const formattedDate = new Date().toISOString().split("T")[0];
   const homePath = app.getPath("home");
 
+  // QUESTION: should there be a date now? Probably not
+
   const result = await dialog.showSaveDialog({
     title: "Export Vislit Database",
-    defaultPath: `${homePath}/${formattedDate}_vislit-database.json`,
+    defaultPath: `${homePath}/${formattedDate}_vislit-data`,
     properties: ["createDirectory"],
   });
 
@@ -30,8 +49,8 @@ export async function showExportDialog() {
       // should probably store all in a vislit-data folder
       // /vislit-data/vislit-database.json
       // /vislit-data/projects/whatever
-      const databasePath = `${app.getPath("userData")}/vislit-database.json`;
-      await copyFile(databasePath, result.filePath);
+      const dataPath = `${app.getPath("userData")}/vislit-data`;
+      await copyDir(dataPath, result.filePath);
     } catch (error: any | Error) {
       dialog.showErrorBox(
         "Export failed",
@@ -42,13 +61,16 @@ export async function showExportDialog() {
 }
 
 export async function showImportWarningDialog(): Promise<void> {
+  // TODO: only show the export button if we're NOT on the welcome page
+  // otherwise, you'd export an empty database
+  // NOTE: We're not importing data, we're reading from a new location
   const result = await dialog.showMessageBox({
-    title: "Import Data",
+    title: "Change data location",
     message: "Warning",
     detail:
-      "Importing data will overwrite currently loaded data. To ensure no data loss, export your current data and back it up.",
+      "Change where Vislit reads data. This could be from a cloud directory on your system or another location like the desktop.",
     buttons: [
-      "Select 'vislit-data' folder to import",
+      "Select new 'vislit-data' folder to read from",
       "Export current 'vislit-data' folder",
       "Cancel",
     ],
@@ -68,5 +90,5 @@ export async function showImportWarningDialog(): Promise<void> {
 
 async function showImportDialog(): Promise<void> {
   // imports the entire vislit-data folder
-  console.log("IMPORT");
+  console.log("Link to new data folder");
 }

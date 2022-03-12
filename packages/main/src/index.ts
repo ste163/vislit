@@ -34,8 +34,12 @@ try {
   const userDataPath = app.getPath("userData");
   console.log("DATA PATH:", userDataPath);
   // linux/mac & windows use different slashes
-  if (!existsSync(`${userDataPath}/projects`))
-    mkdirSync(`${userDataPath}/projects`);
+  // must create vislit-data dir before /projects
+  if (!existsSync(`${userDataPath}/vislit-data`))
+    mkdirSync(`${userDataPath}/vislit-data`);
+
+  if (!existsSync(`${userDataPath}/vislit-data/projects`))
+    mkdirSync(`${userDataPath}/vislit-data/projects`);
 } catch (error) {
   dialog.showErrorBox(
     "Vislit: Fatal Error",

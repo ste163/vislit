@@ -36,16 +36,17 @@ async function onSaveChangeClick(): Promise<void> {
         <div class="bg-gray-200 w-9/12 animate-pulse h-12 rounded-xl" />
       </div>
       <div v-else>
+        <!-- TODO: update wording for import/link + dialogs -->
         <h1 class="mb-7">Welcome to Vislit!</h1>
-        <h2>Import previous Vislit Data</h2>
+        <h2>Link to previous Vislit Data</h2>
         <p class="my-3">
-          Have previously exported data? Import now by clicking below, or later
-          from
+          Have previously exported data? Link Vislit to that data now by
+          clicking below, or later from
           <span class="font-bold whitespace-nowrap"
-            >File -> Import Vislit Data</span
+            >File -> Link to Vislit Data</span
           >.
         </p>
-        <base-button @click="onImportClick">Import Vislit Data</base-button>
+        <base-button @click="onImportClick">Link Vislit Data</base-button>
 
         <h2 class="mt-12">Choose a save location for your Vislit Data</h2>
         <p class="my-3">

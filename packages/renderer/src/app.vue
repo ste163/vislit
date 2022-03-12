@@ -22,7 +22,7 @@ onMounted(async () => {
     const projectsResponse = (await send("projects-get-all")) as Project[];
     if (projectsResponse instanceof Error) throw projectsResponse;
     projects.value = projectsResponse;
-    if (!projects.value) {
+    if (projects.value.length === 0) {
       router.replace("/");
       return;
     }

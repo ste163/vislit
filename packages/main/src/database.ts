@@ -24,7 +24,7 @@ export async function initializeDatabase(
     console.log("initializing database");
 
     const getDbPath = (): string =>
-      `${app.getPath("userData")}/vislit-database.json`;
+      `${app.getPath("userData")}/vislit-data/vislit-database.json`;
 
     const adapter =
       process.env.NODE_ENV === "test"
