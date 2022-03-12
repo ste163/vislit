@@ -1,4 +1,4 @@
-import { app } from "electron";
+import { app, dialog } from "electron";
 import { restoreOrCreateWindow } from "./main-window";
 import { existsSync, mkdirSync } from "fs";
 import initializeApiControllers from "./api/init-controllers";
@@ -35,7 +35,10 @@ try {
   if (!existsSync(`${userDataPath}/projects`))
     mkdirSync(`${userDataPath}/projects`);
 } catch (error) {
-  console.log(error);
+  dialog.showErrorBox(
+    "Vislit: Fatal Error",
+    `Unable to load or create folders required for Vislit. Error: ${error}`
+  );
 }
 
 /**
@@ -56,7 +59,7 @@ app.on("second-instance", () => {
 });
 
 /**
- * Disable Hardware Acceleration for better power-saving
+ * Disable Hardware Acceleration for improved power saving
  */
 app.disableHardwareAcceleration();
 

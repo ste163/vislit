@@ -1,4 +1,4 @@
-import { ipcMain } from "electron";
+import { ipcMain, dialog } from "electron";
 import type FileSystemController from "./file-system-controller";
 import type GoalController from "./goal-controller";
 import type NoteController from "./note-controller";
@@ -29,23 +29,31 @@ export default function initializeApiEndpoints(
   fileSystemController: FileSystemController
 ) {
   /**
+   * Dialogs
+   */
+  ipcMain.handle("fetch-error", () => {
+    dialog.showErrorBox(
+      "Vislit: Fatal Error",
+      "Failed to load data from database. Restart the app. If that fails to solve the issue, report the issue at GITHUBLINK"
+    );
+  });
+
+  /**
    * Projects
    */
-  ipcMain.handle("projects-get-all", () => {
-    return projectController.getAll();
-  });
+  ipcMain.handle("projects-get-all", () => projectController.getAll());
 
-  ipcMain.handle("projects-add", (_e, request: projectAddRequest) => {
-    return projectController.add(request);
-  });
+  ipcMain.handle("projects-add", (_e, request: projectAddRequest) =>
+    projectController.add(request)
+  );
 
-  ipcMain.handle("projects-update", (_e, request: projectUpdateRequest) => {
-    return projectController.update(request);
-  });
+  ipcMain.handle("projects-update", (_e, request: projectUpdateRequest) =>
+    projectController.update(request)
+  );
 
-  ipcMain.handle("projects-delete", (_e, request: idRequest) => {
-    return projectController.delete(request);
-  });
+  ipcMain.handle("projects-delete", (_e, request: idRequest) =>
+    projectController.delete(request)
+  );
 
   /**
    * Search
@@ -57,93 +65,88 @@ export default function initializeApiEndpoints(
   /**
    * Types
    */
-  ipcMain.handle("types-get-all", () => {
-    return typeController.getAll();
-  });
+  ipcMain.handle("types-get-all", () => typeController.getAll());
 
-  ipcMain.handle("types-add", (_e, value: typeAddRequest) => {
-    return typeController.add(value);
-  });
+  ipcMain.handle("types-add", (_e, value: typeAddRequest) =>
+    typeController.add(value)
+  );
 
-  ipcMain.handle("types-delete", (_e, id: idRequest) => {
-    return typeController.delete(id);
-  });
+  ipcMain.handle("types-delete", (_e, id: idRequest) =>
+    typeController.delete(id)
+  );
 
   /**
    * Goals
    */
-  ipcMain.handle("goals-add", (_e, goal: addGoalRequest) => {
-    return goalController.add(goal);
-  });
+  ipcMain.handle("goals-add", (_e, goal: addGoalRequest) =>
+    goalController.add(goal)
+  );
 
-  ipcMain.handle("goals-update", (_e, request: updateGoalRequest) => {
-    return goalController.update(request);
-  });
+  ipcMain.handle("goals-update", (_e, request: updateGoalRequest) =>
+    goalController.update(request)
+  );
 
-  ipcMain.handle("goals-delete", (_e, id: idRequest) => {
-    return goalController.delete(id);
-  });
+  ipcMain.handle("goals-delete", (_e, id: idRequest) =>
+    goalController.delete(id)
+  );
 
-  ipcMain.handle("goals-completed", (_e, id: idRequest) => {
-    return goalController.setCompletedById(id);
-  });
+  ipcMain.handle("goals-completed", (_e, id: idRequest) =>
+    goalController.setCompletedById(id)
+  );
 
   /**
    * Progress
    */
   ipcMain.handle(
     "progress-get-all-by-year-month",
-    (_e, request: getAllProgressRequest) => {
-      return progressController.getAll(request);
-    }
+    (_e, request: getAllProgressRequest) => progressController.getAll(request)
   );
 
   ipcMain.handle(
     "progress-get-by-date",
-    (_e, request: getProgressByDateRequest) => {
-      return progressController.getByDate(request);
-    }
+    (_e, request: getProgressByDateRequest) =>
+      progressController.getByDate(request)
   );
 
-  ipcMain.handle("progress-modify", (_e, progress: modifyProgressRequest) => {
-    return progressController.modify(progress);
-  });
+  ipcMain.handle("progress-modify", (_e, progress: modifyProgressRequest) =>
+    progressController.modify(progress)
+  );
 
   /**
    * Writer
    */
-  ipcMain.handle("writer-get-most-recent", (_e, id: idRequest) => {
-    return fileSystemController.readMostRecentHtmlFile(id);
-  });
+  ipcMain.handle("writer-get-most-recent", (_e, id: idRequest) =>
+    fileSystemController.readMostRecentHtmlFile(id)
+  );
 
   /**
    * Notes
    */
-  ipcMain.handle("notes-get-all-by-project-id", (_e, id: idRequest) => {
-    return noteController.getAllByProjectId(id);
-  });
+  ipcMain.handle("notes-get-all-by-project-id", (_e, id: idRequest) =>
+    noteController.getAllByProjectId(id)
+  );
 
-  ipcMain.handle("notes-get-by-id", (_e, id: idRequest) => {
-    return noteController.getById(id);
-  });
+  ipcMain.handle("notes-get-by-id", (_e, id: idRequest) =>
+    noteController.getById(id)
+  );
 
-  ipcMain.handle("notes-add", (_e, request: addNoteRequest) => {
-    return noteController.add(request);
-  });
+  ipcMain.handle("notes-add", (_e, request: addNoteRequest) =>
+    noteController.add(request)
+  );
 
-  ipcMain.handle("notes-update", (_e, request: updateNoteRequest) => {
-    return noteController.update(request);
-  });
+  ipcMain.handle("notes-update", (_e, request: updateNoteRequest) =>
+    noteController.update(request)
+  );
 
-  ipcMain.handle("notes-delete", (_e, id: idRequest) => {
-    return noteController.delete(id);
-  });
+  ipcMain.handle("notes-delete", (_e, id: idRequest) =>
+    noteController.delete(id)
+  );
 
   /**
    * Html
    */
-  ipcMain.handle("html-save", (_e, request: htmlWriteRequest) => {
+  ipcMain.handle("html-save", (_e, request: htmlWriteRequest) =>
     // Stores note or project based on request.type
-    return fileSystemController.writeHtmlFile(request);
-  });
+    fileSystemController.writeHtmlFile(request)
+  );
 }

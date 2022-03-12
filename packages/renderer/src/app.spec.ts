@@ -22,14 +22,12 @@ function renderApp() {
   // 2 issues are happening:
   // 1 on initial render, the routes haven't rendered
   // 2 the api.send occurs on mount, which appears to be the same time as the routes
+  // // but it's too fast for checking if the loading state is happening
   // TODO: check how to test with the router
-
-  // unable to test for loading state because window mock completes the moment the app mounts
-  // while in react it happens later in lifecycle
 
   return {
     ...utils,
-    queryErrorText: () => screen.queryByText("Unable to access data"),
+    findErrorText: () => screen.findByText("Unable to access data"),
     querySidebar: () => screen.queryByRole("navigation"),
   };
 }
@@ -41,7 +39,7 @@ beforeEach(() => {
 it("when data (projects or types) fails to fetch, render error page and no sidebar", async () => {
   // mock window's api property
   const api = {
-    send: vi.fn(() => {
+    send: vi.fn().mockImplementationOnce(() => {
       throw new Error("Mock failed response");
     }),
   };
@@ -50,20 +48,15 @@ it("when data (projects or types) fails to fetch, render error page and no sideb
     value: api,
   });
 
-  const { queryErrorText, querySidebar } = renderApp();
+  const { findErrorText, querySidebar } = renderApp();
 
   // sidebar exists (although it's not showing loading state)
   expect(querySidebar()).toBeTruthy();
 
-  // fetch for projects called once
-  expect(window.api.send).toHaveBeenCalledOnce();
-
-  // must wait for state changes to reflect in routes
-  await waitFor(() => {
-    expect(queryErrorText()).toBeTruthy();
-    // check that route is error page route (once that page is made)
-  });
-
-  // fetch error removes sidebar
+  // fetch for projects called once before erroring out
+  expect(window.api.send).toHaveBeenCalledOnce(); // only called once because fn mock is only once
+  // must wait for state changes to reflect
+  expect(await findErrorText()).toBeTruthy();
+  // sidebar doesn't exist when there's a major fetch error
   expect(querySidebar()).toBeNull();
 });
