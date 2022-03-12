@@ -1,5 +1,5 @@
-import { render, screen, waitFor } from "@testing-library/vue";
-import { beforeEach, expect, it, vi } from "vitest";
+import { cleanup, render, screen } from "@testing-library/vue";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import App from "./app.vue";
 import router from "./router";
 // fetching data successfully on user with no data
@@ -33,8 +33,10 @@ function renderApp() {
 }
 
 beforeEach(() => {
+  // can not be one-lined
   vi.clearAllMocks();
 });
+afterEach(() => cleanup());
 
 it("when data (projects or types) fails to fetch, render error page and no sidebar", async () => {
   // mock window's api property

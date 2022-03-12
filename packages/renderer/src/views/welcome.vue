@@ -14,6 +14,7 @@ const { isLoading } = defineProps<Props>();
     <section
       class="bg-white py-8 px-12 rounded-xl w-full h-fit sm:w-full lg:w-5/6 max-w-[850px]"
     >
+      <!-- Loading screen -->
       <div
         v-if="isLoading"
         class="flex flex-col gap-4 h-full"
@@ -26,7 +27,7 @@ const { isLoading } = defineProps<Props>();
         <div class="bg-gray-200 w-9/12 animate-pulse h-12 rounded-xl" />
       </div>
       <div v-else>
-        <h1 class="mb-10">Welcome to Vislit!</h1>
+        <h1 class="mb-7">Welcome to Vislit!</h1>
         <h2>Import previous Vislit Data</h2>
         <p class="my-3">
           Have previously exported data? Import now by clicking below, or later
