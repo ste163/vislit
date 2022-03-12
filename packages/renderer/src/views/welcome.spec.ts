@@ -1,6 +1,7 @@
 import { cleanup, render, screen } from "@testing-library/vue";
-import { it, expect, afterEach } from "vitest";
+import { it, expect, afterEach, vi } from "vitest";
 import Welcome from "./welcome.vue";
+import { fireEvent } from "@testing-library/dom";
 
 afterEach(() => cleanup());
 
@@ -13,7 +14,14 @@ it("renders loading state while isLoading is true", () => {
   expect(screen.getByTestId("loading-welcome")).toBeTruthy();
 });
 
-it("renders page when loaded and calls import data, change save location, and create project when buttons clicked", () => {
+it("renders page when loaded and calls import data, change save location, and create project when buttons clicked", async () => {
+  // mock window's api property
+  Object.defineProperty(window, "api", {
+    value: {
+      send: vi.fn(),
+    },
+  });
+
   render(Welcome, {
     props: {
       isLoading: false,
@@ -31,10 +39,17 @@ it("renders page when loaded and calls import data, change save location, and cr
   );
   expect(headings[3].textContent).toBe("Create a Project");
 
-  // clicking the import Vislit Data button calls ipcSend
+  // clicking the import button calls ipcSend
+  const importButton = screen.getAllByRole("button")[0];
+  // eslint-disable-next-line testing-library/await-fire-event
+  fireEvent.click(importButton); // userEvent is failing
+  expect(window.api.send).toHaveBeenCalledOnce();
 
-  // default save data location is called and renders
-  // clicking the Change Save Location button calls ipcSend
+  // clicking save location calls ipcSend
+  const changeLocationButton = screen.getAllByRole("button")[1];
+  // eslint-disable-next-line testing-library/await-fire-event
+  fireEvent.click(changeLocationButton);
+  expect(window.api.send).toHaveBeenCalledTimes(2);
 
   // clicking create a project calls onCreateProject (either a passed in function), one from state, or elsewhere
 });

@@ -29,6 +29,8 @@ let progressController: ProgressController;
  * Create needed directories if they do not already exist
  */
 try {
+  // TODO:
+  // new structure: /dataPath/vislit-data/database then /dataPath/vislit-data/projects
   const userDataPath = app.getPath("userData");
   console.log("DATA PATH:", userDataPath);
   // linux/mac & windows use different slashes

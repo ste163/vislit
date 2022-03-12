@@ -40,14 +40,12 @@ afterEach(() => cleanup());
 
 it("when data (projects or types) fails to fetch, render error page and no sidebar", async () => {
   // mock window's api property
-  const api = {
-    send: vi.fn().mockImplementationOnce(() => {
-      throw new Error("Mock failed response");
-    }),
-  };
-
   Object.defineProperty(window, "api", {
-    value: api,
+    value: {
+      send: vi.fn().mockImplementationOnce(() => {
+        throw new Error("Mock failed response");
+      }),
+    },
   });
 
   const { findErrorText, querySidebar } = renderApp();

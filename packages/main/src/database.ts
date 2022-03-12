@@ -23,10 +23,8 @@ export async function initializeDatabase(
   try {
     console.log("initializing database");
 
-    const getDbPath = (): string => {
-      const userDataDirPath = app.getPath("userData");
-      return `${userDataDirPath}/vislit-database.json`;
-    };
+    const getDbPath = (): string =>
+      `${app.getPath("userData")}/vislit-database.json`;
 
     const adapter =
       process.env.NODE_ENV === "test"
@@ -82,8 +80,7 @@ export async function initializeDatabase(
 
     return db;
   } catch (error: any | Error) {
-    console.log("failed to initialize database");
-    console.error(error);
+    console.log(`failed to initialize database. Error: ${error}`);
     return error;
   }
 }
