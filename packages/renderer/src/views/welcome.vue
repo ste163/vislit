@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import send from "../api";
 import BaseButton from "../components/base-button.vue";
 import IconProject from "../icons/icon-project.vue";
 
@@ -7,6 +8,14 @@ interface Props {
 }
 
 const { isLoading } = defineProps<Props>();
+
+async function onImportClick(): Promise<void> {
+  await send("dialog-import-data");
+}
+
+async function onSaveChangeClick(): Promise<void> {
+  await send("dialog-change-save-location");
+}
 </script>
 
 <template>
@@ -36,7 +45,7 @@ const { isLoading } = defineProps<Props>();
             >File -> Import Vislit Data</span
           >.
         </p>
-        <base-button>Import Vislit Data</base-button>
+        <base-button @click="onImportClick">Import Vislit Data</base-button>
 
         <h2 class="mt-12">Choose a save location for your Vislit Data</h2>
         <p class="my-3">
@@ -48,7 +57,9 @@ const { isLoading } = defineProps<Props>();
             >File -> Change Save Location</span
           >.
         </p>
-        <base-button :is-submitting="true">Change Save Location</base-button>
+        <base-button @click="onSaveChangeClick"
+          >Change Save Location</base-button
+        >
 
         <h2 class="mt-12">Create a Project</h2>
         <p class="my-3">

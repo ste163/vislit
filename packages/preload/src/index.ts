@@ -5,7 +5,9 @@ import { contextBridge, ipcRenderer } from "electron";
 
 // whitelist channels
 const validChannels = [
-  "fetch-error",
+  "dialog-fetch-error",
+  "dialog-import-data",
+  "dialog-change-save-location",
   "projects-get-all",
   "projects-add",
   "projects-update",

@@ -31,11 +31,42 @@ export default function initializeApiEndpoints(
   /**
    * Dialogs
    */
-  ipcMain.handle("fetch-error", () => {
+  ipcMain.handle("dialog-fetch-error", () => {
     dialog.showErrorBox(
       "Vislit: Fatal Error",
       "Failed to load data from database. Restart the app. If that fails to solve the issue, report the issue at GITHUBLINK"
     );
+  });
+
+  ipcMain.handle("dialog-import-data", async () => {
+    const result = await dialog.showMessageBox({
+      title: "Import Database",
+      message: "Warning",
+      detail:
+        "Importing a new database will overwrite the currently loaded database. To ensure no data loss, export your current database and back it up.",
+      buttons: [
+        "Select database to import",
+        "Export current database",
+        "Cancel",
+      ],
+    });
+
+    switch (result.response) {
+      case 0:
+        // this._showImportDialog();
+        console.log("import");
+        break;
+      case 1:
+        // this.showExportDialog();
+        console.log("export");
+        break;
+      default:
+        break;
+    }
+  });
+
+  ipcMain.handle("dialog-change-save-location", () => {
+    console.log("test");
   });
 
   /**
