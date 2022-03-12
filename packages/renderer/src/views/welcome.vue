@@ -14,7 +14,11 @@ const { isLoading } = defineProps<Props>();
     <section
       class="bg-white py-8 px-12 rounded-xl w-full h-fit sm:w-full lg:w-5/6 max-w-[850px]"
     >
-      <div v-if="isLoading" class="flex flex-col gap-4 h-full">
+      <div
+        v-if="isLoading"
+        class="flex flex-col gap-4 h-full"
+        data-testid="loading-welcome"
+      >
         <div class="h-8 w-3/5 rounded-xl bg-gray-200 animate-pulse" />
         <div class="bg-gray-200 w-10/12 animate-pulse h-10 rounded-xl" />
         <div class="bg-gray-200 w-9/12 animate-pulse h-12 rounded-xl" />
