@@ -23,7 +23,7 @@ class TypeRepository {
 
   async add(value: string): Promise<Type> {
     this.database.db.data?.types.push(
-      this.database.generateUniqueId({ value, dateCreated: new Date() })
+      this.database.generateId({ value, dateCreated: new Date() })
     );
     await this.database.db.write();
     return this.getByValue(value) as Type;

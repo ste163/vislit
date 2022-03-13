@@ -62,9 +62,7 @@ class ProjectRepository {
   }
 
   async add(project: Project): Promise<Project> {
-    this.database.db.data!.projects.push(
-      this.database.generateUniqueId(project)
-    );
+    this.database.db.data!.projects.push(this.database.generateId(project));
     await this.database.db.write();
     const addedProject = this.getByTitle(project.title) as Project;
     return addedProject;

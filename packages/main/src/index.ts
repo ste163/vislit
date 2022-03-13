@@ -1,4 +1,5 @@
 import { app, dialog } from "electron";
+import { getDataPath } from "./handle-data-path";
 import { restoreOrCreateWindow } from "./main-window";
 import { existsSync, mkdirSync } from "fs";
 import initializeApiControllers from "./api/api-init-controllers";
@@ -16,6 +17,7 @@ import type ProgressController from "./api/progress-controller";
 /**
  * Declare global variables to be passed into needed functions
  */
+let dataPath: string | Error;
 let database: Database;
 let fileSystemController: FileSystemController;
 let searchController: SearchController; // not used yet, but will be!
@@ -30,32 +32,30 @@ let progressController: ProgressController;
  * By default this is userData
  * But can be user-defined
  */
-// create a new file that is check-data-path (something similar)
-// that instantiates a lowdb instance
-// in a file that is in userData (NOT THE VISLIT-DATA FOLDER***)
-// that is 1 line that says: the vislit-data is at: './directory'
-// this should be synchronous as it's the first thing that must happen
-// before anything else can be checked
-// this should return the vislit-data path
-// that can then be referenced in the database
-// but we should also allow it to be changed at a later date
-// so we may need to use a class for this
-// (but try not to for now)
-// write tests that are in the file using vitest
+// TODO ASAP:
+// https://nodejs.dev/learn/nodejs-file-paths
+// TODO: Remove below line after -> adding the update datapath (which will exist in the api endpoint, so might not change here?)
+// eslint-disable-next-line prefer-const
+dataPath = getDataPath();
+console.log(`vislit-data location: ${dataPath}`);
+if (dataPath instanceof Error) {
+  // TODO: show error dialog
+  console.error("show error dialog");
+}
 
 /**
  * Create needed directories if they do not already exist
  */
 try {
   // TODO:
-  // new structure: /dataPath/vislit-data/database then /dataPath/vislit-data/projects
+  // Check the dataPath as it has the default location saved
+  // if we do not have a default location: create it
+  // otherwise continue -> loading lowdb will cause error or not
   const userDataPath = app.getPath("userData");
-  console.log("DATA PATH:", userDataPath);
-  // linux/mac & windows use different slashes
+  // TODO: linux/mac & windows use different slashes
   // must create vislit-data dir before /projects
   if (!existsSync(`${userDataPath}/vislit-data`))
     mkdirSync(`${userDataPath}/vislit-data`);
-
   if (!existsSync(`${userDataPath}/vislit-data/projects`))
     mkdirSync(`${userDataPath}/vislit-data/projects`);
 } catch (error) {

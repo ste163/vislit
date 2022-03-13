@@ -87,11 +87,11 @@ export async function initializeDatabase(
 
 export class Database {
   public db: Low<VislitDatabase>;
-  public generateUniqueId: (item: any) => any;
+  public generateId: (item: any) => any;
 
   constructor(db: Low<VislitDatabase>) {
     this.db = db;
-    this.generateUniqueId = (item: any) => {
+    this.generateId = (item: any) => {
       item.id = nanoid(13);
       return item;
     };
