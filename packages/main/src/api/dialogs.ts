@@ -3,6 +3,7 @@ import { readdir, mkdir, copyFile } from "fs/promises";
 import { join } from "path";
 
 // move this into a helper? Or into the fs-controller?
+// dialogs probably shouldn't be what's controlling copy/paste dir
 // https://stackoverflow.com/questions/39106516/node-fs-copy-a-folder
 async function copyDir(src: string, dest: string): Promise<void> {
   await mkdir(dest, { recursive: true });
@@ -19,7 +20,7 @@ async function copyDir(src: string, dest: string): Promise<void> {
 }
 
 export function showFetchErrorDialog(): void {
-  // todo: add link to github issues
+  // TODO: add link to github issues
   // or in future: a bug report on vislit.app
   // that doesn't require a sign up
   dialog.showErrorBox(
