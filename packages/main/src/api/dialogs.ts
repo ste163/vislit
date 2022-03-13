@@ -61,6 +61,11 @@ export async function showExportDialog() {
   }
 }
 
+export async function showImportDialog(): Promise<void> {
+  // imports the entire vislit-data folder
+  console.log("Link to new data folder");
+}
+
 export async function showImportWarningDialog(): Promise<void> {
   // TODO: only show the export button if we're NOT on the welcome page
   // otherwise, you'd export an empty database
@@ -87,9 +92,4 @@ export async function showImportWarningDialog(): Promise<void> {
     default:
       break;
   }
-}
-
-async function showImportDialog(): Promise<void> {
-  // imports the entire vislit-data folder
-  console.log("Link to new data folder");
 }

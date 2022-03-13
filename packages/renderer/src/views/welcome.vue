@@ -10,7 +10,7 @@ interface Props {
 const { isLoading } = defineProps<Props>();
 
 async function onImportClick(): Promise<void> {
-  await send("dialog-import-data");
+  await send("dialog-import-data-non-taskbar");
 }
 
 async function onSaveChangeClick(): Promise<void> {
@@ -40,8 +40,8 @@ async function onSaveChangeClick(): Promise<void> {
         <h1 class="mb-7">Welcome to Vislit!</h1>
         <h2>Link to previous Vislit Data</h2>
         <p class="my-3">
-          Have previously exported data? Link Vislit to that data now by
-          clicking below, or later from
+          Have previously exported data? Link Vislit to that data by clicking
+          below, or later from
           <span class="font-bold whitespace-nowrap"
             >File -> Link to Vislit Data</span
           >.

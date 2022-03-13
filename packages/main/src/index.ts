@@ -26,6 +26,24 @@ let goalController: GoalController;
 let progressController: ProgressController;
 
 /**
+ * Check where the vislit-data should exist
+ * By default this is userData
+ * But can be user-defined
+ */
+// create a new file that is check-data-path (something similar)
+// that instantiates a lowdb instance
+// in a file that is in userData (NOT THE VISLIT-DATA FOLDER***)
+// that is 1 line that says: the vislit-data is at: './directory'
+// this should be synchronous as it's the first thing that must happen
+// before anything else can be checked
+// this should return the vislit-data path
+// that can then be referenced in the database
+// but we should also allow it to be changed at a later date
+// so we may need to use a class for this
+// (but try not to for now)
+// write tests that are in the file using vitest
+
+/**
  * Create needed directories if they do not already exist
  */
 try {

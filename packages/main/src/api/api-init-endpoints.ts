@@ -1,5 +1,5 @@
 import { ipcMain } from "electron";
-import { showFetchErrorDialog, showImportWarningDialog } from "./dialogs";
+import { showFetchErrorDialog, showImportDialog } from "./dialogs";
 import type FileSystemController from "./file-system-controller";
 import type GoalController from "./goal-controller";
 import type NoteController from "./note-controller";
@@ -35,8 +35,8 @@ export default function initializeApiEndpoints(
   ipcMain.handle("dialog-fetch-error", () => showFetchErrorDialog());
 
   ipcMain.handle(
-    "dialog-import-data",
-    async () => await showImportWarningDialog()
+    "dialog-import-data-non-taskbar",
+    async () => await showImportDialog()
   );
 
   ipcMain.handle("dialog-change-save-location", () => {
