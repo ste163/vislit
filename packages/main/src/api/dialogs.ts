@@ -2,6 +2,7 @@ import { app, dialog } from "electron";
 import { readdir, mkdir, copyFile } from "fs/promises";
 import { join } from "path";
 
+// TODO:
 // move this into a helper? Or into the fs-controller?
 // dialogs probably shouldn't be what's controlling copy/paste dir
 // https://stackoverflow.com/questions/39106516/node-fs-copy-a-folder
@@ -12,7 +13,6 @@ async function copyDir(src: string, dest: string): Promise<void> {
   for (const entry of entries) {
     const srcPath = join(src, entry.name);
     const destPath = join(dest, entry.name);
-
     entry.isDirectory()
       ? await copyDir(srcPath, destPath)
       : await copyFile(srcPath, destPath);
@@ -30,14 +30,10 @@ export function showFetchErrorDialog(): void {
 }
 
 export async function showExportDialog() {
-  const formattedDate = new Date().toISOString().split("T")[0];
-  const homePath = app.getPath("home");
-
-  // QUESTION: should there be a date now? Probably not
-
+  const homePath = app.getPath("home"); // open dialog at the home location (usually the desktop)
   const result = await dialog.showSaveDialog({
     title: "Export Vislit Database",
-    defaultPath: `${homePath}/${formattedDate}_vislit-data`,
+    defaultPath: `${homePath}/vislit-data`,
     properties: ["createDirectory"],
   });
 
@@ -45,6 +41,7 @@ export async function showExportDialog() {
 
   if (result.filePath) {
     try {
+      // TODO:
       // This exports just the database
       // need to also export the database + project directory
       // should probably store all in a vislit-data folder
@@ -61,12 +58,26 @@ export async function showExportDialog() {
   }
 }
 
-export async function showImportDialog(): Promise<void> {
-  // imports the entire vislit-data folder
+export async function showDataLinkDialog(dataPath: string): Promise<void> {
+  // TODO:
+  // May not need to pass this in. Could just getDataPath()
+  // to always get the most up to date path!
+  // need to test this
   console.log("Link to new data folder");
+  console.log("Initial folder located at: ", dataPath);
+  // Garbage collection may clean this up?
+  // Which may/may not be an issue
+  dataPath = "user selection";
+  console.log("changed to: ", dataPath);
 }
 
-export async function showImportWarningDialog(): Promise<void> {
+export async function showDataLinkWarningDialog(
+  dataPath: string
+): Promise<void> {
+  // TODO:
+  // This warning might not be needed, as there is no data loss.
+  // You're just linking to a new file.
+  // But this warning would be informative.
   // TODO: only show the export button if we're NOT on the welcome page
   // otherwise, you'd export an empty database
   // NOTE: We're not importing data, we're reading from a new location
@@ -84,10 +95,10 @@ export async function showImportWarningDialog(): Promise<void> {
 
   switch (result.response) {
     case 0:
-      showImportDialog();
+      await showDataLinkDialog(dataPath);
       break;
     case 1:
-      showExportDialog();
+      await showExportDialog();
       break;
     default:
       break;

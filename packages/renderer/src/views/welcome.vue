@@ -10,7 +10,7 @@ interface Props {
 const { isLoading } = defineProps<Props>();
 
 async function onImportClick(): Promise<void> {
-  await send("dialog-import-data-non-taskbar");
+  await send("dialog-data-link-non-taskbar");
 }
 
 async function onSaveChangeClick(): Promise<void> {

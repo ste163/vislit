@@ -17,7 +17,6 @@ import type ProgressController from "./api/progress-controller";
 /**
  * Declare global variables to be passed into needed functions
  */
-let dataPath: string | Error;
 let database: Database;
 let fileSystemController: FileSystemController;
 let searchController: SearchController; // not used yet, but will be!
@@ -38,11 +37,9 @@ let progressController: ProgressController;
  * By default this is userData/vislit-data
  * But can be user-defined anywhere on their system
  */
-// TODO ASAP:
+// TODO ASAP - setup paths to work on Windows, Linux, Mac:
 // https://nodejs.dev/learn/nodejs-file-paths
-// TODO: Remove below line after adding the update datapath (which will exist in the api endpoint, so might not change here?)
-// eslint-disable-next-line prefer-const
-dataPath = getDataPath() as string;
+export const dataPath = getDataPath() as string;
 console.log(`vislit-data location: ${dataPath}`);
 if ((dataPath as any) instanceof Error) {
   dialog.showErrorBox(
@@ -55,10 +52,10 @@ if ((dataPath as any) instanceof Error) {
  * Create needed directories if they do not already exist
  */
 try {
-  // TODO: linux/mac & windows use different slashes
-  // must create vislit-data dir before /projects
-  if (!existsSync(dataPath)) mkdirSync(dataPath);
-  if (!existsSync(`${dataPath}/projects`)) mkdirSync(`${dataPath}/projects`);
+  if (!existsSync(dataPath)) {
+    mkdirSync(dataPath);
+    mkdirSync(`${dataPath}/projects`);
+  }
 } catch (error) {
   dialog.showErrorBox(
     "Vislit: Fatal Error",
