@@ -27,37 +27,38 @@ let typeController: TypeController;
 let goalController: GoalController;
 let progressController: ProgressController;
 
+// NOTE:
+// If any error occurs, we need to exit out of the main function
+// May need to test if all of the app.on, etc. can be inside of a main()
+// otherwise we can't 'return' out of an error and the app will continue to run until it hits more errors
+
 /**
  * Check where the vislit-data should exist
- * By default this is userData
- * But can be user-defined
+ * By reading userData/vislit-data-path.json
+ * By default this is userData/vislit-data
+ * But can be user-defined anywhere on their system
  */
 // TODO ASAP:
 // https://nodejs.dev/learn/nodejs-file-paths
-// TODO: Remove below line after -> adding the update datapath (which will exist in the api endpoint, so might not change here?)
+// TODO: Remove below line after adding the update datapath (which will exist in the api endpoint, so might not change here?)
 // eslint-disable-next-line prefer-const
-dataPath = getDataPath();
+dataPath = getDataPath() as string;
 console.log(`vislit-data location: ${dataPath}`);
-if (dataPath instanceof Error) {
-  // TODO: show error dialog
-  console.error("show error dialog");
+if ((dataPath as any) instanceof Error) {
+  dialog.showErrorBox(
+    "Vislit: Fatal Error",
+    `Unable to load or create vislit-data location file. Error: ${dataPath}`
+  );
 }
 
 /**
  * Create needed directories if they do not already exist
  */
 try {
-  // TODO:
-  // Check the dataPath as it has the default location saved
-  // if we do not have a default location: create it
-  // otherwise continue -> loading lowdb will cause error or not
-  const userDataPath = app.getPath("userData");
   // TODO: linux/mac & windows use different slashes
   // must create vislit-data dir before /projects
-  if (!existsSync(`${userDataPath}/vislit-data`))
-    mkdirSync(`${userDataPath}/vislit-data`);
-  if (!existsSync(`${userDataPath}/vislit-data/projects`))
-    mkdirSync(`${userDataPath}/vislit-data/projects`);
+  if (!existsSync(dataPath)) mkdirSync(dataPath);
+  if (!existsSync(`${dataPath}/projects`)) mkdirSync(`${dataPath}/projects`);
 } catch (error) {
   dialog.showErrorBox(
     "Vislit: Fatal Error",
