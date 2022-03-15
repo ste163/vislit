@@ -1,6 +1,4 @@
 import { ipcMain } from "electron";
-import { showFetchErrorDialog, showDataLinkDialog } from "./dialogs";
-import { dataPath } from "..";
 import type FileSystemController from "./file-system-controller";
 import type GoalController from "./goal-controller";
 import type NoteController from "./note-controller";
@@ -33,12 +31,13 @@ export default function initializeApiEndpoints(
   /**
    * Dialogs
    */
-  ipcMain.handle("dialog-fetch-error", () => showFetchErrorDialog());
+  // TODO: Dialogs need to be an Class passed into initializer
+  // ipcMain.handle("dialog-fetch-error", () => showFetchErrorDialog());
 
-  ipcMain.handle(
-    "dialog-data-link-non-taskbar",
-    async () => await showDataLinkDialog(dataPath)
-  );
+  // ipcMain.handle(
+  //   "dialog-data-link-non-taskbar",
+  //   async () => await showDataLinkDialog(dataPath)
+  // );
 
   ipcMain.handle("dialog-change-save-location", () => {
     // need to have 2 lowdb's

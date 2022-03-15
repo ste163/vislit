@@ -1,5 +1,5 @@
 import { app, dialog } from "electron";
-import { getDataPath } from "./handle-data-path";
+import DataPath from "./data-path";
 import { restoreOrCreateWindow } from "./main-window";
 import { existsSync, mkdirSync } from "fs";
 import initializeApiControllers from "./api/api-init-controllers";
@@ -39,9 +39,11 @@ let progressController: ProgressController;
  */
 // TODO ASAP - setup paths to work on Windows, Linux, Mac:
 // https://nodejs.dev/learn/nodejs-file-paths
-export const dataPath = getDataPath() as string;
-console.log(`vislit-data location: ${dataPath}`);
-if ((dataPath as any) instanceof Error) {
+// instantiate the DataPath class
+// then call dataPath.get()
+// then in api-init, pass in DataPath for dialog classes
+const dataPath = new DataPath();
+if (dataPath instanceof Error) {
   dialog.showErrorBox(
     "Vislit: Fatal Error",
     `Unable to load or create vislit-data location file. Error: ${dataPath}`
@@ -52,10 +54,12 @@ if ((dataPath as any) instanceof Error) {
  * Create needed directories if they do not already exist
  */
 try {
-  if (!existsSync(dataPath)) {
-    mkdirSync(dataPath);
-    mkdirSync(`${dataPath}/projects`);
+  let savedDataLocation: string | null = dataPath.get();
+  if (!existsSync(savedDataLocation)) {
+    mkdirSync(savedDataLocation);
+    mkdirSync(`${savedDataLocation}/projects`);
   }
+  savedDataLocation = null; // cleanup
 } catch (error) {
   dialog.showErrorBox(
     "Vislit: Fatal Error",
