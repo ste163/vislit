@@ -7,6 +7,7 @@ import initializeApiEndpoints from "./api/api-init-endpoints";
 import type { BrowserWindow } from "electron";
 import type { Database } from "./database";
 import type { SearchController } from "./api/search-controller";
+import type Dialogs from "./api/dialogs";
 import type FileSystemController from "./api/file-system-controller";
 import type ProjectController from "./api/project-controller";
 import type NoteController from "./api/note-controller";
@@ -18,6 +19,7 @@ import type ProgressController from "./api/progress-controller";
  * Declare global variables to be passed into needed functions
  */
 let database: Database;
+let dialogs: Dialogs;
 let fileSystemController: FileSystemController;
 let searchController: SearchController; // not used yet, but will be!
 let projectController: ProjectController;
@@ -114,6 +116,7 @@ app
     // and assign them for ipc access
     const {
       initDatabase,
+      initDialogs,
       initFileSystemController,
       initSearchController,
       initProjectController,
@@ -121,9 +124,10 @@ app
       initTypeController,
       initGoalController,
       initProgressController,
-    } = await initializeApiControllers(app);
+    } = await initializeApiControllers(app, dataPath);
 
     database = initDatabase;
+    dialogs = initDialogs;
     fileSystemController = initFileSystemController;
     searchController = initSearchController;
     projectController = initProjectController;
@@ -133,6 +137,7 @@ app
     progressController = initProgressController;
 
     initializeApiEndpoints(
+      dialogs,
       projectController,
       typeController,
       goalController,

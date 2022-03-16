@@ -1,4 +1,5 @@
 import { ipcMain } from "electron";
+import type Dialogs from "./dialogs";
 import type FileSystemController from "./file-system-controller";
 import type GoalController from "./goal-controller";
 import type NoteController from "./note-controller";
@@ -21,6 +22,7 @@ import type {
 } from "./request-schemas";
 
 export default function initializeApiEndpoints(
+  dialogs: Dialogs,
   projectController: ProjectController,
   typeController: TypeController,
   goalController: GoalController,
@@ -28,16 +30,17 @@ export default function initializeApiEndpoints(
   noteController: NoteController,
   fileSystemController: FileSystemController
 ) {
+  // TODO: CHECK IF ALL THESE NEED TO await
   /**
    * Dialogs
    */
   // TODO: Dialogs need to be an Class passed into initializer
   // ipcMain.handle("dialog-fetch-error", () => showFetchErrorDialog());
 
-  // ipcMain.handle(
-  //   "dialog-data-link-non-taskbar",
-  //   async () => await showDataLinkDialog(dataPath)
-  // );
+  ipcMain.handle(
+    "dialog-data-link-non-taskbar",
+    async () => await dialogs.showDataLinkDialog()
+  );
 
   ipcMain.handle("dialog-change-save-location", () => {
     // need to have 2 lowdb's
