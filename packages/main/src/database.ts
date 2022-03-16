@@ -23,6 +23,7 @@ export async function initializeDatabase(
   try {
     console.log("initializing database");
 
+    // TODO: need to pass in the dataPath.get() and only the get()
     const getDbPath = (): string =>
       `${app.getPath("userData")}/vislit-data/vislit-database.json`;
 
@@ -87,13 +88,29 @@ export async function initializeDatabase(
 
 export class Database {
   public db: Low<VislitDatabase>;
-  public generateId: (item: any) => any;
 
   constructor(db: Low<VislitDatabase>) {
     this.db = db;
-    this.generateId = (item: any) => {
-      item.id = nanoid(13);
-      return item;
-    };
+  }
+
+  public generateId(item: any) {
+    item.id = nanoid(13);
+    return item;
+  }
+
+  public async reload() {
+    console.log("reload database from dataPath.get()");
+    // get the datapath
+    // if it doesn't exist, throw error
+    // else continue
+    // set current db to null
+    // re-initialize database from the new file location
+    // https://www.electronjs.org/docs/latest/api/ipc-renderer/#ipcrendereronchannel-listener
+    // will need an ipcRenderer.on
+    // for on the database-reload event
+    // to refresh the page?
+    // need to clear-out localStorage related to selected projects
+    // and reset app-state
+    // because you could have ALL new projects
   }
 }

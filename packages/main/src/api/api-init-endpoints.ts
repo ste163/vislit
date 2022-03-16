@@ -43,9 +43,10 @@ export default function initializeApiEndpoints(
   );
 
   ipcMain.handle("dialog-change-save-location", () => {
-    // need to have 2 lowdb's
-    // 1 - only stores the database location on the local machine (not exported)
-    // 2 - the other reads the database file, wherever it is located on local machine
+    // TODO:
+    // copy the vislit-data folder to the new location
+    // datapath.set(newLocation)
+    // database.reload()
   });
 
   /**
