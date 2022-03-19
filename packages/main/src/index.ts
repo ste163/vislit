@@ -34,16 +34,12 @@ let progressController: ProgressController;
 // otherwise we can't 'return' out of an error and the app will continue to run until it hits more errors
 
 /**
- * Check where the vislit-data should exist
- * By reading userData/vislit-data-path.json
+ * Check where the vislit-data should exist:
  * By default this is userData/vislit-data
  * But can be user-defined anywhere on their system
  */
 // TODO ASAP - setup paths to work on Windows, Linux, Mac:
 // https://nodejs.dev/learn/nodejs-file-paths
-// instantiate the DataPath class
-// then call dataPath.get()
-// then in api-init, pass in DataPath for dialog classes
 const dataPath = new DataPath();
 if (dataPath instanceof Error) {
   dialog.showErrorBox(
@@ -126,7 +122,7 @@ app
       initTypeController,
       initGoalController,
       initProgressController,
-    } = await initializeApiControllers(app, dataPath);
+    } = await initializeApiControllers(dataPath);
 
     database = initDatabase;
     dialogs = initDialogs;

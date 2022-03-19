@@ -1,8 +1,7 @@
 import { mainWindow } from ".";
-
 import { JSONFile, Low, Memory } from "lowdb";
 import { nanoid } from "nanoid/non-secure";
-import type { App, Rectangle } from "electron";
+import type { Rectangle } from "electron";
 import type { Goal, Note, Progress, Project, Type } from "interfaces";
 import type DataPath from "./data-path";
 
@@ -20,22 +19,17 @@ export interface VislitDatabase {
 // Must initialize db outside of class
 // as class constructors cannot be async
 export async function initializeDatabase(
-  app: App
+  dataPath: DataPath
 ): Promise<Low<VislitDatabase>> {
   try {
     console.log("initializing database");
 
-    // TODO: need to pass in the dataPath.get() and only the get()
-    // AND IF We can't get that vislit-database.json, need to throw an error
-    // that opens the choice to: select a vislit-data folder OR create a new one
-    // But only if we're reloading
-    const getDbPath = (): string =>
-      `${app.getPath("userData")}/vislit-data/vislit-database.json`;
+    const path = `${dataPath.get()}/vislit-database.json`;
 
     const adapter =
       process.env.NODE_ENV === "test"
         ? new Memory<VislitDatabase>() // in-memory test database
-        : new JSONFile<VislitDatabase>(getDbPath());
+        : new JSONFile<VislitDatabase>(path);
     const db = new Low<VislitDatabase>(adapter);
 
     await db.read();

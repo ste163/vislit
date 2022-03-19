@@ -28,18 +28,15 @@ type initializedApi = {
 };
 
 async function initializeApiControllers(
-  app: App,
   dataPath: DataPath
 ): Promise<initializedApi> {
   try {
     console.log("initializing api");
 
-    const db = await initializeDatabase(app);
+    const db = await initializeDatabase(dataPath);
     const initDatabase = new Database(db, dataPath);
     const initDialogs = new Dialogs(dataPath, initDatabase.reload);
-    const initFileSystemController = new FileSystemController(
-      app.getPath("userData")
-    );
+    const initFileSystemController = new FileSystemController(dataPath);
     const projectRepository = new ProjectRepository(initDatabase);
     const typeRepository = new TypeRepository(initDatabase);
     const goalRepository = new GoalRepository(initDatabase);

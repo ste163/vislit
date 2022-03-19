@@ -31,6 +31,13 @@ export default class DataPath {
   }
 
   public get(): string {
+    // TODO:
+    // to ensure get is always "safe"
+    // when you get the path
+    // read the folder contents to ensure it exists.
+    // a person could have selected a folder
+    // then moved it on accident.
+    // The app would break at this point
     return this.#dataPath.data!.path;
   }
 
