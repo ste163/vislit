@@ -35,8 +35,8 @@ async function initializeApiControllers(
     console.log("initializing api");
 
     const db = await initializeDatabase(app);
-    const initDatabase = new Database(db);
-    const initDialogs = new Dialogs(dataPath);
+    const initDatabase = new Database(db, dataPath);
+    const initDialogs = new Dialogs(dataPath, initDatabase.reload);
     const initFileSystemController = new FileSystemController(
       app.getPath("userData")
     );

@@ -1,4 +1,4 @@
-import { app } from "electron";
+import { app, dialog } from "electron";
 import { JSONFileSync, LowSync } from "lowdb";
 
 interface Path {
@@ -6,6 +6,7 @@ interface Path {
 }
 
 export default class DataPath {
+  // Must be synchronous as it's needed before any other event can occur
   #dataPath: LowSync<Path>;
 
   constructor() {
@@ -15,7 +16,7 @@ export default class DataPath {
       );
       const dataPath = new LowSync<Path>(adapter);
       dataPath.read();
-      // If no data in file, create initial data
+      // If no file found, create one
       if (!dataPath.data) {
         dataPath.data = {
           path: `${app.getPath("userData")}/vislit-data`,
@@ -33,15 +34,21 @@ export default class DataPath {
     return this.#dataPath.data!.path;
   }
 
-  public set(): void {
-    console.log("SET DATAPATH");
-    // need to check that the path the user wants to set it to
-    // is actually a vislit-data folder. So it should be:
-    // 1. named vislit-data
-    // 2. have a vislit-database.json
-    // 3. have a /projects directory
-    // if not, throw an error
-    // if yes, set this as the new data path
-    // then call a new method Database.reload() -> that reloads the database
+  // Path coming into set is already confirmed to be a valid vislit-data directory
+  public set(path: string): string | Error {
+    try {
+      console.log("set data-path to: ", path);
+      this.#dataPath.data!.path = path;
+      this.#dataPath.write();
+      return this.#dataPath.data!.path;
+      // data-path has no knowledge of the database
+      // so reloading the database should not be called here
+    } catch (error: any | Error) {
+      dialog.showErrorBox(
+        "Linking vislit-data failed",
+        `Link operation failed with error: ${error}`
+      );
+      return error;
+    }
   }
 }

@@ -4,7 +4,10 @@ import { join } from "path";
 import type DataPath from "../data-path";
 
 export default class Dialogs {
-  constructor(private dataPath: DataPath) {}
+  constructor(
+    private dataPath: DataPath,
+    private reloadDatabase: () => Promise<void>
+  ) {}
 
   async #copyDir(src: string, dest: string): Promise<void> {
     await mkdir(dest, { recursive: true });
@@ -56,17 +59,39 @@ export default class Dialogs {
   }
 
   async showDataLinkDialog(): Promise<void> {
-    console.log(
-      "Link to new data folder. Initial folder located at",
-      this.dataPath.get()
-    );
-    // dialog for getting user selection
-    // if they have a selection
-    // set the updated datapath to link to
-    // but set will also need to ensure it's a legit vislit-data folder
-    // so it will need to open it and check the contents
-    // if it's bad, it'll throw an error
-    // this.dataPath.set()
+    const selection = await dialog.showOpenDialog({
+      buttonLabel: "Select vislit-data folder",
+      defaultPath: app.getPath("home"),
+      properties: ["openDirectory"],
+    });
+
+    const selectedFilePath = selection.filePaths[0];
+
+    if (selectedFilePath) {
+      const filesInDirectory = await readdir(selection.filePaths[0]);
+      const vislitFiles = filesInDirectory.filter((file) => {
+        // These two files must be in the directory to be valid
+        // This isn't a super-safe check, but is good enough
+        if (file === "vislit-database.json" || file === "projects") {
+          return file;
+        }
+      });
+
+      if (vislitFiles.length !== 2) {
+        dialog.showErrorBox(
+          "Linking failed",
+          "Selected folder was not a vislit-data folder"
+        );
+        // Re-open dialog on failure
+        await this.showDataLinkDialog();
+        // Must return out or else this function will continue after re-showing dialog
+        return;
+      }
+
+      const newPath = this.dataPath.set(selectedFilePath);
+      if (newPath instanceof Error) return; // the error dialog is triggered in dataPath.set()
+      await this.reloadDatabase();
+    }
   }
 
   async showDataLinkWarningDialog(): Promise<void> {

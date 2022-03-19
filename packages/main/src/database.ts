@@ -3,6 +3,7 @@ import { JSONFile, Low, Memory } from "lowdb";
 import { nanoid } from "nanoid/non-secure";
 import type { Rectangle } from "electron";
 import type { Goal, Note, Progress, Project, Type } from "interfaces";
+import type DataPath from "./data-path";
 
 export interface VislitDatabase {
   dbType: string;
@@ -24,6 +25,9 @@ export async function initializeDatabase(
     console.log("initializing database");
 
     // TODO: need to pass in the dataPath.get() and only the get()
+    // AND IF We can't get that vislit-database.json, need to throw an error
+    // that opens the choice to: select a vislit-data folder OR create a new one
+    // But only if we're reloading
     const getDbPath = (): string =>
       `${app.getPath("userData")}/vislit-data/vislit-database.json`;
 
@@ -88,9 +92,12 @@ export async function initializeDatabase(
 
 export class Database {
   public db: Low<VislitDatabase>;
+  // using entire DataPath as passing in dataPath.get failed -> when called was undefined
+  private dataPath: DataPath;
 
-  constructor(db: Low<VislitDatabase>) {
+  constructor(db: Low<VislitDatabase>, dataPath: DataPath) {
     this.db = db;
+    this.dataPath = dataPath;
   }
 
   public generateId(item: any) {
@@ -99,18 +106,24 @@ export class Database {
   }
 
   public async reload() {
-    console.log("reload database from dataPath.get()");
-    // get the datapath
-    // if it doesn't exist, throw error
-    // else continue
-    // set current db to null
-    // re-initialize database from the new file location
-    // https://www.electronjs.org/docs/latest/api/ipc-renderer/#ipcrendereronchannel-listener
-    // will need an ipcRenderer.on
-    // for on the database-reload event
-    // to refresh the page?
-    // need to clear-out localStorage related to selected projects
-    // and reset app-state
-    // because you could have ALL new projects
+    try {
+      console.log("reloading db");
+      const path = this.dataPath.get();
+      console.log("path to load from: ", path);
+      if (!path) {
+        throw new Error("Failed to get the vislit-data path to reload from");
+      }
+      // re-initialize database and assign this public db from the new file location
+      // https://www.electronjs.org/docs/latest/api/ipc-renderer/#ipcrendereronchannel-listener
+      // will need an ipcRenderer.on
+      // for on the database-reload event
+      // need to clear-out localStorage related to selected projects
+      // and reset app-state
+      // because you could have ALL new projects
+      // so probably re-fresh the page after clearing storage
+    } catch (error: any | Error) {
+      console.log(error);
+      // show error dialog
+    }
   }
 }
