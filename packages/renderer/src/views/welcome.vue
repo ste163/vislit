@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import send from "../api";
+import { send } from "../api";
 import BaseButton from "../components/base-button.vue";
 import IconProject from "../icons/icon-project.vue";
 

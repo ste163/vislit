@@ -70,9 +70,11 @@ try {
 }
 
 /**
- * Store mainWindow for saving window bounds
+ * Store mainWindow for saving window bounds.
+ * Exporting mainWindow for sending signals to renderer
+ * from other files
  */
-let mainWindow: BrowserWindow | null = null;
+export let mainWindow: BrowserWindow | null = null;
 
 /**
  * Prevent multiple instances

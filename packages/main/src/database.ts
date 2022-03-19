@@ -1,7 +1,8 @@
-import type { App } from "electron";
+import { mainWindow } from ".";
+
 import { JSONFile, Low, Memory } from "lowdb";
 import { nanoid } from "nanoid/non-secure";
-import type { Rectangle } from "electron";
+import type { App, Rectangle } from "electron";
 import type { Goal, Note, Progress, Project, Type } from "interfaces";
 import type DataPath from "./data-path";
 
@@ -107,20 +108,22 @@ export class Database {
 
   public async reload() {
     try {
-      console.log("reloading db");
       const path = this.dataPath.get();
-      console.log("path to load from: ", path);
-      if (!path) {
+      console.log("reloading database from: ", path);
+      if (!path)
         throw new Error("Failed to get the vislit-data path to reload from");
-      }
-      // re-initialize database and assign this public db from the new file location
-      // https://www.electronjs.org/docs/latest/api/ipc-renderer/#ipcrendereronchannel-listener
-      // will need an ipcRenderer.on
-      // for on the database-reload event
-      // need to clear-out localStorage related to selected projects
-      // and reset app-state
-      // because you could have ALL new projects
-      // so probably re-fresh the page after clearing storage
+
+      // setup adapter
+      const adapter = new JSONFile<VislitDatabase>(
+        `${path}/vislit-database.json`
+      );
+      const newDb = new Low<VislitDatabase>(adapter);
+      await newDb.read();
+      this.db = newDb;
+
+      // inform renderer
+      console.log("database reloaded");
+      mainWindow?.webContents.send("reload-database");
     } catch (error: any | Error) {
       console.log(error);
       // show error dialog

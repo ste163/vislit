@@ -39,4 +39,10 @@ contextBridge.exposeInMainWorld("api", {
       return await ipcRenderer.invoke(channel, data);
     }
   },
+  receive: (channel: string, func: any): void => {
+    if (channel === "reload-database") {
+      // Deliberately strip event as it includes `sender`
+      ipcRenderer.on(channel, (event, ...args) => func(...args));
+    }
+  },
 });

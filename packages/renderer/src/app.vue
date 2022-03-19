@@ -2,7 +2,7 @@
 import type { Project, Type } from "interfaces";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import send from "./api";
+import { send, receive } from "./api";
 import TheSidebar from "./components/the-sidebar.vue";
 
 const isLoading = ref<boolean>(true);
@@ -13,6 +13,15 @@ const types = ref<Type[]>([]);
 const projects = ref<Project[]>([]);
 
 const router = useRouter();
+
+receive("reload-database", () => {
+  console.log("RELOAD");
+  // for on the database-reload event
+  // need to clear-out localStorage related to selected projects
+  // and reset app-state
+  // because you could have ALL new projects
+  // so probably re-fresh the page after clearing storage
+});
 
 onMounted(async () => {
   try {
