@@ -11,6 +11,7 @@ import ProjectRepository from "./project-repository";
 import ProjectController from "./project-controller";
 import GoalRepository from "./goal-repository";
 import GoalController from "./goal-controller";
+import type DataPath from "../data-path";
 
 describe("goal-controller", () => {
   let seedGoal: Goal;
@@ -21,11 +22,14 @@ describe("goal-controller", () => {
   let goalController: GoalController;
 
   beforeEach(async () => {
+    // create a __mocks__ and import the mockDataPath
+    const mockDataPath = {
+      get: vi.fn(() => ""),
+    } as any as DataPath;
     vi.spyOn(console, "log").mockImplementation(() => {});
     vi.spyOn(console, "error").mockImplementation(() => {});
-    const { app } = await vi.importMock("electron");
-    const initDb = await initializeDatabase(app);
-    database = new Database(initDb);
+    const initDb = await initializeDatabase(mockDataPath);
+    database = new Database(initDb, mockDataPath);
     seedGoal = {
       id: "1",
       projectId: "1",

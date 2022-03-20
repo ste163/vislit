@@ -11,6 +11,7 @@ import router from "./router";
 // // Second scenario
 // - user with data and localStorage settings
 // - restore settings
+// // receiving the reload event reloads the page and clears data
 
 function renderApp() {
   const utils = render(App, {
@@ -45,6 +46,7 @@ it("when data (projects or types) fails to fetch, render error page and no sideb
       send: vi.fn().mockImplementationOnce(() => {
         throw new Error("Mock failed response");
       }),
+      receive: vi.fn(),
     },
   });
 

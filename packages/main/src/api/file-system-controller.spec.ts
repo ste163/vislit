@@ -2,6 +2,7 @@
  * @vitest-environment node
  */
 import { describe, beforeEach, it, expect, vi } from "vitest";
+import type DataPath from "../data-path";
 import FileSystemController from "./file-system-controller";
 import type { htmlWriteRequest } from "./request-schemas";
 
@@ -21,7 +22,12 @@ describe("file-system-controller", () => {
 
     vi.spyOn(console, "error").mockImplementation(() => {});
 
-    fileSystemController = new FileSystemController("");
+    // Move into a mock that everything can use
+    const mockDataPath = {
+      get: vi.fn(() => ""),
+    } as any as DataPath;
+
+    fileSystemController = new FileSystemController(mockDataPath);
   });
 
   it("makeProjectDirectory - returns error if wrong schema", async () => {
