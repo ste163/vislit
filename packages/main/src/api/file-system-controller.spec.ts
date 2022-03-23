@@ -22,7 +22,6 @@ describe("file-system-controller", () => {
 
     vi.spyOn(console, "error").mockImplementation(() => {});
 
-    // Move into a mock that everything can use
     const mockDataPath = {
       get: vi.fn(() => ""),
     } as any as DataPath;

@@ -1,4 +1,3 @@
-import type { App } from "electron";
 import type DataPath from "../data-path";
 import { Database, initializeDatabase } from "../database";
 import Dialogs from "./dialogs";
@@ -35,7 +34,7 @@ async function initializeApiControllers(
 
     const db = await initializeDatabase(dataPath);
     const initDatabase = new Database(db, dataPath);
-    const initDialogs = new Dialogs(dataPath, initDatabase.reload);
+    const initDialogs = new Dialogs(dataPath, initDatabase.reload as any); // need to pass the function, not call it: so any type
     const initFileSystemController = new FileSystemController(dataPath);
     const projectRepository = new ProjectRepository(initDatabase);
     const typeRepository = new TypeRepository(initDatabase);

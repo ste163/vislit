@@ -22,12 +22,13 @@ describe("goal-controller", () => {
   let goalController: GoalController;
 
   beforeEach(async () => {
-    // create a __mocks__ and import the mockDataPath
     const mockDataPath = {
       get: vi.fn(() => ""),
     } as any as DataPath;
+
     vi.spyOn(console, "log").mockImplementation(() => {});
     vi.spyOn(console, "error").mockImplementation(() => {});
+
     const initDb = await initializeDatabase(mockDataPath);
     database = new Database(initDb, mockDataPath);
     seedGoal = {

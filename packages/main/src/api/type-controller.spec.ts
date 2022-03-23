@@ -6,6 +6,7 @@ import type { Type } from "interfaces";
 import { Database, initializeDatabase } from "../database";
 import TypeRepository from "./type-repository";
 import TypeController from "./type-controller";
+import type DataPath from "../data-path";
 
 let database: Database;
 let typeRepository: TypeRepository;
@@ -15,11 +16,15 @@ describe("type-controller", () => {
   const typeSeedDate = new Date();
 
   beforeEach(async () => {
+    const mockDataPath = {
+      get: vi.fn(() => ""),
+    } as any as DataPath;
+
     vi.spyOn(console, "log").mockImplementation(() => {});
     vi.spyOn(console, "error").mockImplementation(() => {});
-    const { app } = await vi.importMock("electron");
-    const initDb = await initializeDatabase(app);
-    database = new Database(initDb);
+
+    const initDb = await initializeDatabase(mockDataPath);
+    database = new Database(initDb, mockDataPath);
     const seedDate = typeSeedDate;
     database.db.data!.types = [
       {

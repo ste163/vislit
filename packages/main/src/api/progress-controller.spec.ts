@@ -4,7 +4,7 @@
 import { describe, beforeEach, it, expect, vi } from "vitest";
 import type { Progress } from "interfaces";
 import type FileSystemController from "./file-system-controller";
-
+import type DataPath from "../data-path";
 import { Database, initializeDatabase } from "../database";
 import { SearchController, initializeSearchIndexes } from "./search-controller";
 import GoalRepository from "./goal-repository";
@@ -30,11 +30,15 @@ describe("progress-controller", () => {
   const progressSeedDate7 = new Date("2022-01-04").toISOString();
 
   beforeEach(async () => {
+    const mockDataPath = {
+      get: vi.fn(() => ""),
+    } as any as DataPath;
+
     vi.spyOn(console, "log").mockImplementation(() => {});
     vi.spyOn(console, "error").mockImplementation(() => {});
-    const { app } = await vi.importMock("electron");
-    const initDb = await initializeDatabase(app);
-    database = new Database(initDb);
+
+    const initDb = await initializeDatabase(mockDataPath);
+    database = new Database(initDb, mockDataPath);
     const projectSeedDate = new Date();
     const seedProjects = [
       {

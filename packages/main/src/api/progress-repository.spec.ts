@@ -3,6 +3,7 @@
  */
 import { describe, beforeEach, it, expect, vi } from "vitest";
 import type { Progress } from "interfaces";
+import type DataPath from "../data-path";
 import { Database, initializeDatabase } from "../database";
 import ProgressRepository from "./progress-repository";
 
@@ -14,10 +15,14 @@ describe("progress-repository", () => {
   const seedDate3 = new Date("2020-01-15").toISOString();
 
   beforeEach(async () => {
+    const mockDataPath = {
+      get: vi.fn(() => ""),
+    } as any as DataPath;
+
     vi.spyOn(console, "log").mockImplementation(() => {});
-    const { app } = await vi.importMock("electron");
-    const initDb = await initializeDatabase(app);
-    database = new Database(initDb);
+
+    const initDb = await initializeDatabase(mockDataPath);
+    database = new Database(initDb, mockDataPath);
     progressRepository = new ProgressRepository(database);
     database.db.data!.progress = [
       {

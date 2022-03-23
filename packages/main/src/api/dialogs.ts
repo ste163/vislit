@@ -1,12 +1,14 @@
+import type { BrowserWindow } from "electron";
 import { app, dialog } from "electron";
 import { readdir, mkdir, copyFile } from "fs/promises";
 import { join } from "path";
+import { mainWindow } from "../index"; // import here so it's outside of unit tests (import index in tests crashes tests)
 import type DataPath from "../data-path";
 
 export default class Dialogs {
   constructor(
     private dataPath: DataPath,
-    private reloadDatabase: () => Promise<void>
+    private reloadDatabase: (mainWindow: BrowserWindow) => Promise<void>
   ) {}
 
   async #copyDir(src: string, dest: string): Promise<void> {
@@ -90,7 +92,7 @@ export default class Dialogs {
 
       const newPath = this.dataPath.set(selectedFilePath);
       if (newPath instanceof Error) return; // the error dialog is triggered in dataPath.set()
-      await this.reloadDatabase();
+      await this.reloadDatabase(mainWindow as BrowserWindow);
     }
   }
 

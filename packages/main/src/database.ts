@@ -1,7 +1,6 @@
-import { mainWindow } from ".";
 import { JSONFile, Low, Memory } from "lowdb";
 import { nanoid } from "nanoid/non-secure";
-import type { Rectangle } from "electron";
+import type { BrowserWindow, Rectangle } from "electron";
 import type { Goal, Note, Progress, Project, Type } from "interfaces";
 import type DataPath from "./data-path";
 
@@ -100,7 +99,7 @@ export class Database {
     return item;
   }
 
-  public async reload() {
+  public async reload(mainWindow: BrowserWindow) {
     try {
       const path = this.dataPath.get();
       console.log("reloading database from: ", path);
@@ -117,7 +116,7 @@ export class Database {
 
       // inform renderer
       console.log("database reloaded");
-      mainWindow?.webContents.send("reload-database");
+      mainWindow.webContents.send("reload-database");
     } catch (error: any | Error) {
       console.log(error);
       // show error dialog
