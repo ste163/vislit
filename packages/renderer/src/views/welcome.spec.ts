@@ -54,13 +54,13 @@ it("renders page when loaded and calls import data, change save location, and cr
 
   // eslint-disable-next-line testing-library/await-fire-event
   fireEvent.click(importButton); // userEvent is failing
-  expect(window.api.send).toHaveBeenCalledOnce();
+  expect(window.api.send).toHaveBeenCalledTimes(2);
 
   // clicking save location calls ipcSend
   const changeLocationButton = screen.getAllByRole("button")[1];
   // eslint-disable-next-line testing-library/await-fire-event
   fireEvent.click(changeLocationButton);
-  expect(window.api.send).toHaveBeenCalledTimes(2);
+  expect(window.api.send).toHaveBeenCalledTimes(3);
 
   // clicking create a project calls onCreateProject (either a passed in function), one from state, or elsewhere
 });
