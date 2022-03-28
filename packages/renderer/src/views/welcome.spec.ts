@@ -14,6 +14,12 @@ it("renders loading state while isLoading is true", () => {
   expect(screen.getByTestId("loading-welcome")).toBeTruthy();
 });
 
+it.skip("renders error message if unable to fetch default data path location", () => {
+  // mock the return value as undefined
+  // render
+  // error text should exist
+});
+
 it("renders page when loaded and calls import data, change save location, and create project when buttons clicked", async () => {
   // mock window's api property
   Object.defineProperty(window, "api", {

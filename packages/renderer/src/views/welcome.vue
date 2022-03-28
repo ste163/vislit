@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from "@vue/reactivity";
 import { onMounted, ref } from "vue";
 import { send } from "../api";
 import BaseButton from "../components/base-button.vue";
@@ -11,6 +12,12 @@ interface Props {
 const { isLoading } = defineProps<Props>();
 
 const defaultDataPath = ref<string>("");
+
+const displayedPath = computed(() =>
+  defaultDataPath.value === ""
+    ? "Error loading default data path"
+    : defaultDataPath.value
+);
 
 async function onImportClick(): Promise<void> {
   await send("dialog-data-link-non-taskbar");
@@ -58,7 +65,7 @@ onMounted(async () => {
 
         <h2 class="mt-12">Choose a save location for your Vislit Data</h2>
         <p class="my-3">
-          By default, Vislit stores your data in: {{ defaultDataPath }}. If you
+          By default, Vislit stores your data in: {{ displayedPath }}. If you
           would prefer to store data in another location or in a cloud sync
           folder (like in Google Drive, OneDrive, or DropBox), select that now
           or later by going to
