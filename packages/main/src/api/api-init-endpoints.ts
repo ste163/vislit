@@ -1,4 +1,5 @@
 import { ipcMain } from "electron";
+import type DataPath from "../data-path";
 import type Dialogs from "./dialogs";
 import type FileSystemController from "./file-system-controller";
 import type GoalController from "./goal-controller";
@@ -22,6 +23,7 @@ import type {
 } from "./request-schemas";
 
 export default function initializeApiEndpoints(
+  dataPath: DataPath,
   dialogs: Dialogs,
   projectController: ProjectController,
   typeController: TypeController,
@@ -47,6 +49,10 @@ export default function initializeApiEndpoints(
     // copy the vislit-data folder to the new location
     // datapath.set(newLocation)
     // database.reload()
+  });
+
+  ipcMain.handle("data-path-get", () => {
+    return dataPath.get();
   });
 
   /**

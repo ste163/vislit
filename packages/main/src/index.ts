@@ -135,6 +135,7 @@ app
     progressController = initProgressController;
 
     initializeApiEndpoints(
+      dataPath,
       dialogs,
       projectController,
       typeController,

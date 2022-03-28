@@ -8,6 +8,7 @@ const validChannels = [
   "dialog-fetch-error",
   "dialog-data-link-non-taskbar",
   "dialog-change-save-location",
+  "data-path-get",
   "projects-get-all",
   "projects-add",
   "projects-update",

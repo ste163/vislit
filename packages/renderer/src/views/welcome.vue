@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { onMounted, ref } from "vue";
 import { send } from "../api";
 import BaseButton from "../components/base-button.vue";
 import IconProject from "../icons/icon-project.vue";
@@ -9,6 +10,8 @@ interface Props {
 
 const { isLoading } = defineProps<Props>();
 
+const defaultDataPath = ref<string>("");
+
 async function onImportClick(): Promise<void> {
   await send("dialog-data-link-non-taskbar");
 }
@@ -16,6 +19,11 @@ async function onImportClick(): Promise<void> {
 async function onSaveChangeClick(): Promise<void> {
   await send("dialog-change-save-location");
 }
+
+onMounted(async () => {
+  const path = (await send("data-path-get")) as string;
+  if (path) defaultDataPath.value = path;
+});
 </script>
 
 <template>
@@ -50,10 +58,10 @@ async function onSaveChangeClick(): Promise<void> {
 
         <h2 class="mt-12">Choose a save location for your Vislit Data</h2>
         <p class="my-3">
-          By default, Vislit stores your data in: DYNAMIC LOCATION FROM BACKEND.
-          If you would prefer to store data in another location or in a cloud
-          sync folder (like in Google Drive, OneDrive, or DropBox), select that
-          now or later by going to
+          By default, Vislit stores your data in: {{ defaultDataPath }}. If you
+          would prefer to store data in another location or in a cloud sync
+          folder (like in Google Drive, OneDrive, or DropBox), select that now
+          or later by going to
           <span class="font-bold whitespace-nowrap"
             >File -> Change Save Location</span
           >.

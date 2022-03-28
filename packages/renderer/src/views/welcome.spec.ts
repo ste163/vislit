@@ -18,7 +18,7 @@ it("renders page when loaded and calls import data, change save location, and cr
   // mock window's api property
   Object.defineProperty(window, "api", {
     value: {
-      send: vi.fn(),
+      send: vi.fn(() => "/default/vislit-data"),
     },
   });
 
@@ -27,8 +27,12 @@ it("renders page when loaded and calls import data, change save location, and cr
       isLoading: false,
     },
   });
-  // not loading
+
+  // is not loading
   expect(screen.queryByTestId("loading-welcome")).toBeNull();
+
+  // fetched default saved data path on mount and renders it
+  // TODO: fetch it
 
   // all headings exist
   const headings = screen.getAllByRole("heading");
@@ -41,6 +45,7 @@ it("renders page when loaded and calls import data, change save location, and cr
 
   // clicking the import button calls ipcSend
   const importButton = screen.getAllByRole("button")[0];
+
   // eslint-disable-next-line testing-library/await-fire-event
   fireEvent.click(importButton); // userEvent is failing
   expect(window.api.send).toHaveBeenCalledOnce();
