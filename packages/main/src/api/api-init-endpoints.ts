@@ -32,24 +32,23 @@ export default function initializeApiEndpoints(
   noteController: NoteController,
   fileSystemController: FileSystemController
 ) {
+  //
   // TODO: CHECK IF ALL THESE NEED TO await
+  //
   /**
    * Dialogs
    */
-  // TODO: Dialogs need to be an Class passed into initializer
-  // ipcMain.handle("dialog-fetch-error", () => showFetchErrorDialog());
+  ipcMain.handle("dialog-fetch-error", () => dialogs.showFetchError());
 
   ipcMain.handle(
     "dialog-data-link-non-taskbar",
-    async () => await dialogs.showDataLinkDialog()
+    async () => await dialogs.showDataLink()
   );
 
-  ipcMain.handle("dialog-change-save-location", () => {
-    // TODO:
-    // copy the vislit-data folder to the new location
-    // datapath.set(newLocation)
-    // database.reload()
-  });
+  ipcMain.handle(
+    "dialog-change-save-location",
+    async () => await dialogs.showChangeSaveLocation()
+  );
 
   ipcMain.handle("data-path-get", () => {
     return dataPath.get();

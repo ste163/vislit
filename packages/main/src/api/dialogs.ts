@@ -24,7 +24,7 @@ export default class Dialogs {
     }
   }
 
-  showFetchErrorDialog(): void {
+  showFetchError(): void {
     // TODO: add link to github issues
     // or in future: a bug report on vislit.app
     // that doesn't require a sign up
@@ -34,7 +34,27 @@ export default class Dialogs {
     );
   }
 
-  async showExportDialog() {
+  async showChangeSaveLocation(): Promise<void> {
+    const newLocation = (await this.showExport()) as string; // throws error if it fails
+    if (newLocation) {
+      try {
+        this.dataPath.set(newLocation);
+        // NOTE:
+        // force reloading the app with mainWindow.reload
+        // this does not change location storage
+        // May need to trigger the reload differently/through Vue, but this works for now
+        mainWindow?.reload();
+        await this.reloadDatabase(mainWindow as BrowserWindow);
+      } catch (error: any | Error) {
+        dialog.showErrorBox(
+          "Changing Save Location failed",
+          `Unable to change save location. Linking operation failed. Error: ${error}`
+        );
+      }
+    }
+  }
+
+  async showExport(): Promise<string | undefined | Error> {
     const homePath = app.getPath("home"); // open dialog at the home location (usually the desktop)
     const result = await dialog.showSaveDialog({
       title: "Export Vislit Database",
@@ -51,16 +71,18 @@ export default class Dialogs {
         // need to export entire /vislit-data
         const path = `${app.getPath("userData")}/vislit-data`;
         await this.#copyDir(path, result.filePath);
+        return result.filePath;
       } catch (error: any | Error) {
         dialog.showErrorBox(
           "Export failed",
           `Unable to export database. Export operation failed. Error: ${error}`
         );
+        return error;
       }
     }
   }
 
-  async showDataLinkDialog(): Promise<void> {
+  async showDataLink(): Promise<void> {
     const selection = await dialog.showOpenDialog({
       buttonLabel: "Select vislit-data folder",
       defaultPath: app.getPath("home"),
@@ -85,18 +107,19 @@ export default class Dialogs {
           "Selected folder was not a vislit-data folder"
         );
         // Re-open dialog on failure
-        await this.showDataLinkDialog();
+        await this.showDataLink();
         // Must return out or else this function will continue after re-showing dialog
         return;
       }
 
       const newPath = this.dataPath.set(selectedFilePath);
       if (newPath instanceof Error) return; // the error dialog is triggered in dataPath.set()
+      mainWindow?.reload();
       await this.reloadDatabase(mainWindow as BrowserWindow);
     }
   }
 
-  async showDataLinkWarningDialog(): Promise<void> {
+  async showDataLinkWarning(): Promise<void> {
     // TODO:
     // This warning might not be needed, as there is no data loss.
     // You're just linking to a new file.
@@ -115,12 +138,13 @@ export default class Dialogs {
       ],
     });
 
+    // Todo: don't use switch
     switch (result.response) {
       case 0:
-        await this.showDataLinkDialog();
+        await this.showDataLink();
         break;
       case 1:
-        await this.showExportDialog();
+        await this.showExport();
         break;
       default:
         break;

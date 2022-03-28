@@ -16,7 +16,9 @@ const router = useRouter();
 
 receive("reload-database", () => {
   console.log("RELOAD");
-  // for on the database-reload event
+  // RELOADING is currently from backend with mainWindow.reload
+  // this may not work because of clearing localStorage, but works for now
+  //
   // need to clear-out localStorage related to selected projects
   // and reset app-state
   // because you could have ALL new projects

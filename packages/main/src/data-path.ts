@@ -37,7 +37,8 @@ export default class DataPath {
     // read the folder contents to ensure it exists.
     // a person could have selected a folder
     // then moved it on accident.
-    // The app would break at this point
+    // IF THAT HAPPENS
+    // set the datapath back to the original appData path
     return this.#dataPath.data!.path;
   }
 
