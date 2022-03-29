@@ -4,6 +4,7 @@ import { onMounted, ref } from "vue";
 import { send } from "../api";
 import BaseButton from "../components/base-button.vue";
 import IconProject from "../icons/icon-project.vue";
+import PulseNotification from "../components/pulse-notification.vue";
 
 interface Props {
   isLoading: boolean;
@@ -77,7 +78,14 @@ onMounted(async () => {
           >Change Save Location</base-button
         >
 
-        <h2 class="mt-12">Create a Project</h2>
+        <div class="mt-12 flex items-center relative">
+          <pulse-notification
+            class="absolute left-[-25px]"
+            :color="'#3772ff'"
+          />
+          <h2>Create a Project</h2>
+        </div>
+
         <p class="my-3">
           To get started writing, setting goals, and tracking progress, create a
           project.

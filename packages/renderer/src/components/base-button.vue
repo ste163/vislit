@@ -15,8 +15,6 @@ const {
   variant = "default",
 } = defineProps<Props>();
 
-// See if it's possible to double up var() and tailwind so I don't have to
-// hard-code the colors
 const variants = {
   primary: {
     text: "white",
@@ -28,7 +26,7 @@ const variants = {
   },
   default: {
     text: "#333333",
-    background: "lightgray",
+    background: "#f6f6f6",
   },
 };
 
@@ -68,7 +66,7 @@ function createEffectOnClick(e: MouseEvent): void {
     ref="button"
     :type="type"
     :disabled="isDisabled"
-    class="base-button px-4 py-2 text-xs rounded-md items-center"
+    class="base-button px-4 py-2 text-xs rounded-md items-center select-none"
     @click="createEffectOnClick"
   >
     <!-- If there's an icon passed in, render it -->
