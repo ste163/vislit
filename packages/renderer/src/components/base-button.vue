@@ -15,8 +15,6 @@ const {
   variant = "default",
 } = defineProps<Props>();
 
-// See if it's possible to double up var() and tailwind so I don't have to
-// hard-code the colors
 const variants = {
   primary: {
     text: "white",
@@ -28,7 +26,7 @@ const variants = {
   },
   default: {
     text: "#333333",
-    background: "lightgray",
+    background: "#f6f6f6",
   },
 };
 
