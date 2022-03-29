@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { Project, Type } from "interfaces";
 import { ref, onMounted } from "vue";
-import send from "./api";
+import { useRouter } from "vue-router";
+import { send, receive } from "./api";
 import TheSidebar from "./components/the-sidebar.vue";
 
 const isLoading = ref<boolean>(true);
@@ -11,6 +12,19 @@ const fetchErrorMessage = ref<string>("");
 const types = ref<Type[]>([]);
 const projects = ref<Project[]>([]);
 
+const router = useRouter();
+
+receive("reload-database", () => {
+  console.log("RELOAD");
+  // RELOADING is currently from backend with mainWindow.reload
+  // this may not work because of clearing localStorage, but works for now
+  //
+  // need to clear-out localStorage related to selected projects
+  // and reset app-state
+  // because you could have ALL new projects
+  // so probably re-fresh the page after clearing storage
+});
+
 onMounted(async () => {
   try {
     const typesResponse = (await send("types-get-all")) as Type[];
@@ -19,35 +33,24 @@ onMounted(async () => {
     const projectsResponse = (await send("projects-get-all")) as Project[];
     if (projectsResponse instanceof Error) throw projectsResponse;
     projects.value = projectsResponse;
+    if (projects.value.length === 0) {
+      router.replace("/");
+      return;
+    }
+    console.log("we have projects; read local storage and open most recent");
+    // else, read localStorage for last opened project
+    // if last opened project, open that project
+    // otherwise, open most recent
+    // route to /project/:id
   } catch (error: any | Error) {
-    console.log(error);
+    console.error(error);
     fetchErrorMessage.value = error?.message;
     isFetchErrorActive.value = true;
+    await send("dialog-fetch-error");
   } finally {
     isLoading.value = false;
   }
-
-  // isLoading is true by default
-  // fetch Projects
-  // fetch Types
-  // if no projects, show welcome view
-  // // route to '/'
-  // // stop loading
-  // else,
-  // read localStorage
-  // if it's got a last opened project, open that project
-  // if there is no last opened project, open most recent
-  // route to /project/:id
-  // stop loading
-  // IF ERROR:
-  // do not turn off loading state
-  // ipc call the error to display the error dialog box from electron
 });
-//
-// Pass loading state into both sidebar and router-view components
-// Because we won't know what the side-bar state is until after
-// data fetching, local storage reading, setting all that state, THEN stop loading
-// after all data is prepared
 </script>
 
 <template>

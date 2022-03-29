@@ -1,5 +1,6 @@
-import type { App } from "electron";
+import type DataPath from "../data-path";
 import { Database, initializeDatabase } from "../database";
+import Dialogs from "./dialogs";
 import FileSystemController from "./file-system-controller";
 import GoalController from "./goal-controller";
 import GoalRepository from "./goal-repository";
@@ -15,6 +16,7 @@ import TypeRepository from "./type-repository";
 
 type initializedApi = {
   initDatabase: Database;
+  initDialogs: Dialogs;
   initFileSystemController: FileSystemController;
   initSearchController: SearchController;
   initProjectController: ProjectController;
@@ -24,15 +26,16 @@ type initializedApi = {
   initProgressController: ProgressController;
 };
 
-async function initializeApiControllers(app: App): Promise<initializedApi> {
+async function initializeApiControllers(
+  dataPath: DataPath
+): Promise<initializedApi> {
   try {
     console.log("initializing api");
 
-    const db = await initializeDatabase(app);
-    const initDatabase = new Database(db);
-    const initFileSystemController = new FileSystemController(
-      app.getPath("userData")
-    );
+    const db = await initializeDatabase(dataPath);
+    const initDatabase = new Database(db, dataPath);
+    const initDialogs = new Dialogs(dataPath, initDatabase.reload as any); // need to pass the function, not call it: so any type
+    const initFileSystemController = new FileSystemController(dataPath);
     const projectRepository = new ProjectRepository(initDatabase);
     const typeRepository = new TypeRepository(initDatabase);
     const goalRepository = new GoalRepository(initDatabase);
@@ -69,6 +72,7 @@ async function initializeApiControllers(app: App): Promise<initializedApi> {
 
     return {
       initDatabase,
+      initDialogs,
       initFileSystemController,
       initSearchController,
       initProjectController,

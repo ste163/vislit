@@ -5,17 +5,22 @@ import { describe, beforeEach, it, expect, vi } from "vitest";
 import { Database, initializeDatabase } from "../database";
 import { SearchController, initializeSearchIndexes } from "./search-controller";
 import type { searchRequest } from "./request-schemas";
+import type DataPath from "../data-path";
 
 // Only testing endpoints that frontend has access to
 describe("file-system-controller", () => {
   let searchController: SearchController;
 
   beforeEach(async () => {
+    const mockDataPath = {
+      get: vi.fn(() => ""),
+    } as any as DataPath;
+
     vi.spyOn(console, "log").mockImplementation(() => {});
     vi.spyOn(console, "error").mockImplementation(() => {});
-    const { app } = await vi.importMock("electron");
-    const initDb = await initializeDatabase(app);
-    const database = new Database(initDb);
+
+    const initDb = await initializeDatabase(mockDataPath);
+    const database = new Database(initDb, mockDataPath);
     const { projectSearchIndex, noteSearchIndex } =
       await initializeSearchIndexes(database);
     searchController = new SearchController(

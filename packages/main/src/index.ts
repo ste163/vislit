@@ -1,11 +1,13 @@
-import { app } from "electron";
+import { app, dialog } from "electron";
+import DataPath from "./data-path";
 import { restoreOrCreateWindow } from "./main-window";
 import { existsSync, mkdirSync } from "fs";
-import initializeApiControllers from "./api/init-controllers";
-import initializeApiEndpoints from "./api/init-endpoints";
+import initializeApiControllers from "./api/api-init-controllers";
+import initializeApiEndpoints from "./api/api-init-endpoints";
 import type { BrowserWindow } from "electron";
 import type { Database } from "./database";
 import type { SearchController } from "./api/search-controller";
+import type Dialogs from "./api/dialogs";
 import type FileSystemController from "./api/file-system-controller";
 import type ProjectController from "./api/project-controller";
 import type NoteController from "./api/note-controller";
@@ -17,6 +19,7 @@ import type ProgressController from "./api/progress-controller";
  * Declare global variables to be passed into needed functions
  */
 let database: Database;
+let dialogs: Dialogs;
 let fileSystemController: FileSystemController;
 let searchController: SearchController; // not used yet, but will be!
 let projectController: ProjectController;
@@ -25,23 +28,49 @@ let typeController: TypeController;
 let goalController: GoalController;
 let progressController: ProgressController;
 
+// NOTE:
+// If any error occurs, we need to exit out of the main function
+// May need to test if all of the app.on, etc. can be inside of a main()
+// otherwise we can't 'return' out of an error and the app will continue to run until it hits more errors
+
+/**
+ * Check where the vislit-data should exist:
+ * By default this is userData/vislit-data
+ * But can be user-defined anywhere on their system
+ */
+// TODO ASAP - setup paths to work on Windows, Linux, Mac:
+// https://nodejs.dev/learn/nodejs-file-paths
+const dataPath = new DataPath();
+if (dataPath instanceof Error) {
+  dialog.showErrorBox(
+    "Vislit: Fatal Error",
+    `Unable to load or create vislit-data location file. Error: ${dataPath}`
+  );
+}
+
 /**
  * Create needed directories if they do not already exist
  */
 try {
-  const userDataPath = app.getPath("userData");
-  console.log("DATA PATH:", userDataPath);
-  // linux/mac & windows use different slashes
-  if (!existsSync(`${userDataPath}/projects`))
-    mkdirSync(`${userDataPath}/projects`);
+  let savedDataLocation: string | null = dataPath.get();
+  if (!existsSync(savedDataLocation)) {
+    mkdirSync(savedDataLocation);
+    mkdirSync(`${savedDataLocation}/projects`);
+  }
+  savedDataLocation = null; // cleanup
 } catch (error) {
-  console.log(error);
+  dialog.showErrorBox(
+    "Vislit: Fatal Error",
+    `Unable to load or create folders required for Vislit. Error: ${error}`
+  );
 }
 
 /**
- * Store mainWindow for saving window bounds
+ * Store mainWindow for saving window bounds.
+ * Exporting mainWindow for sending signals to renderer
+ * from other files
  */
-let mainWindow: BrowserWindow | null = null;
+export let mainWindow: BrowserWindow | null = null;
 
 /**
  * Prevent multiple instances
@@ -56,7 +85,7 @@ app.on("second-instance", () => {
 });
 
 /**
- * Disable Hardware Acceleration for better power-saving
+ * Disable Hardware Acceleration for improved power saving
  */
 app.disableHardwareAcceleration();
 
@@ -85,6 +114,7 @@ app
     // and assign them for ipc access
     const {
       initDatabase,
+      initDialogs,
       initFileSystemController,
       initSearchController,
       initProjectController,
@@ -92,9 +122,10 @@ app
       initTypeController,
       initGoalController,
       initProgressController,
-    } = await initializeApiControllers(app);
+    } = await initializeApiControllers(dataPath);
 
     database = initDatabase;
+    dialogs = initDialogs;
     fileSystemController = initFileSystemController;
     searchController = initSearchController;
     projectController = initProjectController;
@@ -104,6 +135,8 @@ app
     progressController = initProgressController;
 
     initializeApiEndpoints(
+      dataPath,
+      dialogs,
       projectController,
       typeController,
       goalController,

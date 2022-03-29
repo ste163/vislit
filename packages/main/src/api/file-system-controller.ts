@@ -12,21 +12,17 @@ import type {
   deleteNoteRequest,
   readNoteByIdRequest,
 } from "./request-schemas";
+import type DataPath from "../data-path";
 
 class FileSystemController {
-  constructor(private userDataPath: string) {}
-
-  getUserDataPath(): string {
-    return this.userDataPath;
-  }
+  constructor(private dataPath: DataPath) {}
 
   async makeProjectDirectory(projectId: idRequest): Promise<true | Error> {
     try {
       idRequestSchema.parse(projectId);
-      const userData = this.getUserDataPath();
-      await mkdir(`${userData}/projects/${projectId}`);
-      await mkdir(`${userData}/projects/${projectId}/documents`);
-      await mkdir(`${userData}/projects/${projectId}/notes`);
+      await mkdir(`${this.dataPath.get()}/projects/${projectId}`);
+      await mkdir(`${this.dataPath.get()}/projects/${projectId}/documents`);
+      await mkdir(`${this.dataPath.get()}/projects/${projectId}/notes`);
       return true;
     } catch (error: any | Error) {
       return handleError(error);
@@ -36,8 +32,9 @@ class FileSystemController {
   async deleteProjectDirectory(projectId: idRequest): Promise<true | Error> {
     try {
       idRequestSchema.parse(projectId);
-      const userData = this.getUserDataPath();
-      await rm(`${userData}/projects/${projectId}`, { recursive: true });
+      await rm(`${this.dataPath.get()}/projects/${projectId}`, {
+        recursive: true,
+      });
       return true;
     } catch (error: any | Error) {
       return handleError(error);
@@ -52,10 +49,10 @@ class FileSystemController {
       // notes do not have versioning, only save id
       const userData =
         type === "documents"
-          ? `${this.getUserDataPath()}/projects/${id}/${type}/${
+          ? `${this.dataPath.get()}/projects/${id}/${type}/${
               new Date(createdAt!).toISOString().split("T")[0]
             }-${id}.html`
-          : `${this.getUserDataPath()}/projects/${projectId}/${type}/${id}.html`;
+          : `${this.dataPath.get()}/projects/${projectId}/${type}/${id}.html`;
 
       await writeFile(userData, html);
       return true;
@@ -68,7 +65,7 @@ class FileSystemController {
     try {
       deleteNoteRequestSchema.parse(request);
       const { id, projectId } = request;
-      const userData = `${this.getUserDataPath()}/projects/${projectId}/notes/${id}.html`;
+      const userData = `${this.dataPath.get()}/projects/${projectId}/notes/${id}.html`;
       await rm(userData); // returns error if unable to find file
       return true;
     } catch (error: any | Error) {
@@ -82,7 +79,7 @@ class FileSystemController {
     try {
       readNoteByIdRequestSchema.parse(request);
       const { noteId, projectId } = request;
-      const userData = `${this.getUserDataPath()}/projects/${projectId}/notes/${noteId}.html`;
+      const userData = `${this.dataPath.get()}/projects/${projectId}/notes/${noteId}.html`;
       const file = await readFile(userData, "utf-8");
       if (file) return file;
     } catch (error: any | Error) {
@@ -95,7 +92,7 @@ class FileSystemController {
   ): Promise<string | void | Error> {
     try {
       idRequestSchema.parse(projectId);
-      const userData = `${this.getUserDataPath()}/projects/${projectId}/documents`;
+      const userData = `${this.dataPath.get()}/projects/${projectId}/documents`;
       const files = await readdir(userData);
       if (files.length) {
         // for now, assuming last file in list is most recent

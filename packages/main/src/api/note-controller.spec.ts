@@ -9,6 +9,7 @@ import NoteController from "./note-controller";
 import type { Note } from "interfaces";
 import type FileSystemController from "./file-system-controller";
 import type { updateNoteRequest } from "./request-schemas";
+import type DataPath from "../data-path";
 
 describe("project-controller", () => {
   let database: Database;
@@ -18,11 +19,15 @@ describe("project-controller", () => {
   const seedDate = new Date();
 
   beforeEach(async () => {
+    const mockDataPath = {
+      get: vi.fn(() => ""),
+    } as any as DataPath;
+
     vi.spyOn(console, "log").mockImplementation(() => {});
     vi.spyOn(console, "error").mockImplementation(() => {});
-    const { app } = await vi.importMock("electron");
-    const initDb = await initializeDatabase(app);
-    database = new Database(initDb);
+
+    const initDb = await initializeDatabase(mockDataPath);
+    database = new Database(initDb, mockDataPath);
     database.db.data!.projects = [
       {
         id: "1",
@@ -160,7 +165,7 @@ describe("project-controller", () => {
     const originalCount = database.db.data!.notes.length;
     const response = (await noteController.add(note)) as Note;
     const newCount = database.db.data!.notes.length;
-    const searchResult = searchController.searchNotes(response.title);
+    const searchResult = searchController.searchNotes(response.title) as any;
 
     expect(originalCount + 1).toEqual(newCount);
     expect(response).toHaveProperty("id");
@@ -215,7 +220,7 @@ describe("project-controller", () => {
     const originalCount = database.db.data!.notes.length;
     const response = (await noteController.update(note)) as Note;
     const newCount = database.db.data!.notes.length;
-    const searchResult = searchController.searchNotes(response.title);
+    const searchResult = searchController.searchNotes(response.title) as any;
 
     expect(originalCount).toEqual(newCount);
     expect(response.title).toEqual("Updated Second Note");

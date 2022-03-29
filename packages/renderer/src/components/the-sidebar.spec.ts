@@ -10,7 +10,7 @@ function renderSidebar(props: any) {
   render(TheSidebar, { props });
 
   return {
-    queryIsSidebarLoading: () => screen.queryByTestId("sidebar-loading"),
+    queryIsSidebarLoading: () => screen.queryByTestId("loading-sidebar"),
     queryIsSidebarLoaded: () => screen.queryByText("Views"), // unable to get queryByRole to work for the Views text
     getAllButtons: () => screen.getAllByRole("button"),
   };

@@ -17,7 +17,7 @@ const { isDisabled, isLoading } = defineProps<Props>();
   <nav class="nav">
     <div
       v-if="isLoading"
-      data-testId="sidebar-loading"
+      data-testId="loading-sidebar"
       class="flex flex-col gap-2 px-3 mt-2"
     >
       <div class="bg-gray-200 w-6/12 animate-pulse h-5 rounded-xl" />

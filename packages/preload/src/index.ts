@@ -5,6 +5,10 @@ import { contextBridge, ipcRenderer } from "electron";
 
 // whitelist channels
 const validChannels = [
+  "dialog-fetch-error",
+  "dialog-data-link-non-taskbar",
+  "dialog-change-save-location",
+  "data-path-get",
   "projects-get-all",
   "projects-add",
   "projects-update",
@@ -34,6 +38,12 @@ contextBridge.exposeInMainWorld("api", {
   send: async (channel: string, data: unknown): Promise<unknown> => {
     if (validChannels.includes(channel)) {
       return await ipcRenderer.invoke(channel, data);
+    }
+  },
+  receive: (channel: string, func: any): void => {
+    if (channel === "reload-database") {
+      // Deliberately strip event as it includes `sender`
+      ipcRenderer.on(channel, (event, ...args) => func(...args));
     }
   },
 });

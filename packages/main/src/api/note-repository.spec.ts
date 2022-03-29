@@ -5,6 +5,7 @@ import { describe, beforeEach, it, expect, vi } from "vitest";
 import type { Note } from "interfaces";
 import { Database, initializeDatabase } from "../database";
 import NoteRepository from "./note-repository";
+import type DataPath from "../data-path";
 
 describe("note-repository", () => {
   let database: Database;
@@ -16,9 +17,13 @@ describe("note-repository", () => {
 
   beforeEach(async () => {
     vi.spyOn(console, "log").mockImplementation(() => {});
-    const { app } = await vi.importMock("electron");
-    const initDb = await initializeDatabase(app);
-    database = new Database(initDb);
+
+    const mockDataPath = {
+      get: vi.fn(() => ""),
+    } as any as DataPath;
+
+    const initDb = await initializeDatabase(mockDataPath);
+    database = new Database(initDb, mockDataPath);
     noteRepository = new NoteRepository(database);
     database.db.data!.types = [
       {

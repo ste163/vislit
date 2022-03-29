@@ -2,6 +2,7 @@
  * @vitest-environment node
  */
 import { describe, beforeEach, it, expect, vi } from "vitest";
+import type DataPath from "../data-path";
 import { Database, initializeDatabase } from "../database";
 import ProjectRepository from "./project-repository";
 
@@ -12,10 +13,14 @@ describe("project-repository", () => {
   const dateForShining = new Date();
 
   beforeEach(async () => {
+    const mockDataPath = {
+      get: vi.fn(() => ""),
+    } as any as DataPath;
+
     vi.spyOn(console, "log").mockImplementation(() => {});
-    const { app } = await vi.importMock("electron");
-    const initDb = await initializeDatabase(app);
-    database = new Database(initDb);
+
+    const initDb = await initializeDatabase(mockDataPath);
+    database = new Database(initDb, mockDataPath);
     projectRepository = new ProjectRepository(database);
     database.db.data!.types = [
       {
@@ -65,7 +70,7 @@ describe("project-repository", () => {
     ];
     database.db.data!.progress = [
       {
-        date: new Date(),
+        date: new Date().toDateString(),
         projectId: "1",
         goalId: "1",
         count: 250,
@@ -74,7 +79,7 @@ describe("project-repository", () => {
         revised: false,
       },
       {
-        date: new Date(),
+        date: new Date().toDateString(),
         projectId: "1",
         goalId: "1",
         count: 500,

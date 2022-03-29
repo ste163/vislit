@@ -23,7 +23,7 @@ class GoalRepository {
   }
 
   async add(goal: Goal): Promise<Goal> {
-    this.database.db.data?.goals.push(this.database.generateUniqueId(goal));
+    this.database.db.data?.goals.push(this.database.generateId(goal));
     await this.database.db.write();
     return this.database.db.data?.goals.find((g) => g.id === goal.id) as Goal;
   }

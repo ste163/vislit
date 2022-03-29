@@ -2,6 +2,7 @@
  * @vitest-environment node
  */
 import { describe, beforeEach, it, expect, vi } from "vitest";
+import type DataPath from "../data-path";
 import { Database, initializeDatabase } from "../database";
 import TypeRepository from "./type-repository";
 
@@ -10,10 +11,14 @@ describe("type-repository", () => {
   const typeSeedDate = new Date();
 
   beforeEach(async () => {
+    const mockDataPath = {
+      get: vi.fn(() => ""),
+    } as any as DataPath;
+
     vi.spyOn(console, "log").mockImplementation(() => {});
-    const { app } = await vi.importMock("electron");
-    const initDb = await initializeDatabase(app);
-    const database = new Database(initDb);
+
+    const initDb = await initializeDatabase(mockDataPath);
+    const database = new Database(initDb, mockDataPath);
     typeRepository = new TypeRepository(database);
     database.db.data!.types = [
       {

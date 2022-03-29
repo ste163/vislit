@@ -3,11 +3,12 @@
  */
 import { describe, beforeEach, it, expect, vi } from "vitest";
 import type { Project } from "interfaces";
+import type FileSystemController from "./file-system-controller";
+import type DataPath from "../data-path";
 import { Database, initializeDatabase } from "../database";
 import { SearchController, initializeSearchIndexes } from "./search-controller";
 import ProjectController from "./project-controller";
 import ProjectRepository from "./project-repository";
-import type FileSystemController from "./file-system-controller";
 
 // TODO:
 // add failure test for makeProjectDirectory
@@ -21,11 +22,15 @@ describe("project-controller", () => {
   let projectController: ProjectController;
 
   beforeEach(async () => {
+    const mockDataPath = {
+      get: vi.fn(() => ""),
+    } as any as DataPath;
+
     vi.spyOn(console, "log").mockImplementation(() => {});
     vi.spyOn(console, "error").mockImplementation(() => {});
-    const { app } = await vi.importMock("electron");
-    const initDb = await initializeDatabase(app);
-    database = new Database(initDb);
+
+    const initDb = await initializeDatabase(mockDataPath);
+    database = new Database(initDb, mockDataPath);
     const seedDate = new Date();
     seedData = [
       {
@@ -86,7 +91,7 @@ describe("project-controller", () => {
   });
 
   it("getById - returns project by id and can search for id by title", () => {
-    const searchResult = searchController.searchProjects("it");
+    const searchResult = searchController.searchProjects("it") as any;
     expect(projectController.getById("1")).toEqual(seedData[0]);
     expect(searchResult[0].title).toBe("It");
   });
@@ -121,7 +126,7 @@ describe("project-controller", () => {
       projectToAdd as Project
     )) as Project;
 
-    const searchResult = searchController.searchProjects("dark half");
+    const searchResult = searchController.searchProjects("dark half") as any;
 
     expect(response.title).toEqual("The Dark Half");
     expect(response.description).toEqual("An evil pseudonym comes to life");
@@ -185,7 +190,7 @@ describe("project-controller", () => {
     const response = (await projectController.update(
       projectToUpdate
     )) as Project;
-    const searchResult = searchController.searchProjects("revised");
+    const searchResult = searchController.searchProjects("revised") as any;
 
     expect(response.title).toEqual("It - revised");
     expect(response.description).toEqual(

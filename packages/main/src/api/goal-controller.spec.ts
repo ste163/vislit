@@ -2,7 +2,7 @@
  * @vitest-environment node
  */
 import { describe, beforeEach, it, expect, vi } from "vitest";
-import type { Goal, Project } from "interfaces";
+import type { Goal } from "interfaces";
 import type { SearchController } from "./search-controller";
 import type FileSystemController from "./file-system-controller";
 import type { updateGoalRequest } from "./request-schemas";
@@ -11,6 +11,7 @@ import ProjectRepository from "./project-repository";
 import ProjectController from "./project-controller";
 import GoalRepository from "./goal-repository";
 import GoalController from "./goal-controller";
+import type DataPath from "../data-path";
 
 describe("goal-controller", () => {
   let seedGoal: Goal;
@@ -21,11 +22,15 @@ describe("goal-controller", () => {
   let goalController: GoalController;
 
   beforeEach(async () => {
+    const mockDataPath = {
+      get: vi.fn(() => ""),
+    } as any as DataPath;
+
     vi.spyOn(console, "log").mockImplementation(() => {});
     vi.spyOn(console, "error").mockImplementation(() => {});
-    const { app } = await vi.importMock("electron");
-    const initDb = await initializeDatabase(app);
-    database = new Database(initDb);
+
+    const initDb = await initializeDatabase(mockDataPath);
+    database = new Database(initDb, mockDataPath);
     seedGoal = {
       id: "1",
       projectId: "1",

@@ -1,8 +1,8 @@
-import type { App } from "electron";
 import { JSONFile, Low, Memory } from "lowdb";
 import { nanoid } from "nanoid/non-secure";
-import type { Rectangle } from "electron";
+import type { BrowserWindow, Rectangle } from "electron";
 import type { Goal, Note, Progress, Project, Type } from "interfaces";
+import type DataPath from "./data-path";
 
 export interface VislitDatabase {
   dbType: string;
@@ -18,20 +18,17 @@ export interface VislitDatabase {
 // Must initialize db outside of class
 // as class constructors cannot be async
 export async function initializeDatabase(
-  app: App
+  dataPath: DataPath
 ): Promise<Low<VislitDatabase>> {
   try {
     console.log("initializing database");
 
-    const getDbPath = (): string => {
-      const userDataDirPath = app.getPath("userData");
-      return `${userDataDirPath}/vislit-database.json`;
-    };
+    const path = `${dataPath.get()}/vislit-database.json`;
 
     const adapter =
       process.env.NODE_ENV === "test"
         ? new Memory<VislitDatabase>() // in-memory test database
-        : new JSONFile<VislitDatabase>(getDbPath());
+        : new JSONFile<VislitDatabase>(path);
     const db = new Low<VislitDatabase>(adapter);
 
     await db.read();
@@ -82,21 +79,47 @@ export async function initializeDatabase(
 
     return db;
   } catch (error: any | Error) {
-    console.log("failed to initialize database");
-    console.error(error);
+    console.log(`failed to initialize database. Error: ${error}`);
     return error;
   }
 }
 
 export class Database {
   public db: Low<VislitDatabase>;
-  public generateUniqueId: (item: any) => any;
+  // using entire DataPath as passing in dataPath.get failed -> when called was undefined
+  private dataPath: DataPath;
 
-  constructor(db: Low<VislitDatabase>) {
+  constructor(db: Low<VislitDatabase>, dataPath: DataPath) {
     this.db = db;
-    this.generateUniqueId = (item: any) => {
-      item.id = nanoid(13);
-      return item;
-    };
+    this.dataPath = dataPath;
+  }
+
+  public generateId(item: any) {
+    item.id = nanoid(13);
+    return item;
+  }
+
+  public async reload(mainWindow: BrowserWindow) {
+    try {
+      const path = this.dataPath.get();
+      console.log("reloading database from: ", path);
+      if (!path)
+        throw new Error("Failed to get the vislit-data path to reload from");
+
+      // setup adapter
+      const adapter = new JSONFile<VislitDatabase>(
+        `${path}/vislit-database.json`
+      );
+      const newDb = new Low<VislitDatabase>(adapter);
+      await newDb.read();
+      this.db = newDb;
+
+      // inform renderer
+      console.log("database reloaded");
+      mainWindow.webContents.send("reload-database");
+    } catch (error: any | Error) {
+      console.log(error);
+      // show error dialog
+    }
   }
 }

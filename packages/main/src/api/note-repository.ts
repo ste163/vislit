@@ -22,7 +22,7 @@ class NoteRepository {
   }
 
   async add(note: Note): Promise<Note> {
-    this.database.db.data!.notes.push(this.database.generateUniqueId(note));
+    this.database.db.data!.notes.push(this.database.generateId(note));
     await this.database.db.write();
     return this.getByTitle(note.title, note.projectId) as Note; // will always be a Note or the app would crash by now
   }
