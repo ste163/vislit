@@ -3,18 +3,15 @@ interface Props {
   color: string;
 }
 
-const { color = "#3772ff" } = defineProps<Props>();
+const { color } = defineProps<Props>();
 </script>
 
 <template>
-  <div class="notification-dot pulse" />
+  <div class="color pulse w-3 h-3 rounded-full" />
 </template>
 
 <style scoped>
-.notification-dot {
-  height: 0.8em;
-  width: 0.8em;
-  border-radius: 50%;
+.color {
   background-color: v-bind(color);
 }
 

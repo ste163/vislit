@@ -14,6 +14,9 @@ interface Props {
 const { isDisabled, isLoading } = defineProps<Props>();
 </script>
 <template>
+  <!-- TODO:
+    Add ability to close sidebar
+ -->
   <nav class="nav">
     <div
       v-if="isLoading"
@@ -103,6 +106,6 @@ const { isDisabled, isLoading } = defineProps<Props>();
 }
 
 .button-icon {
-  @apply h-4 w-4;
+  @apply h-[0.9rem] w-[0.9rem];
 }
 </style>

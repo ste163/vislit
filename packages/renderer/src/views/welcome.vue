@@ -78,8 +78,11 @@ onMounted(async () => {
           >Change Save Location</base-button
         >
 
-        <div class="mt-12 flex items-center">
-          <pulse-notification class="position" :color="'#3772ff'" />
+        <div class="mt-12 flex items-center relative">
+          <pulse-notification
+            class="absolute left-[-25px]"
+            :color="'#3772ff'"
+          />
           <h2>Create a Project</h2>
         </div>
 
