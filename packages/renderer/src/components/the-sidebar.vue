@@ -37,22 +37,25 @@ const { isDisabled, isLoading } = defineProps<Props>();
         <ul>
           <li>
             <button class="button" :disabled="isDisabled">
-              <icon-summary /> <span class="button-text">Summary</span>
+              <icon-summary class="button-icon" />
+              <span class="button-text">Summary</span>
             </button>
           </li>
           <li>
             <button class="button" :disabled="isDisabled">
-              <icon-writer /> <span class="button-text">Writer</span>
+              <icon-writer class="button-icon" />
+              <span class="button-text">Writer</span>
             </button>
           </li>
           <li>
             <button class="button" :disabled="isDisabled">
-              <icon-progress /> <span class="button-text">Progress</span>
+              <icon-progress class="button-icon" />
+              <span class="button-text">Progress</span>
             </button>
           </li>
           <li>
             <button class="button" :disabled="isDisabled">
-              <icon-visualization />
+              <icon-visualization class="button-icon" />
               <span class="button-text">Visualizations</span>
             </button>
           </li>
@@ -66,12 +69,14 @@ const { isDisabled, isLoading } = defineProps<Props>();
         <ul>
           <li>
             <button class="button" :disabled="isDisabled">
-              <icon-project /> <span class="button-text">Projects</span>
+              <icon-project class="button-icon" />
+              <span class="button-text">Projects</span>
             </button>
           </li>
           <li>
             <button class="button" :disabled="isDisabled">
-              <icon-note /> <span class="button-text">Notes</span>
+              <icon-note class="button-icon" />
+              <span class="button-text">Notes</span>
             </button>
           </li>
         </ul>
@@ -82,7 +87,7 @@ const { isDisabled, isLoading } = defineProps<Props>();
 
 <style scoped>
 .nav {
-  @apply bg-white w-[145px] flex flex-col select-none;
+  @apply bg-white w-[135px] flex flex-col select-none;
 }
 
 .header {
@@ -90,10 +95,14 @@ const { isDisabled, isLoading } = defineProps<Props>();
 }
 
 .button {
-  @apply flex items-center disabled:text-gray-300 disabled:fill-gray-300 px-3 my-3;
+  @apply flex disabled:text-gray-300 disabled:fill-gray-300 px-3 my-3;
 }
 
 .button-text {
-  @apply text-xs font-bold ml-3;
+  @apply text-sm font-bold ml-2;
+}
+
+.button-icon {
+  @apply h-4 w-4;
 }
 </style>

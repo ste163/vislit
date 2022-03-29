@@ -66,7 +66,7 @@ function createEffectOnClick(e: MouseEvent): void {
     ref="button"
     :type="type"
     :disabled="isDisabled"
-    class="base-button px-4 py-2 text-xs rounded-md items-center"
+    class="base-button px-4 py-2 text-xs rounded-md items-center select-none"
     @click="createEffectOnClick"
   >
     <!-- If there's an icon passed in, render it -->
