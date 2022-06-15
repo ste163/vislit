@@ -2,6 +2,7 @@ import { app, dialog } from "electron";
 import DataPath from "./data-path";
 import { restoreOrCreateWindow } from "./main-window";
 import { existsSync, mkdirSync } from "fs";
+import { join } from "path";
 import initializeApiControllers from "./api/api-init-controllers";
 import initializeApiEndpoints from "./api/api-init-endpoints";
 import type { BrowserWindow } from "electron";
@@ -54,8 +55,9 @@ if (dataPath instanceof Error) {
 try {
   let savedDataLocation: string | null = dataPath.get();
   if (!existsSync(savedDataLocation)) {
+    const projectDirectory = join(savedDataLocation, "projects");
     mkdirSync(savedDataLocation);
-    mkdirSync(`${savedDataLocation}/projects`);
+    mkdirSync(projectDirectory);
   }
   savedDataLocation = null; // cleanup
 } catch (error) {
@@ -90,7 +92,7 @@ app.on("second-instance", () => {
 app.disableHardwareAcceleration();
 
 /**
- * Shut down background process if all windows was closed
+ * Shut down background process if all windows were closed
  */
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
@@ -104,14 +106,13 @@ app.on("activate", () => {
 });
 
 /**
- * Create app window when background process will be ready
+ * Create app window after background process is ready
  */
 app
   .whenReady()
   .then(async () => {
-    // If the startup gets long, show a splash screen before api init
-    // initialize database and controllers
-    // and assign them for ipc access
+    // NOTE: If the startup gets long, show a splash screen before api init
+    // initialize database and controllers and assign them for ipc access
     const {
       initDatabase,
       initDialogs,
@@ -151,9 +152,9 @@ app
     mainWindow = await restoreOrCreateWindow(database);
   })
   .then(() => {
+    // save window bounds to restore window state
     mainWindow?.on("close", async () => {
       try {
-        // save window bounds to restore window state
         const bounds = mainWindow?.getBounds();
         database.db.data!.windowBounds = bounds;
         await database.db.write();
@@ -165,7 +166,7 @@ app
   .catch((e) => console.error("Failed create window:", e));
 
 /**
- * Install Vue devtools in development mode only
+ * Install Vue devtools in development only
  */
 if (import.meta.env.DEV) {
   app
@@ -182,7 +183,7 @@ if (import.meta.env.DEV) {
 }
 
 /**
- * Check new app version in production mode only
+ * Check new app version in production only
  */
 if (import.meta.env.PROD) {
   app

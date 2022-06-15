@@ -63,6 +63,7 @@ describe("file-system-controller", () => {
         id: "1",
         html: "<p>Hello<p>",
         type: "notes",
+        projectId: "1",
       })
     ).toEqual(true);
   });

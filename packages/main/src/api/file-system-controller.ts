@@ -1,4 +1,5 @@
 import { mkdir, rm, writeFile, readFile, readdir } from "fs/promises";
+import { join } from "path";
 import handleError from "./util-handle-error";
 import {
   deleteNoteRequestSchema,
@@ -20,9 +21,22 @@ class FileSystemController {
   async makeProjectDirectory(projectId: idRequest): Promise<true | Error> {
     try {
       idRequestSchema.parse(projectId);
-      await mkdir(`${this.dataPath.get()}/projects/${projectId}`);
-      await mkdir(`${this.dataPath.get()}/projects/${projectId}/documents`);
-      await mkdir(`${this.dataPath.get()}/projects/${projectId}/notes`);
+      const projectPath = join(this.dataPath.get(), "projects", projectId);
+      const projectDocumentsPath = join(
+        this.dataPath.get(),
+        "projects",
+        projectId,
+        "documents"
+      );
+      const projectNotesPath = join(
+        this.dataPath.get(),
+        "projects",
+        projectId,
+        "notes"
+      );
+      await mkdir(projectPath);
+      await mkdir(projectDocumentsPath);
+      await mkdir(projectNotesPath);
       return true;
     } catch (error: any | Error) {
       return handleError(error);
@@ -32,7 +46,8 @@ class FileSystemController {
   async deleteProjectDirectory(projectId: idRequest): Promise<true | Error> {
     try {
       idRequestSchema.parse(projectId);
-      await rm(`${this.dataPath.get()}/projects/${projectId}`, {
+      const projectPath = join(this.dataPath.get(), "projects", projectId);
+      await rm(projectPath, {
         recursive: true,
       });
       return true;
@@ -47,14 +62,25 @@ class FileSystemController {
       const { id, html, type, projectId, createdAt } = request;
       // documents save the date for versioning
       // notes do not have versioning, only save id
-      const userData =
-        type === "documents"
-          ? `${this.dataPath.get()}/projects/${id}/${type}/${
-              new Date(createdAt!).toISOString().split("T")[0]
-            }-${id}.html`
-          : `${this.dataPath.get()}/projects/${projectId}/${type}/${id}.html`;
-
-      await writeFile(userData, html);
+      const todaysDate = createdAt
+        ? new Date(createdAt).toISOString().split("T")[0]
+        : null;
+      const documentsPath = join(
+        this.dataPath.get(),
+        "projects",
+        id,
+        type,
+        `${todaysDate}-${id}.html`
+      );
+      const notesPath = join(
+        this.dataPath.get(),
+        "projects",
+        projectId!,
+        type,
+        `${id}.html`
+      );
+      const pathToSaveData = type === "documents" ? documentsPath : notesPath;
+      await writeFile(pathToSaveData, html);
       return true;
     } catch (error: any | Error) {
       return handleError(error);
@@ -65,8 +91,14 @@ class FileSystemController {
     try {
       deleteNoteRequestSchema.parse(request);
       const { id, projectId } = request;
-      const userData = `${this.dataPath.get()}/projects/${projectId}/notes/${id}.html`;
-      await rm(userData); // returns error if unable to find file
+      const notePath = join(
+        this.dataPath.get(),
+        "projects",
+        projectId,
+        "notes",
+        `${id}.html`
+      );
+      await rm(notePath); // returns error if unable to find file
       return true;
     } catch (error: any | Error) {
       return handleError(error);
@@ -79,8 +111,14 @@ class FileSystemController {
     try {
       readNoteByIdRequestSchema.parse(request);
       const { noteId, projectId } = request;
-      const userData = `${this.dataPath.get()}/projects/${projectId}/notes/${noteId}.html`;
-      const file = await readFile(userData, "utf-8");
+      const notePath = join(
+        this.dataPath.get(),
+        "projects",
+        projectId,
+        "notes",
+        `${noteId}.html`
+      );
+      const file = await readFile(notePath, "utf-8");
       if (file) return file;
     } catch (error: any | Error) {
       return handleError(error);
@@ -92,12 +130,18 @@ class FileSystemController {
   ): Promise<string | void | Error> {
     try {
       idRequestSchema.parse(projectId);
-      const userData = `${this.dataPath.get()}/projects/${projectId}/documents`;
-      const files = await readdir(userData);
+      const documentsPath = join(
+        this.dataPath.get(),
+        "projects",
+        projectId,
+        "documents"
+      );
+      const files = await readdir(documentsPath);
       if (files.length) {
         // for now, assuming last file in list is most recent
         const mostRecentFileName = files[files.length - 1];
-        return await readFile(`${userData}/${mostRecentFileName}`, "utf-8");
+        const filePath = join(documentsPath, mostRecentFileName);
+        return await readFile(filePath, "utf-8");
       }
     } catch (error: any | Error) {
       return handleError(error);

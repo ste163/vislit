@@ -51,10 +51,8 @@ it("when data (projects or types) fails to fetch, render error page and no sideb
   });
 
   const { findErrorText, querySidebar } = renderApp();
-
   // sidebar exists (although it's not showing loading state)
   expect(querySidebar()).toBeTruthy();
-
   // fetch for projects called once before erroring out
   expect(window.api.send).toHaveBeenCalledOnce(); // only called once because fn mock is only once
   // must wait for state changes to reflect
