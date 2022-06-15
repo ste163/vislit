@@ -1,5 +1,6 @@
 import { app, dialog } from "electron";
 import { JSONFileSync, LowSync } from "lowdb";
+import { join } from "path";
 
 interface Path {
   path: string;
@@ -11,15 +12,17 @@ export default class DataPath {
 
   constructor() {
     try {
+      const userData = app.getPath("userData");
       const adapter = new JSONFileSync<Path>(
-        `${app.getPath("userData")}/vislit-data-path.json`
+        join(userData, "vislit-data-path.json")
       );
       const dataPath = new LowSync<Path>(adapter);
       dataPath.read();
       // If no file found, create one
       if (!dataPath.data) {
+        const vislitDataPath = join(userData, "vislit-data");
         dataPath.data = {
-          path: `${app.getPath("userData")}/vislit-data`,
+          path: vislitDataPath,
         };
         dataPath.write();
       }
