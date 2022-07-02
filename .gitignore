@@ -5,6 +5,8 @@ dist
 thumbs.db
 
 .eslintcache
+.browserslistrc
+.electron-vendors.cache.json
 
 # Vitest output
 /coverage
