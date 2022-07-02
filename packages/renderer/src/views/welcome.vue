@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "@vue/reactivity";
+import { computed } from "vue";
 import { onMounted, ref } from "vue";
 import { send } from "../api";
 import BaseButton from "../components/base-button.vue";

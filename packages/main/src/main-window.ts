@@ -12,7 +12,6 @@ async function createWindow(database: Database) {
     height: 768,
     backgroundColor: "#e5e5e5",
     webPreferences: {
-      nativeWindowOpen: true,
       nodeIntegration: false,
       contextIsolation: true,
       sandbox: true,
