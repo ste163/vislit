@@ -35,6 +35,7 @@ onMounted(async () => {
 </script>
 
 <template>
+  <!-- Note: welcome page and summary page should share same loading card component because they're very similar -->
   <div class="flex w-full h-full self-center place-content-center">
     <section
       class="bg-white py-8 px-12 rounded-xl w-full h-fit sm:w-full lg:w-5/6 max-w-[850px]"
@@ -99,5 +100,3 @@ onMounted(async () => {
     </section>
   </div>
 </template>
-
-<!-- Note: welcome page and summary page should share same loading card component because they're very similar -->

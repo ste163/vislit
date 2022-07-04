@@ -14,7 +14,7 @@ import router from "./router";
 // // receiving the reload event reloads the page and clears data
 
 function renderApp() {
-  const utils = render(App, {
+  render(App, {
     global: {
       plugins: [router],
     },
@@ -27,7 +27,6 @@ function renderApp() {
   // TODO: check how to test with the router
 
   return {
-    ...utils,
     findErrorText: () => screen.findByText("Unable to access data"),
     querySidebar: () => screen.queryByRole("navigation"),
   };

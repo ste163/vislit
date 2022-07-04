@@ -20,7 +20,7 @@ it.skip("renders error message if unable to fetch default data path location", (
   // error text should exist
 });
 
-it("renders page when loaded and calls import data, change save location, and create project when buttons clicked", async () => {
+it("renders page when loaded; button clicks call: import data, change save location, and create project", async () => {
   // mock window's api property
   Object.defineProperty(window, "api", {
     value: {
@@ -63,4 +63,6 @@ it("renders page when loaded and calls import data, change save location, and cr
   expect(window.api.send).toHaveBeenCalledTimes(3);
 
   // clicking create a project calls onCreateProject (either a passed in function), one from state, or elsewhere
+  // TODO: this is most likely just emitting the event up 1 level, to app.vue, which will be the orchestrator
+  // that way the pages have no knowledge of how creating a project works, they only say that the user wants to create one
 });

@@ -65,7 +65,6 @@ onMounted(async () => {
 
   <div v-else class="h-full w-full flex">
     <the-sidebar :is-disabled="true" :is-loading="isLoading" />
-
     <div class="flex-grow">
       <main class="flex flex-col h-full p-4">
         <router-view v-slot="{ Component, route }" :is-loading="isLoading">
