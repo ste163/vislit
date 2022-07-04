@@ -14,8 +14,15 @@ const projects = ref<Project[]>([]);
 
 const router = useRouter();
 
+function openProjectColumn() {
+  console.log("Open Project Column");
+  // Check local storage to see what the default location and size of the column is
+  // if there is data, open at that last location
+  // otherwise, open in default location
+}
+
 receive("reload-database", () => {
-  console.log("RELOAD");
+  console.log("RELOAD DATABASE");
   // RELOADING is currently from backend with mainWindow.reload
   // this may not work because of clearing localStorage, but works for now
   //
@@ -68,7 +75,11 @@ onMounted(async () => {
     <div class="flex-grow">
       <main class="flex flex-col h-full p-4">
         <router-view v-slot="{ Component, route }" :is-loading="isLoading">
-          <component :is="Component" :key="route.path" />
+          <component
+            :is="Component"
+            :key="route.path"
+            @open-project-form="openProjectColumn"
+          />
         </router-view>
       </main>
     </div>

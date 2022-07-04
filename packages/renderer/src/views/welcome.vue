@@ -11,6 +11,7 @@ interface Props {
 }
 
 const { isLoading } = defineProps<Props>();
+const emit = defineEmits(["openProjectForm"]);
 
 const defaultDataPath = ref<string>("");
 
@@ -19,6 +20,10 @@ const displayedPath = computed(() =>
     ? "Error loading default data path"
     : defaultDataPath.value
 );
+
+function onCreateProjectClick(): void {
+  emit("openProjectForm");
+}
 
 async function onImportClick(): Promise<void> {
   await send("dialog-data-link-non-taskbar");
@@ -41,6 +46,7 @@ onMounted(async () => {
       class="bg-white py-8 px-12 rounded-xl w-full h-fit sm:w-full lg:w-5/6 max-w-[850px]"
     >
       <!-- Loading screen -->
+      <!-- Move this loading into a component later -->
       <div
         v-if="isLoading"
         class="flex flex-col gap-4 h-full"
@@ -67,10 +73,11 @@ onMounted(async () => {
 
         <h2 class="mt-12">Choose a save location for your Vislit Data</h2>
         <p class="my-3">
-          By default, Vislit stores your data in: {{ displayedPath }}. If you
-          would prefer to store data in another location or in a cloud sync
-          folder (like in Google Drive, OneDrive, or DropBox), select that now
-          or later by going to
+          By default, Vislit stores your data in:
+          <span data-testid="data-path"> {{ displayedPath }}</span
+          >. If you would prefer to store data in another location or in a cloud
+          sync folder (like in Google Drive, OneDrive, or DropBox), select that
+          now or later by going to
           <span class="font-bold whitespace-nowrap"
             >File -> Change Save Location</span
           >.
@@ -91,11 +98,12 @@ onMounted(async () => {
           To get started writing, setting goals, and tracking progress, create a
           project.
         </p>
-        <!-- look into using var() with tailwind -->
-        <base-button :variant="'primary'">
-          <template #icon><icon-project class="h-3 w-3 fill-white" /></template>
-          Create a Project</base-button
-        >
+        <base-button :variant="'primary'" @click="onCreateProjectClick">
+          <template #icon>
+            <icon-project class="h-3 w-3 fill-white" />
+          </template>
+          Create a Project
+        </base-button>
       </div>
     </section>
   </div>
