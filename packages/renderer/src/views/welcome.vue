@@ -25,6 +25,7 @@ function onCreateProjectClick(): void {
   emit("openProjectForm");
 }
 
+// Do not need to worry if these events fail as any failure is handled on the api side
 async function onImportClick(): Promise<void> {
   await send("dialog-data-link-non-taskbar");
 }
