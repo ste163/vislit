@@ -11,14 +11,14 @@ interface Props {
 }
 
 const { isLoading } = defineProps<Props>();
-const emit = defineEmits(["openProjectForm"]);
+// NOTE: If these events are going to be used in multiple pages, move to CONSTs or an EVENTS enum
+const emit = defineEmits(["openProjectForm", "criticalErrorOccurred"]);
 
 const defaultDataPath = ref<string>("");
+const isLoadingDefaultDataPath = ref<boolean>(true);
 
-const displayedPath = computed(() =>
-  defaultDataPath.value === ""
-    ? "Error loading default data path"
-    : defaultDataPath.value
+const isLoadingComplete = computed(
+  () => isLoadingDefaultDataPath.value && isLoading
 );
 
 function onCreateProjectClick(): void {
@@ -35,20 +35,26 @@ async function onSaveChangeClick(): Promise<void> {
 
 onMounted(async () => {
   const path = (await send("data-path-get")) as string;
-  if (path) defaultDataPath.value = path;
+  if (path) {
+    defaultDataPath.value = path;
+    isLoadingDefaultDataPath.value = false;
+  } else {
+    emit(
+      "criticalErrorOccurred",
+      "Failed to load default data storage location."
+    );
+  }
 });
 </script>
 
 <template>
-  <!-- Note: welcome page and summary page should share same loading card component because they're very similar -->
   <div class="flex w-full h-full self-center place-content-center">
     <section
       class="bg-white py-8 px-12 rounded-xl w-full h-fit sm:w-full lg:w-5/6 max-w-[850px]"
     >
       <!-- Loading screen -->
-      <!-- Move this loading into a component later -->
       <div
-        v-if="isLoading"
+        v-if="isLoadingComplete"
         class="flex flex-col gap-4 h-full"
         data-testid="loading-welcome"
       >
@@ -74,17 +80,17 @@ onMounted(async () => {
         <h2 class="mt-12">Choose a save location for your Vislit Data</h2>
         <p class="my-3">
           By default, Vislit stores your data in:
-          <span data-testid="data-path"> {{ displayedPath }}</span
+          <span data-testid="data-path"> {{ defaultDataPath }}</span
           >. If you would prefer to store data in another location or in a cloud
           sync folder (like in Google Drive, OneDrive, or DropBox), select that
           now or later by going to
-          <span class="font-bold whitespace-nowrap"
-            >File -> Change Save Location</span
+          <span class="font-bold whitespace-nowrap">
+            File -> Change Save Location</span
           >.
         </p>
-        <base-button @click="onSaveChangeClick"
-          >Change Save Location</base-button
-        >
+        <base-button @click="onSaveChangeClick">
+          Change Save Location
+        </base-button>
 
         <div class="mt-12 flex items-center relative">
           <pulse-notification

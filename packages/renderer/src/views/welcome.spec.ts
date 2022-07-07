@@ -9,7 +9,7 @@ afterEach(() => cleanup());
 
 const renderWelcome = ({ isLoading = false, mockDataPathResult = "" }) => {
   mockSend.mockReset();
-  mockSend.mockImplementationOnce(() => mockDataPathResult);
+  mockSend.mockImplementationOnce(() => mockDataPathResult as any);
   try {
     if (!window.api) {
       Object.defineProperty(window, "api", {
@@ -34,22 +34,25 @@ const renderWelcome = ({ isLoading = false, mockDataPathResult = "" }) => {
   };
 };
 
+it("emits error event if fetching data path fails", async () => {
+  const { emitted } = renderWelcome({
+    isLoading: false,
+  });
+  // must wait for the in-flight promise to complete
+  await waitFor(() => {
+    expect(emitted()["criticalErrorOccurred"]).toBeTruthy();
+  });
+});
+
 it("renders loading state while isLoading is true", () => {
   renderWelcome({ isLoading: true });
   expect(screen.getByTestId("loading-welcome")).toBeTruthy();
 });
 
-it("renders error message if unable to fetch default data path location", async () => {
-  renderWelcome({ isLoading: false });
-  await waitFor(() => {
-    expect(screen.getByTestId("data-path").textContent).toContain("Error");
-  });
-});
-
 it("renders page when loaded; button clicks call: import data, change save location, and create project", async () => {
-  const DEFAULT_DATA_PATH = "/default/vislit-data";
-  const { emitted } = renderWelcome({ mockDataPathResult: DEFAULT_DATA_PATH });
-  // is not loading
+  const { emitted } = renderWelcome({
+    mockDataPathResult: "/default/vislit-data",
+  });
   expect(screen.queryByTestId("loading-welcome")).toBeNull();
   // renders default data path after mount state updates
   await waitFor(() => {

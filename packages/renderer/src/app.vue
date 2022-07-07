@@ -21,6 +21,11 @@ function openProjectColumn() {
   // otherwise, open in default location
 }
 
+function showCriticalError(message = "No error message received") {
+  isFetchErrorActive.value = true;
+  fetchErrorMessage.value = message;
+}
+
 receive("reload-database", () => {
   console.log("RELOAD DATABASE");
   // RELOADING is currently from backend with mainWindow.reload
@@ -79,6 +84,7 @@ onMounted(async () => {
             :is="Component"
             :key="route.path"
             @open-project-form="openProjectColumn"
+            @critical-error-occurred="showCriticalError"
           />
         </router-view>
       </main>
