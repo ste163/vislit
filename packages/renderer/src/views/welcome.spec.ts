@@ -20,7 +20,7 @@ const renderWelcome = ({ isLoading = false, mockDataPathResult = "" }) => {
     }
   } catch (_) {
     // This error is trying to redefine the already defined api property
-    // This is a false positive error as we're re-defining the mock function
+    // This is a false-positive error as we're re-defining the mock function
     // Not the property itself
   }
   const utils = render(Welcome, {

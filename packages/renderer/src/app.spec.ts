@@ -1,5 +1,5 @@
 import { cleanup, render, screen } from "@testing-library/vue";
-import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import App from "./app.vue";
 import router from "./router";
 // fetching data successfully on user with no data
@@ -58,4 +58,12 @@ it("when data (projects or types) fails to fetch, render error page and no sideb
   expect(await findErrorText()).toBeTruthy();
   // sidebar doesn't exist when there's a major fetch error
   expect(querySidebar()).toBeNull();
+});
+
+// Testing the integration of App + Welcome page
+describe.skip("Welcome Page flow", () => {
+  // for a new user
+  // when I click Create a Project
+  // it opens the column
+  // -> tests for the form will happen at the Project column component level
 });

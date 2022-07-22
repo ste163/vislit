@@ -132,7 +132,7 @@ function main() {
         initProgressController,
       } = await initializeApiControllers(dataPath);
 
-      // NOTE: this is potentially an unneeded step
+      // TODO/NOTE: this is potentially an unneeded step
       // if these variables never get cleaned up.
       // When the app is more developed, test with using it for
       // a long period of time. If it all works,

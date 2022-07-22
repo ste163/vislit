@@ -12,13 +12,31 @@ const fetchErrorMessage = ref<string>("");
 const types = ref<Type[]>([]);
 const projects = ref<Project[]>([]);
 
+// later, this could be moved into an object of type Column that could have:
+// { isOpen: false, dockedOn: 'left' | 'right', width: 300 // in pixels }
+// this object could be stored in localStorage
+const isProjectColumnActive = ref<boolean>(false);
+
 const router = useRouter();
 
-function openProjectColumn() {
-  console.log("Open Project Column");
+function openProjectColumn(): void {
   // Check local storage to see what the default location and size of the column is
   // if there is data, open at that last location
   // otherwise, open in default location
+  //
+  // TODO
+  // - style the div
+  // - can be closed then re-opened from
+  // - put the form inside
+  // - can submit form data
+  isProjectColumnActive.value = true;
+}
+
+function closeProjectColumn(): void {
+  isProjectColumnActive.value = false;
+  // in the future,
+  // also store its size and location data
+  // to localStorage, so we can re-open it in the same place
 }
 
 function showCriticalError(message = "No error message received") {
@@ -77,7 +95,16 @@ onMounted(async () => {
 
   <div v-else class="h-full w-full flex">
     <the-sidebar :is-disabled="true" :is-loading="isLoading" />
-    <div class="flex-grow">
+
+    <!-- As there is only the Projects column for now, only making that work -->
+    <section v-if="isProjectColumnActive">
+      <div class="flex">
+        <h1>Project Column Header</h1>
+        <button @click="closeProjectColumn">X</button>
+      </div>
+    </section>
+
+    <section class="flex-grow">
       <main class="flex flex-col h-full p-4">
         <router-view v-slot="{ Component, route }" :is-loading="isLoading">
           <component
@@ -88,6 +115,6 @@ onMounted(async () => {
           />
         </router-view>
       </main>
-    </div>
+    </section>
   </div>
 </template>
