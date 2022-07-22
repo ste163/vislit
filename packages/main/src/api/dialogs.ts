@@ -95,7 +95,7 @@ export default class Dialogs {
       const filesInDirectory = await readdir(selection.filePaths[0]);
       const vislitFiles = filesInDirectory.filter((file) => {
         // These two files must be in the directory to be valid
-        // This isn't a super-safe check, but is good enough
+        // This isn't a super-safe check but is good enough
         if (file === "vislit-database.json" || file === "projects") {
           return file;
         }
@@ -116,38 +116,6 @@ export default class Dialogs {
       if (newPath instanceof Error) return; // the error dialog is triggered in dataPath.set()
       mainWindow?.reload();
       await this.reloadDatabase(mainWindow as BrowserWindow);
-    }
-  }
-
-  async showDataLinkWarning(): Promise<void> {
-    // TODO:
-    // This warning might not be needed, as there is no data loss.
-    // You're just linking to a new file.
-    // But this warning would be informative.
-    // TODO: only show the export button if we're NOT on the welcome page
-    // otherwise, you'd export an empty database
-    const result = await dialog.showMessageBox({
-      title: "Change data location",
-      message: "Warning",
-      detail:
-        "Change where Vislit reads data. This could be from a cloud directory on your system or another location like the desktop.",
-      buttons: [
-        "Select new 'vislit-data' folder to read from",
-        "Export current 'vislit-data' folder",
-        "Cancel",
-      ],
-    });
-
-    // Todo: don't use switch
-    switch (result.response) {
-      case 0:
-        await this.showDataLink();
-        break;
-      case 1:
-        await this.showExport();
-        break;
-      default:
-        break;
     }
   }
 }

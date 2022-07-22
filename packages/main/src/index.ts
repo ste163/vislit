@@ -49,39 +49,6 @@ try {
 
 function main() {
   /**
-   * Check where vislit-data should exist:
-   * By default this is userData/vislit-data
-   * But can be user-defined anywhere on their system
-   */
-  const dataPath = new DataPath();
-  if (dataPath instanceof Error) {
-    dialog.showErrorBox(
-      "Vislit: Fatal Error",
-      `Unable to load or create vislit-data location file. ${dataPath}`
-    );
-    return;
-  }
-
-  /**
-   * Create needed directories if they do not already exist
-   */
-  try {
-    let savedDataLocation: string | null = dataPath.get();
-    if (!existsSync(savedDataLocation)) {
-      const projectDirectory = join(savedDataLocation, "projects");
-      mkdirSync(savedDataLocation);
-      mkdirSync(projectDirectory);
-    }
-    savedDataLocation = null; // cleanup memory
-  } catch (error) {
-    dialog.showErrorBox(
-      "Vislit: Fatal Error",
-      `Unable to load or create folders required for Vislit. ${error}`
-    );
-    return;
-  }
-
-  /**
    * Prevent multiple instances
    */
   const isSingleInstance = app.requestSingleInstanceLock();
@@ -118,6 +85,38 @@ function main() {
   app
     .whenReady()
     .then(async () => {
+      /**
+       * Check where vislit-data should exist:
+       * By default this is userData/vislit-data
+       * But can be user-defined anywhere on their system
+       */
+      const dataPath = new DataPath();
+      if (dataPath instanceof Error) {
+        dialog.showErrorBox(
+          "Vislit: Fatal Error",
+          `Unable to load or create vislit-data location file. ${dataPath}`
+        );
+        return;
+      }
+
+      /**
+       * Create needed directories if they do not already exist
+       */
+      try {
+        const savedDataLocation: string | null = dataPath.get();
+        if (!existsSync(savedDataLocation)) {
+          const projectDirectory = join(savedDataLocation, "projects");
+          mkdirSync(savedDataLocation);
+          mkdirSync(projectDirectory);
+        }
+      } catch (error) {
+        dialog.showErrorBox(
+          "Vislit: Fatal Error",
+          `Unable to load or create folders required for Vislit. ${error}`
+        );
+        return;
+      }
+
       // NOTE: If the startup gets long, show a splash screen before api init
       // initialize database and controllers and assign them for ipc access
       const {
