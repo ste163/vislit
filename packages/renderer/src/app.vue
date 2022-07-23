@@ -4,6 +4,7 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { send, receive } from "./api";
 import TheSidebar from "./components/the-sidebar.vue";
+import ProjectForm from "./components/project-form.vue";
 
 const isLoading = ref<boolean>(true);
 const isFetchErrorActive = ref<boolean>(false);
@@ -67,7 +68,9 @@ onMounted(async () => {
       router.replace("/");
       return;
     }
-    console.log("we have projects; read local storage and open most recent");
+    console.log(
+      "we have projects; read local storage to see which was most recently opened"
+    );
     // else, read localStorage for last opened project
     // if last opened project, open that project
     // otherwise, open most recent
@@ -97,10 +100,27 @@ onMounted(async () => {
     <the-sidebar :is-disabled="true" :is-loading="isLoading" />
 
     <!-- As there is only the Projects column for now, only making that work -->
-    <section v-if="isProjectColumnActive">
-      <div class="flex">
-        <h1>Project Column Header</h1>
+    <section
+      v-if="isProjectColumnActive"
+      class="bg-gray-200 h-full min-w-[150px]"
+    >
+      <div class="flex bg-gray-300 justify-between px-2">
+        <h1 class="text-sm font-sans">Project - Create</h1>
         <button @click="closeProjectColumn">X</button>
+      </div>
+      <div class="flex flex-col">
+        <!-- TODO: 
+        Project Form will also need to have the currently active project
+        passed in. However, this is out of scope until Editing is a thing-->
+        <!-- Once the project form has been submitted, call the submit event
+        and re-fetch allProjects to get the latest data -->
+        <!-- 
+          TODO: notifications:
+          If the submit event is successful, display the Success notification
+        if it fails, show the failure notification: these tests would occur at app.vue
+        NOTE: notifications will most likely live with teleport so that it's always on-top
+        -->
+        <project-form />
       </div>
     </section>
 

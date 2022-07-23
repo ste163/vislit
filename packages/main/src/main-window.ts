@@ -6,6 +6,7 @@ import type { Database } from "./database";
 async function createWindow(database: Database) {
   const browserWindow = new BrowserWindow({
     show: false, // Use 'ready-to-show' event to show window
+    title: "vislit",
     minWidth: 500,
     minHeight: 400,
     width: 1024,
