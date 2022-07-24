@@ -1,21 +1,19 @@
 <script setup lang="ts">
-import type { Project, Type } from "interfaces";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { send, receive } from "./api";
+import { nanoid } from "nanoid/non-secure";
 import TheSidebar from "./components/the-sidebar.vue";
-import NotificationBar from "./components/notification-bar.vue";
 import ProjectForm from "./components/project-form.vue";
-import type { NotificationBarState } from "./interfaces";
+import type { NotificationItem } from "./interfaces";
+import type { Project, Type } from "interfaces";
+import NotificationContainer from "./components/notification-container.vue";
 
 const isLoading = ref<boolean>(true);
 const isFetchErrorActive = ref<boolean>(false);
 const fetchErrorMessage = ref<string>("");
 
-const notificationBarState = ref<NotificationBarState>({
-  type: "success",
-  message: null,
-});
+const notificationItems = ref<NotificationItem[]>([]);
 
 const types = ref<Type[]>([]);
 const projects = ref<Project[]>([]);
@@ -31,12 +29,6 @@ function openProjectColumn(): void {
   // Check local storage to see what the default location and size of the column is
   // if there is data, open at that last location
   // otherwise, open in default location
-  //
-  // TODO
-  // - style the div
-  // - can be closed then re-opened from
-  // - put the form inside
-  // - can submit form data
   isProjectColumnActive.value = true;
 }
 
@@ -52,23 +44,28 @@ function showCriticalError(message = "No error message received") {
   fetchErrorMessage.value = message;
 }
 
-function setNotificationBarState({
+function addNotificationItem({
   type,
   message,
-}: NotificationBarState): void {
-  notificationBarState.value = {
-    type,
-    message,
-  };
+}: Partial<NotificationItem>): void {
+  if (type && message)
+    notificationItems.value = [
+      {
+        id: nanoid(8),
+        type,
+        message,
+      },
+      ...notificationItems.value,
+    ];
 }
 
-function handleCloseNotificationBar(): void {
-  // If we have a 'create notification bar', that could push a new item to the end of the array
-  // closeNotificationBar would shift/unshift the first item from the array when the emit is closed!
-  // it would mean we don't have an X button, which is fine. If it's like 4 seconds or 5 seconds, that's all we need
-  setNotificationBarState({ type: "success", message: null });
+function handleCloseNotificationItem(id: string): void {
+  notificationItems.value = notificationItems.value.filter(
+    ({ id: currentId }) => currentId !== id
+  );
 }
 
+// TODO: Create an interface for what the response should be
 function handleProjectFormSubmission(response: any): void {
   console.log("App level, handle form data response:", response);
   // IF there is an errorMessage in the response, display that in the notification
@@ -76,13 +73,7 @@ function handleProjectFormSubmission(response: any): void {
   // IF there is no errorMessage AND we have a project
   // Then change the project column to the project list column view
   // route application to this Project's page
-  //
-
-  // TODO:
-  // once I have notifications closing properly
-  // attempt to refactor into PUSHING a new object into an array of Notifications
-  // the trick will be, will these notifications know how to unmount?
-  setNotificationBarState({ type: "success", message: "Created Project" });
+  addNotificationItem({ type: "success", message: "Created Project" });
 }
 
 receive("reload-database", () => {
@@ -141,10 +132,11 @@ onMounted(async () => {
     <!-- TODO: once a project is created, the side-bar is no longer disabled. Ie, the disabled state
     Needs to be based on if they're on the Welcome page or not. -->
     <the-sidebar :is-disabled="true" :is-loading="isLoading" />
-    <notification-bar
-      v-if="notificationBarState.message"
-      @close="handleCloseNotificationBar"
+    <notification-container
+      :notification-items="notificationItems"
+      @close-item="handleCloseNotificationItem"
     />
+
     <!-- As there is only the Projects column for now, only making that work -->
     <section
       v-if="isProjectColumnActive"
