@@ -4,11 +4,18 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { send, receive } from "./api";
 import TheSidebar from "./components/the-sidebar.vue";
+import NotificationBar from "./components/notification-bar.vue";
 import ProjectForm from "./components/project-form.vue";
+import type { NotificationBarState } from "./interfaces";
 
 const isLoading = ref<boolean>(true);
 const isFetchErrorActive = ref<boolean>(false);
 const fetchErrorMessage = ref<string>("");
+
+const notificationBarState = ref<NotificationBarState>({
+  type: "success",
+  message: null,
+});
 
 const types = ref<Type[]>([]);
 const projects = ref<Project[]>([]);
@@ -45,15 +52,48 @@ function showCriticalError(message = "No error message received") {
   fetchErrorMessage.value = message;
 }
 
+function setNotificationBarState({
+  type,
+  message,
+}: NotificationBarState): void {
+  notificationBarState.value = {
+    type,
+    message,
+  };
+}
+
+function handleCloseNotificationBar(): void {
+  // If we have a 'create notification bar', that could push a new item to the end of the array
+  // closeNotificationBar would shift/unshift the first item from the array when the emit is closed!
+  // it would mean we don't have an X button, which is fine. If it's like 4 seconds or 5 seconds, that's all we need
+  setNotificationBarState({ type: "success", message: null });
+}
+
+function handleProjectFormSubmission(response: any): void {
+  console.log("App level, handle form data response:", response);
+  // IF there is an errorMessage in the response, display that in the notification
+  // And keep the project form at its same state.
+  // IF there is no errorMessage AND we have a project
+  // Then change the project column to the project list column view
+  // route application to this Project's page
+  //
+
+  // TODO:
+  // once I have notifications closing properly
+  // attempt to refactor into PUSHING a new object into an array of Notifications
+  // the trick will be, will these notifications know how to unmount?
+  setNotificationBarState({ type: "success", message: "Created Project" });
+}
+
 receive("reload-database", () => {
   console.log("RELOAD DATABASE");
   // RELOADING is currently from backend with mainWindow.reload
-  // this may not work because of clearing localStorage, but works for now
-  //
+  // this may not work because of clearing localStorage is needed, but appears to work for now
+  // TO TEST WHEN WE HAVE MORE DATA:
   // need to clear-out localStorage related to selected projects
   // and reset app-state
   // because you could have ALL new projects
-  // so probably re-fresh the page after clearing storage
+  // so probably re-fresh the page after clearing storage!
 });
 
 onMounted(async () => {
@@ -91,14 +131,20 @@ onMounted(async () => {
     <h1>Unable to access data</h1>
     <p>
       Please restart Vislit. If the error persists, share the below error
+      <!-- TODO: add this link! -->
       message on GitHub issues (link)
     </p>
     <p>Error message: {{ fetchErrorMessage }}</p>
   </div>
 
   <div v-else class="h-full w-full flex">
+    <!-- TODO: once a project is created, the side-bar is no longer disabled. Ie, the disabled state
+    Needs to be based on if they're on the Welcome page or not. -->
     <the-sidebar :is-disabled="true" :is-loading="isLoading" />
-
+    <notification-bar
+      v-if="notificationBarState.message"
+      @close="handleCloseNotificationBar"
+    />
     <!-- As there is only the Projects column for now, only making that work -->
     <section
       v-if="isProjectColumnActive"
@@ -109,22 +155,11 @@ onMounted(async () => {
         <button @click="closeProjectColumn">X</button>
       </div>
       <div class="flex flex-col">
-        <!-- TODO: 
-        Project Form will also need to have the currently active project
-        passed in. However, this is out of scope until Editing is a thing-->
-        <!-- Once the project form has been submitted, call the submit event
-        and re-fetch allProjects to get the latest data -->
-        <!-- 
-          TODO: notifications:
-          If the submit event is successful, display the Success notification
-        if it fails, show the failure notification: these tests would occur at app.vue
-        NOTE: notifications will most likely live with teleport so that it's always on-top
-        -->
-        <project-form />
+        <project-form @project-form-submission="handleProjectFormSubmission" />
       </div>
     </section>
 
-    <section class="flex-grow">
+    <section class="flex-grow overflow-y-scroll">
       <main class="flex flex-col h-full p-4">
         <router-view v-slot="{ Component, route }" :is-loading="isLoading">
           <component

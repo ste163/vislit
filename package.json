@@ -72,14 +72,14 @@
   "dependencies": {
     "@tiptap/starter-kit": "^2.0.0-beta.190",
     "@tiptap/vue-3": "^2.0.0-beta.96",
-    "@vee-validate/zod": "4.5.11",
+    "@vee-validate/zod": "4.6.2",
     "electron-updater": "5.0.5",
     "lowdb": "3.0.0",
     "minisearch": "3.3.0",
     "nanoid": "4.0.0",
-    "vee-validate": "4.5.11",
+    "vee-validate": "4.6.2",
     "vue": "3.2.37",
     "vue-router": "4.0.16",
-    "zod": "3.17.3"
+    "zod": "3.17.10"
   }
 }
