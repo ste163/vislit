@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import IconClose from "../icons/icon-close.vue";
+
 // TODO:
 // Add real icons
 // Add styles
@@ -34,6 +36,10 @@ onMounted(() => setTimeout(() => emitCloseNotification(), 5000));
     <div>I</div>
     <div class="mx-2">{{ id }} {{ message }}</div>
     <!-- Do a real close button -->
-    <button @click="emitCloseNotification">X</button>
+    <button @click="emitCloseNotification">
+      <div class="scale-50">
+        <icon-close :variant="'light'" />
+      </div>
+    </button>
   </div>
 </template>

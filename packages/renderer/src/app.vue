@@ -8,6 +8,7 @@ import type { Project, Type } from "interfaces";
 import TheSidebar from "./components/the-sidebar.vue";
 import ProjectForm from "./components/project-form.vue";
 import NotificationContainer from "./components/notification-container.vue";
+import IconClose from "./icons/icon-close.vue";
 
 const isLoading = ref<boolean>(true);
 const isFetchErrorActive = ref<boolean>(false);
@@ -137,15 +138,21 @@ onMounted(async () => {
       @close-item="handleCloseNotificationItem"
     />
 
-    <!-- As there is only the Projects column for now, only making that work -->
+    <!-- As there is only the Projects column for now, no abstraction -->
     <section
       v-if="isProjectColumnActive"
-      class="bg-gray-200 h-full min-w-[150px]"
+      class="bg-gray-200 h-full min-w-[250px]"
     >
+      <!-- Column Header -->
       <div class="flex bg-gray-300 justify-between px-2">
-        <h1 class="text-sm font-sans">Project - Create</h1>
-        <button @click="closeProjectColumn">X</button>
+        <h1 class="text-xs font-sans tracking-widest">Projects</h1>
+        <button @click="closeProjectColumn">
+          <div class="scale-50">
+            <icon-close :variant="'dark'" />
+          </div>
+        </button>
       </div>
+      <!-- Column Content -->
       <div class="flex flex-col">
         <project-form @project-form-submission="handleProjectFormSubmission" />
       </div>

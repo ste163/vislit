@@ -39,24 +39,35 @@ function onSubmit(): void {
 </script>
 
 <template>
-  <form @submit.prevent="onSubmit">
-    <div>
-      <label>Title</label>
-      <input />
+  <form class="flex flex-col mx-4 mt-2" @submit.prevent="onSubmit">
+    <h3>Create</h3>
+
+    <div class="flex flex-col">
+      <label>Title<sup>*</sup></label>
+      <input class="rounded-md p-1" />
     </div>
 
-    <div>
-      <label>Type</label>
-      <input />
+    <div class="flex flex-col my-4">
+      <label>Type<sup>*</sup></label>
+      <!-- Attempt to use default html as its most accessible; with some simple styling -->
+      <select class="rounded-md p-1">
+        <option></option>
+        <option>Add new type</option>
+        <option>Test 1</option>
+        <option>Test 2</option>
+      </select>
+      <!-- OR have an item that is: Add your Own/Other that would open a new input at the bottom -->
+      <!-- Have option to 'add a new item below it?' -->
     </div>
 
-    <!-- Have a question mark here that says
-descriptions are optional to help you. You can also search for them -->
-    <div>
+    <div class="flex flex-col">
       <label>Description</label>
-      <input />
+      <!-- Custom outline: needs to be using state though for 'is active' -->
+      <input class="rounded-md p-1 border border-primary outline-none" />
     </div>
 
-    <base-button>Submit</base-button>
+    <div class="self-center mt-4">
+      <base-button>Create</base-button>
+    </div>
   </form>
 </template>
