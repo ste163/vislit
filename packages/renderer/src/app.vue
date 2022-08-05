@@ -3,10 +3,10 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { send, receive } from "./api";
 import { nanoid } from "nanoid/non-secure";
-import TheSidebar from "./components/the-sidebar.vue";
-import ProjectForm from "./components/project-form.vue";
 import type { NotificationItem } from "./interfaces";
 import type { Project, Type } from "interfaces";
+import TheSidebar from "./components/the-sidebar.vue";
+import ProjectForm from "./components/project-form.vue";
 import NotificationContainer from "./components/notification-container.vue";
 
 const isLoading = ref<boolean>(true);

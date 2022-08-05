@@ -17,6 +17,7 @@ function renderApp() {
   render(App, {
     global: {
       plugins: [router],
+      stubs: { teleport: true }, // otherwise the notification container doesn't exist as its outside the component
     },
   });
 
