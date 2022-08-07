@@ -144,7 +144,7 @@ onMounted(async () => {
       class="bg-gray-200 h-full min-w-[250px]"
     >
       <!-- Column Header -->
-      <div class="flex bg-gray-300 justify-between px-2">
+      <div class="flex bg-gray-300 justify-between px-2 py-1">
         <h1 class="text-xs font-sans tracking-widest">Projects</h1>
         <button @click="closeProjectColumn">
           <div class="scale-50">
