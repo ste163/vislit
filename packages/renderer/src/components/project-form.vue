@@ -10,6 +10,10 @@ import InputText from "./input-text.vue";
 // - non-valid data shows errors
 // - must submit required fields shows required field errors
 // - valid data emits submit event
+//
+// Types:
+// if a type is added: emit 'refetchTypes'
+// if a type is deleted: emit 'refetchTypes'
 
 const emit = defineEmits(["projectFormSubmission"]);
 
@@ -57,8 +61,8 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
 </script>
 
 <template>
-  <form class="flex flex-col mx-4 mt-2" @submit.prevent="onSubmit">
-    <h3>Create</h3>
+  <form class="flex flex-col mx-4 mt-4" @submit.prevent="onSubmit">
+    <h3 class="mb-4">Create</h3>
 
     <!-- This really need to be in components or this file will get HUGE too fast -->
     <input-text name="title" label="Title" />
@@ -67,8 +71,16 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
       <label>Type</label>
       <!-- Attempt to use default html as its most accessible; with some simple styling -->
       <select id="type" class="rounded-md p-1">
+        <!-- NO! Select has a + and Trashcan icon
+        If nothing is selected, it's a PLUS so you can add a type
+        If something is selected, it's a trashcan!
+        Or some kind of icon that opens a modal for seeing:
+        - how many projects per type
+        - removing types
+        THIS IS FOR v2 though
+        - V1 is no type editing for project form
+        -->
         <option></option>
-        <option>Add new type</option>
         <option>Test 1</option>
         <option>Test 2</option>
       </select>

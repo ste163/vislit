@@ -35,7 +35,10 @@ watch(meta, () => {
 
 <template>
   <div class="flex flex-col">
-    <label>
+    <label
+      class="font-medium"
+      :class="meta.valid ? 'text-primary' : errorMessage && 'text-alert'"
+    >
       {{ label }}
     </label>
     <input
