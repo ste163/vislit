@@ -1,48 +1,40 @@
 <script setup lang="ts">
 import { useField } from "vee-validate";
+import { watch } from "vue";
 
-// and use that state to do all the styling
-
+// parent component passes slot options in in its map?
 type Props = {
   name: string;
   label: string;
-  type?: string;
   value?: string;
-  min?: string;
 };
 
-const {
-  type = "text",
-  value = "",
-  name,
-  label,
-  min = "0",
-} = defineProps<Props>();
+const { name, label, value = "" } = defineProps<Props>();
 
 const {
   value: fieldValue,
   meta,
   errorMessage,
-  handleBlur,
   handleChange,
+  handleBlur,
 } = useField(name, undefined, { initialValue: value });
+
+watch(meta, () => {
+  console.log(meta);
+});
 </script>
 
 <template>
   <div class="flex flex-col">
     <label
       :for="name"
+      :value="fieldValue"
       class="font-medium"
       :class="meta.valid ? 'text-primary' : errorMessage && 'text-alert'"
+      >{{ label }}</label
     >
-      {{ label }}
-    </label>
-    <input
-      :id="name"
+    <select
       :name="name"
-      :type="type"
-      :value="fieldValue"
-      :min="min"
       class="rounded-md p-1 outline-none focus:border"
       :class="
         meta.valid
@@ -51,9 +43,14 @@ const {
           ? 'border border-alert'
           : 'border-gray-800'
       "
-      @input="handleChange"
-      @blur="handleBlur"
-    />
+    >
+      <option>
+        <!-- Always have a default, empty option -->
+      </option>
+      <!-- Need to use a scoped slot to make this work -->
+      <slot @select="handleChange" @blur="handleBlur" />
+    </select>
+
     <div v-show="errorMessage" class="text-alert font-medium">
       {{ errorMessage }}
     </div>

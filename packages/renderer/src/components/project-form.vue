@@ -2,8 +2,12 @@
 import { useForm } from "vee-validate";
 import { z } from "zod";
 import { toFormValidator } from "@vee-validate/zod";
+import type { Type } from "interfaces";
+
 import BaseButton from "./base-button.vue";
 import InputText from "./input-text.vue";
+import InputSelect from "./input-select.vue";
+import { computed } from "vue";
 // TODO: setup basic test file
 // - if no project passed in, show empty create form
 // - skip.if project passed in, show that form in Edit mode
@@ -15,8 +19,17 @@ import InputText from "./input-text.vue";
 // if a type is added: emit 'refetchTypes'
 // if a type is deleted: emit 'refetchTypes'
 
+interface Props {
+  types: Type[];
+}
+
+const { types } = defineProps<Props>();
+
 const emit = defineEmits(["projectFormSubmission"]);
 
+const typeOptions = computed(() => types.map((type) => type));
+
+console.log("TYPES", typeOptions);
 // However, if they select Add new Type, then show the new input
 // that input cannot be visible to submit. You cannot submit form with Add new Type selected
 const validationSchema = toFormValidator(
@@ -67,26 +80,16 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
     <!-- This really need to be in components or this file will get HUGE too fast -->
     <input-text name="title" label="Title" />
 
-    <div class="flex flex-col my-4">
-      <label>Type</label>
-      <!-- Attempt to use default html as its most accessible; with some simple styling -->
-      <select id="type" class="rounded-md p-1">
-        <!-- NO! Select has a + and Trashcan icon
-        If nothing is selected, it's a PLUS so you can add a type
-        If something is selected, it's a trashcan!
-        Or some kind of icon that opens a modal for seeing:
-        - how many projects per type
-        - removing types
-        THIS IS FOR v2 though
-        - V1 is no type editing for project form
-        -->
-        <option></option>
-        <option>Test 1</option>
-        <option>Test 2</option>
-      </select>
-      <!-- OR have an item that is: Add your Own/Other that would open a new input at the bottom -->
-      <!-- Have option to 'add a new item below it?' -->
-    </div>
+    <input-select name="type" label="Type">
+      <option
+        v-for="type in typeOptions"
+        :key="type.id"
+        :value="type.id"
+        class="capitalize"
+      >
+        {{ type.value }}
+      </option>
+    </input-select>
 
     <div class="flex flex-col">
       <label>Description</label>

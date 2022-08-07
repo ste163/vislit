@@ -154,7 +154,10 @@ onMounted(async () => {
       </div>
       <!-- Column Content -->
       <div class="flex flex-col">
-        <project-form @project-form-submission="handleProjectFormSubmission" />
+        <project-form
+          :types="types"
+          @project-form-submission="handleProjectFormSubmission"
+        />
       </div>
     </section>
 
