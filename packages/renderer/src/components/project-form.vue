@@ -3,6 +3,7 @@ import { useForm } from "vee-validate";
 import { z } from "zod";
 import { toFormValidator } from "@vee-validate/zod";
 import BaseButton from "./base-button.vue";
+import InputText from "./input-text.vue";
 // TODO: setup basic test file
 // - if no project passed in, show empty create form
 // - skip.if project passed in, show that form in Edit mode
@@ -60,10 +61,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
     <h3>Create</h3>
 
     <!-- This really need to be in components or this file will get HUGE too fast -->
-    <div class="flex flex-col">
-      <label>Title</label>
-      <input id="title" class="rounded-md p-1" />
-    </div>
+    <input-text name="title" label="Title" />
 
     <div class="flex flex-col my-4">
       <label>Type</label>
