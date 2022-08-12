@@ -29,7 +29,6 @@ const emit = defineEmits(["projectFormSubmission"]);
 
 const typeOptions = computed(() => types.map((type) => type));
 
-console.log("TYPES", typeOptions);
 // However, if they select Add new Type, then show the new input
 // that input cannot be visible to submit. You cannot submit form with Add new Type selected
 const validationSchema = toFormValidator(
@@ -76,18 +75,15 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
 <template>
   <form class="flex flex-col mx-4 mt-4" @submit.prevent="onSubmit">
     <h3 class="mb-4">Create</h3>
-
-    <!-- This really need to be in components or this file will get HUGE too fast -->
     <input-text name="title" label="Title" />
-
     <input-select name="type" label="Type">
       <option
-        v-for="type in typeOptions"
-        :key="type.id"
-        :value="type.id"
+        v-for="option in typeOptions"
+        :key="option.id"
+        :value="option.id"
         class="capitalize"
       >
-        {{ type.value }}
+        {{ option.value }}
       </option>
     </input-select>
 

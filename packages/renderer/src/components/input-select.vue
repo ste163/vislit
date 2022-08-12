@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { useField } from "vee-validate";
-import { watch } from "vue";
 
-// parent component passes slot options in in its map?
 type Props = {
   name: string;
   label: string;
@@ -18,24 +16,20 @@ const {
   handleChange,
   handleBlur,
 } = useField(name, undefined, { initialValue: value });
-
-watch(meta, () => {
-  console.log(meta);
-});
 </script>
 
 <template>
   <div class="flex flex-col">
     <label
       :for="name"
-      :value="fieldValue"
+      :fieldValue="fieldValue"
       class="font-medium"
       :class="meta.valid ? 'text-primary' : errorMessage && 'text-alert'"
       >{{ label }}</label
     >
     <select
       :name="name"
-      class="rounded-md p-1 outline-none focus:border"
+      class="capitalize rounded-md p-1 outline-none focus:border focus:border-gray-800"
       :class="
         meta.valid
           ? 'border border-primary'
@@ -43,12 +37,13 @@ watch(meta, () => {
           ? 'border border-alert'
           : 'border-gray-800'
       "
+      @change="handleChange"
+      @blur="handleBlur"
     >
-      <option>
+      <option value="">
         <!-- Always have a default, empty option -->
       </option>
-      <!-- Need to use a scoped slot to make this work -->
-      <slot @select="handleChange" @blur="handleBlur" />
+      <slot />
     </select>
 
     <div v-show="errorMessage" class="text-alert font-medium">

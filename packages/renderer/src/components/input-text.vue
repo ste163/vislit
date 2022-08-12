@@ -43,7 +43,7 @@ const {
       :type="type"
       :value="fieldValue"
       :min="min"
-      class="rounded-md p-1 outline-none focus:border"
+      class="rounded-md p-1 outline-none focus:border focus:border-gray-800"
       :class="
         meta.valid
           ? 'border border-primary'
