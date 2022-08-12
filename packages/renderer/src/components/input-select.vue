@@ -24,14 +24,18 @@ const {
       :for="name"
       :fieldValue="fieldValue"
       class="font-medium"
-      :class="meta.valid ? 'text-primary' : errorMessage && 'text-alert'"
+      :class="
+        meta.valid && meta.touched
+          ? 'text-primary'
+          : errorMessage && 'text-alert'
+      "
       >{{ label }}</label
     >
     <select
       :name="name"
       class="capitalize rounded-md p-1 outline-none focus:border focus:border-gray-800"
       :class="
-        meta.valid
+        meta.valid && meta.touched
           ? 'border border-primary'
           : errorMessage
           ? 'border border-alert'

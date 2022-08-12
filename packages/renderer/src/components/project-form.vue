@@ -1,13 +1,14 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import { useForm } from "vee-validate";
-import { z } from "zod";
 import { toFormValidator } from "@vee-validate/zod";
-import type { Type } from "interfaces";
-
+import { z } from "zod";
 import BaseButton from "./base-button.vue";
 import InputText from "./input-text.vue";
 import InputSelect from "./input-select.vue";
-import { computed } from "vue";
+import InputTextarea from "./input-textarea.vue";
+import type { Type } from "interfaces";
+
 // TODO: setup basic test file
 // - if no project passed in, show empty create form
 // - skip.if project passed in, show that form in Edit mode
@@ -15,7 +16,7 @@ import { computed } from "vue";
 // - must submit required fields shows required field errors
 // - valid data emits submit event
 //
-// Types:
+// TODO: Types:
 // if a type is added: emit 'refetchTypes'
 // if a type is deleted: emit 'refetchTypes'
 
@@ -39,12 +40,12 @@ const validationSchema = toFormValidator(
   })
 );
 
-const { handleSubmit } = useForm({ validationSchema });
+const { handleSubmit } = useForm({
+  validationSchema,
+});
 
-const onSubmit = handleSubmit(async (values, { resetForm }) => {
+const onSubmit = handleSubmit(async (values) => {
   try {
-    console.log("submit form values", values);
-
     // call endpoints here
     // based on results
     // setup the object that gets emitted to Parent
@@ -76,7 +77,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
   <form class="flex flex-col mx-4 mt-4" @submit.prevent="onSubmit">
     <h3 class="mb-4">Create</h3>
     <input-text name="title" label="Title" />
-    <input-select name="type" label="Type">
+    <input-select class="my-5" name="type" label="Type">
       <option
         v-for="option in typeOptions"
         :key="option.id"
@@ -86,17 +87,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
         {{ option.value }}
       </option>
     </input-select>
-
-    <div class="flex flex-col">
-      <label>Description</label>
-      <!-- Custom outline: needs to be using state though for 'is active' -->
-      <textarea
-        id="description"
-        class="rounded-md p-1 border border-primary outline-none max-h-48"
-        rows="2"
-      />
-    </div>
-
+    <input-textarea name="description" label="Description (optional)" />
     <div class="self-center mt-4">
       <base-button>Create</base-button>
     </div>

@@ -4,18 +4,11 @@ import { useField } from "vee-validate";
 type Props = {
   name: string;
   label: string;
-  type?: string;
+  rows?: string;
   value?: string;
-  min?: string;
 };
 
-const {
-  name,
-  label,
-  type = "text",
-  value = "",
-  min = "0",
-} = defineProps<Props>();
+const { name, label, rows = "2", value = "" } = defineProps<Props>();
 
 const {
   value: fieldValue,
@@ -24,6 +17,7 @@ const {
   handleBlur,
   handleChange,
 } = useField(name, undefined, { initialValue: value });
+console.log(meta);
 </script>
 
 <template>
@@ -39,12 +33,11 @@ const {
     >
       {{ label }}
     </label>
-    <input
+    <textarea
       :id="name"
       :name="name"
-      :type="type"
       :value="fieldValue"
-      :min="min"
+      :rows="rows"
       class="rounded-md p-1 outline-none focus:border focus:border-gray-800"
       :class="
         meta.valid && meta.touched
