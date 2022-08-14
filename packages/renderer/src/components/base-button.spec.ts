@@ -1,7 +1,11 @@
 import { it } from "vitest";
-// if isDisabled is true, unable to click and colors are default
-// if submitting, show spinner + disable button, regardless of prop
-// if icon is passed in and then isSubmitting becomes true, stop rendering icon, and render spinner
-// // then re-render icon when isSubmitting is finished
 
-it.skip("renders loading spinner when isSubmitting is true and button becomes disabled regardless of prop", () => {});
+it.skip("If isDisabled is true, button is disabled", () => {});
+
+it.skip("If isDisabled is false, button is not disabled", () => {});
+
+it.skip("If an icon is passed in, render it");
+
+it.skip("If no icon is passed in, render button with default text");
+
+it.skip("If text is passed into slot, render button with that text only");
