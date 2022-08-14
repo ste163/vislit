@@ -17,7 +17,6 @@ const {
   handleBlur,
   handleChange,
 } = useField(name, undefined, { initialValue: value });
-console.log(meta);
 </script>
 
 <template>

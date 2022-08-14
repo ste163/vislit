@@ -35,7 +35,7 @@ const config = {
       external: [...builtinModules],
     },
     emptyOutDir: true,
-    brotliSize: false,
+    reportCompressedSize: false,
   },
 };
 

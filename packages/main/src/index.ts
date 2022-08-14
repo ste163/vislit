@@ -61,7 +61,7 @@ function main() {
   });
 
   /**
-   * Disable Hardware Acceleration for improved power saving
+   * Disable Hardware Acceleration for reducing system resource usage
    */
   app.disableHardwareAcceleration();
 
@@ -73,7 +73,7 @@ function main() {
   });
 
   /**
-   * @see https://www.electronjs.org/docs/v14-x-y/api/app#event-activate-macos Event: 'activate'
+   * @see https://www.electronjs.org/docs/latest/api/app#event-activate-macos Event: 'activate'
    */
   app.on("activate", () => {
     restoreOrCreateWindow(database);
