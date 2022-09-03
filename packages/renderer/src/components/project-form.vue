@@ -89,7 +89,7 @@ const onSubmit = handleSubmit(async (values) => {
     </input-select>
     <input-textarea name="description" label="Description (optional)" />
     <div class="self-center mt-4">
-      <base-button>Create</base-button>
+      <base-button type="submit">Create</base-button>
     </div>
   </form>
 </template>

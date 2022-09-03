@@ -4,10 +4,16 @@ import { COLORS } from "../constants/index";
 
 interface Props {
   variant?: "primary" | "secondary" | "default"; // default is light gray background, black text
+  type?: "button" | "submit";
+
   isDisabled?: boolean;
 }
 
-const { variant = "default", isDisabled = false } = defineProps<Props>();
+const {
+  variant = "default",
+  type = "button",
+  isDisabled = false,
+} = defineProps<Props>();
 
 const VARIANTS = {
   primary: {
@@ -54,7 +60,7 @@ function createEffectOnClick(e: MouseEvent): void {
 <template>
   <button
     ref="button"
-    type="button"
+    :type="type"
     :disabled="isDisabled"
     class="base-button px-4 py-2 text-xs rounded-md items-center select-none"
     @click="createEffectOnClick"
