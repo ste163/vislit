@@ -51,7 +51,7 @@ class ProjectController {
       projectAddRequestSchema.parse(request);
 
       request.title = request.title.trim();
-      request.description = request.description.trim();
+      request.description = request.description && request.description.trim();
 
       this.#checkForTitleTaken(request.title);
 
