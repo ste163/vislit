@@ -52,6 +52,7 @@ const onSubmit = handleSubmit(async (formValues) => {
 
     if (result instanceof Error) {
       emit("projectFormSubmission", { errorMessage: result?.message });
+      // TODO (from App.vue)
       // SHOW THE ERROR NOTIFICATION BANNER
       // this is a DB failure
       return;
