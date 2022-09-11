@@ -19,7 +19,7 @@ const numberAsStringRequestSchema = z.string().refine((value) => {
 export const projectAddRequestSchema = z
   .object({
     title: z.string(),
-    description: z.string(),
+    description: z.string().nullable(),
     typeId: idRequestSchema,
   })
   .strict(); // must use strict to only allow these keys

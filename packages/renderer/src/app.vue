@@ -3,7 +3,10 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { send, receive } from "./api";
 import { nanoid } from "nanoid/non-secure";
-import type { NotificationItem } from "./interfaces";
+import type {
+  NotificationItem,
+  ProjectFormSubmission,
+} from "./renderer-interfaces";
 import type { Project, Type } from "interfaces";
 import TheSidebar from "./components/the-sidebar.vue";
 import ProjectForm from "./components/project-form.vue";
@@ -66,14 +69,14 @@ function handleCloseNotificationItem(id: string): void {
   );
 }
 
-// TODO: Create an interface for what the response should be
-function handleProjectFormSubmission(response: any): void {
-  console.log("App level, handle form data response:", response);
+function handleProjectFormSubmission(response: ProjectFormSubmission): void {
+  console.log("App level - handle form data response:", response);
   // IF there is an errorMessage in the response, display that in the notification
-  // And keep the project form at its same state.
-  // IF there is no errorMessage AND we have a project
+  // And keep the project form at its same state. Ie, 'return', so do nothing with App level state
+  // IF we have a project
   // Then change the project column to the project list column view
   // route application to this Project's page
+  // show success notification
   addNotificationItem({ type: "success", message: "Created Project" });
 }
 

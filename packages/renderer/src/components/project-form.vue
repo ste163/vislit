@@ -3,11 +3,13 @@ import { computed } from "vue";
 import { useForm } from "vee-validate";
 import { toFormValidator } from "@vee-validate/zod";
 import { z } from "zod";
+import { send } from "../api";
 import BaseButton from "./base-button.vue";
 import InputText from "./input-text.vue";
 import InputSelect from "./input-select.vue";
 import InputTextarea from "./input-textarea.vue";
-import type { Type } from "interfaces";
+import type { Project, Type } from "interfaces";
+import type { ProjectFormSubmission } from "../renderer-interfaces";
 
 // TODO: setup basic test file
 // - if no project passed in, show empty create form
@@ -44,30 +46,36 @@ const { handleSubmit } = useForm({
   validationSchema,
 });
 
-const onSubmit = handleSubmit(async (values) => {
+const onSubmit = handleSubmit(async (formValues) => {
   try {
-    // call endpoints here
+    const { title, type, description } = formValues;
+    const result = (await send("projects-add", {
+      title,
+      typeId: type,
+      description: description ?? null,
+    })) as Project | Error;
+
+    if (result instanceof Error) {
+      emit("projectFormSubmission", { errorMessage: result?.message });
+      // SHOW THE ERROR NOTIFICATION BANNER
+      // this is a DB failure
+      return;
+    }
     // based on results
     // setup the object that gets emitted to Parent
     // Parent/App.vue handles notifications, routing, column state, etc.
     // By doing this, the project-form ONLY works with the form
     // it knows nothing else about the state of the application.
 
-    // TODO: create an interface for this
-    // to be used on App level
     emit("projectFormSubmission", {
-      isError: false,
-      errorMessage: null,
       isEditing: false,
       project: {
-        id: "123",
-        title: "Test Title",
-        type: "id",
-        description: null,
+        ...result,
       },
-    });
+    } as unknown as ProjectFormSubmission);
   } catch (error: any | Error) {
-    // show error notification/error dialog?
+    // SHOW ERROR WINDOW, as this is a major failure
+    // (so send the message)
     console.error(error);
   }
 });
