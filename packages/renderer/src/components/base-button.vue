@@ -3,9 +3,8 @@ import { computed } from "vue";
 import { COLORS } from "../constants/index";
 
 interface Props {
-  variant?: "primary" | "secondary" | "default"; // default is light gray background, black text
+  variant?: "primary" | "secondary" | "default";
   type?: "button" | "submit";
-
   isDisabled?: boolean;
 }
 
@@ -87,7 +86,6 @@ function createEffectOnClick(e: MouseEvent): void {
 
 <style>
 /* Styles related to animation can't be scoped or else effect is broken */
-
 div.base-button-effect {
   position: absolute;
   border-radius: 50%;

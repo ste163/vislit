@@ -1,7 +1,7 @@
 import { cleanup, render, screen, waitFor } from "@testing-library/vue";
 import { it, expect, afterEach, vi } from "vitest";
-import Welcome from "./welcome.vue";
 import { fireEvent } from "@testing-library/dom";
+import Welcome from "./welcome.vue";
 
 const mockSend = vi.fn(() => "");
 
@@ -65,19 +65,16 @@ it("renders page when loaded; button clicks call: import data, change save locat
 
   // clicking the import button calls ipcSend
   const importButton = screen.getAllByRole("button")[0];
-  // eslint-disable-next-line testing-library/await-fire-event
-  fireEvent.click(importButton); // userEvent is failing
+  await fireEvent.click(importButton);
   expect(window.api?.send).toHaveBeenCalledTimes(2); // called twice as first call is during mount
 
   // clicking save location calls ipcSend
   const changeLocationButton = screen.getAllByRole("button")[1];
-  // eslint-disable-next-line testing-library/await-fire-event
-  fireEvent.click(changeLocationButton);
+  await fireEvent.click(changeLocationButton);
   expect(window.api?.send).toHaveBeenCalledTimes(3);
 
   // clicking createProject calls create project event
   const createProjectButton = screen.getAllByRole("button")[2];
-  // eslint-disable-next-line testing-library/await-fire-event
-  fireEvent.click(createProjectButton);
+  await fireEvent.click(createProjectButton);
   expect(emitted()["openProjectForm"]).toBeTruthy();
 });

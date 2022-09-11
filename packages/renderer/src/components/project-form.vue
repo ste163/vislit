@@ -1,23 +1,16 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useForm } from "vee-validate";
 import { toFormValidator } from "@vee-validate/zod";
 import { z } from "zod";
 import { send } from "../api";
-import BaseButton from "./base-button.vue";
 import InputText from "./input-text.vue";
 import InputSelect from "./input-select.vue";
 import InputTextarea from "./input-textarea.vue";
+import ButtonSubmit from "./button-submit.vue";
 import type { Project, Type } from "interfaces";
 import type { ProjectFormSubmission } from "../renderer-interfaces";
 
-// TODO: setup basic test file
-// - if no project passed in, show empty create form
-// - skip.if project passed in, show that form in Edit mode
-// - non-valid data shows errors
-// - must submit required fields shows required field errors
-// - valid data emits submit event
-//
 // TODO: Types:
 // if a type is added: emit 'refetchTypes'
 // if a type is deleted: emit 'refetchTypes'
@@ -30,6 +23,7 @@ const { types } = defineProps<Props>();
 
 const emit = defineEmits(["projectFormSubmission"]);
 
+const isSubmitting = ref<boolean>(false);
 const typeOptions = computed(() => types.map((type) => type));
 
 // However, if they select Add new Type, then show the new input
@@ -48,6 +42,7 @@ const { handleSubmit } = useForm({
 
 const onSubmit = handleSubmit(async (formValues) => {
   try {
+    isSubmitting.value = true;
     const { title, type, description } = formValues;
     const result = (await send("projects-add", {
       title,
@@ -77,6 +72,8 @@ const onSubmit = handleSubmit(async (formValues) => {
     // SHOW ERROR WINDOW, as this is a major failure
     // (so send the message)
     console.error(error);
+  } finally {
+    isSubmitting.value = false;
   }
 });
 </script>
@@ -97,7 +94,7 @@ const onSubmit = handleSubmit(async (formValues) => {
     </input-select>
     <input-textarea name="description" label="Description (optional)" />
     <div class="self-center mt-4">
-      <base-button type="submit">Create</base-button>
+      <button-submit :is-submitting="isSubmitting" />
     </div>
   </form>
 </template>
