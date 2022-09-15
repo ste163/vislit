@@ -1,10 +1,4 @@
-import {
-  cleanup,
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-} from "@testing-library/vue";
+import { cleanup, render, screen, fireEvent } from "@testing-library/vue";
 import { afterEach, expect, it, vi } from "vitest";
 import ProjectForm from "./project-form.vue";
 import type { Type } from "interfaces";
@@ -56,22 +50,23 @@ const renderProjectForm = () => {
   };
 };
 
-// TODO: need to get the title
-it("if no project passed in, show empty create project form. Displays required errors on submit", async () => {
-  const { nameInput, selectValue, descriptionInput, submitButton } =
-    renderProjectForm();
+it("if no project passed in, show empty create project form. Error messages display", async () => {
+  const { nameInput, selectValue, descriptionInput } = renderProjectForm();
   // no pre-populated data
   expect(nameInput.value).toBe("");
   expect(selectValue).toBe("");
   expect(descriptionInput.value).toBe("");
-  // submitting renders required errors
-  // THIS FAILS
-  // what i've tested:
-  // we are getting the submit button
-  // the emitted() says it's been clicked
-  // i've waited a REALLY long time to see if findByText was just delayed. It never shows up
-  await fireEvent.click(submitButton);
-  // await screen.findByText("Title is required.");
+  // NOTE:
+  // trying to test using submit button never worked
+  // testing error message state by adding and removing required data
+  await fireEvent.update(nameInput, "Test");
+  await fireEvent.update(nameInput, "");
+  await fireEvent.update(screen.getAllByRole("option")[1]);
+  expect(screen.getByText("Type").getAttribute("fieldvalue")).toBe("1");
+  await fireEvent.update(screen.getAllByRole("option")[0]);
+  expect(screen.getByText("Type").getAttribute("fieldvalue")).toBe("");
+  await screen.findByText("Type is required.");
+  await screen.findByText("Title is required.");
 });
 
 // TODO WITH EDIT FEATURE
@@ -93,6 +88,8 @@ it.skip("Entering only required fields submits form", () => {
 });
 
 it("Entering all fields submits form", async () => {
+  // try to setup an app level mock for the api
+  // along with improving the '../api' to 'api'
   // idk if this mock is working, I doubt it though
   // needs to follow more of this setup:
   // https://vitest.dev/guide/mocking.html#modules

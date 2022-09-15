@@ -18,7 +18,6 @@ import type { ProjectFormSubmission } from "../renderer-interfaces";
 interface Props {
   types: Type[];
 }
-
 const { types } = defineProps<Props>();
 
 const emit = defineEmits(["projectFormSubmission"]);
@@ -31,7 +30,7 @@ const typeOptions = computed(() => types.map((type) => type));
 const validationSchema = toFormValidator(
   z.object({
     title: z.string().min(1, { message: "Title is required." }),
-    type: z.string().min(1, { message: "Type is required" }),
+    type: z.string().min(1, { message: "Type is required." }),
     description: z.string().optional(),
   })
 );
