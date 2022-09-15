@@ -80,7 +80,11 @@ const onSubmit = handleSubmit(async (formValues) => {
 </script>
 
 <template>
-  <form class="flex flex-col mx-4 mt-4" @submit.prevent="onSubmit">
+  <form
+    aria-label="form"
+    class="flex flex-col mx-4 mt-4"
+    @submit.prevent="onSubmit"
+  >
     <h3 class="mb-4">Create</h3>
     <input-text name="title" label="Title" />
     <input-select class="my-5" name="type" label="Type">

@@ -1,19 +1,108 @@
-import { it } from "vitest";
+import {
+  cleanup,
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+} from "@testing-library/vue";
+import { afterEach, expect, it, vi } from "vitest";
+import ProjectForm from "./project-form.vue";
+import type { Type } from "interfaces";
 
-it.skip("if no project passed in, show empty create project form", () => {});
+afterEach(() => cleanup());
 
-it.skip(
-  "TODO WITH EDIT FEATURE: if project passed in, show pre-populated fields"
-);
+const MOCK_TYPES: Type[] = [
+  { id: "1", value: "First Type" },
+  { id: "2", value: "Second Type" },
+];
 
-it.skip("Entering non-valid data shows error messages", () => {});
+const renderProjectForm = () => {
+  const utils = render(ProjectForm, {
+    props: {
+      types: MOCK_TYPES,
+    },
+  });
 
-it.skip("Trying to enter-non required fields shows errors", () => {});
+  // required type assertion to get .value
+  const nameInput: HTMLInputElement = screen.getByRole("textbox", {
+    name: "Title",
+  });
+  const descriptionInput: HTMLInputElement = screen.getByRole("textbox", {
+    name: "Description (optional)",
+  });
+  // to get the input working with vee-validate, the select state is on the label
+  const selectValue: string | null = screen
+    .getByText("Type")
+    .getAttribute("fieldvalue");
+
+  const submitButton = screen.getByRole("button", { name: "Create" });
+
+  return {
+    ...utils,
+    nameInput,
+    selectValue,
+    descriptionInput,
+    submitButton,
+    fillForm: async ({ fillOptionalFields = true }) => {
+      await fireEvent.update(nameInput, "New Story");
+      expect(nameInput.value).toBe("New Story");
+      await fireEvent.update(screen.getAllByRole("option")[1]);
+      expect(screen.getByText("Type").getAttribute("fieldvalue")).toBe("1");
+      if (fillOptionalFields) {
+        await fireEvent.update(descriptionInput, "This is my description");
+        expect(descriptionInput.value).toBe("This is my description");
+      }
+    },
+  };
+};
+
+// TODO: need to get the title
+it("if no project passed in, show empty create project form. Displays required errors on submit", async () => {
+  const { nameInput, selectValue, descriptionInput, submitButton } =
+    renderProjectForm();
+  // no pre-populated data
+  expect(nameInput.value).toBe("");
+  expect(selectValue).toBe("");
+  expect(descriptionInput.value).toBe("");
+  // submitting renders required errors
+  // THIS FAILS
+  // what i've tested:
+  // we are getting the submit button
+  // the emitted() says it's been clicked
+  // i've waited a REALLY long time to see if findByText was just delayed. It never shows up
+  await fireEvent.click(submitButton);
+  // await screen.findByText("Title is required.");
+});
+
+// TODO WITH EDIT FEATURE
+it.skip("if project passed in, show pre-populated fields", () => {});
 
 it.skip("Failing to send form data shows error", () => {
+  // how to change select:
+  // await fireEvent.update(screen.getAllByRole("option")[1]);
+  // expect(selectLabel.getAttribute("fieldvalue")).toBe("1");
+  //
   // emitted error dialog event
 });
 
-it.skip("Entering valid data submits form", () => {
+// TODO WITH EDIT FEATURE
+it.skip("Can edit and submit a passed in form", () => {});
+
+it.skip("Entering only required fields submits form", () => {
   // emitted submit event
+});
+
+it("Entering all fields submits form", async () => {
+  // idk if this mock is working, I doubt it though
+  // needs to follow more of this setup:
+  // https://vitest.dev/guide/mocking.html#modules
+  vi.mock("../api", () => {
+    const send = vi.fn(() => ({
+      id: "123",
+    }));
+    return { send };
+  });
+  const { fillForm } = renderProjectForm();
+  await fillForm({ fillOptionalFields: true });
+  // TODO should emit the completed form
 });
