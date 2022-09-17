@@ -30,16 +30,18 @@ onMounted(() => setTimeout(() => emitCloseNotification(), 5000));
 
 <template>
   <div
+    v-if="message"
     class="flex z-50 my-1 self-center text-white text-sm bg-primary px-3 py-2 rounded-md"
   >
-    <!-- Icon -->
+    <!-- TODO: Icon -->
     <div>I</div>
-    <div class="mx-2">{{ id }} {{ message }}</div>
-    <!-- Do a real close button -->
+    <div class="mx-2">{{ message }}</div>
     <button @click="emitCloseNotification">
       <div class="scale-50">
         <icon-close :variant="'light'" />
       </div>
     </button>
+    <!-- TODO: experiment with some kind of CSS visual timer; either a gradient based on the timeout
+    or a progress bar -->
   </div>
 </template>

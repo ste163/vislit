@@ -12,5 +12,6 @@ export default defineConfig({
       reporter: ["text", "lcov"],
       exclude: ["**/*.spec.ts"],
     },
+    testTimeout: 6000,
   },
 });
