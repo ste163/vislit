@@ -1,7 +1,7 @@
 /* eslint-env node */
 
 import { chrome } from "../../.electron-vendors.cache.json";
-import { join } from "path";
+import { resolve } from "path";
 import { builtinModules } from "module";
 import vue from "@vitejs/plugin-vue";
 
@@ -15,9 +15,10 @@ const config = {
   mode: process.env.MODE,
   root: PACKAGE_ROOT,
   resolve: {
-    alias: {
-      "/@/": join(PACKAGE_ROOT, "src") + "/",
-    },
+    alias: [
+      { find: "@", replacement: resolve(PACKAGE_ROOT, "src") },
+      { find: "icons", replacement: resolve(PACKAGE_ROOT, "src/icons") },
+    ],
   },
   plugins: [vue()],
   base: "",

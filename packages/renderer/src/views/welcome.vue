@@ -3,7 +3,7 @@ import { computed } from "vue";
 import { onMounted, ref } from "vue";
 import { send } from "../api";
 import BaseButton from "../components/base-button.vue";
-import IconProject from "../icons/icon-project.vue";
+import IconProject from "icons/icon-project.vue";
 import PulseNotification from "../components/pulse-notification.vue";
 
 interface Props {

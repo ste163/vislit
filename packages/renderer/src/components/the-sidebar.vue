@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import IconSummary from "../icons/icon-summary.vue";
-import IconWriter from "../icons/icon-writer.vue";
-import IconProgress from "../icons/icon-progress.vue";
-import IconVisualization from "../icons/icon-visualization.vue";
-import IconProject from "../icons/icon-project.vue";
-import IconNote from "../icons/icon-note.vue";
+import IconSummary from "icons/icon-summary.vue";
+import IconWriter from "icons/icon-writer.vue";
+import IconProgress from "icons/icon-progress.vue";
+import IconVisualization from "icons/icon-visualization.vue";
+import IconProject from "icons/icon-project.vue";
+import IconNote from "icons/icon-note.vue";
 
 interface Props {
   isDisabled: boolean;

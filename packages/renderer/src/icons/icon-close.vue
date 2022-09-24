@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { COLORS } from "@/constants";
 import { computed } from "vue";
 
 type Props = {
@@ -8,9 +9,9 @@ type Props = {
 const { variant = "dark" } = defineProps<Props>();
 
 const values = {
-  light: "white",
+  light: COLORS.WHITE,
   medium: "",
-  dark: "grey", //TODO: make it match the tailwind or use this as the dark grey
+  dark: "grey", //TODO: move to COLORS
 };
 
 const colorVariant = computed(() => values[variant]);
