@@ -88,12 +88,12 @@ it.skip("Entering only required fields submits form", () => {
 });
 
 it("Entering all fields submits form", async () => {
+  // TODO:
   // try to setup an app level mock for the api
-  // along with improving the '../api' to 'api'
-  // idk if this mock is working, I doubt it though
+  // idk if this mock is working, I doubt it though.
   // needs to follow more of this setup:
   // https://vitest.dev/guide/mocking.html#modules
-  vi.mock("../api", () => {
+  vi.mock("api", () => {
     const send = vi.fn(() => ({
       id: "123",
     }));
