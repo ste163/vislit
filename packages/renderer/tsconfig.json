@@ -4,8 +4,14 @@
     "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "icons": ["./src/icons/*"]
+      "api": ["./src/api"],
+      "components": ["./src/components/*"],
+      "composables": ["./src/composables/*"],
+      "const": ["src/const"],
+      "directives": ["./src/directives"],
+      "icons": ["./src/icons/*"],
+      "renderer-interfaces": ["./src/renderer-interfaces"],
+      "views": ["./src/views/*"]
     },
     "lib": ["ESNext", "dom", "dom.iterable"]
   },

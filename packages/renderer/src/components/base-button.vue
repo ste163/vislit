@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { COLORS } from "../constants/index";
+import { COLORS } from "const";
 
 interface Props {
   variant?: "primary" | "secondary" | "default";

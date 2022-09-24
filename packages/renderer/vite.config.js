@@ -16,8 +16,32 @@ const config = {
   root: PACKAGE_ROOT,
   resolve: {
     alias: [
-      { find: "@", replacement: resolve(PACKAGE_ROOT, "src") },
+      {
+        find: "api",
+        replacement: resolve(PACKAGE_ROOT, "src/api"),
+      },
+      {
+        find: "components",
+        replacement: resolve(PACKAGE_ROOT, "src/components"),
+      },
+      {
+        find: "composables",
+        replacement: resolve(PACKAGE_ROOT, "src/composables"),
+      },
+      {
+        find: "const",
+        replacement: resolve(PACKAGE_ROOT, "src/const"),
+      },
+      {
+        find: "directives",
+        replacement: resolve(PACKAGE_ROOT, "src/directives"),
+      },
       { find: "icons", replacement: resolve(PACKAGE_ROOT, "src/icons") },
+      {
+        find: "renderer-interfaces",
+        replacement: resolve(__dirname, "src/renderer-interfaces"),
+      },
+      { find: "views", replacement: resolve(PACKAGE_ROOT, "src/views") },
     ],
   },
   plugins: [vue()],

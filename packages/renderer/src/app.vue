@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { send, receive } from "@/api";
+import { send, receive } from "api";
 import { nanoid } from "nanoid/non-secure";
 import type {
   NotificationItem,
   ProjectFormSubmission,
-} from "./renderer-interfaces";
+} from "renderer-interfaces";
 import type { Project, Type } from "interfaces";
-import TheSidebar from "./components/the-sidebar.vue";
-import ProjectForm from "./components/project-form.vue";
-import NotificationContainer from "./components/notification-container.vue";
+import TheSidebar from "components/the-sidebar.vue";
+import ProjectForm from "components/project-form.vue";
+import NotificationContainer from "components/notification-container.vue";
 import IconClose from "icons/icon-close.vue";
 
 const isLoading = ref<boolean>(true);

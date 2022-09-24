@@ -3,13 +3,13 @@ import { computed, ref } from "vue";
 import { useForm } from "vee-validate";
 import { toFormValidator } from "@vee-validate/zod";
 import { z } from "zod";
-import { send } from "../api";
+import { send } from "api";
 import InputText from "./input-text.vue";
 import InputSelect from "./input-select.vue";
 import InputTextarea from "./input-textarea.vue";
 import ButtonSubmit from "./button-submit.vue";
 import type { Project, Type } from "interfaces";
-import type { ProjectFormSubmission } from "../renderer-interfaces";
+import type { ProjectFormSubmission } from "renderer-interfaces";
 
 // TODO: Types:
 // if a type is added: emit 'refetchTypes'

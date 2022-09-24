@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { COLORS } from "@/constants";
+import { COLORS } from "const";
 import { computed } from "vue";
 
 type Props = {
