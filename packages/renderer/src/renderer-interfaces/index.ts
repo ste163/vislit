@@ -10,5 +10,5 @@ export type NotificationItem = {
 export interface ProjectFormSubmission {
   errorMessage?: string;
   isEditing?: boolean;
-  project: Project;
+  project?: Project;
 }

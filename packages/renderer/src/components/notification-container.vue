@@ -19,7 +19,9 @@ function handleCloseNotificationItem(id: string): void {
 <template>
   <div>
     <teleport to="#notification-container">
-      <div class="absolute w-full flex flex-col justify-center">
+      <div
+        class="absolute w-full flex flex-col justify-center pointer-events-none"
+      >
         <notification-container-item
           v-for="{ id, type, message } in (props.notificationItems as NotificationItem[])"
           :id="id"

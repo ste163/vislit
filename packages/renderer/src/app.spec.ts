@@ -40,6 +40,7 @@ beforeEach(() => {
 afterEach(() => cleanup());
 
 it("when data (projects or types) fails to fetch, render error page and no sidebar", async () => {
+  // TODO: try to mock the import for { receive, send } from 'api' instead of the window property
   // mock window's api property
   Object.defineProperty(window, "api", {
     value: {
@@ -61,10 +62,13 @@ it("when data (projects or types) fails to fetch, render error page and no sideb
   expect(querySidebar()).toBeNull();
 });
 
-// Testing the integration of App + Welcome page
+// Testing the integration of App + Welcome + Project page
 describe.skip("Welcome Page flow", () => {
-  // for a new user
+  // for a new user without projects
   // when I click Create a Project
   // it opens the column
-  // -> tests for the form will happen at the Project column component level
+  // can fill out form
+  // hit submit
+  // the success notification renders
+  // routed to Project page with the created Project title rendered
 });

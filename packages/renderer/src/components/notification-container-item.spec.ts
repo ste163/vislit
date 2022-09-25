@@ -36,6 +36,8 @@ it("renders error item if type is error", () => {
   renderItem({ id: "1", type: "error", message: "test" });
   expect(screen.getByTitle("Close Icon"));
   expect(screen.getByText("test")).toBeTruthy();
+  // Commenting out for now as the button is not being rendered
+  // If no button, remove this line:
   // expect(screen.getByRole("button")).toBeTruthy();
 });
 
@@ -43,6 +45,8 @@ it("renders success item if type is success", () => {
   renderItem({ id: "1", type: "success", message: "test" });
   expect(screen.getByTitle("Checkmark Icon"));
   expect(screen.getByText("test")).toBeTruthy();
+  // Commenting out for now as the button is not being rendered
+  // If no button, remove this line:
   // expect(screen.getByRole("button")).toBeTruthy();
 });
 

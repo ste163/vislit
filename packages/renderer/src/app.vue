@@ -21,6 +21,7 @@ const notificationItems = ref<NotificationItem[]>([]);
 
 const types = ref<Type[]>([]);
 const projects = ref<Project[]>([]);
+const selectedProject = ref<Project | null>(null);
 
 // later, this could be moved into an object of type Column that could have:
 // { isOpen: false, dockedOn: 'left' | 'right', width: 300 // in pixels }
@@ -70,17 +71,23 @@ function handleCloseNotificationItem(id: string): void {
 }
 
 function handleProjectFormSubmission(response: ProjectFormSubmission): void {
-  console.log("App level - handle form data response:", response);
-  // IF there is an errorMessage in the response, display that in the notification
-  // And keep the project form at its same state. Ie, 'return', so do nothing with App level state
-  // IF we have a project
-  // Then change the project column to the project list column view
-  // route application to this Project's page
-  // show success notification
+  if (response.errorMessage) {
+    addNotificationItem({ type: "error", message: response.errorMessage });
+    // because an error occurred, do not update app state.
+    return;
+  }
+  if (response.project) {
+    selectedProject.value = response.project;
+    router.replace("/project");
+    // - TODO: refetch all projects
+    // - TODO in new feature: open project list column view with select project
+  }
   addNotificationItem({ type: "success", message: "Created Project" });
 }
 
 receive("reload-database", () => {
+  // reloading the database is needed when user selects a new .json file
+  // renderer needs to reset itself
   console.log("RELOAD DATABASE");
   // RELOADING is currently from backend with mainWindow.reload
   // this may not work because of clearing localStorage is needed, but appears to work for now
@@ -96,20 +103,22 @@ onMounted(async () => {
     const typesResponse = (await send("types-get-all")) as Type[];
     if (typesResponse instanceof Error) throw typesResponse;
     types.value = typesResponse;
+
     const projectsResponse = (await send("projects-get-all")) as Project[];
     if (projectsResponse instanceof Error) throw projectsResponse;
     projects.value = projectsResponse;
-    if (projects.value.length === 0) {
+    if (!projects.value.length) {
       router.replace("/");
       return;
     }
     console.log(
       "we have projects; read local storage to see which was most recently opened"
     );
+    selectedProject.value = projects.value[0];
     // else, read localStorage for last opened project
     // if last opened project, open that project
     // otherwise, open most recent
-    // route to /project/:id
+    // route to /project
   } catch (error: any | Error) {
     console.error(error);
     fetchErrorMessage.value = error?.message;
@@ -122,6 +131,7 @@ onMounted(async () => {
 </script>
 
 <template>
+  <!-- TODO: this might not be isFetchError but critical error instead. Will no more later -->
   <div v-if="isFetchErrorActive" class="h-full w-full flex flex-col">
     <h1>Unable to access data</h1>
     <p>
@@ -133,9 +143,7 @@ onMounted(async () => {
   </div>
 
   <div v-else class="h-full w-full flex">
-    <!-- TODO: once a project is created, the side-bar is no longer disabled. Ie, the disabled state
-    Needs to be based on if they're on the Welcome page or not. -->
-    <the-sidebar :is-disabled="true" :is-loading="isLoading" />
+    <the-sidebar :is-disabled="!projects.length" :is-loading="isLoading" />
     <notification-container
       :notification-items="notificationItems"
       @close-item="handleCloseNotificationItem"
@@ -166,7 +174,11 @@ onMounted(async () => {
 
     <section class="flex-grow overflow-y-scroll">
       <main class="flex flex-col h-full p-4">
-        <router-view v-slot="{ Component, route }" :is-loading="isLoading">
+        <router-view
+          v-slot="{ Component, route }"
+          :is-loading="isLoading"
+          :project="selectedProject"
+        >
           <component
             :is="Component"
             :key="route.path"

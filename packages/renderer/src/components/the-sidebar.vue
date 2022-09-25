@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useRouter } from "vue-router";
 import IconSummary from "icons/icon-summary.vue";
 import IconWriter from "icons/icon-writer.vue";
 import IconProgress from "icons/icon-progress.vue";
@@ -12,6 +13,8 @@ interface Props {
 }
 
 const { isDisabled, isLoading } = defineProps<Props>();
+
+const router = useRouter();
 </script>
 <template>
   <!-- TODO:
@@ -39,25 +42,41 @@ const { isDisabled, isLoading } = defineProps<Props>();
         </h2>
         <ul>
           <li>
-            <button class="button" :disabled="isDisabled">
+            <button
+              class="button"
+              :disabled="isDisabled"
+              @click="() => router.replace('/project')"
+            >
               <icon-summary class="button-icon" />
               <span class="button-text">Summary</span>
             </button>
           </li>
           <li>
-            <button class="button" :disabled="isDisabled">
+            <button
+              class="button"
+              :disabled="isDisabled"
+              @click="() => router.replace('/writer')"
+            >
               <icon-writer class="button-icon" />
               <span class="button-text">Writer</span>
             </button>
           </li>
           <li>
-            <button class="button" :disabled="isDisabled">
+            <button
+              class="button"
+              :disabled="isDisabled"
+              @click="() => router.replace('/progress')"
+            >
               <icon-progress class="button-icon" />
               <span class="button-text">Progress</span>
             </button>
           </li>
           <li>
-            <button class="button" :disabled="isDisabled">
+            <button
+              class="button"
+              :disabled="isDisabled"
+              @click="() => router.replace('/visualizations')"
+            >
               <icon-visualization class="button-icon" />
               <span class="button-text">Visualizations</span>
             </button>

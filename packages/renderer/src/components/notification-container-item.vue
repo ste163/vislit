@@ -2,9 +2,8 @@
 import IconCheckmark from "icons/icon-checkmark.vue";
 import IconClose from "icons/icon-close.vue";
 
-// TODO:
-// Add styles
-// add animations for enter/leave -> may need to be in a new component
+// TODO in new feature:
+// add animations for enter/leave
 
 import { onMounted } from "vue";
 
@@ -31,7 +30,8 @@ onMounted(() => setTimeout(() => emitCloseNotification(), 5000));
 <template>
   <div
     v-if="message"
-    class="flex z-50 my-1 self-center text-white text-sm bg-primary px-3 py-2 rounded-md"
+    :class="type === 'success' ? 'bg-primary' : 'bg-alert'"
+    class="flex z-50 my-1 self-center text-white text-sm px-3 py-2 rounded-md pointer-events-auto"
   >
     <div class="scale-75">
       <icon-checkmark v-if="type === 'success'" />

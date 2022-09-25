@@ -18,6 +18,7 @@ module.exports = {
       "2xl": "1.5rem",
     },
     extend: {
+      // TODO: need to use CONST colors
       colors: {
         currentColor: colors.currentColor,
         currentFill: colors.currentFill,

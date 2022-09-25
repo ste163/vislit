@@ -20,7 +20,9 @@ interface Props {
 }
 const { types } = defineProps<Props>();
 
-const emit = defineEmits(["projectFormSubmission"]);
+const emit = defineEmits<{
+  (e: "projectFormSubmission", response: ProjectFormSubmission): void;
+}>();
 
 const isSubmitting = ref<boolean>(false);
 const typeOptions = computed(() => types.map((type) => type));
@@ -56,18 +58,13 @@ const onSubmit = handleSubmit(async (formValues) => {
       // this is a DB failure
       return;
     }
-    // based on results
-    // setup the object that gets emitted to Parent
-    // Parent/App.vue handles notifications, routing, column state, etc.
-    // By doing this, the project-form ONLY works with the form
-    // it knows nothing else about the state of the application.
 
     emit("projectFormSubmission", {
       isEditing: false,
       project: {
         ...result,
       },
-    } as unknown as ProjectFormSubmission);
+    });
   } catch (error: any | Error) {
     // SHOW ERROR WINDOW, as this is a major failure
     // (so send the message)
