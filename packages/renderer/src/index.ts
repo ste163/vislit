@@ -1,7 +1,7 @@
 import { createApp } from "vue";
 import app from "./app.vue";
 import router from "./router";
-import clickOutside from "./directives/click-outside";
+import { clickOutside } from "directives";
 import "./index.css";
 
 createApp(app)

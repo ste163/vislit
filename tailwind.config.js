@@ -10,14 +10,15 @@ module.exports = {
       serif: ["Noto"],
     },
     fontSize: {
-      xs: ".65rem",
-      sm: ".8rem",
-      base: ".9rem",
-      lg: "1rem",
+      xs: ".8rem",
+      sm: ".9rem",
+      base: "1rem",
+      lg: "1.1rem",
       xl: "1.25rem",
       "2xl": "1.5rem",
     },
     extend: {
+      // TODO: need to use CONST colors
       colors: {
         currentColor: colors.currentColor,
         currentFill: colors.currentFill,

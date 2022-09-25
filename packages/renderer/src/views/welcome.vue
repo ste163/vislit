@@ -1,25 +1,31 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { onMounted, ref } from "vue";
-import { send } from "../api";
-import BaseButton from "../components/base-button.vue";
-import IconProject from "../icons/icon-project.vue";
-import PulseNotification from "../components/pulse-notification.vue";
+import { send } from "api";
+import BaseButton from "components/base-button.vue";
+import PulseNotification from "components/pulse-notification.vue";
+import IconProject from "icons/icon-project.vue";
 
 interface Props {
   isLoading: boolean;
 }
 
 const { isLoading } = defineProps<Props>();
+// NOTE: If these events are going to be used in multiple pages, move to CONSTs or an EVENTS enum
+const emit = defineEmits(["openProjectForm", "criticalErrorOccurred"]);
 
 const defaultDataPath = ref<string>("");
+const isLoadingDefaultDataPath = ref<boolean>(true);
 
-const displayedPath = computed(() =>
-  defaultDataPath.value === ""
-    ? "Error loading default data path"
-    : defaultDataPath.value
+const isLoadingComplete = computed(
+  () => isLoadingDefaultDataPath.value && isLoading
 );
 
+function onCreateProjectClick(): void {
+  emit("openProjectForm");
+}
+
+// Do not need to worry if these events fail as any failure is handled on the api side
 async function onImportClick(): Promise<void> {
   await send("dialog-data-link-non-taskbar");
 }
@@ -30,7 +36,15 @@ async function onSaveChangeClick(): Promise<void> {
 
 onMounted(async () => {
   const path = (await send("data-path-get")) as string;
-  if (path) defaultDataPath.value = path;
+  if (path) {
+    defaultDataPath.value = path;
+    isLoadingDefaultDataPath.value = false;
+  } else {
+    emit(
+      "criticalErrorOccurred",
+      "Failed to load default data storage location."
+    );
+  }
 });
 </script>
 
@@ -41,7 +55,7 @@ onMounted(async () => {
     >
       <!-- Loading screen -->
       <div
-        v-if="isLoading"
+        v-if="isLoadingComplete"
         class="flex flex-col gap-4 h-full"
         data-testid="loading-welcome"
       >
@@ -66,17 +80,18 @@ onMounted(async () => {
 
         <h2 class="mt-12">Choose a save location for your Vislit Data</h2>
         <p class="my-3">
-          By default, Vislit stores your data in: {{ displayedPath }}. If you
-          would prefer to store data in another location or in a cloud sync
-          folder (like in Google Drive, OneDrive, or DropBox), select that now
-          or later by going to
-          <span class="font-bold whitespace-nowrap"
-            >File -> Change Save Location</span
+          By default, Vislit stores your data in:
+          <span data-testid="data-path"> {{ defaultDataPath }}</span
+          >. If you would prefer to store data in another location or in a cloud
+          sync folder (like in Google Drive, OneDrive, or DropBox), select that
+          now or later by going to
+          <span class="font-bold whitespace-nowrap">
+            File -> Change Save Location</span
           >.
         </p>
-        <base-button @click="onSaveChangeClick"
-          >Change Save Location</base-button
-        >
+        <base-button @click="onSaveChangeClick">
+          Change Save Location
+        </base-button>
 
         <div class="mt-12 flex items-center relative">
           <pulse-notification
@@ -90,14 +105,13 @@ onMounted(async () => {
           To get started writing, setting goals, and tracking progress, create a
           project.
         </p>
-        <!-- look into using var() with tailwind -->
-        <base-button :variant="'primary'">
-          <template #icon><icon-project class="h-3 w-3 fill-white" /></template>
-          Create a Project</base-button
-        >
+        <base-button :variant="'primary'" @click="onCreateProjectClick">
+          <template #icon>
+            <icon-project class="h-3 w-3 fill-white" />
+          </template>
+          Create a Project
+        </base-button>
       </div>
     </section>
   </div>
 </template>
-
-<!-- Note: welcome page and summary page should share same loading card component because they're very similar -->

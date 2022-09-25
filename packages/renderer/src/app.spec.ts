@@ -1,5 +1,5 @@
 import { cleanup, render, screen } from "@testing-library/vue";
-import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import App from "./app.vue";
 import router from "./router";
 // fetching data successfully on user with no data
@@ -14,9 +14,10 @@ import router from "./router";
 // // receiving the reload event reloads the page and clears data
 
 function renderApp() {
-  const utils = render(App, {
+  render(App, {
     global: {
       plugins: [router],
+      stubs: { teleport: true }, // otherwise the notification container doesn't exist as its outside the component
     },
   });
 
@@ -27,7 +28,6 @@ function renderApp() {
   // TODO: check how to test with the router
 
   return {
-    ...utils,
     findErrorText: () => screen.findByText("Unable to access data"),
     querySidebar: () => screen.queryByRole("navigation"),
   };
@@ -40,6 +40,7 @@ beforeEach(() => {
 afterEach(() => cleanup());
 
 it("when data (projects or types) fails to fetch, render error page and no sidebar", async () => {
+  // TODO: try to mock the import for { receive, send } from 'api' instead of the window property
   // mock window's api property
   Object.defineProperty(window, "api", {
     value: {
@@ -59,4 +60,15 @@ it("when data (projects or types) fails to fetch, render error page and no sideb
   expect(await findErrorText()).toBeTruthy();
   // sidebar doesn't exist when there's a major fetch error
   expect(querySidebar()).toBeNull();
+});
+
+// Testing the integration of App + Welcome + Project page
+describe.skip("Welcome Page flow", () => {
+  // for a new user without projects
+  // when I click Create a Project
+  // it opens the column
+  // can fill out form
+  // hit submit
+  // the success notification renders
+  // routed to Project page with the created Project title rendered
 });

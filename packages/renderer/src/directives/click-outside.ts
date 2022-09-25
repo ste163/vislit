@@ -3,7 +3,7 @@
 // https://stackoverflow.com/questions/36170425/detect-click-outside-element -> comes from Pablo Huet Carrasco at "Complete case for vue 3"
 import { DirectiveBinding } from "vue";
 
-export default {
+const clickOutside = {
   beforeMount: (el: any, binding: DirectiveBinding): void => {
     el.eventSetDrag = () => {
       el.setAttribute("data-dragging", "yes");
@@ -38,3 +38,5 @@ export default {
     el.removeAttribute("data-dragging");
   },
 };
+
+export { clickOutside };

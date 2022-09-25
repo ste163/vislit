@@ -17,7 +17,7 @@ import type GoalController from "./api/goal-controller";
 import type ProgressController from "./api/progress-controller";
 
 /**
- * Declare global variables to be passed into needed functions
+ * Declare global variables here to ensure they're never cleaned up
  */
 let database: Database;
 let dialogs: Dialogs;
@@ -29,44 +29,6 @@ let typeController: TypeController;
 let goalController: GoalController;
 let progressController: ProgressController;
 
-// NOTE:
-// If any error occurs, we need to exit out of the main function
-// May need to test if all of the app.on, etc. can be inside of a main()
-// otherwise we can't 'return' out of an error and the app will continue to run until it hits more errors
-
-/**
- * Check where the vislit-data should exist:
- * By default this is userData/vislit-data
- * But can be user-defined anywhere on their system
- */
-// TODO ASAP - setup paths to work on Windows, Linux, Mac:
-// https://nodejs.dev/learn/nodejs-file-paths
-const dataPath = new DataPath();
-if (dataPath instanceof Error) {
-  dialog.showErrorBox(
-    "Vislit: Fatal Error",
-    `Unable to load or create vislit-data location file. Error: ${dataPath}`
-  );
-}
-
-/**
- * Create needed directories if they do not already exist
- */
-try {
-  let savedDataLocation: string | null = dataPath.get();
-  if (!existsSync(savedDataLocation)) {
-    const projectDirectory = join(savedDataLocation, "projects");
-    mkdirSync(savedDataLocation);
-    mkdirSync(projectDirectory);
-  }
-  savedDataLocation = null; // cleanup
-} catch (error) {
-  dialog.showErrorBox(
-    "Vislit: Fatal Error",
-    `Unable to load or create folders required for Vislit. Error: ${error}`
-  );
-}
-
 /**
  * Store mainWindow for saving window bounds.
  * Exporting mainWindow for sending signals to renderer
@@ -75,120 +37,169 @@ try {
 export let mainWindow: BrowserWindow | null = null;
 
 /**
- * Prevent multiple instances
+ * Calling main() from main process allows for
+ * exiting the function if any of the api setup fails
+ * otherwise the app attempts to load Chromium
  */
-const isSingleInstance = app.requestSingleInstanceLock();
-if (!isSingleInstance) {
-  app.quit();
-  process.exit(0);
+try {
+  main();
+} catch (error) {
+  console.error("Main crashed: ", error);
 }
-app.on("second-instance", () => {
-  restoreOrCreateWindow(database);
-});
 
-/**
- * Disable Hardware Acceleration for improved power saving
- */
-app.disableHardwareAcceleration();
+function main() {
+  /**
+   * Prevent multiple instances
+   */
+  const isSingleInstance = app.requestSingleInstanceLock();
+  if (!isSingleInstance) {
+    app.quit();
+    process.exit(0);
+  }
+  app.on("second-instance", () => {
+    restoreOrCreateWindow(database);
+  });
 
-/**
- * Shut down background process if all windows were closed
- */
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") app.quit();
-});
+  /**
+   * Disable Hardware Acceleration for reducing system resource usage
+   */
+  app.disableHardwareAcceleration();
 
-/**
- * @see https://www.electronjs.org/docs/v14-x-y/api/app#event-activate-macos Event: 'activate'
- */
-app.on("activate", () => {
-  restoreOrCreateWindow(database);
-});
+  /**
+   * Shut down background process if all windows were closed
+   */
+  app.on("window-all-closed", () => {
+    if (process.platform !== "darwin") app.quit();
+  });
 
-/**
- * Create app window after background process is ready
- */
-app
-  .whenReady()
-  .then(async () => {
-    // NOTE: If the startup gets long, show a splash screen before api init
-    // initialize database and controllers and assign them for ipc access
-    const {
-      initDatabase,
-      initDialogs,
-      initFileSystemController,
-      initSearchController,
-      initProjectController,
-      initNoteController,
-      initTypeController,
-      initGoalController,
-      initProgressController,
-    } = await initializeApiControllers(dataPath);
+  /**
+   * @see https://www.electronjs.org/docs/latest/api/app#event-activate-macos Event: 'activate'
+   */
+  app.on("activate", () => {
+    restoreOrCreateWindow(database);
+  });
 
-    database = initDatabase;
-    dialogs = initDialogs;
-    fileSystemController = initFileSystemController;
-    searchController = initSearchController;
-    projectController = initProjectController;
-    noteController = initNoteController;
-    typeController = initTypeController;
-    goalController = initGoalController;
-    progressController = initProgressController;
-
-    initializeApiEndpoints(
-      dataPath,
-      dialogs,
-      projectController,
-      typeController,
-      goalController,
-      progressController,
-      noteController,
-      fileSystemController
-    );
-
-    console.log("api initialized");
-  })
-  .then(async () => {
-    mainWindow = await restoreOrCreateWindow(database);
-  })
-  .then(() => {
-    // save window bounds to restore window state
-    mainWindow?.on("close", async () => {
-      try {
-        const bounds = mainWindow?.getBounds();
-        database.db.data!.windowBounds = bounds;
-        await database.db.write();
-      } catch (error: any | Error) {
-        console.log("Unable to save window bounds", error);
+  /**
+   * Create app window after background process is ready
+   */
+  app
+    .whenReady()
+    .then(async () => {
+      /**
+       * Check where vislit-data should exist:
+       * By default this is userData/vislit-data
+       * But can be user-defined anywhere on their system
+       */
+      const dataPath = new DataPath();
+      if (dataPath instanceof Error) {
+        dialog.showErrorBox(
+          "Vislit: Fatal Error",
+          `Unable to load or create vislit-data location file. ${dataPath}`
+        );
+        return;
       }
-    });
-  })
-  .catch((e) => console.error("Failed create window:", e));
 
-/**
- * Install Vue devtools in development only
- */
-if (import.meta.env.DEV) {
-  app
-    .whenReady()
-    .then(() => import("electron-devtools-installer"))
-    .then(({ default: installExtension, VUEJS3_DEVTOOLS }) =>
-      installExtension(VUEJS3_DEVTOOLS, {
-        loadExtensionOptions: {
-          allowFileAccess: true,
-        },
-      })
-    )
-    .catch((e) => console.error("Failed install extension:", e));
-}
+      /**
+       * Create needed directories if they do not already exist
+       */
+      try {
+        const savedDataLocation: string | null = dataPath.get();
+        if (!existsSync(savedDataLocation)) {
+          const projectDirectory = join(savedDataLocation, "projects");
+          mkdirSync(savedDataLocation);
+          mkdirSync(projectDirectory);
+        }
+      } catch (error) {
+        dialog.showErrorBox(
+          "Vislit: Fatal Error",
+          `Unable to load or create folders required for Vislit. ${error}`
+        );
+        return;
+      }
 
-/**
- * Check new app version in production only
- */
-if (import.meta.env.PROD) {
-  app
-    .whenReady()
-    .then(() => import("electron-updater"))
-    .then(({ autoUpdater }) => autoUpdater.checkForUpdatesAndNotify())
-    .catch((e) => console.error("Failed check updates:", e));
+      // NOTE: If the startup gets long, show a splash screen before api init
+      // initialize database and controllers and assign them for ipc access
+      const {
+        initDatabase,
+        initDialogs,
+        initFileSystemController,
+        initSearchController,
+        initProjectController,
+        initNoteController,
+        initTypeController,
+        initGoalController,
+        initProgressController,
+      } = await initializeApiControllers(dataPath);
+
+      // TODO/NOTE: this is potentially an unneeded step
+      // if these variables never get cleaned up.
+      // When the app is more developed, test with using it for
+      // a long period of time. If it all works,
+      // remove these
+      database = initDatabase;
+      dialogs = initDialogs;
+      fileSystemController = initFileSystemController;
+      searchController = initSearchController;
+      projectController = initProjectController;
+      noteController = initNoteController;
+      typeController = initTypeController;
+      goalController = initGoalController;
+      progressController = initProgressController;
+
+      initializeApiEndpoints(
+        dataPath,
+        dialogs,
+        projectController,
+        typeController,
+        goalController,
+        progressController,
+        noteController,
+        fileSystemController
+      );
+      console.log("api successfully initialized");
+    })
+    .then(async () => {
+      mainWindow = await restoreOrCreateWindow(database);
+    })
+    .then(() => {
+      // save window bounds to restore window state
+      mainWindow?.on("close", async () => {
+        try {
+          const bounds = mainWindow?.getBounds();
+          database.db.data!.windowBounds = bounds;
+          await database.db.write();
+        } catch (error: any | Error) {
+          console.log("Unable to save window bounds", error);
+        }
+      });
+    })
+    .catch((e) => console.error("Failed create window:", e));
+
+  /**
+   * Install Vue devtools in development only
+   */
+  if (import.meta.env.DEV) {
+    app
+      .whenReady()
+      .then(() => import("electron-devtools-installer"))
+      .then(({ default: installExtension, VUEJS3_DEVTOOLS }) =>
+        installExtension(VUEJS3_DEVTOOLS, {
+          loadExtensionOptions: {
+            allowFileAccess: true,
+          },
+        })
+      )
+      .catch((e) => console.error("Failed install extension:", e));
+  }
+
+  /**
+   * Check new app version in production only
+   */
+  if (import.meta.env.PROD) {
+    app
+      .whenReady()
+      .then(() => import("electron-updater"))
+      .then(({ autoUpdater }) => autoUpdater.checkForUpdatesAndNotify())
+      .catch((e) => console.error("Failed check updates:", e));
+  }
 }
