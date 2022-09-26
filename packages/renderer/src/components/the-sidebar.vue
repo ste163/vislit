@@ -13,14 +13,19 @@ interface Props {
 }
 
 const { isDisabled, isLoading } = defineProps<Props>();
+const emit = defineEmits(["clickedProjectsColumn"]);
 
 const router = useRouter();
+
+function handleProjectColumnClick(): void {
+  emit("clickedProjectsColumn");
+}
 </script>
 <template>
   <!-- TODO:
     Add ability to close sidebar
  -->
-  <nav class="nav">
+  <nav class="bg-white w-[135px] flex flex-col select-none">
     <div
       v-if="isLoading"
       data-testId="loading-sidebar"
@@ -90,7 +95,11 @@ const router = useRouter();
         </h2>
         <ul>
           <li>
-            <button class="button" :disabled="isDisabled">
+            <button
+              class="button"
+              :disabled="isDisabled"
+              @click="handleProjectColumnClick"
+            >
               <icon-project class="button-icon" />
               <span class="button-text">Projects</span>
             </button>
@@ -108,10 +117,6 @@ const router = useRouter();
 </template>
 
 <style scoped>
-.nav {
-  @apply bg-white w-[135px] flex flex-col select-none;
-}
-
 .header {
   @apply text-xs px-3;
 }

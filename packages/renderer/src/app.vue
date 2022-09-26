@@ -3,14 +3,15 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { send, receive } from "api";
 import { nanoid } from "nanoid/non-secure";
+import type { Project, Type } from "interfaces";
 import type {
   NotificationItem,
   ProjectFormSubmission,
 } from "renderer-interfaces";
-import type { Project, Type } from "interfaces";
 import TheSidebar from "components/the-sidebar.vue";
-import ProjectForm from "components/project-form.vue";
 import NotificationContainer from "components/notification-container.vue";
+import TheProjectForm from "components/the-project-form.vue";
+import TheProjectList from "components/the-project-list.vue";
 import IconClose from "icons/icon-close.vue";
 
 const isLoading = ref<boolean>(true);
@@ -30,18 +31,9 @@ const isProjectColumnActive = ref<boolean>(false);
 
 const router = useRouter();
 
-function openProjectColumn(): void {
-  // Check local storage to see what the default location and size of the column is
-  // if there is data, open at that last location
-  // otherwise, open in default location
-  isProjectColumnActive.value = true;
-}
-
-function closeProjectColumn(): void {
-  isProjectColumnActive.value = false;
-  // in the future,
-  // also store its size and location data
-  // to localStorage, so we can re-open it in the same place
+function toggleProjectColumn(): void {
+  // read and store in localStorage, saving and loading the current state
+  isProjectColumnActive.value = !isProjectColumnActive.value;
 }
 
 function showCriticalError(message = "No error message received") {
@@ -79,14 +71,17 @@ function handleProjectFormSubmission(response: ProjectFormSubmission): void {
   if (response.project) {
     selectedProject.value = response.project;
     router.replace("/project");
-    // - TODO: refetch all projects
-    // - TODO in new feature: open project list column view with select project
+    // NOTE: for now, adding the created project to the first of list
+    // this may become an issue later and we need to refetch latest projects though
+    projects.value = [response.project, ...projects.value];
+    // - TODO: open project list column view with select project
+    // set projectListActive to true
   }
   addNotificationItem({ type: "success", message: "Created Project" });
 }
 
 receive("reload-database", () => {
-  // reloading the database is needed when user selects a new .json file
+  // reloading the database is needed when user selects a new .json file;
   // renderer needs to reset itself
   console.log("RELOAD DATABASE");
   // RELOADING is currently from backend with mainWindow.reload
@@ -143,21 +138,28 @@ onMounted(async () => {
   </div>
 
   <div v-else class="h-full w-full flex">
-    <the-sidebar :is-disabled="!projects.length" :is-loading="isLoading" />
+    <the-sidebar
+      :is-disabled="!projects.length"
+      :is-loading="isLoading"
+      @clicked-projects-column="toggleProjectColumn"
+    />
     <notification-container
       :notification-items="notificationItems"
       @close-item="handleCloseNotificationItem"
     />
 
-    <!-- As there is only the Projects column for now, no abstraction -->
+    <!-- NOTE: as there is only the Projects column for now, no abstraction -->
     <section
       v-if="isProjectColumnActive"
-      class="bg-gray-200 h-full min-w-[250px]"
+      class="bg-gray-200 h-full min-w-[275px]"
     >
       <!-- Column Header -->
       <div class="flex bg-gray-300 justify-between px-2 py-1">
-        <h1 class="text-xs font-sans tracking-widest">Projects</h1>
-        <button @click="closeProjectColumn">
+        <h1 class="text-xs font-sans tracking-widest">
+          <!-- TODO: dynamic based on current project title or project form -->
+          Projects - TITLE OF CURRENT PROJECT
+        </h1>
+        <button @click="toggleProjectColumn">
           <div class="scale-50">
             <icon-close :variant="'dark'" />
           </div>
@@ -165,10 +167,12 @@ onMounted(async () => {
       </div>
       <!-- Column Content -->
       <div class="flex flex-col">
-        <project-form
+        <!-- TODO: is the form active or the list? What should the state be called? -->
+        <the-project-form
           :types="types"
           @project-form-submission="handleProjectFormSubmission"
         />
+        <the-project-list :projects="projects" />
       </div>
     </section>
 
@@ -182,7 +186,7 @@ onMounted(async () => {
           <component
             :is="Component"
             :key="route.path"
-            @open-project-form="openProjectColumn"
+            @open-project-form="toggleProjectColumn"
             @critical-error-occurred="showCriticalError"
           />
         </router-view>

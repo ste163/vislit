@@ -1,6 +1,6 @@
 import { cleanup, render, screen, fireEvent } from "@testing-library/vue";
 import { afterEach, expect, it, vi } from "vitest";
-import ProjectForm from "./project-form.vue";
+import TheProjectForm from "./the-project-form.vue";
 import type { Type } from "interfaces";
 
 afterEach(() => cleanup());
@@ -11,7 +11,7 @@ const MOCK_TYPES: Type[] = [
 ];
 
 const renderProjectForm = () => {
-  const utils = render(ProjectForm, {
+  const utils = render(TheProjectForm, {
     props: {
       types: MOCK_TYPES,
     },

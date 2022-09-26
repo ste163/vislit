@@ -51,3 +51,10 @@ it.skip("clicking sidebar view buttons routes to views and clicking column butto
   // for all buttons, they are not disabled
   // can click each button and get correct assumption
 });
+
+it.skip("clicking the column buttons emits their events", async () => {
+  // click project button
+  // emits the open project column event
+  // click notes button
+  // emits open note column event
+});
