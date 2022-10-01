@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import { send, receive } from "api";
 import { PATHS } from "router";
@@ -21,14 +21,27 @@ const fetchErrorMessage = ref<string>("");
 
 const notificationItems = ref<NotificationItem[]>([]);
 
-const types = ref<Type[]>([]);
-const projects = ref<Project[]>([]);
-const selectedProject = ref<Project | null>(null);
+const types = ref<Type[]>([]); // if this used an {typeId: {type}} could initialize to null
+const projects = ref<Project[]>([]); // if this used an {projectId: {project}} could initialize to null
 
+const selectedProject = ref<Project | null>(null);
 // later, this could be moved into an object of type Column that could have:
 // { isOpen: false, dockedOn: 'left' | 'right', width: 300 // in pixels }
 // this object could be stored in localStorage
 const isProjectColumnActive = ref<boolean>(false);
+const ACTIVE_PROJECT_COLUMN_STATES = {
+  Form: "form",
+  List: "list",
+} as const;
+const activeProjectColumn = ref<"form" | "list">(
+  ACTIVE_PROJECT_COLUMN_STATES.Form
+);
+const projectColumnHeaderTitle = computed(() =>
+  activeProjectColumn.value === ACTIVE_PROJECT_COLUMN_STATES.List &&
+  selectedProject.value?.title
+    ? selectedProject.value.title
+    : null
+);
 
 const router = useRouter();
 
@@ -81,9 +94,9 @@ function handleProjectFormSubmission(response: ProjectFormSubmission): void {
   addNotificationItem({ type: "success", message: "Created Project" });
 }
 
+// reloading the database is needed when user selects a new .json file;
+// renderer needs to reset itself to stay in-sync
 receive("reload-database", () => {
-  // reloading the database is needed when user selects a new .json file;
-  // renderer needs to reset itself
   console.log("RELOAD DATABASE");
   // RELOADING is currently from backend with mainWindow.reload
   // this may not work because of clearing localStorage is needed, but appears to work for now
@@ -156,8 +169,10 @@ onMounted(async () => {
       <!-- Column Header -->
       <div class="flex bg-gray-300 justify-between px-2 py-1">
         <h1 class="text-xs font-sans tracking-widest">
-          <!-- TODO: dynamic based on current project title or project form -->
-          Projects - TITLE OF CURRENT PROJECT
+          Projects
+          <span v-if="projectColumnHeaderTitle"
+            >- {{ projectColumnHeaderTitle }}</span
+          >
         </h1>
         <button @click="toggleProjectColumn">
           <div class="scale-50">
@@ -167,12 +182,15 @@ onMounted(async () => {
       </div>
       <!-- Column Content -->
       <div class="flex flex-col">
-        <!-- TODO: is the form active or the list? What should the state be called? -->
         <the-project-form
+          v-if="activeProjectColumn === ACTIVE_PROJECT_COLUMN_STATES.Form"
           :types="types"
           @project-form-submission="handleProjectFormSubmission"
         />
-        <the-project-list :projects="projects" />
+        <the-project-list
+          v-if="activeProjectColumn === ACTIVE_PROJECT_COLUMN_STATES.List"
+          :projects="projects"
+        />
       </div>
     </section>
 
