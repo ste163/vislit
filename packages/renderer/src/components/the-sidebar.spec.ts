@@ -1,18 +1,17 @@
-import { cleanup, render, screen } from "@testing-library/vue";
+import { cleanup, fireEvent, render, screen } from "@testing-library/vue";
 import { it, expect, afterEach } from "vitest";
 import TheSidebar from "./the-sidebar.vue";
+import { router } from "router";
 
 afterEach(() => cleanup());
 
-// Potentially move props out into separate file that can be imported for both component + tests
-
 function renderSidebar(props: any) {
-  render(TheSidebar, { props });
+  const utils = render(TheSidebar, { global: { plugins: [router] }, props });
 
   return {
+    ...utils,
     queryIsSidebarLoading: () => screen.queryByTestId("loading-sidebar"),
-    queryIsSidebarLoaded: () => screen.queryByText("Views"), // unable to get queryByRole to work for the Views text
-    getAllButtons: () => screen.getAllByRole("button"),
+    queryIsSidebarLoaded: () => screen.queryByText("Views"),
   };
 }
 
@@ -20,41 +19,37 @@ it("renders loading state while isLoading is true", () => {
   const { queryIsSidebarLoading, queryIsSidebarLoaded } = renderSidebar({
     isLoading: true,
     isDisabled: true,
+    isProjectColumnActive: false,
   });
   expect(queryIsSidebarLoading()).toBeTruthy();
   expect(queryIsSidebarLoaded()).toBeNull();
 });
 
 it("renders disabled sidebar if not loading", async () => {
-  const { queryIsSidebarLoading, queryIsSidebarLoaded, getAllButtons } =
-    renderSidebar({
-      isLoading: false,
-      isDisabled: true,
-    });
+  const { queryIsSidebarLoading, queryIsSidebarLoaded } = renderSidebar({
+    isLoading: false,
+    isDisabled: true,
+    isProjectColumnActive: false,
+  });
   expect(queryIsSidebarLoading()).toBeNull();
   expect(queryIsSidebarLoaded()).toBeTruthy();
-
-  const buttons = getAllButtons();
-
-  buttons.forEach((button) => {
-    const attributeName = button.attributes["1"].name;
-    const attributeValue = button.attributes["1"].value;
-    expect(attributeName).toBe("disabled");
-    expect(attributeValue).toBe("true");
+  const links = screen.getAllByRole("link");
+  links.forEach((link) => {
+    expect(link.attributes["1"].value).toBe(
+      "sidebar-item sidebar-item-disabled"
+    );
   });
 });
 
-it.skip("clicking sidebar view buttons routes to views and clicking column buttons emits events", () => {
-  // setup button click mocks -> event emit mocking?
-  // setup router mock? Or history mock?
-  // render
-  // for all buttons, they are not disabled
-  // can click each button and get correct assumption
-});
-
-it.skip("clicking the column buttons emits their events", async () => {
-  // click project button
-  // emits the open project column event
+it("clicking the column buttons emits their events", async () => {
+  const { emitted } = renderSidebar({
+    isLoading: false,
+    isDisabled: true,
+    isProjectColumnActive: false,
+  });
+  await fireEvent.click(screen.getByText("Projects"));
+  expect(emitted()["clickProjectsColumn"]).toBeTruthy();
+  // TODO:
   // click notes button
   // emits open note column event
 });

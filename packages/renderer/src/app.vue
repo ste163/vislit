@@ -171,6 +171,7 @@ onMounted(async () => {
     <the-sidebar
       :is-disabled="!projects.length"
       :is-loading="isLoading"
+      :is-project-column-active="isProjectColumnActive"
       @click-projects-column="toggleProjectColumn"
     />
     <notification-container
@@ -222,7 +223,12 @@ onMounted(async () => {
         >
           <base-button
             @click="setActiveProjectColumn(ACTIVE_PROJECT_COLUMN_STATES.Form)"
-            >Create</base-button
+          >
+            <template #icon>
+              <!-- TODO: Convert to icon -->
+              +
+            </template>
+            Create</base-button
           >
           <the-project-list
             :projects="projects"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useRouter } from "vue-router";
+import { RouterLink } from "vue-router";
 import { PATHS } from "router";
 import IconSummary from "icons/icon-summary.vue";
 import IconWriter from "icons/icon-writer.vue";
@@ -11,12 +11,11 @@ import IconNote from "icons/icon-note.vue";
 interface Props {
   isDisabled: boolean;
   isLoading: boolean;
+  isProjectColumnActive: boolean;
 }
 
 const { isDisabled, isLoading } = defineProps<Props>();
 const emit = defineEmits(["clickProjectsColumn"]);
-
-const router = useRouter();
 
 function handleProjectColumnClick(): void {
   emit("clickProjectsColumn");
@@ -24,7 +23,7 @@ function handleProjectColumnClick(): void {
 </script>
 <template>
   <!-- TODO:
-    Add ability to close sidebar
+    - can minimize sidebar
  -->
   <nav class="bg-white w-[135px] flex flex-col select-none">
     <div
@@ -43,72 +42,72 @@ function handleProjectColumnClick(): void {
     </div>
     <div v-else>
       <div>
-        <h2 :class="isDisabled && 'text-gray-300'" class="header mt-2">
+        <h2 :class="isDisabled && 'text-gray-300'" class="sidebar-header mt-2">
           Views
         </h2>
         <ul>
           <li>
-            <button
-              class="button"
-              :disabled="isDisabled"
-              @click="() => router.replace(PATHS.Project)"
+            <router-link
+              class="sidebar-item"
+              :class="isDisabled && 'sidebar-item-disabled'"
+              :to="isDisabled ? '' : PATHS.Project"
             >
-              <icon-summary class="button-icon" />
-              <span class="button-text">Summary</span>
-            </button>
+              <icon-summary class="sidebar-item-icon" />
+              <span class="sidebar-item-text">Summary</span>
+            </router-link>
           </li>
           <li>
-            <button
-              class="button"
-              :disabled="isDisabled"
-              @click="() => router.replace('/writer')"
+            <router-link
+              class="sidebar-item"
+              :class="isDisabled && 'sidebar-item-disabled'"
+              :to="isDisabled ? '' : PATHS.Writer"
             >
-              <icon-writer class="button-icon" />
-              <span class="button-text">Writer</span>
-            </button>
+              <icon-writer class="sidebar-item-icon" />
+              <span class="sidebar-item-text">Writer</span>
+            </router-link>
           </li>
           <li>
-            <button
-              class="button"
-              :disabled="isDisabled"
-              @click="() => router.replace('/progress')"
+            <router-link
+              class="sidebar-item"
+              :class="isDisabled && 'sidebar-item-disabled'"
+              :to="isDisabled ? '' : PATHS.Progress"
             >
-              <icon-progress class="button-icon" />
-              <span class="button-text">Progress</span>
-            </button>
+              <icon-progress class="sidebar-item-icon" />
+              <span class="sidebar-item-text">Progress</span>
+            </router-link>
           </li>
           <li>
-            <button
-              class="button"
-              :disabled="isDisabled"
-              @click="() => router.replace('/visualizations')"
+            <router-link
+              class="sidebar-item"
+              :class="isDisabled && 'sidebar-item-disabled'"
+              :to="isDisabled ? '' : PATHS.Visualizations"
             >
-              <icon-visualization class="button-icon" />
-              <span class="button-text">Visualizations</span>
-            </button>
+              <icon-visualization class="sidebar-item-icon" />
+              <span class="sidebar-item-text">Visualizations</span>
+            </router-link>
           </li>
         </ul>
       </div>
 
       <div>
-        <h2 :class="isDisabled && 'text-gray-300'" class="header mt-8">
+        <h2 :class="isDisabled && 'text-gray-300'" class="sidebar-header mt-8">
           Columns
         </h2>
         <ul>
-          <li>
+          <li :class="isProjectColumnActive && 'column-button-active'">
             <button
-              class="button"
+              class="sidebar-item"
               :disabled="isDisabled"
               @click="handleProjectColumnClick"
             >
-              <icon-project class="button-icon" />
-              <span class="button-text">Projects</span>
+              <icon-project class="sidebar-item-icon" />
+              <span class="sidebar-item-text">Projects</span>
             </button>
           </li>
           <li>
-            <button class="button" :disabled="isDisabled">
-              <icon-note class="button-icon" />
-              <span class="button-text">Notes</span>
+            <button class="sidebar-item" :disabled="isDisabled">
+              <icon-note class="sidebar-item-icon" />
+              <span class="sidebar-item-text">Notes</span>
             </button>
           </li>
         </ul>
@@ -118,19 +117,28 @@ function handleProjectColumnClick(): void {
 </template>
 
 <style scoped>
-.header {
+.sidebar-header {
   @apply text-xs px-3;
 }
 
-.button {
-  @apply flex disabled:text-gray-300 disabled:fill-gray-300 px-3 my-3;
+.sidebar-item {
+  @apply flex px-3 my-3 disabled:text-gray-300 disabled:fill-gray-300 py-1;
 }
 
-.button-text {
-  @apply text-sm font-bold ml-2;
+.sidebar-item-disabled {
+  @apply text-gray-300 fill-gray-300 cursor-default;
 }
 
-.button-icon {
-  @apply h-[0.9rem] w-[0.9rem];
+.sidebar-item-text {
+  @apply text-xs font-semibold ml-2;
+}
+
+.sidebar-item-icon {
+  @apply pt-0.5 h-[1.0rem] w-[1.0rem];
+}
+
+.router-link-exact-active,
+.column-button-active {
+  @apply bg-primary fill-white text-white rounded-md;
 }
 </style>

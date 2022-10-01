@@ -159,7 +159,9 @@ function main() {
       console.log("api successfully initialized");
     })
     .then(async () => {
+      console.log("creating main renderer window");
       mainWindow = await restoreOrCreateWindow(database);
+      console.log("main renderer window created");
     })
     .then(() => {
       // save window bounds to restore window state
@@ -168,6 +170,7 @@ function main() {
           const bounds = mainWindow?.getBounds();
           database.db.data!.windowBounds = bounds;
           await database.db.write();
+          console.log("main renderer bounds saved");
         } catch (error: any | Error) {
           console.log("Unable to save window bounds", error);
         }
