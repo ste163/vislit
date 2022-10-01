@@ -11,9 +11,11 @@ import type {
 } from "renderer-interfaces";
 import TheSidebar from "components/the-sidebar.vue";
 import NotificationContainer from "components/notification-container.vue";
+import BaseButton from "components/base-button.vue";
 import TheProjectForm from "components/the-project-form.vue";
 import TheProjectList from "components/the-project-list.vue";
 import IconClose from "icons/icon-close.vue";
+import IconBack from "icons/icon-back.vue";
 
 const isLoading = ref<boolean>(true);
 const isFetchErrorActive = ref<boolean>(false);
@@ -29,11 +31,12 @@ const selectedProject = ref<Project | null>(null);
 // { isOpen: false, dockedOn: 'left' | 'right', width: 300 // in pixels }
 // this object could be stored in localStorage
 const isProjectColumnActive = ref<boolean>(false);
+type ActiveProjectColumn = "form" | "list";
 const ACTIVE_PROJECT_COLUMN_STATES = {
   Form: "form",
   List: "list",
 } as const;
-const activeProjectColumn = ref<"form" | "list">(
+const activeProjectColumn = ref<ActiveProjectColumn>(
   ACTIVE_PROJECT_COLUMN_STATES.Form
 );
 const projectColumnHeaderTitle = computed(() =>
@@ -45,14 +48,18 @@ const projectColumnHeaderTitle = computed(() =>
 
 const router = useRouter();
 
+function showCriticalError(message = "No error message received") {
+  isFetchErrorActive.value = true;
+  fetchErrorMessage.value = message;
+}
+
 function toggleProjectColumn(): void {
   // read and store in localStorage, saving and loading the current state
   isProjectColumnActive.value = !isProjectColumnActive.value;
 }
 
-function showCriticalError(message = "No error message received") {
-  isFetchErrorActive.value = true;
-  fetchErrorMessage.value = message;
+function setActiveProjectColumn(type: ActiveProjectColumn) {
+  activeProjectColumn.value = type;
 }
 
 function addNotificationItem({
@@ -88,10 +95,19 @@ function handleProjectFormSubmission(response: ProjectFormSubmission): void {
     // NOTE: for now, adding the created project to the first of list
     // this may become an issue later and we need to refetch latest projects though
     projects.value = [response.project, ...projects.value];
-    // - TODO: open project list column view with select project
-    // set projectListActive to true
+    activeProjectColumn.value = ACTIVE_PROJECT_COLUMN_STATES.List;
   }
   addNotificationItem({ type: "success", message: "Created Project" });
+}
+
+function handleProjectDelete(id: string): void {
+  console.log("open delete modal to delete project id", id);
+}
+
+function handleProjectSelect(projectId: string): void {
+  // TODO: move projects to use object notation
+  selectedProject.value =
+    projects.value.find(({ id }) => id === projectId) || null;
 }
 
 // reloading the database is needed when user selects a new .json file;
@@ -126,6 +142,7 @@ onMounted(async () => {
     // - read localStorage for last opened page/view
     // route to that view, otherwise go to projects
     selectedProject.value = projects.value[0];
+    activeProjectColumn.value = ACTIVE_PROJECT_COLUMN_STATES.List;
     router.replace(PATHS.Project);
   } catch (error: any | Error) {
     console.error(error);
@@ -154,7 +171,7 @@ onMounted(async () => {
     <the-sidebar
       :is-disabled="!projects.length"
       :is-loading="isLoading"
-      @clicked-projects-column="toggleProjectColumn"
+      @click-projects-column="toggleProjectColumn"
     />
     <notification-container
       :notification-items="notificationItems"
@@ -167,7 +184,7 @@ onMounted(async () => {
       class="bg-gray-200 h-full min-w-[275px]"
     >
       <!-- Column Header -->
-      <div class="flex bg-gray-300 justify-between px-2 py-1">
+      <header class="flex bg-gray-300 justify-between px-2 py-1">
         <h1 class="text-xs font-sans tracking-widest">
           Projects
           <span v-if="projectColumnHeaderTitle"
@@ -179,18 +196,40 @@ onMounted(async () => {
             <icon-close :variant="'dark'" />
           </div>
         </button>
-      </div>
+      </header>
       <!-- Column Content -->
       <div class="flex flex-col">
-        <the-project-form
-          v-if="activeProjectColumn === ACTIVE_PROJECT_COLUMN_STATES.Form"
-          :types="types"
-          @project-form-submission="handleProjectFormSubmission"
-        />
-        <the-project-list
-          v-if="activeProjectColumn === ACTIVE_PROJECT_COLUMN_STATES.List"
-          :projects="projects"
-        />
+        <div v-if="activeProjectColumn === ACTIVE_PROJECT_COLUMN_STATES.Form">
+          <div class="flex my-4 mx-3">
+            <button
+              class="scale-75 mr-3"
+              @click="setActiveProjectColumn(ACTIVE_PROJECT_COLUMN_STATES.List)"
+            >
+              <icon-back />
+            </button>
+            <h3>Create</h3>
+          </div>
+          <the-project-form
+            :types="types"
+            @project-form-submission="handleProjectFormSubmission"
+          />
+        </div>
+        <div
+          v-if="
+            projects.length &&
+            activeProjectColumn === ACTIVE_PROJECT_COLUMN_STATES.List
+          "
+        >
+          <base-button
+            @click="setActiveProjectColumn(ACTIVE_PROJECT_COLUMN_STATES.Form)"
+            >Create</base-button
+          >
+          <the-project-list
+            :projects="projects"
+            @delete-project="handleProjectDelete"
+            @select-project="handleProjectSelect"
+          />
+        </div>
       </div>
     </section>
 

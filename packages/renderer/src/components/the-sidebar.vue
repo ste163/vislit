@@ -14,12 +14,12 @@ interface Props {
 }
 
 const { isDisabled, isLoading } = defineProps<Props>();
-const emit = defineEmits(["clickedProjectsColumn"]);
+const emit = defineEmits(["clickProjectsColumn"]);
 
 const router = useRouter();
 
 function handleProjectColumnClick(): void {
-  emit("clickedProjectsColumn");
+  emit("clickProjectsColumn");
 }
 </script>
 <template>

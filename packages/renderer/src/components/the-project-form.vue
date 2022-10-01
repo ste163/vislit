@@ -53,7 +53,7 @@ const onSubmit = handleSubmit(async (formValues) => {
 
     if (result instanceof Error) {
       emit("projectFormSubmission", { errorMessage: result?.message });
-      // TODO (from App.vue)
+      // TODO: (from App.vue)
       // SHOW THE ERROR NOTIFICATION BANNER
       // this is a DB failure
       return;
@@ -66,7 +66,7 @@ const onSubmit = handleSubmit(async (formValues) => {
       },
     });
   } catch (error: any | Error) {
-    // SHOW ERROR WINDOW, as this is a major failure
+    // TODO: SHOW ERROR WINDOW, as this is a major failure
     // (so send the message)
     console.error(error);
   } finally {
@@ -81,7 +81,6 @@ const onSubmit = handleSubmit(async (formValues) => {
     class="flex flex-col mx-4 mt-4"
     @submit.prevent="onSubmit"
   >
-    <h3 class="mb-4">Create</h3>
     <input-text name="title" label="Title" />
     <input-select class="my-5" name="type" label="Type">
       <option
