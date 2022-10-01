@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
+import { PATHS } from "router";
 import IconSummary from "icons/icon-summary.vue";
 import IconWriter from "icons/icon-writer.vue";
 import IconProgress from "icons/icon-progress.vue";
@@ -50,7 +51,7 @@ function handleProjectColumnClick(): void {
             <button
               class="button"
               :disabled="isDisabled"
-              @click="() => router.replace('/project')"
+              @click="() => router.replace(PATHS.Project)"
             >
               <icon-summary class="button-icon" />
               <span class="button-text">Summary</span>

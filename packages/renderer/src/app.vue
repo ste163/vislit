@@ -2,6 +2,7 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { send, receive } from "api";
+import { PATHS } from "router";
 import { nanoid } from "nanoid/non-secure";
 import type { Project, Type } from "interfaces";
 import type {
@@ -70,7 +71,7 @@ function handleProjectFormSubmission(response: ProjectFormSubmission): void {
   }
   if (response.project) {
     selectedProject.value = response.project;
-    router.replace("/project");
+    router.replace(PATHS.Project);
     // NOTE: for now, adding the created project to the first of list
     // this may become an issue later and we need to refetch latest projects though
     projects.value = [response.project, ...projects.value];
@@ -103,17 +104,16 @@ onMounted(async () => {
     if (projectsResponse instanceof Error) throw projectsResponse;
     projects.value = projectsResponse;
     if (!projects.value.length) {
-      router.replace("/");
+      router.replace(PATHS.Home);
       return;
     }
-    console.log(
-      "we have projects; read local storage to see which was most recently opened"
-    );
+    // TODO:
+    // - read localStorage for last opened project
+    // set that project as most recent, otherwise go to most recent.
+    // - read localStorage for last opened page/view
+    // route to that view, otherwise go to projects
     selectedProject.value = projects.value[0];
-    // else, read localStorage for last opened project
-    // if last opened project, open that project
-    // otherwise, open most recent
-    // route to /project
+    router.replace(PATHS.Project);
   } catch (error: any | Error) {
     console.error(error);
     fetchErrorMessage.value = error?.message;

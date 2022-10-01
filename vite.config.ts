@@ -50,6 +50,10 @@ export default defineConfig({
         ),
       },
       {
+        find: "router",
+        replacement: resolve(__dirname, "./packages/renderer/src/router/index"),
+      },
+      {
         find: "views",
         replacement: resolve(__dirname, "./packages/renderer/src/views"),
       },

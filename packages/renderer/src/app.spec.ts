@@ -1,7 +1,7 @@
 import { cleanup, render, screen } from "@testing-library/vue";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import App from "./app.vue";
-import router from "./router";
+import { router } from "router";
 // fetching data successfully on user with no data
 // // First scenario
 // - wait for loading

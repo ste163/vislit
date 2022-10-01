@@ -2,9 +2,14 @@ import { createRouter, createWebHashHistory } from "vue-router";
 import Welcome from "views/welcome.vue";
 import Project from "views/project.vue";
 
+export const PATHS = {
+  Home: "/",
+  Project: "/project",
+} as const;
+
 const routes = [
   {
-    path: "/",
+    path: PATHS.Home,
     name: "Welcome",
     component: Welcome,
     props: true,
@@ -13,16 +18,14 @@ const routes = [
     // For now, the currently selected project id
     // live in the app level state and isn't route based
     // may need to change later
-    path: "/project",
+    path: PATHS.Project,
     name: "Project",
     component: Project,
     props: true,
   },
 ];
 
-const router = createRouter({
+export const router = createRouter({
   routes,
   history: createWebHashHistory(),
 });
-
-export default router;

@@ -11,6 +11,7 @@
       "directives": ["./src/directives"],
       "icons": ["./src/icons/*"],
       "renderer-interfaces": ["./src/renderer-interfaces"],
+      "router": ["./src/router"],
       "views": ["./src/views/*"]
     },
     "lib": ["ESNext", "dom", "dom.iterable"]
