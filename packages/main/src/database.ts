@@ -76,7 +76,7 @@ export async function initializeDatabase(
       };
       await db.write();
     }
-
+    console.log("database initialized");
     return db;
   } catch (error: any | Error) {
     console.log(`failed to initialize database. Error: ${error}`);

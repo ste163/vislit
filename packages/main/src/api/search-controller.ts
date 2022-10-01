@@ -12,7 +12,6 @@ export async function initializeSearchIndexes(database: Database): Promise<{
   noteSearchIndex: Minisearch<any>;
 }> {
   console.log("initializing search indexes");
-
   const projects = database.db.data!.projects;
   const projectSearchIndex = new Minisearch({
     fields: ["title", "description"],
@@ -22,9 +21,7 @@ export async function initializeSearchIndexes(database: Database): Promise<{
       fuzzy: 0.2,
     },
   });
-
   await projectSearchIndex.addAllAsync(projects);
-
   const notes = database.db.data!.notes;
   const noteSearchIndex = new Minisearch({
     fields: ["title"],
@@ -33,9 +30,8 @@ export async function initializeSearchIndexes(database: Database): Promise<{
       fuzzy: 0.2,
     },
   });
-
   await noteSearchIndex.addAllAsync(notes);
-
+  console.log("search indexes initialized");
   return { projectSearchIndex, noteSearchIndex };
 }
 
