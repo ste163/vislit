@@ -125,8 +125,10 @@ function handleProjectColumnClick(): void {
   @apply flex px-3 my-3 disabled:text-gray-300 disabled:fill-gray-300 py-1;
 }
 
+/* Hacky fix: vue router v4 doesn't have 'disabled', so using empty string to mimic no routing; 
+however, if the route is '/' (welcome page), then it sets all routes as the active class */
 .sidebar-item-disabled {
-  @apply text-gray-300 fill-gray-300 cursor-default;
+  @apply text-gray-300 fill-gray-300 cursor-default bg-white !important;
 }
 
 .sidebar-item-text {

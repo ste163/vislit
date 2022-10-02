@@ -31,7 +31,7 @@ const { isLoading } = defineProps<Props>();
         <div class="bg-gray-200 w-9/12 animate-pulse h-12 rounded-xl" />
       </div>
       <div v-else>
-        <h1>SELECTED PROJECT: {{ project.title }}</h1>
+        <h1>SELECTED PROJECT: {{ project?.title }}</h1>
       </div>
     </section>
   </div>

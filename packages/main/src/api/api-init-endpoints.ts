@@ -32,9 +32,6 @@ export default function initializeApiEndpoints(
   noteController: NoteController,
   fileSystemController: FileSystemController
 ) {
-  //
-  // TODO: CHECK IF ALL THESE NEED TO await
-  //
   /**
    * Dialogs
    */
@@ -59,16 +56,21 @@ export default function initializeApiEndpoints(
    */
   ipcMain.handle("projects-get-all", () => projectController.getAll());
 
-  ipcMain.handle("projects-add", (_e, request: projectAddRequest) =>
-    projectController.add(request)
+  ipcMain.handle(
+    "projects-add",
+    async (_e, request: projectAddRequest) =>
+      await projectController.add(request)
   );
 
-  ipcMain.handle("projects-update", (_e, request: projectUpdateRequest) =>
-    projectController.update(request)
+  ipcMain.handle(
+    "projects-update",
+    async (_e, request: projectUpdateRequest) =>
+      await projectController.update(request)
   );
 
-  ipcMain.handle("projects-delete", (_e, request: idRequest) =>
-    projectController.delete(request)
+  ipcMain.handle(
+    "projects-delete",
+    async (_e, request: idRequest) => await projectController.delete(request)
   );
 
   /**
@@ -83,31 +85,38 @@ export default function initializeApiEndpoints(
    */
   ipcMain.handle("types-get-all", () => typeController.getAll());
 
-  ipcMain.handle("types-add", (_e, value: typeAddRequest) =>
-    typeController.add(value)
+  ipcMain.handle(
+    "types-add",
+    async (_e, value: typeAddRequest) => await typeController.add(value)
   );
 
-  ipcMain.handle("types-delete", (_e, id: idRequest) =>
-    typeController.delete(id)
+  ipcMain.handle(
+    "types-delete",
+    async (_e, id: idRequest) => await typeController.delete(id)
   );
 
   /**
    * Goals
    */
-  ipcMain.handle("goals-add", (_e, goal: addGoalRequest) =>
-    goalController.add(goal)
+  ipcMain.handle(
+    "goals-add",
+    async (_e, goal: addGoalRequest) => await goalController.add(goal)
   );
 
-  ipcMain.handle("goals-update", (_e, request: updateGoalRequest) =>
-    goalController.update(request)
+  ipcMain.handle(
+    "goals-update",
+    async (_e, request: updateGoalRequest) =>
+      await goalController.update(request)
   );
 
-  ipcMain.handle("goals-delete", (_e, id: idRequest) =>
-    goalController.delete(id)
+  ipcMain.handle(
+    "goals-delete",
+    async (_e, id: idRequest) => await goalController.delete(id)
   );
 
-  ipcMain.handle("goals-completed", (_e, id: idRequest) =>
-    goalController.setCompletedById(id)
+  ipcMain.handle(
+    "goals-completed",
+    async (_e, id: idRequest) => await goalController.setCompletedById(id)
   );
 
   /**
@@ -124,15 +133,19 @@ export default function initializeApiEndpoints(
       progressController.getByDate(request)
   );
 
-  ipcMain.handle("progress-modify", (_e, progress: modifyProgressRequest) =>
-    progressController.modify(progress)
+  ipcMain.handle(
+    "progress-modify",
+    async (_e, progress: modifyProgressRequest) =>
+      await progressController.modify(progress)
   );
 
   /**
    * Writer
    */
-  ipcMain.handle("writer-get-most-recent", (_e, id: idRequest) =>
-    fileSystemController.readMostRecentHtmlFile(id)
+  ipcMain.handle(
+    "writer-get-most-recent",
+    async (_e, id: idRequest) =>
+      await fileSystemController.readMostRecentHtmlFile(id)
   );
 
   /**
@@ -146,23 +159,29 @@ export default function initializeApiEndpoints(
     noteController.getById(id)
   );
 
-  ipcMain.handle("notes-add", (_e, request: addNoteRequest) =>
-    noteController.add(request)
+  ipcMain.handle(
+    "notes-add",
+    async (_e, request: addNoteRequest) => await noteController.add(request)
   );
 
-  ipcMain.handle("notes-update", (_e, request: updateNoteRequest) =>
-    noteController.update(request)
+  ipcMain.handle(
+    "notes-update",
+    async (_e, request: updateNoteRequest) =>
+      await noteController.update(request)
   );
 
-  ipcMain.handle("notes-delete", (_e, id: idRequest) =>
-    noteController.delete(id)
+  ipcMain.handle(
+    "notes-delete",
+    async (_e, id: idRequest) => await noteController.delete(id)
   );
 
   /**
    * Html
    */
-  ipcMain.handle("html-save", (_e, request: htmlWriteRequest) =>
-    // Stores note or project based on request.type
-    fileSystemController.writeHtmlFile(request)
+  ipcMain.handle(
+    "html-save",
+    async (_e, request: htmlWriteRequest) =>
+      // Stores note or project based on request.type
+      await fileSystemController.writeHtmlFile(request)
   );
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import { useRouter } from "vue-router";
 import { send, receive } from "api";
 import { PATHS } from "router";
@@ -20,11 +20,12 @@ import IconBack from "icons/icon-back.vue";
 const isLoading = ref<boolean>(true);
 const isFetchErrorActive = ref<boolean>(false);
 const fetchErrorMessage = ref<string>("");
-
-const notificationItems = ref<NotificationItem[]>([]);
+const isDeleteModalActive = ref<boolean>(false);
+const projectIdToDelete = ref<string | null>(null);
 
 const types = ref<Type[]>([]); // if this used an {typeId: {type}} could initialize to null
 const projects = ref<Project[]>([]); // if this used an {projectId: {project}} could initialize to null
+const notificationItems = ref<NotificationItem[]>([]);
 
 const selectedProject = ref<Project | null>(null);
 // later, this could be moved into an object of type Column that could have:
@@ -60,6 +61,10 @@ function toggleProjectColumn(): void {
 
 function setActiveProjectColumn(type: ActiveProjectColumn) {
   activeProjectColumn.value = type;
+}
+
+function toggleDeleteModal(): void {
+  isDeleteModalActive.value = !isDeleteModalActive.value;
 }
 
 function addNotificationItem({
@@ -100,8 +105,31 @@ function handleProjectFormSubmission(response: ProjectFormSubmission): void {
   addNotificationItem({ type: "success", message: "Created Project" });
 }
 
+// maybe rename?? - not specific that it's handling the column list delete click
 function handleProjectDelete(id: string): void {
-  console.log("open delete modal to delete project id", id);
+  toggleDeleteModal();
+  projectIdToDelete.value = id;
+}
+
+// potentially rename?
+async function deleteProject(): Promise<void> {
+  try {
+    // set isDeleting to true
+    const result = await send("projects-delete", projectIdToDelete.value);
+    if (result instanceof Error) throw result;
+    toggleDeleteModal();
+    // If we were using an object, could just delete the key, much faster
+    projects.value = projects.value.filter(
+      ({ id }) => id !== projectIdToDelete.value
+    );
+    projectIdToDelete.value = null;
+    selectedProject.value = projects.value.length ? projects.value[0] : null;
+  } catch (error: any | Error) {
+    // show error banner
+    console.error(error);
+  } finally {
+    // set isDeleting to false
+  }
 }
 
 function handleProjectSelect(projectId: string): void {
@@ -121,6 +149,15 @@ receive("reload-database", () => {
   // and reset app-state
   // because you could have ALL new projects
   // so probably re-fresh the page after clearing storage!
+});
+
+watch(projects, () => {
+  // if we all projects have been deleted, reset state
+  if (projects.value.length) return;
+  router.replace("/");
+  isProjectColumnActive.value = false;
+  // TODO: note column disabled
+  // - update local storage?
 });
 
 onMounted(async () => {
@@ -167,7 +204,38 @@ onMounted(async () => {
     <p>Error message: {{ fetchErrorMessage }}</p>
   </div>
 
+  <!-- TODO: need to restructure/change css so that the side-bar is is more 'static' -->
   <div v-else class="h-full w-full flex">
+    <!-- NOTE: handling the delete modal here until more modals come, then think about abstraction -->
+    <teleport v-if="isDeleteModalActive" to="#modal-container">
+      <!-- TODO: if a modal is open, pressing ESC should close it -->
+      <section
+        class="z-10 modal-background absolute justify-center place-items-center flex w-full h-full"
+      >
+        <div class="bg-white place-items-center flex flex-col max-w-xl">
+          <div>
+            <button @click="toggleDeleteModal">
+              <div class="scale-50">
+                <icon-close :variant="'dark'" />
+              </div>
+            </button>
+          </div>
+          <div>
+            <h1>Warning</h1>
+            <p>
+              Deleting this project will delete all related notes, progress,
+              goals, and documents. Archiving is a better option if you'd like
+              to stay organize but keep your data.
+            </p>
+            <!-- Note: maybe have metrics of: will delete: X documents, X notes, X progress, etc -->
+            <button @click="deleteProject">Delete</button>
+            <button>Archive</button>
+            <button @click="toggleDeleteModal">Cancel</button>
+          </div>
+        </div>
+      </section>
+    </teleport>
+
     <the-sidebar
       :is-disabled="!projects.length"
       :is-loading="isLoading"
@@ -257,3 +325,9 @@ onMounted(async () => {
     </section>
   </div>
 </template>
+
+<style>
+.modal-background {
+  background-color: rgba(0, 0, 0, 0.123);
+}
+</style>
