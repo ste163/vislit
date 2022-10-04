@@ -3,6 +3,7 @@ import type { Project } from "interfaces";
 
 interface Props {
   projects: Project[] | null;
+  selectedProjectId: string | undefined;
 }
 
 const { projects } = defineProps<Props>();
@@ -26,22 +27,26 @@ function emitSelectProject(id: string) {
 </script>
 
 <template>
-  <!-- Filtering/Controls/Button to swap between list and form (form needs a back button) -->
-  <!-- LIST of all projects -->
   <!--
         TODO:
-        1. List all project 
-        2. Clicking the delete button, deletes
+        1. List all project - DONE
+        1.5. Long project names need to '...'
+        2. Clicking the delete button, deletes - DONE
         3. Organize by headers: In Progress, Completed, Archived
         4. Sort by: Alphabetical, Date Created, Last Updated (will need to display dates if sorting by those)
         5. Can type in the search bar to "filter"
     -->
   <div v-for="project in projects" :key="project.id">
-    <div class="flex">
-      <div @click="emitSelectProject(project.id ?? '')">
+    <!-- TODO: needs to be select-able with ENTER, and clickable with enter -->
+    <div
+      :class="selectedProjectId === project.id && 'bg-primary text-white'"
+      class="flex justify-between cursor-pointer font-medium rounded-md px-2"
+    >
+      <div class="w-full" @click="emitSelectProject(project.id ?? '')">
         {{ project.title }}
       </div>
       <button class="ml-4" @click="emitDeleteProject(project.id ?? '')">
+        <!-- TODO: trashcan icon -->
         DELETE
       </button>
     </div>

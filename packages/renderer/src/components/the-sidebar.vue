@@ -94,7 +94,11 @@ function handleProjectColumnClick(): void {
           Columns
         </h2>
         <ul>
-          <li :class="isProjectColumnActive && 'column-button-active'">
+          <li
+            :class="
+              !isDisabled && isProjectColumnActive && 'column-button-active'
+            "
+          >
             <button
               class="sidebar-item"
               :disabled="isDisabled"
@@ -122,7 +126,7 @@ function handleProjectColumnClick(): void {
 }
 
 .sidebar-item {
-  @apply flex px-3 my-3 disabled:text-gray-300 disabled:fill-gray-300 py-1;
+  @apply flex w-full px-3 my-3 disabled:text-gray-300 disabled:fill-gray-300 py-1;
 }
 
 /* Hacky fix: vue router v4 doesn't have 'disabled', so using empty string to mimic no routing; 

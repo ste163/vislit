@@ -156,6 +156,7 @@ watch(projects, () => {
   if (projects.value.length) return;
   router.replace("/");
   isProjectColumnActive.value = false;
+  activeProjectColumn.value = ACTIVE_PROJECT_COLUMN_STATES.Form;
   // TODO: note column disabled
   // - update local storage?
 });
@@ -207,30 +208,44 @@ onMounted(async () => {
   <!-- TODO: need to restructure/change css so that the side-bar is is more 'static' -->
   <div v-else class="h-full w-full flex">
     <!-- NOTE: handling the delete modal here until more modals come, then think about abstraction -->
+    <!-- But may need to move to component so testing is easy -->
     <teleport v-if="isDeleteModalActive" to="#modal-container">
       <!-- TODO: if a modal is open, pressing ESC should close it -->
       <section
         class="z-10 modal-background absolute justify-center place-items-center flex w-full h-full"
       >
-        <div class="bg-white place-items-center flex flex-col max-w-xl">
-          <div>
+        <div class="bg-white place-items-center flex flex-col rounded-md p-2">
+          <!-- Header -->
+          <div class="self-end">
             <button @click="toggleDeleteModal">
               <div class="scale-50">
                 <icon-close :variant="'dark'" />
               </div>
             </button>
           </div>
-          <div>
-            <h1>Warning</h1>
+          <!-- Content -> should determine modal width and height -->
+          <div class="max-w-lg px-4 mb-2">
+            <h1 class="mb-1">Warning</h1>
             <p>
               Deleting this project will delete all related notes, progress,
-              goals, and documents. Archiving is a better option if you'd like
-              to stay organize but keep your data.
+              goals, and documents. Archiving is a safer option as you can keep
+              organized and have backups.
             </p>
             <!-- Note: maybe have metrics of: will delete: X documents, X notes, X progress, etc -->
-            <button @click="deleteProject">Delete</button>
-            <button>Archive</button>
-            <button @click="toggleDeleteModal">Cancel</button>
+            <div class="flex w-full justify-between mt-3">
+              <!-- TODO: 
+                Need to make button-text that also has submitting abilities.
+                Maybe submit is actually in base-button as many type scan use that -->
+              <div class="flex">
+                <button class="mr-3 font-semibold">Archive</button>
+                <button class="font-semibold" @click="deleteProject">
+                  Delete
+                </button>
+              </div>
+              <button class="font-semibold" @click="toggleDeleteModal">
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -289,17 +304,20 @@ onMounted(async () => {
             activeProjectColumn === ACTIVE_PROJECT_COLUMN_STATES.List
           "
         >
-          <base-button
-            @click="setActiveProjectColumn(ACTIVE_PROJECT_COLUMN_STATES.Form)"
-          >
-            <template #icon>
-              <!-- TODO: Convert to icon -->
-              +
-            </template>
-            Create</base-button
-          >
+          <div class="m-5">
+            <base-button
+              @click="setActiveProjectColumn(ACTIVE_PROJECT_COLUMN_STATES.Form)"
+            >
+              <template #icon>
+                <!-- TODO: Convert to icon -->
+                +
+              </template>
+              Create Project</base-button
+            >
+          </div>
           <the-project-list
             :projects="projects"
+            :selected-project-id="selectedProject?.id"
             @delete-project="handleProjectDelete"
             @select-project="handleProjectSelect"
           />

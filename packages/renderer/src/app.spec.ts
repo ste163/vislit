@@ -62,6 +62,14 @@ it("when data (projects or types) fails to fetch, render error page and no sideb
   expect(querySidebar()).toBeNull();
 });
 
+it("when user deletes all projects, routes to welcome page and disables sidebar", async () => {
+  // setup render with 1 project
+  // mock the delete event to return []
+  // go to the summary page
+  // delete the project
+  // should be routed to home with disabled sidebar
+});
+
 // Testing the integration of App + Welcome + Project page
 describe.skip("Welcome Page flow", () => {
   // for a new user without projects
