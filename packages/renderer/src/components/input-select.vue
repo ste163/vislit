@@ -4,10 +4,18 @@ import { useField } from "vee-validate";
 type Props = {
   name: string;
   label: string;
+  emptyDefault: boolean;
+  canValidationAffectsStyling: boolean;
   value?: string;
 };
 
-const { name, label, value = "" } = defineProps<Props>();
+const {
+  name,
+  label,
+  value = "",
+  emptyDefault,
+  canValidationAffectsStyling,
+} = defineProps<Props>();
 
 const {
   value: fieldValue,
@@ -25,7 +33,7 @@ const {
       :fieldValue="fieldValue"
       class="font-medium"
       :class="
-        meta.valid && meta.touched
+        canValidationAffectsStyling && meta.valid && meta.touched
           ? 'text-primary'
           : errorMessage && 'text-alert'
       "
@@ -35,7 +43,7 @@ const {
       :name="name"
       class="capitalize rounded-md p-1 outline-none focus:border focus:border-gray-800"
       :class="
-        meta.valid && meta.touched
+        canValidationAffectsStyling && meta.valid && meta.touched
           ? 'border border-primary'
           : errorMessage
           ? 'border border-alert'
@@ -44,9 +52,7 @@ const {
       @change="handleChange"
       @blur="handleBlur"
     >
-      <option value="">
-        <!-- Always have a default, empty option -->
-      </option>
+      <option v-if="emptyDefault" value=""></option>
       <slot />
     </select>
 

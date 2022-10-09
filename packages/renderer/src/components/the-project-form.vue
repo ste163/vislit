@@ -82,7 +82,13 @@ const onSubmit = handleSubmit(async (formValues) => {
     @submit.prevent="onSubmit"
   >
     <input-text name="title" label="Title" />
-    <input-select class="my-5" name="type" label="Type">
+    <input-select
+      class="my-5"
+      name="type"
+      label="Type"
+      :empty-default="true"
+      :can-validation-affects-styling="true"
+    >
       <option
         v-for="option in typeOptions"
         :key="option.id"

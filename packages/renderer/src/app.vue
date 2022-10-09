@@ -14,6 +14,8 @@ import NotificationContainer from "components/notification-container.vue";
 import BaseButton from "components/base-button.vue";
 import TheProjectForm from "components/the-project-form.vue";
 import TheProjectList from "components/the-project-list.vue";
+import InputSelect from "components/input-select.vue";
+import InputSearch from "components/input-search.vue";
 import IconClose from "icons/icon-close.vue";
 import IconBack from "icons/icon-back.vue";
 
@@ -224,7 +226,7 @@ onMounted(async () => {
             </button>
           </div>
           <!-- Content -> should determine modal width and height -->
-          <div class="max-w-lg px-4 mb-2">
+          <div role="dialog" class="max-w-lg px-4 mb-2">
             <h1 class="mb-1">Warning</h1>
             <p>
               Deleting this project will delete all related notes, progress,
@@ -269,7 +271,7 @@ onMounted(async () => {
     >
       <!-- Column Header -->
       <header class="flex bg-gray-300 justify-between px-2 py-1">
-        <h1 class="text-xs font-sans tracking-widest">
+        <h1 class="text-xs font-sans tracking-widest w-3/4 truncate">
           Projects
           <span v-if="projectColumnHeaderTitle"
             >- {{ projectColumnHeaderTitle }}</span
@@ -314,7 +316,21 @@ onMounted(async () => {
               </template>
               Create Project</base-button
             >
+            <input-select
+              class="mt-4"
+              name="sort"
+              label="Sort by"
+              :empty-default="false"
+              :can-validation-affects-styling="false"
+            >
+              <option value="alphabetical">Alphabetical</option>
+              <option value="lastUpdated">Last Updated Date</option>
+              <option value="dateCreated">Date Created</option>
+            </input-select>
+
+            <input-search />
           </div>
+          <!-- TODO: pass the sort by and search values into here -->
           <the-project-list
             :projects="projects"
             :selected-project-id="selectedProject?.id"
