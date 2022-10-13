@@ -329,6 +329,7 @@ onMounted(async () => {
               <option value="dateCreated">Date Created</option>
             </input-select>
 
+            <!-- TODO: log the emitted value  -->
             <input-search />
           </div>
           <!-- TODO: pass the sort by and search values into here -->
