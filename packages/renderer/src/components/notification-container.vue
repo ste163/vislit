@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import NotificationContainerItem from "./notification-container-item.vue";
+import { NotificationContainerItem } from "components";
 import { NotificationItem } from "renderer-interfaces";
 
 const props = defineProps({

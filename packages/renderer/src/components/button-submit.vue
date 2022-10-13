@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BaseButton from "./base-button.vue";
+import { BaseButton } from "components";
 
 interface Props {
   isSubmitting: boolean;

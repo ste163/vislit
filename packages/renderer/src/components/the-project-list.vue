@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Project } from "interfaces";
-import IconDelete from "icons/icon-delete.vue";
+import { IconDelete } from "icons";
 
 interface Props {
   projects: Project[] | null;

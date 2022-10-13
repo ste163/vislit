@@ -2,22 +2,23 @@
 import { ref, onMounted, computed, watch } from "vue";
 import { useRouter } from "vue-router";
 import { send, receive } from "api";
-import { PATHS } from "router";
+import { URL_PATHS } from "router";
 import { nanoid } from "nanoid/non-secure";
 import type { Project, Type } from "interfaces";
 import type {
   NotificationItem,
   ProjectFormSubmission,
 } from "renderer-interfaces";
-import TheSidebar from "components/the-sidebar.vue";
-import NotificationContainer from "components/notification-container.vue";
-import BaseButton from "components/base-button.vue";
-import TheProjectForm from "components/the-project-form.vue";
-import TheProjectList from "components/the-project-list.vue";
-import InputSelect from "components/input-select.vue";
-import InputSearch from "components/input-search.vue";
-import IconClose from "icons/icon-close.vue";
-import IconBack from "icons/icon-back.vue";
+import {
+  TheSidebar,
+  NotificationContainer,
+  BaseButton,
+  TheProjectForm,
+  TheProjectList,
+  InputSelect,
+  InputSearch,
+} from "components";
+import { IconClose, IconBack } from "icons";
 
 const isLoading = ref<boolean>(true);
 const isFetchErrorActive = ref<boolean>(false);
@@ -98,7 +99,7 @@ function handleProjectFormSubmission(response: ProjectFormSubmission): void {
   }
   if (response.project) {
     selectedProject.value = response.project;
-    router.replace(PATHS.Project);
+    router.replace(URL_PATHS.Project);
     // NOTE: for now, adding the created project to the first of list
     // this may become an issue later and we need to refetch latest projects though
     projects.value = [response.project, ...projects.value];
@@ -173,7 +174,7 @@ onMounted(async () => {
     if (projectsResponse instanceof Error) throw projectsResponse;
     projects.value = projectsResponse;
     if (!projects.value.length) {
-      router.replace(PATHS.Home);
+      router.replace(URL_PATHS.Home);
       return;
     }
     // TODO:
@@ -183,7 +184,7 @@ onMounted(async () => {
     // route to that view, otherwise go to projects
     selectedProject.value = projects.value[0];
     activeProjectColumn.value = ACTIVE_PROJECT_COLUMN_STATES.List;
-    router.replace(PATHS.Project);
+    router.replace(URL_PATHS.Project);
   } catch (error: any | Error) {
     console.error(error);
     fetchErrorMessage.value = error?.message;

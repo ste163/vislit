@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import IconCheckmark from "icons/icon-checkmark.vue";
-import IconClose from "icons/icon-close.vue";
+import { IconCheckmark, IconClose } from "icons";
+import { onMounted } from "vue";
 
 // TODO in new feature:
 // add animations for enter/leave
-
-import { onMounted } from "vue";
 
 // Due to a bug with the experimental sfc-compiler for vite
 // Cannot import a type/interface, it must be declared in the component-scope

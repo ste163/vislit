@@ -4,10 +4,12 @@ import { useForm } from "vee-validate";
 import { toFormValidator } from "@vee-validate/zod";
 import { z } from "zod";
 import { send } from "api";
-import InputText from "./input-text.vue";
-import InputSelect from "./input-select.vue";
-import InputTextarea from "./input-textarea.vue";
-import ButtonSubmit from "./button-submit.vue";
+import {
+  InputText,
+  InputTextarea,
+  InputSelect,
+  ButtonSubmit,
+} from "components";
 import type { Project, Type } from "interfaces";
 import type { ProjectFormSubmission } from "renderer-interfaces";
 

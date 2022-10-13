@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { RouterLink } from "vue-router";
-import { PATHS } from "router";
-import IconSummary from "icons/icon-summary.vue";
-import IconWriter from "icons/icon-writer.vue";
-import IconProgress from "icons/icon-progress.vue";
-import IconVisualization from "icons/icon-visualization.vue";
-import IconProject from "icons/icon-project.vue";
-import IconNote from "icons/icon-note.vue";
+import { URL_PATHS } from "router";
+import {
+  IconSummary,
+  IconWriter,
+  IconProgress,
+  IconVisualization,
+  IconProject,
+  IconNote,
+} from "icons";
 
 interface Props {
   isDisabled: boolean;
@@ -50,7 +52,7 @@ function handleProjectColumnClick(): void {
             <router-link
               class="sidebar-item"
               :class="isDisabled && 'sidebar-item-disabled'"
-              :to="isDisabled ? '' : PATHS.Project"
+              :to="isDisabled ? '' : URL_PATHS.Project"
             >
               <icon-summary class="sidebar-item-icon" />
               <span class="sidebar-item-text">Summary</span>
@@ -60,7 +62,7 @@ function handleProjectColumnClick(): void {
             <router-link
               class="sidebar-item"
               :class="isDisabled && 'sidebar-item-disabled'"
-              :to="isDisabled ? '' : PATHS.Writer"
+              :to="isDisabled ? '' : URL_PATHS.Writer"
             >
               <icon-writer class="sidebar-item-icon" />
               <span class="sidebar-item-text">Writer</span>
@@ -70,7 +72,7 @@ function handleProjectColumnClick(): void {
             <router-link
               class="sidebar-item"
               :class="isDisabled && 'sidebar-item-disabled'"
-              :to="isDisabled ? '' : PATHS.Progress"
+              :to="isDisabled ? '' : URL_PATHS.Progress"
             >
               <icon-progress class="sidebar-item-icon" />
               <span class="sidebar-item-text">Progress</span>
@@ -80,7 +82,7 @@ function handleProjectColumnClick(): void {
             <router-link
               class="sidebar-item"
               :class="isDisabled && 'sidebar-item-disabled'"
-              :to="isDisabled ? '' : PATHS.Visualizations"
+              :to="isDisabled ? '' : URL_PATHS.Visualizations"
             >
               <icon-visualization class="sidebar-item-icon" />
               <span class="sidebar-item-text">Visualizations</span>

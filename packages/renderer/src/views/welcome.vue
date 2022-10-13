@@ -2,9 +2,8 @@
 import { computed } from "vue";
 import { onMounted, ref } from "vue";
 import { send } from "api";
-import BaseButton from "components/base-button.vue";
-import PulseNotification from "components/pulse-notification.vue";
-import IconProject from "icons/icon-project.vue";
+import { BaseButton, PulseNotification } from "components";
+import { IconProject } from "icons";
 
 interface Props {
   isLoading: boolean;

@@ -24,7 +24,10 @@ export default defineConfig({
       },
       {
         find: "components",
-        replacement: resolve(__dirname, "./packages/renderer/src/components"),
+        replacement: resolve(
+          __dirname,
+          "./packages/renderer/src/components/index"
+        ),
       },
       {
         find: "composables",
@@ -36,11 +39,14 @@ export default defineConfig({
       },
       {
         find: "directives",
-        replacement: resolve(__dirname, "./packages/renderer/src/directives"),
+        replacement: resolve(
+          __dirname,
+          "./packages/renderer/src/directives/index"
+        ),
       },
       {
         find: "icons",
-        replacement: resolve(__dirname, "./packages/renderer/src/icons"),
+        replacement: resolve(__dirname, "./packages/renderer/src/icons/index"),
       },
       {
         find: "renderer-interfaces",
@@ -55,7 +61,7 @@ export default defineConfig({
       },
       {
         find: "views",
-        replacement: resolve(__dirname, "./packages/renderer/src/views"),
+        replacement: resolve(__dirname, "./packages/renderer/src/views/index"),
       },
     ],
   },
