@@ -1,6 +1,11 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/vue";
+import {
+  cleanup,
+  render,
+  screen,
+  waitFor,
+  fireEvent,
+} from "@testing-library/vue";
 import { it, expect, afterEach, vi } from "vitest";
-import { fireEvent } from "@testing-library/dom";
 import Welcome from "./welcome.vue";
 
 const mockSend = vi.fn(() => "");
