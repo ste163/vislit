@@ -289,7 +289,7 @@ onMounted(async () => {
         </button>
       </header>
       <!-- Column Content -->
-      <div class="flex flex-col">
+      <div class="flex flex-col px-2">
         <div v-if="activeProjectColumn === ACTIVE_PROJECT_COLUMN_STATES.Form">
           <div class="flex my-4 mx-3">
             <button
@@ -333,7 +333,10 @@ onMounted(async () => {
               <option value="dateCreated">Date Created</option>
             </input-select>
 
-            <input-search @debounced-search="handleProjectSearch" />
+            <input-search
+              class="mt-3"
+              @debounced-search="handleProjectSearch"
+            />
           </div>
           <!-- TODO: pass the sort by and search values into here -->
           <the-project-list

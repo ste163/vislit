@@ -22,7 +22,7 @@ it("renders properly and emits value after debounce", async () => {
     () => {
       expect(emitted()["debouncedSearch"]).toBeTruthy();
     },
-    { timeout: 600 }
+    { timeout: 350 }
   );
 
   expect(screen.getByRole("button")).toBeDefined();
