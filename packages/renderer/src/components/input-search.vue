@@ -1,31 +1,46 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-const searchValue = ref<string>("");
-const isDebounced = ref<boolean>(false);
+const debouncedValue = ref<string>("");
+const displayValue = ref<string>("");
+const isDebouncing = ref<boolean>(false);
+let timeoutRef: null | NodeJS.Timeout = null;
 
-// TODO:
-// Whenever the searchValue changes
-// set isDebounced to true
-// wait X amount of seconds
-// then set isDebounced to false
-// at that same time, also emit the event
-// that 'inputSearchValue' or another name
+const emit = defineEmits<{
+  (e: "debouncedSearch", response: string): void;
+}>();
+
+// https://dev.to/heruujoko_38/creating-a-debounced-input-component-using-vue-composition-api-52d4
+function debounceListener(e: Event) {
+  if (timeoutRef) clearTimeout(timeoutRef);
+  const inputValue = (e.target as HTMLInputElement)?.value ?? "";
+  isDebouncing.value = true;
+  displayValue.value = inputValue;
+  timeoutRef = setTimeout(() => {
+    debouncedValue.value = inputValue;
+    isDebouncing.value = false;
+    emit("debouncedSearch", inputValue);
+  }, 500);
+}
+
+function handleClearClick(): void {
+  displayValue.value = "";
+  debouncedValue.value = "";
+  emit("debouncedSearch", "");
+}
 
 // Need a test file that will check that while you're typing
 // the loading indicator renders
 // then after X amount of time, the emit sends the value
-
-console.log("Hello from searchbar");
 </script>
 
 <template>
   <div>
-    <!-- I want selected input blue highlight style, but that's all.
-      No error...
-      unless an error while fetching data, then emit the window error -->
-    <input />
+    <!-- I want selected input blue highlight style, but that's all -->
+    <input :value="displayValue" @input="debounceListener" />
 
-    delete button search icon
+    <div v-if="isDebouncing" data-testId="loading-spinner">LOADING</div>
+
+    <button v-if="!isDebouncing" @click="handleClearClick">X</button>
   </div>
 </template>

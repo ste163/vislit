@@ -154,6 +154,10 @@ receive("reload-database", () => {
   // so probably re-fresh the page after clearing storage!
 });
 
+function handleProjectSearch(value: string): void {
+  console.log("SEARCHED FOR", value);
+}
+
 watch(projects, () => {
   // if we all projects have been deleted, reset state
   if (projects.value.length) return;
@@ -329,8 +333,7 @@ onMounted(async () => {
               <option value="dateCreated">Date Created</option>
             </input-select>
 
-            <!-- TODO: log the emitted value  -->
-            <input-search />
+            <input-search @debounced-search="handleProjectSearch" />
           </div>
           <!-- TODO: pass the sort by and search values into here -->
           <the-project-list
