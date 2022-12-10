@@ -5,7 +5,7 @@
   "version": "1.0.0",
   "license": "AGPL-3.0",
   "engines": {
-    "node": ">=v16.0",
+    "node": ">=v18.0",
     "npm": ">=8.1"
   },
   "private": true,
@@ -18,7 +18,8 @@
     "build:renderer": "cd ./packages/renderer && vite build",
     "compile": "cross-env MODE=production npm run build && electron-builder build --config .electron-builder.config.js --dir --config.asar=false",
     "pretest": "npm run build",
-    "pre-push": "npm run typecheck && npx vitest --run",
+    "pre-commit": "npx lint-staged",
+    "pre-push": "npx vitest --run",
     "test": "vitest --run --coverage",
     "test:watch": "vitest --watch",
     "test:coveralls": "vitest --run --coverage && coveralls < coverage/lcov.info",
@@ -32,7 +33,7 @@
     "postinstall": "cross-env ELECTRON_RUN_AS_NODE=1 npx --no-install electron ./scripts/update-electron-vendors.js"
   },
   "simple-git-hooks": {
-    "pre-commit": "npx lint-staged",
+    "pre-commit": "pre-commit",
     "pre-push": "pre-push"
   },
   "lint-staged": {
