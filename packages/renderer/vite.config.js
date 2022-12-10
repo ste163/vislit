@@ -41,6 +41,10 @@ const config = {
         find: "renderer-interfaces",
         replacement: resolve(__dirname, "src/renderer-interfaces"),
       },
+      {
+        find: "router",
+        replacement: resolve(__dirname, "src/router"),
+      },
       { find: "views", replacement: resolve(PACKAGE_ROOT, "src/views") },
     ],
   },

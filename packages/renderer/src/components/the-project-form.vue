@@ -4,10 +4,12 @@ import { useForm } from "vee-validate";
 import { toFormValidator } from "@vee-validate/zod";
 import { z } from "zod";
 import { send } from "api";
-import InputText from "./input-text.vue";
-import InputSelect from "./input-select.vue";
-import InputTextarea from "./input-textarea.vue";
-import ButtonSubmit from "./button-submit.vue";
+import {
+  InputText,
+  InputTextarea,
+  InputSelect,
+  ButtonSubmit,
+} from "components";
 import type { Project, Type } from "interfaces";
 import type { ProjectFormSubmission } from "renderer-interfaces";
 
@@ -53,7 +55,7 @@ const onSubmit = handleSubmit(async (formValues) => {
 
     if (result instanceof Error) {
       emit("projectFormSubmission", { errorMessage: result?.message });
-      // TODO (from App.vue)
+      // TODO: (from App.vue)
       // SHOW THE ERROR NOTIFICATION BANNER
       // this is a DB failure
       return;
@@ -66,7 +68,7 @@ const onSubmit = handleSubmit(async (formValues) => {
       },
     });
   } catch (error: any | Error) {
-    // SHOW ERROR WINDOW, as this is a major failure
+    // TODO: SHOW ERROR WINDOW, as this is a major failure
     // (so send the message)
     console.error(error);
   } finally {
@@ -81,9 +83,14 @@ const onSubmit = handleSubmit(async (formValues) => {
     class="flex flex-col mx-4 mt-4"
     @submit.prevent="onSubmit"
   >
-    <h3 class="mb-4">Create</h3>
     <input-text name="title" label="Title" />
-    <input-select class="my-5" name="type" label="Type">
+    <input-select
+      class="my-5"
+      name="type"
+      label="Type"
+      :empty-default="true"
+      :can-validation-affects-styling="true"
+    >
       <option
         v-for="option in typeOptions"
         :key="option.id"

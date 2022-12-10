@@ -1,7 +1,7 @@
 import { cleanup, render, screen } from "@testing-library/vue";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import App from "./app.vue";
-import router from "./router";
+import { router } from "router";
 // fetching data successfully on user with no data
 // // First scenario
 // - wait for loading
@@ -60,6 +60,14 @@ it("when data (projects or types) fails to fetch, render error page and no sideb
   expect(await findErrorText()).toBeTruthy();
   // sidebar doesn't exist when there's a major fetch error
   expect(querySidebar()).toBeNull();
+});
+
+it("when user deletes all projects, routes to welcome page and disables sidebar", async () => {
+  // setup render with 1 project
+  // mock the delete event to return []
+  // go to the summary page
+  // delete the project
+  // should be routed to home with disabled sidebar
 });
 
 // Testing the integration of App + Welcome + Project page

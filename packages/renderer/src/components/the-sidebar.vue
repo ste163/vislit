@@ -1,26 +1,33 @@
 <script setup lang="ts">
-import { useRouter } from "vue-router";
-import IconSummary from "icons/icon-summary.vue";
-import IconWriter from "icons/icon-writer.vue";
-import IconProgress from "icons/icon-progress.vue";
-import IconVisualization from "icons/icon-visualization.vue";
-import IconProject from "icons/icon-project.vue";
-import IconNote from "icons/icon-note.vue";
+import { RouterLink } from "vue-router";
+import { URL_PATHS } from "router";
+import {
+  IconSummary,
+  IconWriter,
+  IconProgress,
+  IconVisualization,
+  IconProject,
+  IconNote,
+} from "icons";
 
 interface Props {
   isDisabled: boolean;
   isLoading: boolean;
+  isProjectColumnActive: boolean;
 }
 
 const { isDisabled, isLoading } = defineProps<Props>();
+const emit = defineEmits(["clickProjectsColumn"]);
 
-const router = useRouter();
+function handleProjectColumnClick(): void {
+  emit("clickProjectsColumn");
+}
 </script>
 <template>
   <!-- TODO:
-    Add ability to close sidebar
+    - can minimize sidebar
  -->
-  <nav class="nav">
+  <nav class="bg-white w-[135px] flex flex-col select-none">
     <div
       v-if="isLoading"
       data-testId="loading-sidebar"
@@ -37,68 +44,76 @@ const router = useRouter();
     </div>
     <div v-else>
       <div>
-        <h2 :class="isDisabled && 'text-gray-300'" class="header mt-2">
+        <h2 :class="isDisabled && 'text-gray-300'" class="sidebar-header mt-2">
           Views
         </h2>
         <ul>
           <li>
-            <button
-              class="button"
-              :disabled="isDisabled"
-              @click="() => router.replace('/project')"
+            <router-link
+              class="sidebar-item"
+              :class="isDisabled && 'sidebar-item-disabled'"
+              :to="isDisabled ? '' : URL_PATHS.Project"
             >
-              <icon-summary class="button-icon" />
-              <span class="button-text">Summary</span>
-            </button>
+              <icon-summary class="sidebar-item-icon" />
+              <span class="sidebar-item-text">Summary</span>
+            </router-link>
           </li>
           <li>
-            <button
-              class="button"
-              :disabled="isDisabled"
-              @click="() => router.replace('/writer')"
+            <router-link
+              class="sidebar-item"
+              :class="isDisabled && 'sidebar-item-disabled'"
+              :to="isDisabled ? '' : URL_PATHS.Writer"
             >
-              <icon-writer class="button-icon" />
-              <span class="button-text">Writer</span>
-            </button>
+              <icon-writer class="sidebar-item-icon" />
+              <span class="sidebar-item-text">Writer</span>
+            </router-link>
           </li>
           <li>
-            <button
-              class="button"
-              :disabled="isDisabled"
-              @click="() => router.replace('/progress')"
+            <router-link
+              class="sidebar-item"
+              :class="isDisabled && 'sidebar-item-disabled'"
+              :to="isDisabled ? '' : URL_PATHS.Progress"
             >
-              <icon-progress class="button-icon" />
-              <span class="button-text">Progress</span>
-            </button>
+              <icon-progress class="sidebar-item-icon" />
+              <span class="sidebar-item-text">Progress</span>
+            </router-link>
           </li>
           <li>
-            <button
-              class="button"
-              :disabled="isDisabled"
-              @click="() => router.replace('/visualizations')"
+            <router-link
+              class="sidebar-item"
+              :class="isDisabled && 'sidebar-item-disabled'"
+              :to="isDisabled ? '' : URL_PATHS.Visualizations"
             >
-              <icon-visualization class="button-icon" />
-              <span class="button-text">Visualizations</span>
-            </button>
+              <icon-visualization class="sidebar-item-icon" />
+              <span class="sidebar-item-text">Visualizations</span>
+            </router-link>
           </li>
         </ul>
       </div>
 
       <div>
-        <h2 :class="isDisabled && 'text-gray-300'" class="header mt-8">
+        <h2 :class="isDisabled && 'text-gray-300'" class="sidebar-header mt-8">
           Columns
         </h2>
         <ul>
-          <li>
-            <button class="button" :disabled="isDisabled">
-              <icon-project class="button-icon" />
-              <span class="button-text">Projects</span>
+          <li
+            :class="
+              !isDisabled && isProjectColumnActive && 'column-button-active'
+            "
+          >
+            <button
+              class="sidebar-item"
+              :disabled="isDisabled"
+              @click="handleProjectColumnClick"
+            >
+              <icon-project class="sidebar-item-icon" />
+              <span class="sidebar-item-text">Projects</span>
             </button>
           </li>
           <li>
-            <button class="button" :disabled="isDisabled">
-              <icon-note class="button-icon" />
-              <span class="button-text">Notes</span>
+            <button class="sidebar-item" :disabled="isDisabled">
+              <icon-note class="sidebar-item-icon" />
+              <span class="sidebar-item-text">Notes</span>
             </button>
           </li>
         </ul>
@@ -108,23 +123,30 @@ const router = useRouter();
 </template>
 
 <style scoped>
-.nav {
-  @apply bg-white w-[135px] flex flex-col select-none;
-}
-
-.header {
+.sidebar-header {
   @apply text-xs px-3;
 }
 
-.button {
-  @apply flex disabled:text-gray-300 disabled:fill-gray-300 px-3 my-3;
+.sidebar-item {
+  @apply flex w-full px-3 my-3 disabled:text-gray-300 disabled:fill-gray-300 py-1;
 }
 
-.button-text {
-  @apply text-sm font-bold ml-2;
+/* Hacky fix: vue router v4 doesn't have 'disabled', so using empty string to mimic no routing; 
+however, if the route is '/' (welcome page), then it sets all routes as the active class */
+.sidebar-item-disabled {
+  @apply text-gray-300 fill-gray-300 cursor-default bg-white !important;
 }
 
-.button-icon {
-  @apply h-[0.9rem] w-[0.9rem];
+.sidebar-item-text {
+  @apply text-xs font-semibold ml-2;
+}
+
+.sidebar-item-icon {
+  @apply pt-0.5 h-[1.0rem] w-[1.0rem];
+}
+
+.router-link-exact-active,
+.column-button-active {
+  @apply bg-primary fill-white text-white rounded-md;
 }
 </style>

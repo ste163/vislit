@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import type { ComputedRef } from "vue";
 
+// NOTE: Currently not using, so this has no tests and is not refactored
 export default function useDateFormatFull(
   date: Date | string | undefined | null
 ): ComputedRef<string> | null {

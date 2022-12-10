@@ -1,7 +1,7 @@
 import { app, dialog } from "electron";
 import { JSONFileSync, LowSync } from "lowdb";
 import { join } from "path";
-import { existsSync, readdirSync } from "fs";
+import { existsSync, readdirSync, mkdirSync } from "fs";
 
 interface Path {
   path: string;
@@ -31,11 +31,20 @@ export default class DataPath {
        * vislit-data location. This can be changed on frontend later
        */
       if (!dataPath.data) {
+        console.log(
+          "first time setup - assign vislit-data-path and create vislit-data directories"
+        );
         const vislitDataPath = join(userData, "vislit-data");
         dataPath.data = {
           path: vislitDataPath,
         };
         dataPath.write();
+        /**
+         * Setup base directories for first-time setup
+         */
+        const projectDirectory = join(vislitDataPath, "projects");
+        mkdirSync(vislitDataPath);
+        mkdirSync(projectDirectory);
       }
       this.#dataPath = dataPath;
     } catch (error: any | Error) {

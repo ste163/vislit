@@ -1,5 +1,6 @@
 <template>
   <svg
+    aria-hidden="true"
     width="18.1"
     height="20.1"
     version="1.1"
