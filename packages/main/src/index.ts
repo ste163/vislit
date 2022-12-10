@@ -106,7 +106,6 @@ function main() {
        * and it isn't found
        */
       try {
-        console.log("test");
         const savedDataLocation: string | null = dataPath.get();
         if (!existsSync(savedDataLocation)) {
           const projectDirectory = join(savedDataLocation, "projects");
