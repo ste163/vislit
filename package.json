@@ -18,6 +18,7 @@
     "build:renderer": "cd ./packages/renderer && vite build",
     "compile": "cross-env MODE=production npm run build && electron-builder build --config .electron-builder.config.js --dir --config.asar=false",
     "pretest": "npm run build",
+    "pre-push": "npm run typecheck && npx vitest --run",
     "test": "vitest --run --coverage",
     "test:watch": "vitest --watch",
     "test:coveralls": "vitest --run --coverage && coveralls < coverage/lcov.info",
@@ -32,7 +33,7 @@
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged",
-    "pre-push": "npm run typecheck && npx vitest --run"
+    "pre-push": "pre-push"
   },
   "lint-staged": {
     "*.{md, js,ts,vue}": [
