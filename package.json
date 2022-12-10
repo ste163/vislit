@@ -32,10 +32,13 @@
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged",
-    "pre-push": "npm run typecheck"
+    "pre-push": "npm run typecheck && npx vitest --run"
   },
   "lint-staged": {
-    "*.{js,ts,vue}": "eslint --cache --fix"
+    "*.{md, js,ts,vue}": [
+      "prettier --write",
+      "eslint --cache --fix"
+    ]
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "1.2.0",
