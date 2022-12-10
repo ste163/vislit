@@ -1,5 +1,6 @@
 import { JSONFile, Low, Memory } from "lowdb";
 import { nanoid } from "nanoid/non-secure";
+import { join } from "path";
 import type { BrowserWindow, Rectangle } from "electron";
 import type { Goal, Note, Progress, Project, Type } from "interfaces";
 import type DataPath from "./data-path";
@@ -23,7 +24,7 @@ export async function initializeDatabase(
   try {
     console.log("initializing database");
 
-    const path = `${dataPath.get()}/vislit-database.json`;
+    const path = join(dataPath.get(), "vislit-database.json");
 
     const adapter =
       process.env.NODE_ENV === "test"
@@ -108,7 +109,7 @@ export class Database {
 
       // setup adapter
       const adapter = new JSONFile<VislitDatabase>(
-        `${path}/vislit-database.json`
+        join(path, "vislit-database.json")
       );
       const newDb = new Low<VislitDatabase>(adapter);
       await newDb.read();

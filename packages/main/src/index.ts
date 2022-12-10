@@ -100,7 +100,10 @@ function main() {
       }
 
       /**
-       * Create needed directories if they do not already exist
+       * Create needed directories if they do not already exist.
+       * This is specifically for after the first-time setup.
+       * For a user who has been using vislit, but changes their data location,
+       * and it isn't found
        */
       try {
         const savedDataLocation: string | null = dataPath.get();
