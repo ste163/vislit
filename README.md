@@ -1,3 +1,6 @@
+# No longer in development
+The project's scope was too large. Shifted efforts to a much smaller scoped writing application, [notes](https://github.com/ste163/notes)
+
 # Vislit
 
 [![Tests for UI & API - CI Build](https://github.com/ste163/vislit/actions/workflows/tests.yml/badge.svg)](https://github.com/ste163/vislit/actions/workflows/tests.yml)
